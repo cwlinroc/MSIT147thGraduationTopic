@@ -1,0 +1,3 @@
+﻿//EFModels 建立字串
+Scaffold-DbContext "Data Source=.;Initial Catalog=ISpan147MidTopic;Persist Security Info=True;User ID=sa6;Password=sa6;Trust Server Certificate=True;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir EFModels
+

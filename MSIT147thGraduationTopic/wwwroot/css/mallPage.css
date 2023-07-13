@@ -1,0 +1,31 @@
+﻿:root {
+    --bs-body-bg-rgb: 255, 245, 235;
+}
+
+.custom-carousel .carousel-control-prev,
+.carousel-control-next {
+    width: 8%;
+}
+
+.custom-home-carousel {
+    height: 550px;
+}
+
+.custom-merchandise {
+    width: 15rem;
+}
+
+    .custom-merchandise .card-body {
+        padding: 0.3rem 0.3rem;
+    }
+
+#backToTop {
+    position: fixed;
+    right: 50px;
+    bottom: 80px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

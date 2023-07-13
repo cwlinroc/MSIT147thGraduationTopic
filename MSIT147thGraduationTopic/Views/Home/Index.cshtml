@@ -1,8 +1,941 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewBag.Title = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+
+<!-- 輪播圖 -->
+
+<div id="carouselExampleIndicators" class="carousel slide custom-carousel" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active bg-dark">
+            <div class="container custom-home-carousel px-5">
+                <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="col-lg-8 col-xl-7 col-xxl-6">
+                        <div class="my-5 text-center text-xl-start">
+                            <h1 class="display-5 fw-bolder text-white mb-2">各式精選優質寵物用品，助你為毛孩打造舒適家園！</h1>
+                            <p class="lead fw-normal text-white-50 mb-4">
+                                每一個寵物都是獨特的個體，所以為牠們選擇合適的用品至關重要。在這裡，我們精選了各種高品質、實用性強的寵物用品，助你打造一個舒適、安全的家園。
+                            </p>
+                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                                <a class="btn btn-warning btn-lg px-4 me-sm-3" href="#merchandise1">瀏覽商品</a>
+                                <a class="btn btn-outline-warning btn-lg px-4" href="#">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center">
+                        <img class="img-fluid rounded-3 my-5" src="https://dummyimage.com/600x450/343a40/6c757d"
+                             alt="..." />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item bg-dark">
+            <div class="container custom-home-carousel px-5 bg-dark">
+                <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="col-lg-8 col-xl-7 col-xxl-6">
+                        <div class="my-5 text-center text-xl-start">
+                            <h1 class="display-5 fw-bolder text-white mb-2">
+                                擁有優秀評價的寵物用品，讓你的毛孩擁有舒適、健康的生活！
+                            </h1>
+                            <p class="lead fw-normal text-white-50 mb-4">
+                                寵物的快樂與舒適是我們的共同使命，選擇適合的寵物用品是實現這一目標的關鍵。在這裡，我們整理了一些經過評價良好的寵物用品，助你為你的毛孩打造一個愛的天堂
+                            </p>
+                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                                <a class="btn btn-warning btn-lg px-4 me-sm-3" href="#merchandise2">瀏覽商品</a>
+                                <a class="btn btn-outline-warning btn-lg px-4" href="#">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center">
+                        <img class="img-fluid rounded-3 my-5" src="https://dummyimage.com/600x450/343a40/6c757d"
+                             alt="..." />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-item bg-dark">
+            <div class="container custom-home-carousel px-5 bg-dark">
+                <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="col-lg-8 col-xl-7 col-xxl-6">
+                        <div class="my-5 text-center text-xl-start">
+                            <h1 class="display-5 fw-bolder text-white mb-2">特價優惠！選購優質寵物產品，給你的毛孩帶來舒適和樂趣！</h1>
+                            <p class="lead fw-normal text-white-50 mb-4">
+                                為了讓你的寵物獲得最佳的照顧，我們特別挑選了一系列優質寵物產品，並且現在它們正在特價優惠中！不僅能節省金錢，更能給你的毛孩帶來無比的舒適和樂趣。別錯過這些優惠，立即為你的寵物選購吧！
+                            </p>
+                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                                <a class="btn btn-warning btn-lg px-4 me-sm-3" href="#merchandise3">瀏覽商品</a>
+                                <a class="btn btn-outline-warning btn-lg px-4" href="#">查看更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center">
+                        <img class="img-fluid rounded-3 my-5" src="https://dummyimage.com/600x450/343a40/6c757d"
+                             alt="..." />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
+
+<!-- 販售商品2.0 -->
+<section class="py-5 " id="merchandise1">
+    <div class="container px-5 mt-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bolder">熱銷商品</h1>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-6 gx-3 justify-content-center">
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+<!-- 販售商品2.0 -->
+<section class="py-5 " id="merchandise2">
+    <div class="container px-5 mt-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bolder">好評商品</h1>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-6 gx-3 justify-content-center">
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+
+
+<!-- 販售商品2.0 -->
+<section class="py-5 " id="merchandise3">
+    <div class="container px-5 mt-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bolder">優惠商品</h1>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-6 gx-3 justify-content-center">
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-center">
+                <div class="card p-1 bg-body border-0 custom-merchandise mb-4">
+                    <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top rounded"
+                         alt="...">
+                    <div class="card-body">
+                        <a class="stretched-link" href="商城.html"></a>
+                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5">
+                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
+                        </p>
+                        <div class="badge bg-primary bg-gradient mb-1">飼料</div>
+                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                        <div class="d-flex justify-content-between mt-3 ">
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-danger">$870</p>
+                            <p class="h4 fw-bolder text-decoration-none link-dark fs-4 text-secondary">
+                                <i class="fa-solid fa-star text-warning"></i>:4.5
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+
+
+<div id="backToTop">
+    <a class="btn btn-outline-warning">
+        <i class="fa-solid fa-angles-up fs-1"></i>
+    </a>
+</div>
+
+
