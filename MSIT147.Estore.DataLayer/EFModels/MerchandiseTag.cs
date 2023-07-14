@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class MerchandiseTags
+    public partial class MerchandiseTag
     {
         public int MerchandiseId { get; set; }
         public int TagId { get; set; }
 
-        public virtual Merchandises Merchandise { get; set; }
-        public virtual Tags Tag { get; set; }
+        public virtual Merchandise Merchandise { get; set; }
+        public virtual Tag Tag { get; set; }
     }
 }

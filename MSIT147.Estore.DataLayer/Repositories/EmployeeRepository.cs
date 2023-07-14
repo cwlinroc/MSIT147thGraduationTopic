@@ -12,7 +12,7 @@ namespace MSIT147.Estore.DataLayer.Repositories
     {
         public int Create(EmployeeDto dto)
         {
-            var db = new Ispan147MidTopicContext();
+            var db = new GraduationTopicContext();
             var obj = dto.ToEF();
             db.Employees.Add(obj);
             db.SaveChanges();

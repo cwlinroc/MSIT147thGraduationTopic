@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class CouponOwners
+    public partial class UsedCoupon
     {
+        public int UsedCouponId { get; set; }
         public int CouponId { get; set; }
-        public string CouponSerialNumber { get; set; }
-        public int MemberId { get; set; }
+        public int OrderId { get; set; }
 
-        public virtual Coupons Coupon { get; set; }
-        public virtual Members Member { get; set; }
+        public virtual Coupon Coupon { get; set; }
+        public virtual Order Order { get; set; }
     }
 }

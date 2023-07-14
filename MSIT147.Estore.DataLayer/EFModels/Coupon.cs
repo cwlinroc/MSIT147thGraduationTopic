@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Coupons
+    public partial class Coupon
     {
-        public Coupons()
+        public Coupon()
         {
-            UsedCoupons = new HashSet<UsedCoupons>();
+            UsedCoupons = new HashSet<UsedCoupon>();
         }
 
         public int CouponId { get; set; }
@@ -20,7 +20,7 @@ namespace MSIT147.Estore.DataLayer.EFModels
         public decimal? CouponDiscountCondition { get; set; }
         public decimal CouponRebate { get; set; }
 
-        public virtual Tags CouponEligibleTag { get; set; }
-        public virtual ICollection<UsedCoupons> UsedCoupons { get; set; }
+        public virtual Tag CouponEligibleTag { get; set; }
+        public virtual ICollection<UsedCoupon> UsedCoupons { get; set; }
     }
 }

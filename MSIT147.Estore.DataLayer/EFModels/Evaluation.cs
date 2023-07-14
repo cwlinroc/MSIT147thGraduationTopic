@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Evaluations
+    public partial class Evaluation
     {
         public int EvaluationId { get; set; }
         public int MerchandiseId { get; set; }
@@ -15,8 +15,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
         public string ImageUrl { get; set; }
         public int Score { get; set; }
 
-        public virtual Members Member { get; set; }
-        public virtual Merchandises Merchandise { get; set; }
-        public virtual Orders Order { get; set; }
+        public virtual Member Member { get; set; }
+        public virtual Merchandise Merchandise { get; set; }
+        public virtual Order Order { get; set; }
     }
 }

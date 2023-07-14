@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class PaymentMethods
+    public partial class PaymentMethod
     {
-        public PaymentMethods()
+        public PaymentMethod()
         {
-            Orders = new HashSet<Orders>();
+            Orders = new HashSet<Order>();
         }
 
         public int PaymentMethodId { get; set; }
         public string PaymentMethodName { get; set; }
 
-        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

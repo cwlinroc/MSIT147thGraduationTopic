@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Tags
+    public partial class Tag
     {
-        public Tags()
+        public Tag()
         {
-            Coupons = new HashSet<Coupons>();
+            Coupons = new HashSet<Coupon>();
         }
 
         public int TagId { get; set; }
         public string TagName { get; set; }
 
-        public virtual ICollection<Coupons> Coupons { get; set; }
+        public virtual ICollection<Coupon> Coupons { get; set; }
     }
 }

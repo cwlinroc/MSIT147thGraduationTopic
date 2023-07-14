@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Merchandises
+    public partial class Merchandise
     {
-        public Merchandises()
+        public Merchandise()
         {
-            Evaluations = new HashSet<Evaluations>();
-            Specs = new HashSet<Specs>();
+            Evaluations = new HashSet<Evaluation>();
+            Specs = new HashSet<Spec>();
         }
 
         public int MerchandiseId { get; set; }
@@ -21,9 +21,9 @@ namespace MSIT147.Estore.DataLayer.EFModels
         public string ImageUrl { get; set; }
         public bool Display { get; set; }
 
-        public virtual Brands Brand { get; set; }
-        public virtual Categories Category { get; set; }
-        public virtual ICollection<Evaluations> Evaluations { get; set; }
-        public virtual ICollection<Specs> Specs { get; set; }
+        public virtual Brand Brand { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual ICollection<Evaluation> Evaluations { get; set; }
+        public virtual ICollection<Spec> Specs { get; set; }
     }
 }

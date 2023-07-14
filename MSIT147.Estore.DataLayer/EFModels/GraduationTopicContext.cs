@@ -7,60 +7,64 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class ISpan147MidTopicContext : DbContext
+    public partial class GraduationTopicContext : DbContext
     {
-        public ISpan147MidTopicContext()
+        public GraduationTopicContext()
         {
         }
 
-        public ISpan147MidTopicContext(DbContextOptions<ISpan147MidTopicContext> options)
+        public GraduationTopicContext(DbContextOptions<GraduationTopicContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<Brands> Brands { get; set; }
-        public virtual DbSet<CartItems> CartItems { get; set; }
-        public virtual DbSet<Carts> Carts { get; set; }
-        public virtual DbSet<Categories> Categories { get; set; }
-        public virtual DbSet<CouponOwners> CouponOwners { get; set; }
-        public virtual DbSet<Coupons> Coupons { get; set; }
-        public virtual DbSet<Employees> Employees { get; set; }
-        public virtual DbSet<Evaluations> Evaluations { get; set; }
-        public virtual DbSet<Members> Members { get; set; }
-        public virtual DbSet<MerchandiseTags> MerchandiseTags { get; set; }
-        public virtual DbSet<Merchandises> Merchandises { get; set; }
-        public virtual DbSet<OrderLists> OrderLists { get; set; }
-        public virtual DbSet<Orders> Orders { get; set; }
-        public virtual DbSet<PaymentMethods> PaymentMethods { get; set; }
-        public virtual DbSet<Specs> Specs { get; set; }
-        public virtual DbSet<Tags> Tags { get; set; }
-        public virtual DbSet<UsedCoupons> UsedCoupons { get; set; }
+        public virtual DbSet<Brand> Brands { get; set; }
+        public virtual DbSet<Cart> Carts { get; set; }
+        public virtual DbSet<CartItem> CartItems { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Coupon> Coupons { get; set; }
+        public virtual DbSet<CouponOwner> CouponOwners { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Evaluation> Evaluations { get; set; }
+        public virtual DbSet<Member> Members { get; set; }
+        public virtual DbSet<Merchandise> Merchandises { get; set; }
+        public virtual DbSet<MerchandiseTag> MerchandiseTags { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderList> OrderLists { get; set; }
+        public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public virtual DbSet<Spec> Specs { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<UsedCoupon> UsedCoupons { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ISpan147MidTopic;Persist Security Info=True;User ID=sa6;Password=sa6");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Brands>(entity =>
+            modelBuilder.Entity<Brand>(entity =>
             {
-                entity.HasKey(e => e.BrandId)
-                    .HasName("PK_Brand");
-
                 entity.Property(e => e.BrandName)
                     .IsRequired()
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<CartItems>(entity =>
+            modelBuilder.Entity<Cart>(entity =>
             {
-                entity.HasKey(e => e.CartItemId);
+                entity.HasOne(d => d.Member)
+                    .WithMany(p => p.Carts)
+                    .HasForeignKey(d => d.MemberId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Carts_Members");
+            });
 
+            modelBuilder.Entity<CartItem>(entity =>
+            {
                 entity.HasOne(d => d.Cart)
                     .WithMany(p => p.CartItems)
                     .HasForeignKey(d => d.CartId)
@@ -74,28 +78,31 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .HasConstraintName("FK_CartItems_Specs");
             });
 
-            modelBuilder.Entity<Carts>(entity =>
+            modelBuilder.Entity<Category>(entity =>
             {
-                entity.HasKey(e => e.CartId);
-
-                entity.HasOne(d => d.Member)
-                    .WithMany(p => p.Carts)
-                    .HasForeignKey(d => d.MemberId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Carts_Members");
-            });
-
-            modelBuilder.Entity<Categories>(entity =>
-            {
-                entity.HasKey(e => e.CategoryId)
-                    .HasName("PK_Category");
-
                 entity.Property(e => e.CategoryName)
                     .IsRequired()
                     .HasMaxLength(30);
             });
 
-            modelBuilder.Entity<CouponOwners>(entity =>
+            modelBuilder.Entity<Coupon>(entity =>
+            {
+                entity.Property(e => e.CouponDiscountCondition).HasColumnType("money");
+
+                entity.Property(e => e.CouponEndDate).HasColumnType("date");
+
+                entity.Property(e => e.CouponRebate).HasColumnType("money");
+
+                entity.Property(e => e.CouponStartDate).HasColumnType("date");
+
+                entity.HasOne(d => d.CouponEligibleTag)
+                    .WithMany(p => p.Coupons)
+                    .HasForeignKey(d => d.CouponEligibleTagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Coupons_Tags");
+            });
+
+            modelBuilder.Entity<CouponOwner>(entity =>
             {
                 entity.HasNoKey();
 
@@ -117,30 +124,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .HasConstraintName("FK_CouponOwner_Members");
             });
 
-            modelBuilder.Entity<Coupons>(entity =>
+            modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasKey(e => e.CouponId)
-                    .HasName("PK_Coupon");
-
-                entity.Property(e => e.CouponDiscountCondition).HasColumnType("money");
-
-                entity.Property(e => e.CouponEndDate).HasColumnType("date");
-
-                entity.Property(e => e.CouponRebate).HasColumnType("money");
-
-                entity.Property(e => e.CouponStartDate).HasColumnType("date");
-
-                entity.HasOne(d => d.CouponEligibleTag)
-                    .WithMany(p => p.Coupons)
-                    .HasForeignKey(d => d.CouponEligibleTagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Coupons_Tags");
-            });
-
-            modelBuilder.Entity<Employees>(entity =>
-            {
-                entity.HasKey(e => e.EmployeeId);
-
                 entity.Property(e => e.EmployeeAccount)
                     .IsRequired()
                     .HasMaxLength(20);
@@ -165,10 +150,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .IsFixedLength();
             });
 
-            modelBuilder.Entity<Evaluations>(entity =>
+            modelBuilder.Entity<Evaluation>(entity =>
             {
-                entity.HasKey(e => e.EvaluationId);
-
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(50)
                     .HasColumnName("ImageURL");
@@ -192,11 +175,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .HasConstraintName("FK_Evaluations_Orders");
             });
 
-            modelBuilder.Entity<Members>(entity =>
+            modelBuilder.Entity<Member>(entity =>
             {
-                entity.HasKey(e => e.MemberId)
-                    .HasName("PK_Member");
-
                 entity.Property(e => e.Account)
                     .IsRequired()
                     .HasMaxLength(15)
@@ -230,28 +210,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .IsFixedLength();
             });
 
-            modelBuilder.Entity<MerchandiseTags>(entity =>
+            modelBuilder.Entity<Merchandise>(entity =>
             {
-                entity.HasNoKey();
-
-                entity.HasOne(d => d.Merchandise)
-                    .WithMany()
-                    .HasForeignKey(d => d.MerchandiseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MerchandiseTags_Merchandises");
-
-                entity.HasOne(d => d.Tag)
-                    .WithMany()
-                    .HasForeignKey(d => d.TagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MerchandiseTags_Tags");
-            });
-
-            modelBuilder.Entity<Merchandises>(entity =>
-            {
-                entity.HasKey(e => e.MerchandiseId)
-                    .HasName("PK_Merchandise");
-
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
 
                 entity.Property(e => e.BrandId).HasColumnName("BrandID");
@@ -281,28 +241,25 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .HasConstraintName("FK_Merchandise_Category");
             });
 
-            modelBuilder.Entity<OrderLists>(entity =>
+            modelBuilder.Entity<MerchandiseTag>(entity =>
             {
-                entity.HasKey(e => e.OrderListId)
-                    .HasName("PK_OrderList");
+                entity.HasNoKey();
 
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderLists)
-                    .HasForeignKey(d => d.OrderId)
+                entity.HasOne(d => d.Merchandise)
+                    .WithMany()
+                    .HasForeignKey(d => d.MerchandiseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderList_Orders");
+                    .HasConstraintName("FK_MerchandiseTags_Merchandises");
 
-                entity.HasOne(d => d.Spec)
-                    .WithMany(p => p.OrderLists)
-                    .HasForeignKey(d => d.SpecId)
+                entity.HasOne(d => d.Tag)
+                    .WithMany()
+                    .HasForeignKey(d => d.TagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OrderLists_Specs");
+                    .HasConstraintName("FK_MerchandiseTags_Tags");
             });
 
-            modelBuilder.Entity<Orders>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
-                entity.HasKey(e => e.OrderId);
-
                 entity.Property(e => e.ContactPhoneNumber)
                     .IsRequired()
                     .HasMaxLength(20)
@@ -329,10 +286,23 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .HasConstraintName("FK_Orders_PaymentMethods");
             });
 
-            modelBuilder.Entity<PaymentMethods>(entity =>
+            modelBuilder.Entity<OrderList>(entity =>
             {
-                entity.HasKey(e => e.PaymentMethodId);
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderLists)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderList_Orders");
 
+                entity.HasOne(d => d.Spec)
+                    .WithMany(p => p.OrderLists)
+                    .HasForeignKey(d => d.SpecId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderLists_Specs");
+            });
+
+            modelBuilder.Entity<PaymentMethod>(entity =>
+            {
                 entity.Property(e => e.PaymentMethodId).ValueGeneratedNever();
 
                 entity.Property(e => e.PaymentMethodName)
@@ -340,11 +310,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Specs>(entity =>
+            modelBuilder.Entity<Spec>(entity =>
             {
-                entity.HasKey(e => e.SpecId)
-                    .HasName("PK_ProductName");
-
                 entity.Property(e => e.SpecName)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -356,19 +323,15 @@ namespace MSIT147.Estore.DataLayer.EFModels
                     .HasConstraintName("FK_Specs_Merchandises");
             });
 
-            modelBuilder.Entity<Tags>(entity =>
+            modelBuilder.Entity<Tag>(entity =>
             {
-                entity.HasKey(e => e.TagId);
-
                 entity.Property(e => e.TagName)
                     .IsRequired()
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<UsedCoupons>(entity =>
+            modelBuilder.Entity<UsedCoupon>(entity =>
             {
-                entity.HasKey(e => e.UsedCouponId);
-
                 entity.HasOne(d => d.Coupon)
                     .WithMany(p => p.UsedCoupons)
                     .HasForeignKey(d => d.CouponId)

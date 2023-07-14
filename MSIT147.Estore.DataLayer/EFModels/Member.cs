@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Members
+    public partial class Member
     {
-        public Members()
+        public Member()
         {
-            Carts = new HashSet<Carts>();
-            Evaluations = new HashSet<Evaluations>();
-            Orders = new HashSet<Orders>();
+            Carts = new HashSet<Cart>();
+            Evaluations = new HashSet<Evaluation>();
+            Orders = new HashSet<Order>();
         }
 
         public int MemberId { get; set; }
@@ -26,8 +26,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
         public string Email { get; set; }
         public string Avatar { get; set; }
 
-        public virtual ICollection<Carts> Carts { get; set; }
-        public virtual ICollection<Evaluations> Evaluations { get; set; }
-        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<Evaluation> Evaluations { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

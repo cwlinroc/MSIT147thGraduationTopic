@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Categories
+    public partial class Category
     {
-        public Categories()
+        public Category()
         {
-            Merchandises = new HashSet<Merchandises>();
+            Merchandises = new HashSet<Merchandise>();
         }
 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
 
-        public virtual ICollection<Merchandises> Merchandises { get; set; }
+        public virtual ICollection<Merchandise> Merchandises { get; set; }
     }
 }

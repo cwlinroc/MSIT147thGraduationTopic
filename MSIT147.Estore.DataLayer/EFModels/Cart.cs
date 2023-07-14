@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Carts
+    public partial class Cart
     {
-        public Carts()
+        public Cart()
         {
-            CartItems = new HashSet<CartItems>();
+            CartItems = new HashSet<CartItem>();
         }
 
         public int CartId { get; set; }
         public int MemberId { get; set; }
 
-        public virtual Members Member { get; set; }
-        public virtual ICollection<CartItems> CartItems { get; set; }
+        public virtual Member Member { get; set; }
+        public virtual ICollection<CartItem> CartItems { get; set; }
     }
 }

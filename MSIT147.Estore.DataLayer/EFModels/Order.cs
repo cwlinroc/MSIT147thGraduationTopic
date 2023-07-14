@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Orders
+    public partial class Order
     {
-        public Orders()
+        public Order()
         {
-            Evaluations = new HashSet<Evaluations>();
-            OrderLists = new HashSet<OrderLists>();
-            UsedCoupons = new HashSet<UsedCoupons>();
+            Evaluations = new HashSet<Evaluation>();
+            OrderLists = new HashSet<OrderList>();
+            UsedCoupons = new HashSet<UsedCoupon>();
         }
 
         public int OrderId { get; set; }
@@ -24,10 +24,10 @@ namespace MSIT147.Estore.DataLayer.EFModels
         public string ContactPhoneNumber { get; set; }
         public string Remark { get; set; }
 
-        public virtual Members Member { get; set; }
-        public virtual PaymentMethods PaymentMethod { get; set; }
-        public virtual ICollection<Evaluations> Evaluations { get; set; }
-        public virtual ICollection<OrderLists> OrderLists { get; set; }
-        public virtual ICollection<UsedCoupons> UsedCoupons { get; set; }
+        public virtual Member Member { get; set; }
+        public virtual PaymentMethod PaymentMethod { get; set; }
+        public virtual ICollection<Evaluation> Evaluations { get; set; }
+        public virtual ICollection<OrderList> OrderLists { get; set; }
+        public virtual ICollection<UsedCoupon> UsedCoupons { get; set; }
     }
 }

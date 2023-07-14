@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Employees
+    public partial class Employee
     {
         public int EmployeeId { get; set; }
         public string EmployeeName { get; set; }

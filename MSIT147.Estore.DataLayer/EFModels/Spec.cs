@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace MSIT147.Estore.DataLayer.EFModels
 {
-    public partial class Specs
+    public partial class Spec
     {
-        public Specs()
+        public Spec()
         {
-            CartItems = new HashSet<CartItems>();
-            OrderLists = new HashSet<OrderLists>();
+            CartItems = new HashSet<CartItem>();
+            OrderLists = new HashSet<OrderList>();
         }
 
         public int SpecId { get; set; }
@@ -22,8 +22,8 @@ namespace MSIT147.Estore.DataLayer.EFModels
         public bool OnShelf { get; set; }
         public int DiscountPercentage { get; set; }
 
-        public virtual Merchandises Merchandise { get; set; }
-        public virtual ICollection<CartItems> CartItems { get; set; }
-        public virtual ICollection<OrderLists> OrderLists { get; set; }
+        public virtual Merchandise Merchandise { get; set; }
+        public virtual ICollection<CartItem> CartItems { get; set; }
+        public virtual ICollection<OrderList> OrderLists { get; set; }
     }
 }
