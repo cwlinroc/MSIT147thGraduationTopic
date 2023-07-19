@@ -1,7 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using MSIT147thGraduationTopic.EFModels;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<GraduationTopicContext>(
+    option => option.UseSqlServer(builder.Configuration.GetConnectionString("DemoConnection"))
+    );
+
 
 var app = builder.Build();
 
