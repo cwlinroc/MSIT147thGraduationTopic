@@ -11,8 +11,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MSIT147.Estore.DataLayer\MSIT147.Estore.DataLayer.csproj" />
-  </ItemGroup>
-
 </Project>

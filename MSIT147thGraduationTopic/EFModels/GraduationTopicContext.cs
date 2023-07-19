@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace MSIT147.Estore.DataLayer.EFModels
+namespace MSIT147thGraduationTopic.EFModels
 {
     public partial class GraduationTopicContext : DbContext
     {

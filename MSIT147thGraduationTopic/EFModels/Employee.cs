@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MSIT147.Estore.DataLayer.EFModels
+namespace MSIT147thGraduationTopic.EFModels
 {
     public partial class Employee
     {

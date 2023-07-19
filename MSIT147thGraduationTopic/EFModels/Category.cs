@@ -3,17 +3,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace MSIT147.Estore.DataLayer.EFModels
+namespace MSIT147thGraduationTopic.EFModels
 {
-    public partial class Brand
+    public partial class Category
     {
-        public Brand()
+        public Category()
         {
             Merchandises = new HashSet<Merchandise>();
         }
 
-        public int BrandId { get; set; }
-        public string BrandName { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
 
         public virtual ICollection<Merchandise> Merchandises { get; set; }
     }
