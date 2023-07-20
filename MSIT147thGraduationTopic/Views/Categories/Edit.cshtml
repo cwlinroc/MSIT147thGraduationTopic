@@ -6,30 +6,41 @@
 }
 
 <div class="container">
-    <h1>編輯商品類別</h1>
+    <h1 class="title">編輯商品類別</h1>
 
-    <h4>輸入編輯資料</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="CategoryId" />
-                <div class="form-group">
-                    <label asp-for="CategoryName" class="control-label"></label>
-                    <input asp-for="CategoryName" class="form-control" />
-                    <span asp-validation-for="CategoryName" class="text-danger"></span>
-                </div>
-                <hr />
-                <div class="form-group">
-                    <input type="submit" value="儲存變更" class="btn btn-primary" />
-                    @Html.ActionLink("取消", "Index", "Categories", null, new { @class = "btn btn-secondary" })
-                </div>
-            </form>
+    <div class="bg-light rounded shadow p-5">
+        <h4>輸入編輯資料</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="CategoryId" />
+                    <div class="form-group">
+                        <label asp-for="CategoryName" class="control-label"></label>
+                        <input asp-for="CategoryName" class="form-control" />
+                        <span asp-validation-for="CategoryName" class="text-danger"></span>
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <input type="submit" value="儲存變更" class="btn btn-primary" />
+                        @Html.ActionLink("取消", "Index", "Categories", null, new { @class = "btn btn-secondary" })
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
 
+}
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
 }

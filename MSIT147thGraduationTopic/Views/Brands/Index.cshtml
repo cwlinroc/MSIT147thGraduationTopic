@@ -6,55 +6,67 @@
 }
 
 <div class="container">
-    <h1>品牌列表檢視</h1>
+    <h1 class="title">品牌列表檢視</h1>
 
-    <div>
-        @using (Html.BeginForm())
-        {
-            @:搜尋關鍵字 @Html.TextBox("txtKeyword") <input type="submit" value="Search" class="btn btn-secondary" />
-        }
-    </div>
-    <br />
-    <p>
-        @Html.ActionLink("新增品牌", "Create", "Brands", null, new { @class = "btn btn-primary" })
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    檢視序號
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BrandName)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                int count = 0;
-                foreach (var item in Model)
-                {
-                    count++;
-                    <tr>
-                        <td>
-                            @count
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.BrandName)
-                        </td>
-                        <td>
-                            @Html.ActionLink("修改", "Edit", "Brands", new { id=item.BrandId }, new { @class = "btn btn-warning" }) |
-                            @Html.ActionLink("刪除", "Delete", "Brands", new { id=item.BrandId }
-                                                , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })
-                        </td>
-                    </tr>
-                }
+    <div class="bg-light rounded shadow p-5">
+        <div>
+            @using (Html.BeginForm())
+            {
+                @:搜尋關鍵字 @Html.TextBox("txtKeyword") <input type="submit" value="Search" class="btn btn-secondary" />
             }
-        </tbody>
-    </table>
+        </div>
+        <br />
+        <p>
+            @Html.ActionLink("新增品牌", "Create", "Brands", null, new { @class = "btn btn-primary" })
+        </p>
+        <hr />
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        檢視序號
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BrandName)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 0;
+                    foreach (var item in Model)
+                    {
+                        count++;
+                        <tr>
+                            <td>
+                                @count
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BrandName)
+                            </td>
+                            <td>
+                                @Html.ActionLink("修改", "Edit", "Brands", new { id=item.BrandId }, new { @class = "btn btn-warning" }) |
+                                @Html.ActionLink("刪除", "Delete", "Brands", new { id=item.BrandId }
+                        , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @section Scripts {
 
+}
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
 }

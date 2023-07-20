@@ -20,25 +20,28 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises
-        public async Task<IActionResult> Index(KeywordVM vm, int condition)
+        public async Task<IActionResult> Index(string txtKeyword, int searchCondition)
         {
             IEnumerable<MerchandiseSearch> datas = null;
-            datas = from m in _context.MerchandiseSearches //todo 增加tag搜尋
+            datas = from m in _context.MerchandiseSearches //todo 增加tag搜尋?
                     select m;
-            if (!string.IsNullOrEmpty(vm.txtKeyword))
+            if (!string.IsNullOrEmpty(txtKeyword))
             {
-                datas = datas.Where(ms => ms.MerchandiseName.Contains(vm.txtKeyword));
+                if (searchCondition == 1)
+                {
+                    datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
+                }
+                if (searchCondition == 2)
+                {
+                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
+                }
+                if (searchCondition == 3)
+                {
+                    datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
+                }
             }
-            if (!string.IsNullOrEmpty(vm.txtMerchandiseSearchBrandName))
-            {
-                datas = datas.Where(ms => ms.BrandName.Contains(vm.txtMerchandiseSearchBrandName));
-            }
-            if (!string.IsNullOrEmpty(vm.txtMerchandiseSearchCategoryName))
-            {
-                datas = datas.Where(ms => ms.CategoryName.Contains(vm.txtMerchandiseSearchCategoryName));
-            } //todo 增加tag搜尋
 
-            //todo 轉換為Wrap/Servise以讀取自訂屬性(ex.資料名稱)
+            //todo 轉換為Wrap/VM以讀取自訂屬性(ex.資料名稱)
             //List<CProductWrap> list = new List<CProductWrap>();
             //foreach (TProduct t in datas)
             //{
@@ -51,23 +54,27 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Details/5
-        public async Task<IActionResult> Details(int? id) //todo 新建JOIN Spec的VIEW
+        public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Merchandises == null)
+            if (id == null || _context.MerchandiseSearches == null)
             {
-                return NotFound();
+                return Problem("找不到商品資料");
             }
-
-            var merchandise = await _context.Merchandises
-                .Include(m => m.Brand)
-                .Include(m => m.Category)
+            var merchandise = await _context.MerchandiseSearches
                 .FirstOrDefaultAsync(m => m.MerchandiseId == id);
             if (merchandise == null)
             {
-                return NotFound();
+                return Problem("找不到商品資料");
             }
 
-            return View(merchandise);
+            var spec = await _context.Specs
+                .FirstOrDefaultAsync(s => s.MerchandiseId == id);
+            if (spec == null)
+            {
+                return Problem("找不到商品規格資料");
+            }
+
+            return View(spec);
         }
 
         // GET: Merchandises/Create

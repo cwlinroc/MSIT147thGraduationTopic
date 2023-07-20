@@ -6,86 +6,111 @@
 }
 
 <div class="container">
-<h1>商品列表檢視</h1>
+    <h1 class="title">商品列表檢視</h1>
 
-<div>
-    @using (Html.BeginForm())
-    {
-            <div class="form-group row col-sm-4">
-                <div class="input-group mb-3">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        選擇搜尋條件
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">商品名稱</a></li>
-                        <li><a class="dropdown-item" href="#">品牌名稱</a></li>
-                        <li><a class="dropdown-item" href="#">類別名稱</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Separated link</a></li>
-                    </ul>
-                    <input type="text" class="form-control" aria-label="Text input with dropdown button">
-                    <input type="submit" value="Search" class="btn btn-secondary" />
+    <div class="bg-light rounded shadow p-5">
+        <div>
+            @using (Html.BeginForm())
+            {
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="searchCondition">選擇搜尋條件</label>
+                            <select class="form-select conditionname" name="searchCondition">
+                                <option value="1">商品名稱</option>
+                                <option value="2">品牌名稱</option>
+                                <option value="3">類別名稱</option>
+                            </select>
+                            <input type="text" name="txtKeyword" class="form-control" aria-label="Text input with dropdown button">
+                            <input type="submit" value="Search" class="btn btn-secondary" />
+                        </div>
+                    </div>
                 </div>
-            </div>
-    }
+            }
+        </div>
+        <br />
+        <p>
+            @Html.ActionLink("新增商品", "Create", "Merchandises", null, new { @class = "btn btn-primary" })
+        </p>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        檢視序號
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MerchandiseName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BrandName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CategoryName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ImageUrl)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Display)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 0;
+                    foreach (var item in Model)
+                    {
+                        count++;
+                        <tr>
+                            <td>
+                                @count
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MerchandiseName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BrandName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ImageUrl)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Display)
+                            </td>
+                            <td>
+                                @Html.ActionLink("修改商品資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
+                                @Html.ActionLink("檢視商品規格", "Details", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("刪除", "Delete", "Brands", new { id=item.MerchandiseId }
+                        , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
-<br />
-<p>
-    @Html.ActionLink("新增商品", "Create", "Merchandises", null, new { @class = "btn btn-primary" })
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MerchandiseName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Display)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BrandName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryName)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MerchandiseName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Display)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BrandName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MerchandiseId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MerchandiseId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MerchandiseId">Delete</a>
-            </td>
-        </tr>
+
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .conditionname {
+            max-width: 120px;
+        }
+    </style>
 }
-    </tbody>
-    </table>
-</div>

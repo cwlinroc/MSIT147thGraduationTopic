@@ -6,9 +6,10 @@
 }
 
 <div class="container">
-    <h1>新增品牌</h1>
+    <h1 class="title">新增品牌</h1>
 
-    <h4>輸入新增資料</h4>
+    <div class="bg-light rounded shadow p-5">
+    <h4>輸入品牌資料</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -26,9 +27,19 @@
                 </div>
             </form>
         </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
 
+}
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
 }

@@ -20,13 +20,13 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Brands
-        public async Task<IActionResult> Index(KeywordVM vm)
+        public async Task<IActionResult> Index(string txtKeyword)
         {
             IEnumerable<Brand> datas = null;
-            datas = (string.IsNullOrEmpty(vm.txtKeyword)) ? from b in _context.Brands select b 
-                : _context.Brands.Where(b => b.BrandName.Contains(vm.txtKeyword));
+            datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b 
+                : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
 
-            //todo 轉換為Wrap/Servise以讀取自訂屬性(ex.資料名稱)
+            //todo 轉換為Wrap/VM以讀取自訂屬性(ex.資料名稱)
             //List<CProductWrap> list = new List<CProductWrap>();
             //foreach (TProduct t in datas)
             //{

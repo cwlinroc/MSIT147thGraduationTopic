@@ -20,13 +20,13 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index(KeywordVM vm)
+        public async Task<IActionResult> Index(string txtKeyword)
         {
             IEnumerable<Category> datas = null;
-            datas = (string.IsNullOrEmpty(vm.txtKeyword)) ? from c in _context.Categories select c
-                : _context.Categories.Where(c => c.CategoryName.Contains(vm.txtKeyword));
+            datas = (string.IsNullOrEmpty(txtKeyword)) ? from c in _context.Categories select c
+                : _context.Categories.Where(c => c.CategoryName.Contains(txtKeyword));
 
-            //todo 轉換為Wrap/Servise以讀取自訂屬性(ex.資料名稱)
+            //todo 轉換為Wrap/VM以讀取自訂屬性(ex.資料名稱)
             //List<CProductWrap> list = new List<CProductWrap>();
             //foreach (TProduct t in datas)
             //{
