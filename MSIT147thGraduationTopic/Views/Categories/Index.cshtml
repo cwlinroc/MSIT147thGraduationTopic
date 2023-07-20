@@ -1,0 +1,60 @@
+﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Category>
+
+@{
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "商品類別檢視";
+}
+
+<div class="container">
+    <h1>商品類別檢視</h1>
+
+    <div>
+        @using (Html.BeginForm())
+        {
+            @:搜尋關鍵字 @Html.TextBox("txtKeyword") <input type="submit" value="Search" class="btn btn-secondary" />
+        }
+    </div>
+    <br />
+    <p>
+        @Html.ActionLink("新增商品類別", "Create", "Categories", null, new { @class = "btn btn-primary" })
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    檢視序號
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryName)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int count = 0;
+                foreach (var item in Model)
+                {
+                    count++;
+                    <tr>
+                        <td>
+                            @count
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+                        </td>
+                        <td>
+                            @Html.ActionLink("修改", "Edit", "Categories", new { id=item.CategoryId }, new { @class = "btn btn-warning" }) |
+                            @Html.ActionLink("刪除", "Delete", "Categories", new { id=item.CategoryId }
+                                                , new { onclick = "return confirm('確定刪除商品類別嗎？')", @class = "btn btn-danger" })
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+
+}

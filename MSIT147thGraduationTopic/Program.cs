@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<GraduationTopicContext>(
-    option => option.UseSqlServer(builder.Configuration.GetConnectionString("DemoConnection"))
+    option => option.UseSqlServer(builder.Configuration.GetConnectionString("GraduationTopicConnection"))
     );
 
 
@@ -30,6 +30,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Merchandises}/{action=Index}/{id?}");
 
 app.Run();

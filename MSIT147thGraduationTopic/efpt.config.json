@@ -82,6 +82,14 @@
       {
          "Name": "[dbo].[UsedCoupons]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MerchandiseSearch]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[SpecFullDisplay]",
+         "ObjectType": 3
       }
    ],
    "UiHint": "desktop-rae7e6c.GraduationTopic.dbo",
