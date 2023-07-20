@@ -4,9 +4,9 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class CartController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(int id = 1)
         {
-            return View();
+            return View(id);
         }
     }
 }

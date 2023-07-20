@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Services;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -14,31 +16,33 @@ namespace MSIT147thGraduationTopic.Controllers
     public class ApiCartController : ControllerBase
     {
         private readonly GraduationTopicContext _context;
+        private readonly CartService _service;
 
         public ApiCartController(GraduationTopicContext context)
         {
             _context = context;
+            _service = new CartService(context);
         }
 
         // GET: api/ApiCart
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CartItem>>> GetCartItems(int memberId)
+        public async Task<ActionResult<IEnumerable<CartItemDisplayDto>>> GetCartItems(int memberId)
         {
-          if (_context.CartItems == null)
-          {
-              return NotFound();
-          }
-            return await _context.CartItems.ToListAsync();
+            if (memberId <= 0)
+            {
+                return NotFound();
+            }
+            return await _service.GetCartItemsByMeberId(memberId);
         }
 
         // GET: api/ApiCart/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CartItem>> GetCartItem(int id)
         {
-          if (_context.CartItems == null)
-          {
-              return NotFound();
-          }
+            if (_context.CartItems == null)
+            {
+                return NotFound();
+            }
             var cartItem = await _context.CartItems.FindAsync(id);
 
             if (cartItem == null)
@@ -85,10 +89,10 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         public async Task<ActionResult<CartItem>> PostCartItem(CartItem cartItem)
         {
-          if (_context.CartItems == null)
-          {
-              return Problem("Entity set 'GraduationTopicContext.CartItems'  is null.");
-          }
+            if (_context.CartItems == null)
+            {
+                return Problem("Entity set 'GraduationTopicContext.CartItems'  is null.");
+            }
             _context.CartItems.Add(cartItem);
             await _context.SaveChangesAsync();
 

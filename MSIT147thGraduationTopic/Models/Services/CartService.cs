@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 
 namespace MSIT147thGraduationTopic.Models.Services
@@ -15,10 +16,10 @@ namespace MSIT147thGraduationTopic.Models.Services
             _repo = new CartRepository(context);
         }
 
-        //public async Task<List<CartItem>?> GetCartItemsByMeberId(int meberId)
-        //{
-        //    return await _repo.GetCartItemsByMeberId(meberId);
-        //}
+        public async Task<List<CartItemDisplayDto>?> GetCartItemsByMeberId(int meberId)
+        {
+            return await _repo.GetCartItemsByMeberId(meberId);
+        }
 
 
 

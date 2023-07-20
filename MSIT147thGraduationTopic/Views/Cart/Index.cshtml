@@ -5,125 +5,127 @@
 <div class="container px-5 mt-5">
     <h2>購物車</h2>
 
-    <table class="table text-center" id="tableCartItems">
-        <thead>
-            <tr>
-                <th><input type="checkbox" class="form-check-input" id="checkboxAll"></th>
-                <th>商品</th>
-                <th>單價</th>
-                <th>數量</th>
-                <th>總計</th>
-                <th>刪除</th>
-            </tr>
-        </thead>
+    <div class="bg-light rounded shadow p-4 my-4">
+        <table class="table text-center" id="tableCartItems">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="form-check-input" id="checkboxAll"></th>
+                    <th>商品</th>
+                    <th>單價</th>
+                    <th>數量</th>
+                    <th>總計</th>
+                    <th>刪除</th>
+                </tr>
+            </thead>
 
-        <tbody>
+            <tbody>
 
-
-
-            <tr>
-                <td>
-                    <input type="checkbox" class="form-check-input">
-                </td>
-                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
-                <td>$120</td>
-                <td>
-                    <div class="input-group d-flex justify-content-center">
-                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
-                        <input type="number" value="0" class="text-center cart-item-number"
-                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
-                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
-                    </div>
-                </td>
-                <td>$1200</td>
-                <td>
-                    <btn class="btn btn-danger">刪除</btn>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td>
-                    <input type="checkbox" class="form-check-input">
-                </td>
-                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
-                <td>$120</td>
-                <td>
-                    <div class="input-group d-flex justify-content-center">
-                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
-                        <input type="number" value="0" class="text-center cart-item-number"
-                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
-                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
-                    </div>
-                </td>
-                <td>$1200</td>
-                <td>
-                    <btn class="btn btn-danger">刪除</btn>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="form-check-input">
+                    </td>
+                    <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                    <td>$120</td>
+                    <td>
+                        <div class="input-group d-flex justify-content-center">
+                            <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                            <input type="number" value="0" class="text-center cart-item-number"
+                                   style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                            <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                        </div>
+                    </td>
+                    <td>$1200</td>
+                    <td>
+                        <btn class="btn btn-danger">刪除</btn>
+                    </td>
+                </tr>
 
 
-            <tr>
-                <td>
-                    <input type="checkbox" class="form-check-input">
-                </td>
-                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
-                <td>$120</td>
-                <td>
-                    <div class="input-group d-flex justify-content-center">
-                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
-                        <input type="number" value="0" class="text-center cart-item-number"
-                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
-                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
-                    </div>
-                </td>
-                <td>$1200</td>
-                <td>
-                    <btn class="btn btn-danger">刪除</btn>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="form-check-input">
+                    </td>
+                    <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                    <td>$120</td>
+                    <td>
+                        <div class="input-group d-flex justify-content-center">
+                            <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                            <input type="number" value="0" class="text-center cart-item-number"
+                                   style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                            <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                        </div>
+                    </td>
+                    <td>$1200</td>
+                    <td>
+                        <btn class="btn btn-danger">刪除</btn>
+                    </td>
+                </tr>
 
 
-            <tr>
-                <td>
-                    <input type="checkbox" class="form-check-input">
-                </td>
-                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
-                <td>$120</td>
-                <td>
-                    <div class="input-group d-flex justify-content-center">
-                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
-                        <input type="number" value="0" class="text-center cart-item-number"
-                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
-                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
-                    </div>
-                </td>
-                <td>$1200</td>
-                <td>
-                    <btn class="btn btn-danger">刪除</btn>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="form-check-input">
+                    </td>
+                    <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                    <td>$120</td>
+                    <td>
+                        <div class="input-group d-flex justify-content-center">
+                            <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                            <input type="number" value="0" class="text-center cart-item-number"
+                                   style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                            <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                        </div>
+                    </td>
+                    <td>$1200</td>
+                    <td>
+                        <btn class="btn btn-danger">刪除</btn>
+                    </td>
+                </tr>
 
 
-        </tbody>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="form-check-input">
+                    </td>
+                    <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                    <td>$120</td>
+                    <td>
+                        <div class="input-group d-flex justify-content-center">
+                            <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                            <input type="number" value="0" class="text-center cart-item-number"
+                                   style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                            <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                        </div>
+                    </td>
+                    <td>$1200</td>
+                    <td>
+                        <btn class="btn btn-danger">刪除</btn>
+                    </td>
+                </tr>
 
-    </table>
+
+            </tbody>
+
+        </table>
 
 
-    <hr>
-    <div class="d-flex p-2">
-        <div class="ms-auto me-4">
-            <span>選擇項目金額總計:</span>
-            <span class="mx-3">0</span>
+        <hr>
+        <div class="d-flex p-2">
+            <div class="ms-auto me-4">
+                <span>選擇項目金額總計:</span>
+                <span class="mx-3">0</span>
+            </div>
         </div>
+
+        <div class="d-flex p-2">
+            <div class="ms-auto me-4">
+                <btn class="btn btn-warning">購買選擇項目</btn>
+            </div>
+        </div>
+
     </div>
 
-    <div class="d-flex p-2">
-        <div class="ms-auto me-4">
-            <btn class="btn btn-warning">購買選擇項目</btn>
-        </div>
-    </div>
-
+    
 
 </div>
 
@@ -135,11 +137,11 @@
 
 @section Scripts{
     <script>
-        
-        let carItems = null
 
-        
-        
+        let carItems = getCartItems(@Model)
+
+
+
 
 
 
@@ -171,6 +173,11 @@
 
         //取得購物車物件ajax
 
+        async function getCartItems(memberId) {
+            const response = await fetch('@Url.Content($"~/api/apicart?memberId={Model}")')
+            const items = await response.json();
+            console.log(response)
+        }
 
 
         //計算選取物品的總價
