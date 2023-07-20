@@ -1,0 +1,214 @@
+﻿@{
+    ViewData["Title"] = "購物車";
+}
+
+<div class="container px-5 mt-5">
+    <h2>購物車</h2>
+
+    <table class="table text-center" id="tableCartItems">
+        <thead>
+            <tr>
+                <th><input type="checkbox" class="form-check-input" id="checkboxAll"></th>
+                <th>商品</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>總計</th>
+                <th>刪除</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+
+
+            <tr>
+                <td>
+                    <input type="checkbox" class="form-check-input">
+                </td>
+                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                <td>$120</td>
+                <td>
+                    <div class="input-group d-flex justify-content-center">
+                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                        <input type="number" value="0" class="text-center cart-item-number"
+                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                    </div>
+                </td>
+                <td>$1200</td>
+                <td>
+                    <btn class="btn btn-danger">刪除</btn>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    <input type="checkbox" class="form-check-input">
+                </td>
+                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                <td>$120</td>
+                <td>
+                    <div class="input-group d-flex justify-content-center">
+                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                        <input type="number" value="0" class="text-center cart-item-number"
+                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                    </div>
+                </td>
+                <td>$1200</td>
+                <td>
+                    <btn class="btn btn-danger">刪除</btn>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    <input type="checkbox" class="form-check-input">
+                </td>
+                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                <td>$120</td>
+                <td>
+                    <div class="input-group d-flex justify-content-center">
+                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                        <input type="number" value="0" class="text-center cart-item-number"
+                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                    </div>
+                </td>
+                <td>$1200</td>
+                <td>
+                    <btn class="btn btn-danger">刪除</btn>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    <input type="checkbox" class="form-check-input">
+                </td>
+                <td>K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)</td>
+                <td>$120</td>
+                <td>
+                    <div class="input-group d-flex justify-content-center">
+                        <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                        <input type="number" value="0" class="text-center cart-item-number"
+                               style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                        <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                    </div>
+                </td>
+                <td>$1200</td>
+                <td>
+                    <btn class="btn btn-danger">刪除</btn>
+                </td>
+            </tr>
+
+
+        </tbody>
+
+    </table>
+
+
+    <hr>
+    <div class="d-flex p-2">
+        <div class="ms-auto me-4">
+            <span>選擇項目金額總計:</span>
+            <span class="mx-3">0</span>
+        </div>
+    </div>
+
+    <div class="d-flex p-2">
+        <div class="ms-auto me-4">
+            <btn class="btn btn-warning">購買選擇項目</btn>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+@section Scripts{
+    <script>
+        
+        let carItems = null
+
+        
+        
+
+
+
+
+        //增加數量按鈕
+        $(".cart-item-add").click(e => {
+            const numberBar = $(e.currentTarget).parent().find(".cart-item-number")
+            numberBar.val(+numberBar.val() + 1)
+
+            caculateCheckedItemsTotalPrice()
+        })
+
+        //減少數量按鈕
+        $(".cart-item-sub").click(e => {
+            const numberBar = $(e.currentTarget).parent().find(".cart-item-number")
+            let number = +numberBar.val() - 1
+            if (number < 0) number = 0
+            numberBar.val(number)
+
+            caculateCheckedItemsTotalPrice()
+        })
+
+        //全選checkbox
+        $('#checkboxAll').click(e => {
+            $('#tableCartItems').find('tbody')
+                .find('input[type=checkbox]')
+                .prop('checked', $(e.currentTarget).prop('checked'))
+        })
+
+        //取得購物車物件ajax
+
+
+
+        //計算選取物品的總價
+        function caculateCheckedItemsTotalPrice() {
+            const checkedItems = $('#tableCartItems').find('tbody')
+                .find('input[type=checkbox]')
+                .filter(':checked')
+                .closest('tr')
+
+            let total = 0
+            checkedItems.each((i, e) => {
+                const quantity = $(e).find('input[type=number]').val()
+            })
+            // console.log(total)
+        }
+
+
+    </script>
+}
+
+@section Styles{
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        textarea {
+            height: 200px;
+        }
+    </style>
+}
+
+
+
