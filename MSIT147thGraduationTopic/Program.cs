@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<GraduationTopicContext>(
-    option => option.UseSqlServer(builder.Configuration.GetConnectionString("DemoConnection"))
+    option => option.UseSqlServer(builder.Configuration.GetConnectionString("GraduationTopicConnection"))
     );
 
 
