@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "會員註冊";
+}
+
+<div class="row" style="--bs-gutter-x:0;">
+    <div class="col-lg-8 offset-2">
+        <div class="text-center mb-3">
+            <h1 class="fw-bold mt-5">會員註冊</h1>
+        </div>
+        <form id="memberRegisteredForm" name="memberRegisteredForm" class="needs-validation" 
+                method="POST" novalidate>
+            <!-- MemberName input-->
+            <div class="form mb-3">
+                <label for="membername" class="form-label fw-bold">姓名</label>
+                <input class="form-control" id="membername" type="text" required />
+                <div class="invalid-feedback">請輸入姓名</div>
+            </div>
+            <!-- Gender input-->
+            <div class="form mb-3">
+                <label for="gender" class="form-label fw-bold">性別</label>
+                <br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="genderMale" id="genderMale" required>
+                    <label class="form-check-label" for="genderMale">
+                        男性
+                    </label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="genderFemale" id="genderFemale" required>
+                    <label class="form-check-label" for="genderFemale">
+                        女性
+                    </label>
+                </div>
+                <span class="invalid-feedback">請選擇性別</span>
+            </div>
+            <!-- NickName input-->
+            <div class="form mb-3">
+                <label for="nickname" class="form-label fw-bold">暱稱</label>
+                <input class="form-control" id="nickname" type="text" />
+            </div>
+            <!-- Account input-->
+            <div class="form mb-3">
+                <label for="account" class="form-label fw-bold">帳號</label>
+                <input class="form-control" id="account" type="text" required />
+                <div class="invalid-feedback">請輸入帳號</div>
+            </div>
+            <!-- Password input-->
+            <div class="form mb-3">
+                <label for="password" class="form-label fw-bold">密碼</label>
+                <input class="form-control" id="password" name="password" type="password" required />
+                <div class="invalid-feedback">請輸入密碼</div>
+            </div>
+            <!-- Password confirm input-->
+            <div class="form mb-3">
+                <label for="repassword" class="form-label fw-bold">確認密碼</label>
+                <input class="form-control" id="repassword" name="repassword" type="password" required>
+                <div class="invalid-feedback">必須與密碼相同</div>
+            </div>
+            <!-- Email address input-->
+            <div class="form mb-3">
+                <label for="email" class="form-label fw-bold">電子信箱</label>
+                <input class="form-control" id="email" type="email" required />
+                <div class="invalid-feedback">電子信箱必填</div>
+                <div class="invalid-feedback">電子信箱格式錯誤</div>
+            </div>
+            <!-- Phone number input-->
+            <div class="form mb-3">
+                <label for="phone" class="form-label fw-bold">手機號碼</label>
+                <input class="form-control" id="phone" type="tel" required />
+                <div class="invalid-feedback">手機號碼必填</div>
+            </div>
+            <!-- Address input-->
+            <div class="form-label mb-3">
+                <label for="address" class="form-label fw-bold">地址</label>
+                <div class="input-group">
+                    <label class="input-group-text" for="city">縣市</label>
+                    <select class="form-select" id="city" required>
+                        <option selected></option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                    <label class="input-group-text" for="district">區域</label>
+                    <select class="form-select" id="district" required>
+                        <option selected></option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                    <input class="form-control" id="address" type="text" required />
+                </div>
+            </div>
+            <!-- Date of birth input-->
+            <div class="form mb-5">
+                <label class="form-label fw-bold">出生年月日</label>
+                <div class="input-group" id="DateOfBirth">
+
+                    <input type="date" id="DateOfBirthInput" class="form-control" required />
+
+                    <div class="invalid-feedback">生日必填</div>
+                </div>
+            </div>
+
+            <!-- Submit success message-->
+            <div class="d-none" id="submitSuccessMessage">
+                <div class="text-center mb-3">
+                    <div class="fw-bolder">註冊成功!</div>
+                </div>
+            </div>
+            <!-- Submit error message-->
+            <div class="d-none" id="submitErrorMessage">
+                <div class="text-center text-danger mb-3">資料有誤,請修改!</div>
+            </div>
+            <!-- Submit Button-->
+            <div class="d-grid col-lg-8 offset-2 mt-3 mb-5">
+                <button class="btn btn-primary btn-lg" id="submitButton" type="submit">
+                    註冊
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles{
+    <style>
+        #city {
+            max-width: 200px
+        }
+
+        #district {
+            max-width: 200px
+        }
+    </style>
+}
+
+@section Scripts{    
+    <script>
+        
+
+    </script>
+}
