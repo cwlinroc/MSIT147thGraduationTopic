@@ -1,71 +1,95 @@
 ﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Spec>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "商品規格檢視";
 }
 
-<h1>Index</h1>
+<div class="container">
+    <h1 class="title">商品規格檢視</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SpecName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DisplayOrder)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OnShelf)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DiscountPercentage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Merchandise)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SpecName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DisplayOrder)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OnShelf)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DiscountPercentage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Merchandise.MerchandiseName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SpecId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SpecId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SpecId">Delete</a>
-            </td>
-        </tr>
+    <div class="bg-light rounded shadow p-5">
+        <p>
+            @Html.ActionLink("新增商品規格", "Create", "Specs", null, new { @class = "btn btn-primary" })
+        </p>
+        <hr />
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        檢視序號
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SpecName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Price)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DiscountPercentage)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DisplayOrder)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.OnShelf)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 0;
+                    foreach (var item in Model)
+                    {
+                        count++;
+                        <tr>
+                            <td>
+                                @count
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SpecName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DiscountPercentage)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DisplayOrder)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OnShelf)
+                            </td>
+                            <td>
+                                @Html.ActionLink("修改", "Edit", "Specs", new { id=item.SpecId }, new { @class = "btn btn-warning" }) |
+                                @Html.ActionLink("刪除", "Delete", "Specs", new { id=item.SpecId }
+                                                    , new { onclick = "return confirm('確定刪除商品規格嗎？')", @class = "btn btn-danger" })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+
 }
-    </tbody>
-</table>
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+}

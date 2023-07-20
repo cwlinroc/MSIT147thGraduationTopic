@@ -19,29 +19,10 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int merchandiseid) // todo 上方增加該項商品資料
         {
-            var graduationTopicContext = _context.Specs.Include(s => s.Merchandise);
-            return View(await graduationTopicContext.ToListAsync());
-        }
-
-        // GET: Specs/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Specs == null)
-            {
-                return NotFound();
-            }
-
-            var spec = await _context.Specs
-                .Include(s => s.Merchandise)
-                .FirstOrDefaultAsync(m => m.SpecId == id);
-            if (spec == null)
-            {
-                return NotFound();
-            }
-
-            return View(spec);
+            var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
+            return View(await datas.ToListAsync());
         }
 
         // GET: Specs/Create
