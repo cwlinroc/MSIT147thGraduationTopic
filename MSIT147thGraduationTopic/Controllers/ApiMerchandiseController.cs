@@ -13,12 +13,16 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Cities()
+        public IActionResult Brands()
         {
-            var datas = _context.Address.Select(a => new
-            {
-                a.City
-            }).Distinct().OrderBy(a => a.City);
+            var datas = _context.Brands.OrderBy(a => a.BrandId);
+
+            return Json(datas);
+        }
+
+        public IActionResult Categories()
+        {
+            var datas = _context.Categories.OrderBy(a => a.CategoryId);
 
             return Json(datas);
         }

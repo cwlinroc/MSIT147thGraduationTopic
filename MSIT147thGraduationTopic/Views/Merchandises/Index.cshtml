@@ -89,8 +89,8 @@
                             </td>
                             <td>
                                 @Html.ActionLink("修改商品資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
-                                @Html.ActionLink("檢視商品規格", "Details", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-success" }) |
-                                @Html.ActionLink("刪除", "Delete", "Brands", new { id=item.MerchandiseId }
+                                @Html.ActionLink("檢視商品規格", "Index", "Specs", new { id=item.MerchandiseId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("刪除", "Delete", "Merchandises", new { id=item.MerchandiseId }
                         , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })
                             </td>
                         </tr>

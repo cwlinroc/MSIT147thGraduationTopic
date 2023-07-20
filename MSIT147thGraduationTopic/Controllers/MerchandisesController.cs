@@ -54,31 +54,31 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.MerchandiseSearches == null)
-            {
-                return Problem("找不到商品資料");
-            }
-            var merchandise = await _context.MerchandiseSearches
-                .FirstOrDefaultAsync(m => m.MerchandiseId == id);
-            if (merchandise == null)
-            {
-                return Problem("找不到商品資料");
-            }
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null || _context.MerchandiseSearches == null)
+        //    {
+        //        return Problem("找不到商品資料");
+        //    }
+        //    var merchandise = await _context.MerchandiseSearches
+        //        .FirstOrDefaultAsync(m => m.MerchandiseId == id);
+        //    if (merchandise == null)
+        //    {
+        //        return Problem("找不到商品資料");
+        //    }
 
-            var spec = await _context.Specs
-                .FirstOrDefaultAsync(s => s.MerchandiseId == id);
-            if (spec == null)
-            {
-                return Problem("找不到商品規格資料");
-            }
+        //    var spec = await _context.Specs
+        //        .FirstOrDefaultAsync(s => s.MerchandiseId == id);
+        //    if (spec == null)
+        //    {
+        //        return Problem("找不到商品規格資料");
+        //    }
 
-            return View(spec);
-        }
+        //    return RedirectToAction("~/Specs/Index");//todo 確認這樣寫是否正確(參考Ajax作業)
+        //}
 
         // GET: Merchandises/Create
-        public IActionResult Create()
+        public IActionResult Create() //todo 上傳&預覽圖片還沒做
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
@@ -104,7 +104,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id) //todo 變更&預覽圖片還沒做
         {
             if (id == null || _context.Merchandises == null)
             {
