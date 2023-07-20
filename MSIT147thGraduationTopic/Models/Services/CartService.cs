@@ -21,9 +21,16 @@ namespace MSIT147thGraduationTopic.Models.Services
             return await _repo.GetCartItemsByMeberId(meberId);
         }
 
+        public async Task ChangeCartItemQuantity(CartItemDto dto)
+        {
+            if (dto.Quantity < 0) dto.Quantity = 0;
+            await _repo.ChangeCartItemQuantity(dto);
+        }
 
-
-
+        public async Task DeleteCartItem(int cartItemId)
+        {
+            await _repo.DeleteCartItem(cartItemId);
+        }
 
 
     }

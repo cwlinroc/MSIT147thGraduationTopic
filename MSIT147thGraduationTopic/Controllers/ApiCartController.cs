@@ -24,61 +24,32 @@ namespace MSIT147thGraduationTopic.Controllers
             _service = new CartService(context);
         }
 
-        // GET: api/ApiCart
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CartItemDisplayDto>>> GetCartItems(int memberId)
-        {
-            if (memberId <= 0)
-            {
-                return NotFound();
-            }
-            return await _service.GetCartItemsByMeberId(memberId);
-        }
-
-        // GET: api/ApiCart/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CartItem>> GetCartItem(int id)
+        public async Task<ActionResult<IEnumerable<CartItemDisplayDto>>> GetCartItem(int id = 5)
         {
-            if (_context.CartItems == null)
+            if (id <= 0)
             {
                 return NotFound();
             }
-            var cartItem = await _context.CartItems.FindAsync(id);
+            var cartItems = await _service.GetCartItemsByMeberId(id);
 
-            if (cartItem == null)
-            {
-                return NotFound();
-            }
-
-            return cartItem;
+            return cartItems ?? null;
         }
 
-        // PUT: api/ApiCart/5
+        // PUT: api/ApiCart
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCartItem(int id, CartItem cartItem)
+        [HttpPut]
+        public async Task<IActionResult> PutCartItem(CartItemDto cartItem)
         {
-            if (id != cartItem.CartItemId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(cartItem).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.ChangeCartItemQuantity(cartItem);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CartItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
@@ -86,42 +57,27 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // POST: api/ApiCart
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<CartItem>> PostCartItem(CartItem cartItem)
-        {
-            if (_context.CartItems == null)
-            {
-                return Problem("Entity set 'GraduationTopicContext.CartItems'  is null.");
-            }
-            _context.CartItems.Add(cartItem);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<CartItem>> PostCartItem(CartItem cartItem)
+        //{
+        //    if (_context.CartItems == null)
+        //    {
+        //        return Problem("Entity set 'GraduationTopicContext.CartItems'  is null.");
+        //    }
+        //    _context.CartItems.Add(cartItem);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCartItem", new { id = cartItem.CartItemId }, cartItem);
-        }
+        //    return CreatedAtAction("GetCartItem", new { id = cartItem.CartItemId }, cartItem);
+        //}
 
         // DELETE: api/ApiCart/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCartItem(int id)
         {
-            if (_context.CartItems == null)
-            {
-                return NotFound();
-            }
-            var cartItem = await _context.CartItems.FindAsync(id);
-            if (cartItem == null)
-            {
-                return NotFound();
-            }
-
-            _context.CartItems.Remove(cartItem);
-            await _context.SaveChangesAsync();
+            await _service.DeleteCartItem(id);
 
             return NoContent();
         }
 
-        private bool CartItemExists(int id)
-        {
-            return (_context.CartItems?.Any(e => e.CartItemId == id)).GetValueOrDefault();
-        }
     }
 }

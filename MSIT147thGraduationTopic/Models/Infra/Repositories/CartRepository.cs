@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Humanizer;
+using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 
@@ -25,7 +26,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                           {
                               CartId = cart.CartId,
                               CartItemName = merchandise.MerchandiseName + spec.SpecName,
-                              CartItemPrice = spec.Price,
+                              CartItemPrice = spec.Price * spec.DiscountPercentage / 100,
                               MerchandiseImageName = merchandise.ImageUrl,
                               CartItemId = cartItem.CartItemId,
                               SpecId = cartItem.SpecId,
@@ -33,10 +34,29 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                           }).ToListAsync();
         }
 
+        public async Task ChangeCartItemQuantity(CartItemDto dto)
+        {
+
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(o => o.CartItemId == dto.CartItemId);
+
+            if (cartItem == null) return;
+
+            cartItem.Quantity = dto.Quantity;
+
+            await _context.SaveChangesAsync();
+        }
 
 
+        public async Task DeleteCartItem(int cartItemId)
+        {
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(o => o.CartItemId == cartItemId);
 
+            if (cartItem == null) return;
 
+            _context.CartItems.Remove(cartItem);
+
+            await _context.SaveChangesAsync();
+        }
 
     }
 }
