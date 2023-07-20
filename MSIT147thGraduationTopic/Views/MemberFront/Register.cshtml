@@ -46,8 +46,11 @@
             </div>
             <!-- Password input-->
             <div class="form mb-3">
-                <label for="password" class="form-label fw-bold">密碼</label>
-                <input class="form-control" id="password" name="password" type="password" required />
+                <label for="password" class="form-label fw-bold">
+                    密碼:需要8~12位英文字母及數字組合，包含至少一個大寫字母及小寫字母
+                </label>
+                <input class="form-control" id="password" name="password" type="password"
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required />
                 <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
@@ -133,9 +136,28 @@
     </style>
 }
 
-@section Scripts{    
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script>
-        
+        (function () {
+            'use strict'
 
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })
     </script>
 }

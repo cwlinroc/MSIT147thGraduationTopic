@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
-    public class MemberCreateVM
+    public class MemberRegisterVM
     {
         [Display(Name = "編號")]
         public int MemberId { get; set; }
@@ -86,9 +86,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
     public static class Members
     {
-        public static MemberCreateVM ToVM(this MemberDto dto)
+        public static MemberRegisterVM ToVM(this MemberDto dto)
         {
-            return new MemberCreateVM
+            return new MemberRegisterVM
             {
                 MemberId = dto.MemberId,
                 MemberName = dto.MemberName,                
