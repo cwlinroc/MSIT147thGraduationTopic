@@ -20,10 +20,11 @@
                         <input asp-for="SpecName" class="form-control" />
                         <span asp-validation-for="SpecName" class="text-danger"></span>
                     </div>
-                    @*<div class="form-group">
+                    <div class="form-group">
                         <label asp-for="MerchandiseId" class="control-label"></label>
                         <select asp-for="MerchandiseId" class="form-control" asp-items="ViewBag.MerchandiseId"></select>
-                    </div>*@
+                        @*<input asp-for="MerchandiseId" class="form-control" id="merchandisename" readonly />*@
+                    </div>
                     <div class="form-group">
                         <label asp-for="Price" class="control-label"></label>
                         <input asp-for="Price" class="form-control" />
@@ -61,7 +62,23 @@
 </div>
 
 @section Scripts {
+   @* <script>
+        const merchandise = document.querySelector("#merchandisename");
 
+        merchandise.addEventListener("load", () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/ApiMerchandise/Merchandises");
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const datas = JSON.parse(xhr.responseText);
+                var merchandises = datas.map(b => {
+                    return (`<option value="${b.MerchandiseId}">${b.MerchandiseName}</option>`)
+                })
+                merchandise.innerHTML = merchandises.join("");
+            })
+        })
+    </script>*@
 }
 
 @section Styles{

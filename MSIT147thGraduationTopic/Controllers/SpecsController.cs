@@ -21,15 +21,16 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Specs
         public async Task<IActionResult> Index(int merchandiseid) // todo 上方增加該項商品資料
         {
+            var main = _context.Merchandises.Where(m => m.MerchandiseId == merchandiseid);
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
             return View(await datas.ToListAsync());
         }
 
         // GET: Specs/Create
-        public IActionResult Create()
+        public IActionResult Create(int merchandiseid, string merchandisename) //todo 生成的商品value並非ID，因此不能產生正確的規格資料
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
-            return View();
+            return View(merchandiseid);
         }
 
         // POST: Specs/Create
@@ -50,7 +51,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int? id) //todo 無法傳入商品ID，因此取消後不能順利呈現Index
         {
             if (id == null || _context.Specs == null)
             {
@@ -71,7 +72,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] Spec spec)
+        public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int id, [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] Spec spec)
         {
             if (id != spec.SpecId)
             {
@@ -107,35 +108,17 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             if (id == null || _context.Specs == null)
             {
-                return NotFound();
+                return Problem("找不到規格資料");
             }
 
             var spec = await _context.Specs
-                .Include(s => s.Merchandise)
-                .FirstOrDefaultAsync(m => m.SpecId == id);
+                .FirstOrDefaultAsync(s => s.SpecId == id);
             if (spec == null)
             {
-                return NotFound();
+                return Problem("找不到規格資料");
             }
 
-            return View(spec);
-        }
-
-        // POST: Specs/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Specs == null)
-            {
-                return Problem("Entity set 'GraduationTopicContext.Specs'  is null.");
-            }
-            var spec = await _context.Specs.FindAsync(id);
-            if (spec != null)
-            {
-                _context.Specs.Remove(spec);
-            }
-            
+            _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

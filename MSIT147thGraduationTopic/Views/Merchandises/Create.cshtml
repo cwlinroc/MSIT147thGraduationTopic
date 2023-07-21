@@ -25,9 +25,9 @@
                         <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId" id="inputbrandid">
                             <option value="0">未選擇品牌</option>
                         </select>
-                        @*不知為何，使用id指定Ajax語法後，選項還是產生在上方的選單中
+                        @*不知為何，使用Ajax語法指定id，選項還是產生在上方的選單中
                         <select class="form-select" name="BrandId" id="inputbrandid">
-                        <option value="0">未選擇2</option>
+                        <option value="0">未選擇</option>
                         </select>*@
                     </div>
                     <div class="form-group">
@@ -42,13 +42,18 @@
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ImageUrl" class="control-label"></label>
-                        <input asp-for="ImageUrl" class="form-control" />
+                        <label asp-for="ImageUrl" class="control-label">選擇圖片</label>
+                        @*<input asp-for="ImageUrl" class="form-control" id="imgurl" readonly />*@
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <input class="form-control" type="file" id="selectfile" name="photo">
+
+                        <div class="alert alert-secondary mt-2" id="containdisplay">
+                            <img id="display" />
+                        </div>
                     </div>
                     <div class="form-group form-check">
                         <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Display" /> @Html.DisplayNameFor(model => model.Display)
+                            <input class="form-check-input" asp-for="Display" /> @Html.DisplayNameFor(model => model.Display)
                         </label>
                     </div>
                     <hr />
@@ -63,11 +68,11 @@
 </div>
 
 @section Scripts {
+    @*產生下拉選項*@
     <script>
         const brand = document.querySelector("#inputbrandid");
         const category = document.querySelector("#inputcategoryid");
-        console.log(brand);
-        
+
         brand.addEventListener("load", () => {
             const xhr = new XMLHttpRequest();
             xhr.open("GET", "/ApiMerchandise/Brands");
@@ -96,6 +101,21 @@
             })
         })
     </script>
+    @*產生圖片路徑、預覽*@
+    <script>
+        //const imgurl = document.querySelector("#imgurl");
+        const selectfile = document.querySelector("#selectfile");
+        const display = document.querySelector("#display");
+
+        selectfile.addEventListener("change", () => {
+            const [file] = selectfile.files;
+            if (file) {
+                display.src = URL.createObjectURL(file);
+                //let fileName = file.name;
+                //$("#imgurl").innerText = fileName;
+            }
+        })
+    </script>
 }
 
 @section Styles{
@@ -103,6 +123,15 @@
         .title {
             margin-top: 30px;
             margin-bottom: 10px;
+        }
+
+        #containdisplay {
+            height: 200px;
+        }
+
+        #display {
+            max-height: 170px;
+            margin: 10px, 0;
         }
     </style>
 }

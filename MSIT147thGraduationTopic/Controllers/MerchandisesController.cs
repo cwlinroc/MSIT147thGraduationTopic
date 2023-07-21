@@ -13,10 +13,12 @@ namespace MSIT147thGraduationTopic.Controllers
     public class MerchandisesController : Controller
     {
         private readonly GraduationTopicContext _context;
+        private readonly IWebHostEnvironment _host;
 
-        public MerchandisesController(GraduationTopicContext context)
+        public MerchandisesController(GraduationTopicContext context, IWebHostEnvironment host)
         {
             _context = context;
+            _host = host;
         }
 
         // GET: Merchandises
@@ -53,30 +55,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return (datas != null) ? View(datas) : Problem("找不到商品資料");
         }
 
-        // GET: Merchandises/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null || _context.MerchandiseSearches == null)
-        //    {
-        //        return Problem("找不到商品資料");
-        //    }
-        //    var merchandise = await _context.MerchandiseSearches
-        //        .FirstOrDefaultAsync(m => m.MerchandiseId == id);
-        //    if (merchandise == null)
-        //    {
-        //        return Problem("找不到商品資料");
-        //    }
-
-        //    var spec = await _context.Specs
-        //        .FirstOrDefaultAsync(s => s.MerchandiseId == id);
-        //    if (spec == null)
-        //    {
-        //        return Problem("找不到商品規格資料");
-        //    }
-
-        //    return RedirectToAction("~/Specs/Index");//todo 確認這樣寫是否正確(參考Ajax作業)
-        //}
-
         // GET: Merchandises/Create
         public IActionResult Create() //todo 上傳&預覽圖片還沒做
         {
@@ -90,8 +68,21 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")] Merchandise merchandise)
+        public async Task<IActionResult> Create
+            ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")] 
+                Merchandise merchandise, IFormFile photo)
         {
+            if (photo.ContentType != "image")
+            {
+                return View(merchandise);
+            }           
+            string photoPath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", photo.FileName);
+            using (var fileStream = new FileStream(photoPath, FileMode.Create))
+            {
+                photo.CopyTo(fileStream);
+            }
+            merchandise.ImageUrl = photoPath;
+
             if (ModelState.IsValid)
             {
                 _context.Add(merchandise);
