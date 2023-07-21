@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Brand>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.BrandVM>
 
 @{
     Layout = "_BackstagePage";
@@ -12,7 +12,15 @@
         <div>
             @using (Html.BeginForm())
             {
-                @:搜尋關鍵字 @Html.TextBox("txtKeyword") <input type="submit" value="Search" class="btn btn-secondary" />
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="searchCondition">關鍵字搜尋</label>
+                            <input type="text" name="txtKeyword" class="form-control" aria-label="Text input with dropdown button">
+                            <input type="submit" value="Search" class="btn btn-secondary" />
+                        </div>
+                    </div>
+                </div>
             }
         </div>
         <br />

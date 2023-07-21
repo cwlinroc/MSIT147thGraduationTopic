@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -26,16 +27,15 @@ namespace MSIT147thGraduationTopic.Controllers
             datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b 
                 : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
 
-            //todo 轉換為Wrap/VM以讀取自訂屬性(ex.資料名稱)
-            //List<CProductWrap> list = new List<CProductWrap>();
-            //foreach (TProduct t in datas)
-            //{
-            //    CProductWrap c = new CProductWrap();
-            //    c.product = t;
-            //    list.Add(c);
-            //}
+            List<BrandVM> list = new List<BrandVM>();
+            foreach (Brand b in datas)
+            {
+                BrandVM brandvm = new BrandVM();
+                brandvm.brand = b;
+                list.Add(brandvm);
+            }
 
-            return (datas != null) ? View(datas) : Problem("找不到品牌資料");//Entity set 'GraduationTopicContext.Brands'  is null.
+            return (list != null) ? View(list) : Problem("找不到品牌資料");//Entity set 'GraduationTopicContext.Brands'  is null.
         }
 
         // GET: Brands/Create
@@ -73,7 +73,11 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 return NotFound();
             }
-            return View(brand);
+
+            BrandVM brandvm = new BrandVM();
+            brandvm.brand = brand;
+
+            return View(brandvm);
         }
 
         // POST: Brands/Edit/5

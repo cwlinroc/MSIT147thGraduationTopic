@@ -1,4 +1,4 @@
-﻿@model MSIT147thGraduationTopic.EFModels.Merchandise
+﻿@model MSIT147thGraduationTopic.Models.ViewModels.MerchandiseVM
 
 @{
     Layout = "_BackstagePage";
@@ -38,7 +38,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Description" class="control-label"></label>
-                        <input asp-for="Description" class="form-control" />
+                        <textarea asp-for="Description" class="form-control" id="textarea"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -49,6 +49,7 @@
 
                         <div class="alert alert-secondary mt-2" id="containdisplay">
                             <img id="display" />
+                            <button id="imageClear" class="btn btn-warning">取消圖片</button>
                         </div>
                     </div>
                     <div class="form-group form-check">
@@ -103,18 +104,35 @@
     </script>
     @*產生圖片路徑、預覽*@
     <script>
-        //const imgurl = document.querySelector("#imgurl");
-        const selectfile = document.querySelector("#selectfile");
         const display = document.querySelector("#display");
+        const imageClear = document.querySelector("#imageClear");
 
-        selectfile.addEventListener("change", () => {
-            const [file] = selectfile.files;
-            if (file) {
-                display.src = URL.createObjectURL(file);
-                //let fileName = file.name;
-                //$("#imgurl").innerText = fileName;
-            }
+        DisplayImage();
+
+        imageClear.addEventListener("click", (e) => {
+            e.preventDefault();//停用送出表單功能
+            selectfile.files = null;
+            //[file] = null;
+            selectfile.outerHTML = selectfile.outerHTML;
+            display.src = "";
+            imageClear.style.display = "none";
+            DisplayImage();
         })
+
+        function DisplayImage() {
+            //重置檔案上傳後需重新指定selectfile
+            const selectfile = document.querySelector("#selectfile");
+            selectfile.addEventListener("change", () => {
+                const [file] = selectfile.files;
+                if (file) {
+                    display.src = URL.createObjectURL(file);
+                    imageClear.style.display = "inline";
+                } else {
+                    display.src = "";
+                    imageClear.style.display = "none";
+                }
+            })
+        }
     </script>
 }
 
@@ -132,6 +150,16 @@
         #display {
             max-height: 170px;
             margin: 10px, 0;
+        }
+
+        #textarea {
+            height: 150px;
+            overflow: auto;
+        }
+
+        #imageClear {
+            display: none;
+            float: right;
         }
     </style>
 }

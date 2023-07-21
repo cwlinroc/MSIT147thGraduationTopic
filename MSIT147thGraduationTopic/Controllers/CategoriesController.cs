@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -26,16 +27,15 @@ namespace MSIT147thGraduationTopic.Controllers
             datas = (string.IsNullOrEmpty(txtKeyword)) ? from c in _context.Categories select c
                 : _context.Categories.Where(c => c.CategoryName.Contains(txtKeyword));
 
-            //todo 轉換為Wrap/VM以讀取自訂屬性(ex.資料名稱)
-            //List<CProductWrap> list = new List<CProductWrap>();
-            //foreach (TProduct t in datas)
-            //{
-            //    CProductWrap c = new CProductWrap();
-            //    c.product = t;
-            //    list.Add(c);
-            //}
+            List<CategoryVM> list = new List<CategoryVM>();
+            foreach (Category c in datas)
+            {
+                CategoryVM categoryvm = new CategoryVM();
+                categoryvm.category = c;
+                list.Add(categoryvm);
+            }
 
-            return (datas != null) ? View(datas) : Problem("找不到商品類別資料");
+            return (list != null) ? View(list) : Problem("找不到商品類別資料");
         }
 
         // GET: Categories/Create
@@ -73,7 +73,11 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 return NotFound();
             }
-            return View(category);
+
+            CategoryVM categoryvm = new CategoryVM();
+            categoryvm.category = category;
+
+            return View(categoryvm);
         }
 
         // POST: Categories/Edit/5

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -43,16 +44,15 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
             }
 
-            //todo 轉換為Wrap/VM以讀取自訂屬性(ex.資料名稱)
-            //List<CProductWrap> list = new List<CProductWrap>();
-            //foreach (TProduct t in datas)
-            //{
-            //    CProductWrap c = new CProductWrap();
-            //    c.product = t;
-            //    list.Add(c);
-            //}
+            List<MerchandiseSearchVM> list = new List<MerchandiseSearchVM>();
+            foreach (MerchandiseSearch ms in datas)
+            {
+                MerchandiseSearchVM merchandisesearchvm = new MerchandiseSearchVM();
+                merchandisesearchvm.merchandisesearch = ms;
+                list.Add(merchandisesearchvm);
+            }
 
-            return (datas != null) ? View(datas) : Problem("找不到商品資料");
+            return (list != null) ? View(list) : Problem("找不到商品資料");
         }
 
         // GET: Merchandises/Create
@@ -75,13 +75,45 @@ namespace MSIT147thGraduationTopic.Controllers
             if (photo.ContentType != "image")
             {
                 return View(merchandise);
-            }           
-            string photoPath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", photo.FileName);
-            using (var fileStream = new FileStream(photoPath, FileMode.Create))
-            {
-                photo.CopyTo(fileStream);
             }
-            merchandise.ImageUrl = photoPath;
+            if (photo != null)
+            {
+                // todo 將圖片系統性改名後上傳
+                string photoPath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", photo.FileName);
+                using (var fileStream = new FileStream(photoPath, FileMode.Create))
+                {
+                    photo.CopyTo(fileStream);
+                }
+                merchandise.ImageUrl = photoPath;
+
+
+                /*// 使用時間戳系統性改名，避免資料庫內名稱重複
+				txt_ImageURL.Text = DateTime.Now.ToString("yyyyMMddhhmmssffff") + 
+																Path.GetFileName(imagePath);
+
+				MessageBox.Show($"圖片選擇成功,路徑:{imagePath}");
+
+				btn_CancelImage.Enabled = true;
+
+				//顯示預覽圖片
+				//pictureBox_Image.Image = Image.FromFile(imagePath);
+				//使用Bitmap轉檔，並兩次使用以達到暫存效果(??)並降低系統負擔
+				using (var bmpTemp = new Bitmap(imagePath))
+				{
+					pictureBox_Image.Image = new Bitmap(bmpTemp);
+				}*/
+                /*string targetFolderPath = @"images/MerchandisePicture/";
+			string imageName = Path.GetFileName(imagePath);
+			// 使用時間戳系統性改名，避免資料庫內名稱重複
+			string renamedtargetFilePath = targetFolderPath + txt_ImageURL.Text;
+
+			try
+			{
+				File.Copy(imagePath, renamedtargetFilePath);//(來源路徑(原始名), 目標路徑(改名))
+
+				MessageBox.Show($"圖片上傳成功");
+			}*/
+            }
 
             if (ModelState.IsValid)
             {
@@ -109,7 +141,10 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandise.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", merchandise.CategoryId);
-            return View(merchandise);
+
+            MerchandiseVM merchandisevm = new MerchandiseVM();
+            merchandisevm.merchandise = merchandise;
+            return View(merchandisevm);
         }
 
         // POST: Merchandises/Edit/5

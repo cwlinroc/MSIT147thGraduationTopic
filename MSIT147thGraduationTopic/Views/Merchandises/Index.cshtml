@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.MerchandiseSearch>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MerchandiseSearchVM>
 
 @{
     Layout = "_BackstagePage";
@@ -91,7 +91,8 @@
                                 @Html.ActionLink("修改商品資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
                                 @Html.ActionLink("檢視商品規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-success" }) |
                                 @Html.ActionLink("刪除", "Delete", "Merchandises", new { id=item.MerchandiseId }
-                        , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })
+                                                    , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" }) |
+                                @Html.ActionLink("檢視評價", "Index", "Evaluations", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-info" })
                             </td>
                         </tr>
                     }
