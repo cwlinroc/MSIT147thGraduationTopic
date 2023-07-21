@@ -41,6 +41,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Evaluations}/{action=BackStage}/{id?}");
+    pattern: "{controller=MemberFront}/{action=Register}/{id?}");
 
 app.Run();
