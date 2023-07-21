@@ -28,11 +28,14 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
+        public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
         public virtual DbSet<MerchandiseTag> MerchandiseTags { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderList> OrderLists { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Spec> Specs { get; set; }
+        public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
+        public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<UsedCoupon> UsedCoupons { get; set; }
 
@@ -241,6 +244,33 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasConstraintName("FK_Merchandise_Category");
             });
 
+            modelBuilder.Entity<MerchandiseSearch>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("MerchandiseSearch");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Description).HasMaxLength(500);
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(50)
+                    .HasColumnName("ImageURL");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+
+                entity.Property(e => e.MerchandiseName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+            });
+
             modelBuilder.Entity<MerchandiseTag>(entity =>
             {
                 entity.HasNoKey();
@@ -321,6 +351,56 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.MerchandiseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Specs_Merchandises");
+            });
+
+            modelBuilder.Entity<SpecDisplayforOrder>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("SpecDisplayforOrder");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasMaxLength(80);
+            });
+
+            modelBuilder.Entity<SpecWithFullMerchandise>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("SpecWithFullMerchandise");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Description).HasMaxLength(500);
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(50)
+                    .HasColumnName("ImageURL");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+
+                entity.Property(e => e.MerchandiseName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.SpecName)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Tag>(entity =>

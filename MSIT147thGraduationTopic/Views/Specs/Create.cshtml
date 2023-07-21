@@ -1,0 +1,91 @@
+﻿@model MSIT147thGraduationTopic.EFModels.Spec
+
+@{
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "新增規格";
+}
+
+<div class="container">
+    <h1 class="title">新增規格</h1>
+
+    <div class="bg-light rounded shadow p-5">
+        <h4>輸入規格資料</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="SpecName" class="control-label"></label>
+                        <input asp-for="SpecName" class="form-control" />
+                        <span asp-validation-for="SpecName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MerchandiseId" class="control-label"></label>
+                        <select asp-for="MerchandiseId" class="form-control" id="merchandisename" asp-items="ViewBag.MerchandiseId"></select>
+                        @*<input asp-for="MerchandiseId" class="form-control" id="merchandisename" readonly />*@
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Amount" class="control-label"></label>
+                        <input asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DiscountPercentage" class="control-label"></label>
+                        <input asp-for="DiscountPercentage" class="form-control" />
+                        <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DisplayOrder" class="control-label"></label>
+                        <input asp-for="DisplayOrder" class="form-control" />
+                        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="OnShelf" /> @Html.DisplayNameFor(model => model.OnShelf)
+                        </label>
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <input type="submit" value="新增" class="btn btn-primary" />
+                        @Html.ActionLink("取消", "Index", "Specs", null, new { @class = "btn btn-secondary" })
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const merchandise = document.querySelector("#merchandisename");
+
+        merchandise.addEventListener("load", () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/ApiMerchandise/Merchandises");
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const datas = JSON.parse(xhr.responseText);
+                var merchandises = datas.map(b => {
+                    return (`<option value="${b.MerchandiseId}">${b.MerchandiseName}</option>`)
+                })
+                merchandise.innerHTML = merchandises.join("");
+            })
+        })
+    </script>
+}
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+}

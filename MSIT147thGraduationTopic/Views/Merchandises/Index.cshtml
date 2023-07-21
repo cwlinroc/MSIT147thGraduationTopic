@@ -1,0 +1,121 @@
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MerchandiseSearchVM>
+
+@{
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "商品列表檢視";
+}
+
+<div class="container">
+    <h1 class="title">商品列表檢視</h1>
+
+    <div class="bg-light rounded shadow p-5">
+        <div>
+            @using (Html.BeginForm())
+            {
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="searchCondition">選擇搜尋條件</label>
+                            <select class="form-select conditionname" name="searchCondition">
+                                <option value="1">商品名稱</option>
+                                <option value="2">品牌名稱</option>
+                                <option value="3">類別名稱</option>
+                            </select>
+                            <input type="text" name="txtKeyword" class="form-control" aria-label="Text input with dropdown button">
+                            <input type="submit" value="Search" class="btn btn-secondary" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <br />
+        <p>
+            @Html.ActionLink("新增商品", "Create", "Merchandises", null, new { @class = "btn btn-primary" })
+        </p>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        檢視序號
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MerchandiseName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BrandName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CategoryName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ImageUrl)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Display)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 0;
+                    foreach (var item in Model)
+                    {
+                        count++;
+                        <tr>
+                            <td>
+                                @count
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MerchandiseName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BrandName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ImageUrl)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Display)
+                            </td>
+                            <td>
+                                @Html.ActionLink("修改商品資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
+                                @Html.ActionLink("檢視商品規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("刪除", "Delete", "Merchandises", new { id=item.MerchandiseId }
+                                                    , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" }) |
+                                @Html.ActionLink("檢視評價", "Index", "Evaluations", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-info" })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="form-group">
+            @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" }) 
+            @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .conditionname {
+            max-width: 120px;
+        }
+    </style>
+}
