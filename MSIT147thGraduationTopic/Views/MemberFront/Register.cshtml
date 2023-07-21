@@ -2,11 +2,11 @@
     ViewData["Title"] = "會員註冊";
 }
 
+<div class="text-center mb-4">
+    <h1 class="fw-bold mt-4">會員註冊</h1>
+</div>
 <div class="row" style="--bs-gutter-x:0;">
-    <div class="col-lg-8 offset-2">
-        <div class="text-center mb-3">
-            <h1 class="fw-bold mt-5">會員註冊</h1>
-        </div>
+    <div class="col-lg-8 offset-2">        
         <form id="memberRegisteredForm" name="memberRegisteredForm" class="needs-validation" 
                 method="POST" novalidate>
             <!-- MemberName input-->
@@ -77,29 +77,27 @@
                 <label for="address" class="form-label fw-bold">地址</label>
                 <div class="input-group">
                     <label class="input-group-text" for="city">縣市</label>
-                    <select class="form-select" id="city" required>
-                        <option selected></option>
+                    <select class="form-select" id="city">
+                        <option selected>請選擇</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
                     </select>
                     <label class="input-group-text" for="district">區域</label>
-                    <select class="form-select" id="district" required>
-                        <option selected></option>
+                    <select class="form-select" id="district">
+                        <option selected>請選擇</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
                     </select>
-                    <input class="form-control" id="address" type="text" required />
+                    <input class="form-control" id="address" type="text"/>
                 </div>
             </div>
             <!-- Date of birth input-->
             <div class="form mb-5">
                 <label class="form-label fw-bold">出生年月日</label>
                 <div class="input-group" id="DateOfBirth">
-
                     <input type="date" id="DateOfBirthInput" class="form-control" required />
-
                     <div class="invalid-feedback">生日必填</div>
                 </div>
             </div>
