@@ -6,9 +6,9 @@
     <h1 class="fw-bold mt-4">會員註冊</h1>
 </div>
 <div class="row" style="--bs-gutter-x:0;">
-    <div class="col-lg-8 offset-2">        
-        <form id="memberRegisteredForm" name="memberRegisteredForm" class="needs-validation" 
-                method="POST" novalidate>
+    <div class="col-lg-8 offset-2">
+        <form id="memberRegisteredForm" name="memberRegisteredForm" class="needs-validation"
+              method="POST" novalidate>
             <!-- MemberName input-->
             <div class="form mb-3">
                 <label for="membername" class="form-label fw-bold">姓名</label>
@@ -51,20 +51,21 @@
                 </label>
                 <input class="form-control" id="password" name="password" type="password"
                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required />
-                <div class="invalid-feedback">請輸入密碼</div>
+                <div class="invalid-feedback" id="password-validation">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
                 <label for="repassword" class="form-label fw-bold">確認密碼</label>
-                <input class="form-control" id="repassword" name="repassword" type="password" required>
-                <div class="invalid-feedback">必須與密碼相同</div>
+                <input class="form-control" id="repassword" name="repassword" type="password"
+                       onblur="validate()" required>
+                <div class="invalid-feedback" id="repassword-validation"></div>
             </div>
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">電子信箱</label>
                 <input class="form-control" id="email" type="email" required />
                 <div class="invalid-feedback">電子信箱必填</div>
-                <div class="invalid-feedback">電子信箱格式錯誤</div>
+                <div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
@@ -90,7 +91,7 @@
                         <option value="2">Two</option>
                         <option value="3">Three</option>
                     </select>
-                    <input class="form-control" id="address" type="text"/>
+                    <input class="form-control" id="address" type="text" />
                 </div>
             </div>
             <!-- Date of birth input-->
@@ -135,27 +136,43 @@
 }
 
 @section Scripts{
-    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
-        (function () {
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
             'use strict'
 
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
+            const forms = document.querySelectorAll('.needs-validation')
 
             // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
 
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+
+        const pwd = document.querySelector("#password")
+        const repwd = document.querySelector("#repassword")
+        const pwdvalidate = document.querySelector("#password-validation")
+        function validate() {
+            if (pwd.value != null && pwdvalidate.value != null) {               
+                document.getElementById("password-validation").value = "密碼強度不足"
+            }
+
+            if (pwd != repwd) {
+                repwd.classlist.remove("is-valid")
+                repwd.classlist.add("is-invalid")
+                document.getElementById("repassword-validation").value = "必須與密碼相同"
+            }
+        }
     </script>
 }
