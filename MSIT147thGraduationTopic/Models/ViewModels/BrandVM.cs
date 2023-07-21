@@ -1,5 +1,6 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
