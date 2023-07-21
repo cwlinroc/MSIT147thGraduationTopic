@@ -1,0 +1,203 @@
+﻿@model List<MSIT147thGraduationTopic.Models.Dtos.CartItemDisplayDto>;
+@{
+    ViewData["Title"] = "Index";
+    int total = 0;
+}
+
+
+<div class="container p-5 mt-5 bg-light rounded shadow">
+    <h2>訂單項目</h2>
+
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th>商品</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>總計</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                int sum = item.CartItemPrice * item.Quantity;
+                total += sum;
+                <tr>
+                    <input type="hidden" value="@item.CartItemId">
+                    <td>@item.CartItemName</td>
+                    <td>$<span>@item.CartItemPrice</span></td>
+                    <td>@item.Quantity</td>
+                    <td>$<span>@sum</span></td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <div class="mt-5">
+        <hr>
+        <div class="d-flex">
+            <div class="ms-auto me-3">
+                <span>金額總計:</span>
+                <span class="mx-3">@total</span>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<div class="container p-5 my-5 bg-light rounded shadow">
+
+    <form>
+
+        <div class="form-group row mb-3">
+            <label for="inputAddress" class="col-form-label col-sm-2 text-center">寄送地址</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="inputAddress" name="Address" value="@ViewBag.MemberAddress">
+            </div>
+        </div>
+        <div class="form-group row mb-3">
+            <label for="inputPhone" class="col-form-label col-sm-2 text-center">連絡電話</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="inputPhone" name="Address" value="@ViewBag.MemberPhone">
+            </div>
+        </div>
+
+        <div class="form-group row mb-3">
+            <label for="inputCoupons" class="col-form-label col-sm-2 text-center">使用優惠卷</label>
+            <div class="col-sm-8 d-flex justify-content-between pt-2">
+                <p>無</p>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                        data-bs-target="#couponModal">
+                    選擇優惠卷
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group row mb-3">
+            <label for="inputCoupons" class="col-form-label col-sm-2 text-center">付款方式</label>
+            <div class="col-sm-8 d-flex">
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        信用卡
+                    </label>
+                </div>
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        LinePay
+                    </label>
+                </div>
+                <div class="form-check me-4">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+                    <label class="form-check-label" for="flexRadioDefault3">
+                        銀行匯款
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row mb-3">
+            <label for="inputCoupons" class="col-form-label col-sm-2 text-center">備註</label>
+            <div class="col-sm-8">
+                <textarea class="form-control" id="inputCoupons" name="Address"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group row mb-3 mt-5">
+            <hr>
+            <label for="inputCoupons" class="col-form-label col-sm-2 text-center"></label>
+            <div class="col-sm-8">
+                <button type="button" class="btn btn-warning">送出訂單</button>
+                <button type="button" class="btn btn-warning ms-3">取消訂單</button>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">選擇優惠卷</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="d-flex py-2">
+                    <div class="px-3">
+                        <label>折價種類</label>
+                        <select>
+                            <option>所有</option>
+                            <option>test</option>
+                            <option>test</option>
+                        </select>
+                    </div>
+                    <div class="px-3">
+                        <label>折價方式</label>
+                        <select>
+                            <option>所有</option>
+                            <option>test</option>
+                            <option>test</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <table class="table">
+                    <tbody>
+
+                        @{
+                            for (int i = 0; i < 30; i++)
+                            {
+                                <tr>
+                                    <td> <input type="checkbox" class="form-check-input"> </td>
+                                    <td>XXX優惠卷</td>
+                                    <td>滿千送百</td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+
+        $('#couponModal').find('input[type=checkbox]').click(e => {
+            $(e.currentTarget).closest('table').find('input[type=checkbox]').prop('checked', false)
+            $(e.currentTarget).prop('checked', true)
+        })
+
+
+    </script>
+    }
+
+@section Styles{
+    <style>
+
+
+    </style>
+    }
+

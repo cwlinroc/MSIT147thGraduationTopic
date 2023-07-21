@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Services;
+using MSIT147thGraduationTopic.Models.ViewModels;
+using Newtonsoft.Json.Linq;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -55,20 +59,18 @@ namespace MSIT147thGraduationTopic.Controllers
             return NoContent();
         }
 
-        // POST: api/ApiCart
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<CartItem>> PostCartItem(CartItem cartItem)
-        //{
-        //    if (_context.CartItems == null)
-        //    {
-        //        return Problem("Entity set 'GraduationTopicContext.CartItems'  is null.");
-        //    }
-        //    _context.CartItems.Add(cartItem);
-        //    await _context.SaveChangesAsync();
+        //POST: api/ApiCart
+        //To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<CartItem>> PostCartItem(CartIVM vm)
+        {
+            //HttpContext.Session.Set<object>(key, value);
+            if (vm.CartItemIds == null || vm.CartItemIds.Length == 0) return BadRequest(ModelState);
 
-        //    return CreatedAtAction("GetCartItem", new { id = cartItem.CartItemId }, cartItem);
-        //}
+            HttpContext.Session.SetString("cartItemIds", JsonSerializer.Serialize(vm.CartItemIds));
+
+            return Redirect(Url.Content("~/buy/index"));
+        }
 
         // DELETE: api/ApiCart/5
         [HttpDelete("{id}")]
