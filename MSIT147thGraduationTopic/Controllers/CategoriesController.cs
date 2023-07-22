@@ -120,7 +120,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             if (id == null || _context.Categories == null)
             {
-                return Problem("找不到商品類別資料");
+                return Problem("找不到商品類別資料");//todo return Problem()要改成ErrorMessage
             }
 
             var brand = await _context.Categories
@@ -128,6 +128,10 @@ namespace MSIT147thGraduationTopic.Controllers
             if (brand == null)
             {
                 return Problem("找不到商品類別資料");
+            }
+            if (_context.Categories.Count() == 1)
+            {
+                return Problem("類別總數不可為零，因此無法刪除");
             }
 
             _context.Categories.Remove(brand);

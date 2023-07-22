@@ -129,6 +129,10 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 return Problem("找不到品牌資料");
             }
+            if (_context.Brands.Count() == 1)
+            {
+                return Problem("品牌總數不可為零，因此無法刪除");
+            }
 
                 _context.Brands.Remove(brand);
                 await _context.SaveChangesAsync();

@@ -1,5 +1,6 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
@@ -23,24 +24,29 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.MerchandiseId = value; }
         }
         [DisplayName("商品名稱")]
+        [Required(ErrorMessage = "此為必填欄位")]
+        [MaxLength(30, ErrorMessage = "{0}長度不可超過{1}字")]
         public string MerchandiseName
         {
             get { return _merchandise.MerchandiseName; }
             set { _merchandise.MerchandiseName = value; }
         }
         [DisplayName("商品品牌")]
+        [Required(ErrorMessage = "此為必選欄位")]
         public int BrandId
         {
             get { return _merchandise.BrandId; }
             set { _merchandise.BrandId = value; }
         }
         [DisplayName("商品類別")]
+        [Required(ErrorMessage = "此為必選欄位")]
         public int CategoryId
 {
             get { return _merchandise.CategoryId; }
             set { _merchandise.CategoryId = value; }
         }
         [DisplayName("商品描述")]
+        [MaxLength(500, ErrorMessage = "{0}長度不可超過{1}字")]
         public string Description
         {
             get { return _merchandise.Description; }

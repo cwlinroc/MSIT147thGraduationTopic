@@ -56,7 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Create
-        public IActionResult Create() //todo 上傳&預覽圖片還沒做
+        public IActionResult Create() //todo 上傳還沒做完
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");

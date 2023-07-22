@@ -1,5 +1,6 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
@@ -24,18 +25,21 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandisesearch.MerchandiseId = value; }
         }
         [DisplayName("商品名稱")]
+        [Required(ErrorMessage = "此為必填欄位")]
         public string MerchandiseName
         {
             get { return _merchandisesearch.MerchandiseName; }
             set { _merchandisesearch.MerchandiseName = value; }
         }
         [DisplayName("品牌名稱")]
+        [Required(ErrorMessage = "此為必選欄位")]
         public string BrandName
         {
             get { return _merchandisesearch.BrandName; }
             set { _merchandisesearch.BrandName = value; }
         }
         [DisplayName("類別名稱")]
+        [Required(ErrorMessage = "此為必選欄位")]
         public string CategoryName
         {
             get { return _merchandisesearch.CategoryName; }
@@ -59,6 +63,5 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _merchandisesearch.Display; }
             set { _merchandisesearch.Display = value; }
         }
-        public IFormFile photo { get; set; }
     }
 }

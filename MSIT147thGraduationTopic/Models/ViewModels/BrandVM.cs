@@ -1,5 +1,6 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
@@ -23,7 +24,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _brand.BrandId = value; }
         }
         [DisplayName("品牌名稱")]
-        [Required]
+        [Required(ErrorMessage = "此為必填欄位")]
         public string BrandName
         {
             get { return _brand.BrandName; }
