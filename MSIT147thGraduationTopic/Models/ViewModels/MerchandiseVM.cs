@@ -25,7 +25,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
         [DisplayName("商品名稱")]
         [Required(ErrorMessage = "此為必填欄位")]
-        [MaxLength(30, ErrorMessage = "{0}長度不可超過{1}字")]
+        [StringLength(30, ErrorMessage = "{0}不可超過{1}字")]
         public string MerchandiseName
         {
             get { return _merchandise.MerchandiseName; }

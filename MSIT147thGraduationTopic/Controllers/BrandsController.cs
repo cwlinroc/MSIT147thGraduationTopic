@@ -41,7 +41,8 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Brands/Create
         public IActionResult Create()
         {
-            return View();
+            BrandVM brandvm = new BrandVM();
+            return View(brandvm);
         }
 
         // POST: Brands/Create
@@ -49,15 +50,21 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] BrandVM brandvm) // todo 驗證同名改做在VIEW裡
         {
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
+                Brand brand = new Brand()
+                {
+                    BrandId = brandvm.BrandId,
+                    BrandName = brandvm.BrandName
+                };
+
                 _context.Add(brand);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            return View(brandvm);
         }
 
         // GET: Brands/Edit/5
@@ -85,9 +92,9 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName")] BrandVM brandvm)
         {
-            if (id != brand.BrandId)
+            if (id != brandvm.BrandId)
             {
                 return NotFound();
             }
@@ -96,12 +103,12 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 try
                 {
-                    _context.Update(brand);
+                    _context.Update(brandvm.brand);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BrandExists(brand.BrandId))
+                    if (!BrandExists(brandvm.BrandId))
                     {
                         return NotFound();
                     }
@@ -112,7 +119,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            return View(brandvm);
         }
 
         // GET: Brands/Delete/5
@@ -132,7 +139,7 @@ namespace MSIT147thGraduationTopic.Controllers
             if (_context.Brands.Count() == 1)
             {
                 return Problem("品牌總數不可為零，因此無法刪除");
-            }
+            }//todo 綁定商品時不能刪
 
                 _context.Brands.Remove(brand);
                 await _context.SaveChangesAsync();
