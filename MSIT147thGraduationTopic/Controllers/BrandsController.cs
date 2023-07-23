@@ -50,7 +50,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] BrandVM brandvm) // todo 驗證同名改做在VIEW裡
+        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] BrandVM brandvm)
         {
             if (ModelState.IsValid)
             {
@@ -125,6 +125,15 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Brands/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (_context.Merchandises.Where(m => m.BrandId == id).Count() > 0)
+            {
+                return Problem("品牌中尚有商品，因此無法刪除");
+            }
+            if (_context.Brands.Count() == 1)
+            {
+                return Problem("品牌總數不可為零，因此無法刪除");
+            }
+
             if (id == null || _context.Brands == null)
             {
                 return Problem("找不到品牌資料");
@@ -136,10 +145,6 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 return Problem("找不到品牌資料");
             }
-            if (_context.Brands.Count() == 1)
-            {
-                return Problem("品牌總數不可為零，因此無法刪除");
-            }//todo 綁定商品時不能刪
 
                 _context.Brands.Remove(brand);
                 await _context.SaveChangesAsync();
