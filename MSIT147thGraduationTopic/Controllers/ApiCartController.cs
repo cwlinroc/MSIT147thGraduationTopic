@@ -39,7 +39,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             var cartItems = await _service.GetCartItemsByMeberId(id);
 
-            return cartItems ?? null;
+            return cartItems;
         }
 
         // PUT: api/ApiCart
@@ -62,7 +62,7 @@ namespace MSIT147thGraduationTopic.Controllers
         //POST: api/ApiCart
         //To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CartItem>> PostCartItem(CartIVM vm)
+        public async Task<ActionResult<CartItem>> PostCartItem(CartVM vm)
         {
             //HttpContext.Session.Set<object>(key, value);
             if (vm.CartItemIds == null || vm.CartItemIds.Length == 0) return BadRequest(ModelState);

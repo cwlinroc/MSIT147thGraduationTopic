@@ -9,7 +9,7 @@ namespace MSIT147thGraduationTopic.EFModels
     {
         public Member()
         {
-            Carts = new HashSet<Cart>();
+            CartItems = new HashSet<CartItem>();
             Evaluations = new HashSet<Evaluation>();
             Orders = new HashSet<Order>();
         }
@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public string Email { get; set; }
         public string Avatar { get; set; }
 
-        public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<CartItem> CartItems { get; set; }
         public virtual ICollection<Evaluation> Evaluations { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }

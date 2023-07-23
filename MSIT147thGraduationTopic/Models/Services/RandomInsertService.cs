@@ -43,11 +43,10 @@ namespace MSIT147thGraduationTopic.Models.Services
             var memberIds = _repo.GetAllMemberID();
             var specIds = _repo.GetAllSpecID();
 
+            _repo.DeleteAllCartItems();
+
             foreach (var memberId in memberIds)
             {
-                if (_repo.GetCartID(memberId) != -1) continue;
-
-                int cartId = _repo.AddCart(new Cart { MemberId = memberId, });
                 int cartItemAmount = _generator.RandomIntBetween(1, 5);
 
                 var chosedSpecIds = _generator.RandomCollectionFrom(specIds, cartItemAmount);
@@ -56,9 +55,9 @@ namespace MSIT147thGraduationTopic.Models.Services
                 {
                     _repo.AddCartItem(new CartItem
                     {
-                        CartId = cartId,
+                        MemberId = memberId,
                         SpecId = specId,
-                        Quantity = _generator.RandomIntBetween(1,5),
+                        Quantity = _generator.RandomIntBetween(1, 5),
                     });
                 }
             }

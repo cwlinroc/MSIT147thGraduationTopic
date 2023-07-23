@@ -24,10 +24,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Carts]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Categories]",
          "ObjectType": 0
       },
@@ -82,21 +78,9 @@
       {
          "Name": "[dbo].[UsedCoupons]",
          "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[MerchandiseSearch]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[SpecDisplayforOrder]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[SpecWithFullMerchandise]",
-         "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-rae7e6c.GraduationTopic.dbo",
+   "UiHint": "desktop-pp2g83m.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

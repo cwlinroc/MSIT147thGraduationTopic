@@ -6,7 +6,7 @@
         public string? CartItemName { get; set; }
         public int CartItemPrice { get; set; }
         public string? MerchandiseImageName { get; set; }
-        public int CartId { get; set; }
+        public int MemberId { get; set; }
         public int SpecId { get; set; }
         public int Quantity { get; set; }
     }

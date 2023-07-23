@@ -15,16 +15,13 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
         public async Task<List<CartItemDisplayDto>?> GetCartItemsByMeberId(int meberId)
         {
-            var cart = await _context.Carts.FirstOrDefaultAsync(o => o.MemberId == meberId);
-            if (cart == null) return null;
-
             return await (from cartItem in _context.CartItems
                           join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
                           join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
-                          where cartItem.CartId == cart.CartId
+                          where cartItem.MemberId == meberId
                           select new CartItemDisplayDto
                           {
-                              CartId = cart.CartId,
+                              MemberId = meberId,
                               CartItemName = merchandise.MerchandiseName + spec.SpecName,
                               CartItemPrice = spec.Price * spec.DiscountPercentage / 100,
                               MerchandiseImageName = merchandise.ImageUrl,

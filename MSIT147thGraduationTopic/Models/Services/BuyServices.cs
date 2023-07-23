@@ -29,6 +29,11 @@ namespace MSIT147thGraduationTopic.Models.Services
             return (memberId, result.Item1.Trim(), result.Item2.Trim());
         }
 
+        public IEnumerable<CouponDto> GetAllCouponsAvalible(int memberId)
+        {
+            return _repo.GetAllCouponsAvalible(memberId);
+        }
+
 
     }
 }
