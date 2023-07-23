@@ -28,14 +28,12 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
-        public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
         public virtual DbSet<MerchandiseTag> MerchandiseTags { get; set; }
+        public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderList> OrderLists { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Spec> Specs { get; set; }
-        public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
-        public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<UsedCoupon> UsedCoupons { get; set; }
 
@@ -44,7 +42,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6;TrustServerCertificate=true;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
             }
         }
 
@@ -183,18 +181,23 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Account)
                     .IsRequired()
                     .HasMaxLength(15)
-                    .IsFixedLength();
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Address).HasMaxLength(30);
 
                 entity.Property(e => e.Avatar).HasMaxLength(50);
+
+                entity.Property(e => e.ConfirmGuid)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.DateOfBirth).HasColumnType("date");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(30)
-                    .IsFixedLength();
+                    .IsUnicode(false);
 
                 entity.Property(e => e.MemberName)
                     .IsRequired()
@@ -205,12 +208,17 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(65)
-                    .IsFixedLength();
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasMaxLength(20)
-                    .IsFixedLength();
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Merchandise>(entity =>
@@ -242,33 +250,6 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Merchandise_Category");
-            });
-
-            modelBuilder.Entity<MerchandiseSearch>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("MerchandiseSearch");
-
-                entity.Property(e => e.BrandName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CategoryName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.Description).HasMaxLength(500);
-
-                entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(50)
-                    .HasColumnName("ImageURL");
-
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.MerchandiseName)
-                    .IsRequired()
-                    .HasMaxLength(30);
             });
 
             modelBuilder.Entity<MerchandiseTag>(entity =>
@@ -351,56 +332,6 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.MerchandiseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Specs_Merchandises");
-            });
-
-            modelBuilder.Entity<SpecDisplayforOrder>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("SpecDisplayforOrder");
-
-                entity.Property(e => e.BrandName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CategoryName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.FullName)
-                    .IsRequired()
-                    .HasMaxLength(80);
-            });
-
-            modelBuilder.Entity<SpecWithFullMerchandise>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("SpecWithFullMerchandise");
-
-                entity.Property(e => e.BrandName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CategoryName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.Description).HasMaxLength(500);
-
-                entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(50)
-                    .HasColumnName("ImageURL");
-
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.MerchandiseName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.SpecName)
-                    .IsRequired()
-                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Tag>(entity =>
