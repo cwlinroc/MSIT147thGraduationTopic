@@ -16,14 +16,18 @@
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
+                        <label class="control-label">商品名稱</label>
+                        <input class="form-control" id="merchandisename" readonly />
+                    </div>
+                    <div class="form-group">
                         <label asp-for="SpecName" class="control-label"></label>
                         <input asp-for="SpecName" class="form-control" />
                         <span asp-validation-for="SpecName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="MerchandiseId" class="control-label"></label>
-                        <select asp-for="MerchandiseId" class="form-control" id="merchandisename" asp-items="ViewBag.MerchandiseId"></select>
-                        @*<input asp-for="MerchandiseId" class="form-control" id="merchandisename" readonly />*@
+                        <select asp-for="MerchandiseId" class="form-control" asp-items="ViewBag.MerchandiseId"></select>
+                        <input asp-for="MerchandiseId" class="form-control" readonly />@*//todo hidden*@
                     </div>
                     <div class="form-group">
                         <label asp-for="Price" class="control-label"></label>
@@ -53,7 +57,7 @@
                     <hr />
                     <div class="form-group">
                         <input type="submit" value="新增" class="btn btn-primary" />
-                        @Html.ActionLink("取消", "Index", "Specs", null, new { @class = "btn btn-secondary" })
+                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId }, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>
@@ -63,19 +67,16 @@
 
 @section Scripts {
     <script>
-        const merchandise = document.querySelector("#merchandisename");
-
-        merchandise.addEventListener("load", () => {
+        const merchandisename = document.querySelector("#merchandisename");
+        merchandisename.addEventListener("load", () => {
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/ApiMerchandise/Merchandises");
+            xhr.open("GET", "/ApiMerchandise/Merchandise");
             xhr.send();
 
             xhr.addEventListener("load", () => {
                 const datas = JSON.parse(xhr.responseText);
-                var merchandises = datas.map(b => {
-                    return (`<option value="${b.MerchandiseId}">${b.MerchandiseName}</option>`)
-                })
-                merchandise.innerHTML = merchandises.join("");
+                var merchandise = datas.Where(m => m.MerchandiseId == MerchandiseId);
+                merchandise.innerHTML = merchandise.MerchandiseName;
             })
         })
     </script>

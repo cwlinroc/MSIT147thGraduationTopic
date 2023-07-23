@@ -37,7 +37,7 @@
 
         const submit = document.querySelector("#submit");
         submit.addEventListener("click", (event) => {
-            event.preventDefault(); // todo 關閉後無法重新啟動
+            event.preventDefault(); // todo 關閉後無法重新啟用
             var formdata = new FormData(document.forminput);
 
             const xhr = new XMLHttpRequest();
@@ -47,7 +47,7 @@
             xhr.addEventListener("load", () => {
                 const data = JSON.parse(xhr.responseText);
                 if (data) {
-                    event.initEvent(); //todo 無法從這裡啟動
+                    //event.initEvent(); //todo 無法從這裡啟動
                     //event.preventDefault(); //todo 無法從這裡關閉
                     alertspan.innerHTML = "此品牌已存在，請重新命名";
                 }

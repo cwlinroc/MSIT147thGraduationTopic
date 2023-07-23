@@ -54,13 +54,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             if (ModelState.IsValid)
             {
-                Brand brand = new Brand()
-                {
-                    BrandId = brandvm.BrandId,
-                    BrandName = brandvm.BrandName
-                };
-
-                _context.Add(brand);
+                _context.Add(brandvm.brand);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -83,7 +77,6 @@ namespace MSIT147thGraduationTopic.Controllers
 
             BrandVM brandvm = new BrandVM();
             brandvm.brand = brand;
-
             return View(brandvm);
         }
 
