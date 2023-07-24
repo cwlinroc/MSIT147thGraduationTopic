@@ -40,16 +40,16 @@
                         </div>
                     </div>
 
-                    <div class="d-flex ms-auto float-end">
-                        <div id="score" class="float-end">
-                            <img src="/images/一星.png" style="height:40px" />
-                            <img src="/images/二星.png" style="height:40px" />
-                            <img src="/images/三星.png" style="height:40px" />
-                            <img src="/images/四星.png" style="height:40px" />
-                            <img src="/images/五星.png" style="height:40px" />
-                        </div>
-                    </div>
-                </div>
+                    <div class="d-flex ms-auto float-end" >
+                        <div id="score" class="float-end rounded-3 mx-3 py-1" style="background-color:	#F1E1FF">
+                            <img id="stsr1" src="/images/空星星.png" style="height:27px" />
+                            <img id="stsr2" src="/images/空星星.png" style="height:27px" />
+                            <img id="stsr3" src="/images/空星星.png" style="height:27px" />
+                            <img id="stsr4" src="/images/空星星.png" style="height:27px" />
+                            <img id="stsr5" src="/images/空星星.png" style="height:27px" />
+                        </div>                        
+                    </div>                  
+                </div>               
                 <div class="form-floating mx-2 my-2">
                     <textarea id="commentText" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
                     <label for="floatingTextarea2">評論</label>
@@ -67,10 +67,48 @@
     <script>
         const score = document.querySelector('#score');
         const btnedit = document.querySelector('#edit');
+        const orderId = document.querySelector('#OrderId');
 
         const xhr = new XMLHttpRequest();
+        xhr.open('Get', '/ApiEvaluation/index')
+        xhr.send();
+        xhr.addEventListener("load",function(){
+            const datas = JSON.parse(xhr.responseText);
+
+            const evaluationdata = datas.map(item => {
+                return(`
+                <div style="border-block-color:#FFDDAA;border-width: 2px">
+                <div class="mt-4 d-flex align-items-center">
+                    <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
+                        <div class="mx-1 mt-2">
+                            <h6 id="MerchandiseName">${datas.MerchandiseName}</h6>
+                        </div>
+                        <div class="mt-2">
+                            <h6 id="SpecName">${datas.SpecName} </h6>
+                        </div>
+                    </div>
+
+                    <div class="d-flex ms-auto float-end">
+                        <div id="score" class="float-end">
+                            <img src="/images/一星.png" style="height:40px" />
+                            <img src="/images/二星.png" style="height:40px" />
+                            <img src="/images/三星.png" style="height:40px" />
+                            <img src="/images/四星.png" style="height:40px" />
+                            <img src="/images/五星.png" style="height:40px" />
+                        </div>
+                    </div>
+                    </div>
+                    <div class="form-floating mx-2 my-2">
+                        <textarea id="commentText" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2">評論</label>
+                        <button id="send" type="submit" class="btn btn-primary float-end mt-2">送出</button>
+                        <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
+                    </div>
+                </div>`)
 
 
+            })
+        })
 
 
 
@@ -83,6 +121,42 @@
         //}
 
 
+
+
+    </script>
+    <script src="../js/jquery-3.7.0.min.js"></script>
+    <script>
+        const starImages = [
+            "/images/空星星.png",
+            "/images/一星.png",
+            "/images/二星.png",
+            "/images/三星.png",
+            "/images/四星.png",
+            "/images/五星.png",
+        ];
+
+        const $stars = $('#score img');
+
+        $stars.hover(
+            function () {
+                const index = $stars.index(this);
+                for (let i = 0; i <= index; i++) {
+                    $stars.eq(i).attr('src', starImages[i + 1]);
+                }
+            },
+            function () {
+                $stars.attr('src', starImages[0]);
+            }
+        );
+        $img.click(function () {
+            $img.prop("src", "images/star.gif");
+            $("img:lt(" + ($(this).index() + 1) + ")").prop("src", "images/chngstar.gif");
+
+        })
+        $img.dblclick(function () {
+
+            $img.prop("src", "/images/空星星.png");
+        })
     </script>
 }
 
