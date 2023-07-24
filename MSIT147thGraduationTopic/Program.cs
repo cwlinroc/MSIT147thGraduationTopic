@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Services;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,8 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<GraduationTopicContext>(
-    option => option.UseSqlServer(builder.Configuration.GetConnectionString("GraduationTopicConnection"))
-    );
+    option => option.UseSqlServer(builder.Configuration.GetConnectionString
+    ("GraduationTopicConnection")));
+
+//AspNetCore.Authentication �Τ�����ާ@������U DI  (�b Controller �d��~�ϥΤ覡)
+builder.Services.AddHttpContextAccessor();
+
+//�ۭq�Τ�n�J��T�ާ@���U DI
+builder.Services.AddScoped<UserInfoService>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -19,6 +28,17 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+//==== AspNetCore.Authentication ����d���������պA�]�m ===== (������ cookie �M��)
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)    
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options => 
+        {
+            //���n�J�ɷ|�۰ʲ���즹���}�C
+            options.LoginPath = new PathString("/MemberFront/NoLogin");
+            //�����v����ɷ|�۰ʲ���즹���}�C
+            options.AccessDeniedPath = new PathString("/MemberFront/NoRole");
+            //�n�J10����|����
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+        });
 
 var app = builder.Build();
 
@@ -35,6 +55,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+//==== AspNetCore.Authentication �Τ�n�J����ާ@����ϥ� ====
+//���涶�Ǥ����A�ˤ��M����\��|�L�k���`�u�@�C
+app.UseCookiePolicy();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
