@@ -1,65 +1,62 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.ViewModels;
-using System.IO;
-using System.Linq;
+using System;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {
-    public class EmployeeService
+    public class MemberService
     {
         private readonly GraduationTopicContext _context;
-        private readonly EmployeeRepository _repo;
+        private readonly MemberRepository _repo;
         private readonly IWebHostEnvironment _environment;
 
-
-        public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environment)
+        public MemberService(GraduationTopicContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _environment = environment;
-            _repo = new EmployeeRepository(context);
+            _repo = new MemberRepository(context);
         }
 
-        public IEnumerable<EmployeeVM> GetAllEmployees()
+        public IEnumerable<MemberVM> GetAllMembers()
         {
-            return _repo.GetAllEmployees().Select(dto =>
+            return _repo.GetAllMembers().Select(dto =>
             {
-                string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, @"uploads\Avatar");
 
                 return dto.ToVM();
             });
         }
 
-        public int CreateEmployee(EmployeeDto dto, IFormFile file)
+        public int CreateMember(MemberDto dto, IFormFile file)
         {
             if (file != null)
             {
-                string path = Path.Combine(_environment.WebRootPath, @"uploads\employeeAvatar", file.FileName);
+                string path = Path.Combine(_environment.WebRootPath, @"uploads\Avatar", file.FileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
                     file.CopyTo(fileStream);
                 }
-                dto.EmployeeAvatarName = file.FileName;
+                dto.Avatar = file.FileName;
             }
 
             var salt = new RandomGenerator().RandomSalt();
             dto.Salt = salt;
-            dto.EmployeePassword = dto.EmployeePassword?.GetSaltedSha256(salt);
-            dto.Permission = 3;
+            dto.Password = dto.Password?.GetSaltedSha256(salt);           
 
-            return _repo.CreateEmployee(dto);
+            return _repo.CreateMember(dto);
         }
 
-        public int EditEmployee(EmployeeEditDto dto, int employeeId, IFormFile file)
+        public int EditMember(MemberEditDto dto, int memberId, IFormFile file)
         {
             if (file != null)
             {
-                string path = Path.Combine(_environment.WebRootPath, @"uploads\employeeAvatar", file.FileName);
+                string path = Path.Combine(_environment.WebRootPath, @"uploads\Avatar", file.FileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
@@ -67,12 +64,14 @@ namespace MSIT147thGraduationTopic.Models.Services
                 }
             }
             string? fileName = file?.FileName;
-            return _repo.EditEmployee(dto, employeeId, fileName);
+            return _repo.EditMember(dto, memberId, fileName);
         }
 
-        public int DeleteEmployee(int employeeId)
+        public int DeleteMember(int memberId)
         {
-            return _repo.DeleteEmployee(employeeId);
+            return _repo.DeleteMember(memberId);
         }
     }
+
+    
 }

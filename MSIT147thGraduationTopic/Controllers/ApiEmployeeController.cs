@@ -13,13 +13,13 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         private readonly GraduationTopicContext _context;
         private readonly EmployeeService _service;
-        private readonly IWebHostEnvironment _environemnt;
+        private readonly IWebHostEnvironment _environment;
 
-        public ApiEmployeeController(GraduationTopicContext context, IWebHostEnvironment environemnt)
+        public ApiEmployeeController(GraduationTopicContext context, IWebHostEnvironment environment)
         {
             _context = context;
-            _environemnt = environemnt;
-            _service = new EmployeeService(context, environemnt);
+            _environment = environment;
+            _service = new EmployeeService(context, environment);
         }
 
 

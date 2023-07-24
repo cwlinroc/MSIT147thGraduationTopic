@@ -28,7 +28,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
     }
     
 
-    static public class EmployyeeVMTransfer
+    static public class EmployeeVMTransfer
     {
         static public EmployeeVM ToVM(this EmployeeDto dto)
         {

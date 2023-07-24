@@ -76,18 +76,12 @@ namespace MSIT147thGraduationTopic.Controllers
                 {
                     //依據 Identity 要求 Claim 類別格式對應指派登入成功的用戶資料。
                     var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, member.Account), //帳號名稱 (規定名稱)
-                        new Claim("MemberName", member.MemberName), //用戶全名 (自訂名稱)
-                        new Claim(ClaimTypes.Email, member.Email), //帳號電子信箱 (規定名稱)
-                        new Claim(ClaimTypes.Role, "Member")  //用戶角色 (規定名稱)
-                    };
-
-                    //===== AspNetCore.Authentication 角色驗証機制項目設置 =====
-                    //在角色名稱尋找取得該用戶的資料。
-                    //var role = from a in _context.Role_Tb
-                    //           where a.EmployeeId == emp.EmployeeId
-                    //           select a;
+                        {
+                            new Claim(ClaimTypes.Name, member.Account), //帳號名稱 (規定名稱)
+                            new Claim("MemberName", member.MemberName), //用戶全名 (自訂名稱)
+                            new Claim(ClaimTypes.Email, member.Email), //帳號電子信箱 (規定名稱)
+                            new Claim(ClaimTypes.Role, "Member")  //用戶角色 (規定名稱)
+                        };
 
                     ////初始化 Claim 類別的新執行個體。(角色資料集合)
                     //foreach (var temp in role)
@@ -105,11 +99,32 @@ namespace MSIT147thGraduationTopic.Controllers
                     //===== AspNetCore.Authentication 單一範圍的驗証機制組態設置 =====
                     //HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(varClaimsIdentity), authProperties);
                 }
+
+                //傳回文字內容訊息。
+                return Content("登入成功!");
             }
             else //有找到員工時
             {
-                
+                //依據 Identity 要求 Claim 類別格式對應指派登入成功的用戶資料。
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, emp.EmployeeAccount), //帳號名稱 (規定名稱)
+                        new Claim("EmployeeName", emp.EmployeeName), //用戶全名 (自訂名稱)
+                        new Claim(ClaimTypes.Email, emp.EmployeeEmail), //帳號電子信箱 (規定名稱)                        
+                    };
 
+                //===== AspNetCore.Authentication 角色驗証機制項目設置 =====
+                //在角色名稱尋找取得該用戶的資料。
+                //var role = from a in _context.Role
+                //           where a.EmployeeId == emp.EmployeeId
+                //           select a;
+
+                //初始化 Claim 類別的新執行個體。(角色資料集合)
+                //foreach (var temp in role)
+                //{
+                //    //加入角色資料
+                //    claims.Add(new Claim(ClaimTypes.Role, temp.Role_F));
+                //}
             }
 
             //傳回文字內容訊息。
@@ -129,16 +144,16 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpPost]
         //[Authorize(Roles = "Member")]
-        public IActionResult MemberCenter(Member member)
+        public IActionResult MemberCenter()
         {
-            return View();
+            return View(_userInfoService.GetUserInfo());
         }
 
         [HttpPost]
         //[Authorize(Roles = "Member")]
-        public IActionResult ShoppingHistory(Member member)
+        public IActionResult ShoppingHistory()
         {
-            return View();
+            return View(_userInfoService.GetUserInfo());
         }
 
         /// <summary>
@@ -160,7 +175,7 @@ namespace MSIT147thGraduationTopic.Controllers
             //HttpContext.User.Claims
 
             //傳回檢視頁面結果。(取得已登入用戶其它欄位資訊) (在 Controller 範圍外使用方式)
-            return Content(_userInfoService.GetUserInfo_Md());
+            return Content(_userInfoService.GetUserInfo());
         }
 
         /// <summary>
@@ -172,7 +187,7 @@ namespace MSIT147thGraduationTopic.Controllers
             //HttpContext.User.Claims
 
             //傳回檢視頁面結果。(取得已登入用戶其它欄位資訊)
-            return Content(_userInfoService.GetUserInfo_Md());
+            return Content(_userInfoService.GetUserInfo());
         }
 
         /// <summary>

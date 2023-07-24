@@ -20,14 +20,14 @@
                 <label for="gender" class="form-label fw-bold">性別</label>
                 <br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="genderMale" 
+                    <input class="form-check-input" type="radio" name="genderMale"
                            id="genderMale" required>
                     <label class="form-check-label" for="genderMale">
                         男性
                     </label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="genderFemale" 
+                    <input class="form-check-input" type="radio" name="genderFemale"
                            id="genderFemale" required>
                     <label class="form-check-label" for="genderFemale">
                         女性
@@ -39,7 +39,7 @@
             <!-- NickName input-->
             <div class="form mb-3">
                 <label for="nickname" class="form-label fw-bold">暱稱</label>
-                <input class="form-control" id="nickname" type="text" />                
+                <input class="form-control" id="nickname" type="text" />
             </div>
             <!-- Account input-->
             <div class="form mb-3">
@@ -54,15 +54,15 @@
                 </label>
                 <input class="form-control" id="password" name="password" type="password"
                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}"
-                       onblur="validate()" required />
-                <div class="invalid-feedback" id="password-validation">請輸入密碼</div>
+                       oninput="validate(this)" required />
+                <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
                 <label for="repassword" class="form-label fw-bold">確認密碼</label>
                 <input class="form-control" id="repassword" name="repassword" type="password"
-                       onblur="validate()" required>
-                <div class="invalid-feedback" id="repassword-validation"></div>
+                       oninput="validate(this)" required>
+                <div class="invalid-feedback"></div>
             </div>
             <!-- Email address input-->
             <div class="form mb-3">
@@ -164,19 +164,20 @@
             })
         })()
 
-        const pwd = $('#password')
-        const repwd = $('#repassword')
-        let pwdvalidate = $('#password-validation')
-        let repwdvalidate = $('#repassword-validation')
-        
-        function validate() {
-            //console.log($('input[name = "password"]').val())
-            
-            //if (pwd != repwd) {
-            //    repwd.classlist.remove("is-valid")
-            //    repwd.classlist.add("is-invalid")
-            //    repwdvalidate.value = "必須與密碼相同"
-            //}
+        const pwd = $('input[name = "password"]')
+        const repwd = $('input[name = "repassword"]')
+        const repassword = document.memberRegisteredForm.repassword
+
+        function validate(input) {
+            //console.log(pwd.val())
+            if (pwd.val() != repwd.val()) {
+                console.log(repassword.classList)
+                repassword.classList.remove('is-valid')
+                repassword.classList.add('is-invalid')
+                input.setCustomValidity('與密碼不符');
+                
+            }
+
         }
     </script>
 }
