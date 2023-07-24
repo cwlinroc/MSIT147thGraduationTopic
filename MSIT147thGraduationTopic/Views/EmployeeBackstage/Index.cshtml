@@ -471,6 +471,8 @@
         //    form.removeClass('is-custom-validated')
         //}
 
+
+        ////0. section最上面要引用  script src="~/js/MyBootstrapValidator.js"
         ////1. const myValid = new MyBootsrapValidator(表單element)
         const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
@@ -479,9 +481,9 @@
             ////2. myValid.validateFunction( 回傳bool的函式 ) //自訂判斷整個表單是否格式正確，正確回傳true
             myValid.validateFunction(() => {
                 const name = document.querySelector('#name')
-                const nameValid = !!name.value
+                const nameValid = Boolean(name.value)
                 ////3. input元素.setValidate( 回傳bool的函式 , [錯誤訊息字串] )  //自訂判斷這個input是否格式正確，如果有輸入錯誤字串會更改顯示的錯誤訊息
-                ////ps:可以使用 input元素.setValidate(...).setValidate(...) 串接多個條件判斷  只要其中有錯誤就會顯示第一個錯的錯誤，包含錯誤信息
+                ////ps:也可以使用 input元素.setValidate(...).setValidate(...).setValidate(...) 串接多個條件判斷  只要其中有錯誤就會顯示第一個錯的錯誤，包含錯誤信息
                 name.setValidate(() => nameValid)
 
                 const account = document.querySelector('#account')
@@ -519,9 +521,6 @@
             })
             return myValid.startValidate()
         }
-
-
-
 
         function clearAllValidFeedBack() {
             ////5. myValid.endtValidate() //結束驗證，順便清除顯示錯誤(如果送出表單後頁面會跳走，這個函式就用不到了)
