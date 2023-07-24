@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -21,16 +22,25 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Specs
         public async Task<IActionResult> Index(int merchandiseid) // todo 上方增加該項商品資料
         {
-            var main = _context.Merchandises.Where(m => m.MerchandiseId == merchandiseid);
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
-            return View(await datas.ToListAsync());
+            
+            List<SpecVM> list = new List<SpecVM>();
+            foreach (Spec s in datas)
+            {
+                SpecVM specvm = new SpecVM();
+                specvm.spec = s;
+                list.Add(specvm);
+            }
+
+            return View(list);
         }
 
         // GET: Specs/Create
-        public IActionResult Create(int merchandiseid, string merchandisename) //todo 生成的商品value並非ID，因此不能產生正確的規格資料
+        public IActionResult Create() //todo 生成的商品value並非ID，因此不能產生正確的規格資料
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
-            return View(merchandiseid);
+            return View();
+            //return View(merchandiseid);
         }
 
         // POST: Specs/Create
@@ -38,7 +48,8 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] Spec spec)
+        public async Task<IActionResult> Create
+            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] Spec spec)
         {
             if (ModelState.IsValid)
             {

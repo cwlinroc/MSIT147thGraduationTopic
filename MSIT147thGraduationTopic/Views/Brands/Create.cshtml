@@ -13,16 +13,16 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Create">
+                <form asp-action="Create" method="Post" name="forminput" id="forminput">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="BrandName" class="control-label"></label>
-                        <input asp-for="BrandName" class="form-control" />
-                        <span asp-validation-for="BrandName" class="text-danger"></span>
+                        <input asp-for="BrandName" class="form-control" id="input" />
+                        <span asp-validation-for="BrandName" class="text-danger" id="alertspan"></span>
                     </div>
                     <hr />
                     <div class="form-group">
-                        <input type="submit" value="新增" class="btn btn-primary" />
+                        <input type="submit" value="新增" class="btn btn-primary" id="submit" />
                         @Html.ActionLink("取消", "Index", "Brands", null, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
@@ -32,7 +32,59 @@
 </div>
 
 @section Scripts {
+    <script>
+        const alertspan = document.querySelector("#alertspan");
 
+        const submit = document.querySelector("#submit");
+        submit.addEventListener("click", (event) => {
+            event.preventDefault(); // todo 關閉後無法重新啟用
+            var formdata = new FormData(document.forminput);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/ApiBrand/CheckBrand");
+            xhr.send(formdata);
+
+            let condition;
+            xhr.addEventListener("load", () => {
+                console.log("進到LOAD");
+                const data = JSON.parse(xhr.responseText);
+                condition = data ? true : false;
+
+                if (data) {
+                    alertspan.innerHTML = "此品牌已存在，請重新命名";
+                    console.log("進到最終條件判斷TRUE");
+                }
+                else {
+                    alertspan.innerHTML = "";
+                    console.log("進到最終條件判斷FALSE");
+                    const forminput = document.querySelector("#forminput");
+                    HTMLFormElement.prototype.submit.call(forminput);
+                    //$("#forminput").submit(); //https://trackjs.com/blog/when-form-submit-is-not-a-function/
+                }
+            })
+        })
+
+        const input = document.querySelector("#input");
+        input.addEventListener("blur", () => {
+            var formdata = new FormData(document.forminput);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/ApiBrand/CheckBrand");
+            xhr.send(formdata);
+
+            xhr.addEventListener("load", () => {
+                const data = JSON.parse(xhr.responseText);
+                console.log(xhr.responseText);
+                console.log(data);
+                if (data) {
+                    alertspan.innerHTML = "此品牌已存在，請重新命名";
+                }
+                else {
+                    alertspan.innerHTML = "";
+                }
+            })
+        })
+    </script>
 }
 
 @section Styles{
