@@ -16,7 +16,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly EmployeeRepository _repo;
         private readonly IWebHostEnvironment _environemnt;
 
-
+        
         public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environemnt)
         {
             _context = context;
@@ -34,7 +34,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             });
         }
 
-        public int CreateEmployee(EmployeeDto dto, IFormFile file)
+        public int CreateEmployee(EmployeeDto dto, IFormFile? file)
         {
             if (file != null)
             {
@@ -55,7 +55,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.CreateEmployee(dto);
         }
 
-        public int EditEmployee(EmployeeEditDto dto, int employeeId, IFormFile file)
+        public int EditEmployee(EmployeeEditDto dto, int employeeId, IFormFile? file)
         {
             if (file != null)
             {

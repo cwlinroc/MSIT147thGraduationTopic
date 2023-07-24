@@ -32,7 +32,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             if (employee == null) return -1;
 
             employee.ChangeByEditDto(dto);
-            employee.AvatarName = fileName;
+            if (!string.IsNullOrEmpty(fileName)) employee.AvatarName = fileName;
 
             _context.SaveChanges();
             return employeeId;
