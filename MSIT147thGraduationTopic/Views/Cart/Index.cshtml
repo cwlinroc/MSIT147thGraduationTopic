@@ -1,0 +1,234 @@
+﻿@{
+    ViewData["Title"] = "購物車";
+}
+
+<div class="container px-5 mt-5">
+    <h2>購物車</h2>
+
+    <div class="bg-light rounded shadow p-4 my-4">
+        <table class="table text-center" id="tableCartItems">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="form-check-input" id="checkboxAll"></th>
+                    <th>商品</th>
+                    <th>單價</th>
+                    <th>數量</th>
+                    <th>小計</th>
+                    <th>刪除</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            </tbody>
+
+        </table>
+
+
+        <hr>
+        <div class="d-flex p-2">
+            <div class="ms-auto me-4">
+                <span>選擇項目金額總計:</span>
+                <span class="mx-3" id="totalPrice">0</span>
+            </div>
+        </div>
+
+        <div class="d-flex p-2">
+            <div class="ms-auto me-4">
+                <btn class="btn btn-warning" id="btnSendOrder">購買選擇項目</btn>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+@section Scripts{
+    <script>
+
+        getCartItems(@Model)
+
+        $('#btnSendOrder').click(sendOrder)
+
+        //全選checkbox事件
+        $('#checkboxAll').click(e => {
+            $('#tableCartItems').find('tbody')
+                .find('input[type=checkbox]')
+                .prop('checked', $(e.currentTarget).prop('checked'))
+            caculateCheckedItemsTotalPrice()
+        })
+
+        //ajax取得購物車物件
+        async function getCartItems(memberId) {
+            const response = await fetch('@Url.Content($"~/api/apicart/{Model}")')
+            const items = await response.json();
+
+            const htmls = items.map(o => {
+                return `<tr>
+                    <td>
+                        <input type="hidden" value="${o.cartItemId}"/>
+                        <input type="checkbox" class="form-check-input">
+                    </td>
+                        <td>${o.cartItemName}</td>
+                        <td>$<span class="cartItemPrice">${o.cartItemPrice}</span></td>
+                    <td>
+                        <div class="input-group d-flex justify-content-center">
+                            <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                                            <input type="number" value="${o.quantity}" class="text-center cart-item-number"
+                                    style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                            <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                        </div>
+                    </td>
+                            <td>$<span class="ItemTotalPrice">${o.cartItemPrice * o.quantity}</span></td>
+                    <td>
+                                <btn class="btn btn-danger cart-item-delete">刪除</btn>
+                    </td>
+                </tr>`
+            })
+            document.querySelector('tbody').innerHTML = htmls.join('')
+            addBtnEvent()
+            subBtnEvent()
+            deleteBtnEvent()
+            $('#tableCartItems').find('tbody').find('input[type=checkbox]')
+                .click(caculateCheckedItemsTotalPrice)
+        }
+
+        //增加數量按鈕
+        function addBtnEvent() {
+            $(".cart-item-add").click(e => {
+                const numberBar = $(e.currentTarget).parent().find(".cart-item-number")
+                numberBar.val(+numberBar.val() + 1)
+                changeCartItemQuantity(e.currentTarget)
+                caculateSingleItemTotalPrice(e.currentTarget)
+                caculateCheckedItemsTotalPrice()
+            })
+        }
+        //減少數量按鈕
+        function subBtnEvent() {
+            $(".cart-item-sub").click(e => {
+                const numberBar = $(e.currentTarget).parent().find(".cart-item-number")
+                let number = +numberBar.val() - 1
+                if (number < 0) number = 0
+                numberBar.val(number)
+                changeCartItemQuantity(e.currentTarget)
+                caculateSingleItemTotalPrice(e.currentTarget)
+                caculateCheckedItemsTotalPrice()
+            })
+        }
+
+        //刪除按鈕
+        function deleteBtnEvent() {
+            $(".cart-item-delete").click(e => {
+                deleteCartItem(e.currentTarget)
+                $(e.currentTarget).closest('tr').remove()
+                caculateCheckedItemsTotalPrice()
+            })
+        }
+
+
+        //計算選取物品的總價
+        function caculateCheckedItemsTotalPrice() {
+            const checkedItems = $('#tableCartItems').find('tbody')
+                .find('input[type=checkbox]')
+                .filter(':checked')
+                .closest('tr')
+
+            let total = 0
+            checkedItems.each((i, e) => {
+                const quantity = $(e).find('input[type=number]').val()
+                const price = Number($(e).find('span.cartItemPrice').text())
+                total += price * quantity
+            })
+            $('#totalPrice').text(total)
+        }
+
+        //計算選取物品單價
+        function caculateSingleItemTotalPrice(element) {
+            const quantity = $(element).closest('tr').find('input[type=number]').val()
+            const price = Number($(element).closest('tr').find('span.cartItemPrice').text())
+            $(element).closest('tr').find('span.ItemTotalPrice').text(price * quantity)
+        }
+
+        //Ajax增減物件數量
+        async function changeCartItemQuantity(element) {
+            const cartItemId = +$(element).closest('tr').find('input[type=hidden]').val()
+            const quantity = +$(element).closest('tr').find('input[type=number]').val()
+
+            const requestOptions = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'CartItemId': cartItemId, 'Quantity': quantity })
+            };
+            const response = await fetch('@Url.Content($"~/api/apicart")', requestOptions);
+            if (response.status === 204) console.log('Quantity change succeeded.')
+        }
+
+        //Ajax刪除物件
+        async function deleteCartItem(element) {
+            const cartItemId = +$(element).closest('tr').find('input[type=hidden]').val()
+            const response = await fetch(`@Url.Content($"~/api/apicart")/${cartItemId}`, { method: 'DELETE' });
+            if (response.status === 204) console.log('Quantity delete succeeded.')
+        }
+
+
+        
+        //Ajax送出訂單
+
+        async function sendOrder() {
+            const checkedItems = $('#tableCartItems').find('tbody')
+                .find('input[type=checkbox]')
+                .filter(':checked')
+                .closest('tr')
+
+            if (!checkedItems.length) return
+
+            const orders = $.map(checkedItems, (val, i) => +$(val).find('input[type=hidden]').val())
+
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'cartItemIds': orders })
+            }
+            //const response = await fetch('@Url.Content($"~/cart/index")', requestOptions);
+            const response = await fetch('@Url.Content($"~/api/apicart")', requestOptions);
+            
+            if (response.status === 400){
+                console.log('fail')
+                return
+            }
+            window.location.href = response.url
+        }
+
+
+
+    </script>
+}
+
+@section Styles{
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        textarea {
+            height: 200px;
+        }
+    </style>
+}
+
+
+

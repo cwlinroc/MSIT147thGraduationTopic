@@ -19,7 +19,6 @@ namespace MSIT147thGraduationTopic.EFModels
         }
 
         public virtual DbSet<Brand> Brands { get; set; }
-        public virtual DbSet<Cart> Carts { get; set; }
         public virtual DbSet<CartItem> CartItems { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
@@ -39,14 +38,13 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
         public virtual DbSet<SpecWithMerchandiseName> SpecWithMerchandiseNames { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        public virtual DbSet<UsedCoupon> UsedCoupons { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
             }
         }
 
@@ -59,23 +57,8 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Cart>(entity =>
-            {
-                entity.HasOne(d => d.Member)
-                    .WithMany(p => p.Carts)
-                    .HasForeignKey(d => d.MemberId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Carts_Members");
-            });
-
             modelBuilder.Entity<CartItem>(entity =>
             {
-                entity.HasOne(d => d.Cart)
-                    .WithMany(p => p.CartItems)
-                    .HasForeignKey(d => d.CartId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CartItems_Carts");
-
                 entity.HasOne(d => d.Spec)
                     .WithMany(p => p.CartItems)
                     .HasForeignKey(d => d.SpecId)
@@ -92,19 +75,13 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Coupon>(entity =>
             {
-                entity.Property(e => e.CouponDiscountCondition).HasColumnType("money");
+                entity.Property(e => e.CouponCondition).HasColumnType("money");
+
+                entity.Property(e => e.CouponDiscount).HasColumnType("money");
 
                 entity.Property(e => e.CouponEndDate).HasColumnType("date");
 
-                entity.Property(e => e.CouponRebate).HasColumnType("money");
-
                 entity.Property(e => e.CouponStartDate).HasColumnType("date");
-
-                entity.HasOne(d => d.CouponEligibleTag)
-                    .WithMany(p => p.Coupons)
-                    .HasForeignKey(d => d.CouponEligibleTagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Coupons_Tags");
             });
 
             modelBuilder.Entity<CouponOwner>(entity =>
@@ -114,28 +91,29 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.CouponSerialNumber)
                     .IsRequired()
                     .HasMaxLength(50)
-                    .IsFixedLength();
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Coupon)
                     .WithMany()
                     .HasForeignKey(d => d.CouponId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CouponOwner_Coupons");
+                    .HasConstraintName("FK_CouponOwners_Coupons");
 
                 entity.HasOne(d => d.Member)
                     .WithMany()
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CouponOwner_Members");
+                    .HasConstraintName("FK_CouponOwners_Members");
             });
 
             modelBuilder.Entity<Employee>(entity =>
             {
+                entity.Property(e => e.AvatarName).HasMaxLength(50);
+
                 entity.Property(e => e.EmployeeAccount)
                     .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.EmployeeAvatarPath).HasMaxLength(50);
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EmployeeEmail)
                     .IsRequired()
@@ -147,20 +125,22 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.EmployeePassword)
                     .IsRequired()
-                    .HasMaxLength(65);
+                    .HasMaxLength(70)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EmployeePhone)
                     .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
                     .HasMaxLength(20)
-                    .IsFixedLength();
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Evaluation>(entity =>
             {
-                entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(50)
-                    .HasColumnName("ImageURL");
-
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.Evaluations)
                     .HasForeignKey(d => d.MemberId)
@@ -205,19 +185,23 @@ namespace MSIT147thGraduationTopic.EFModels
             {
                 entity.Property(e => e.Account)
                     .IsRequired()
-                    .HasMaxLength(15)
-                    .IsFixedLength();
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Address).HasMaxLength(30);
+                entity.Property(e => e.Address).HasMaxLength(50);
 
-                entity.Property(e => e.Avatar).HasMaxLength(50);
+                entity.Property(e => e.Avatar).HasMaxLength(100);
+
+                entity.Property(e => e.ConfirmGuild)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.DateOfBirth).HasColumnType("date");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
-                    .HasMaxLength(30)
-                    .IsFixedLength();
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.MemberName)
                     .IsRequired()
@@ -227,13 +211,18 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasMaxLength(65)
-                    .IsFixedLength();
+                    .HasMaxLength(70)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
                     .HasMaxLength(20)
-                    .IsFixedLength();
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Merchandise>(entity =>
@@ -315,8 +304,8 @@ namespace MSIT147thGraduationTopic.EFModels
             {
                 entity.Property(e => e.ContactPhoneNumber)
                     .IsRequired()
-                    .HasMaxLength(20)
-                    .IsFixedLength();
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.DeliveryAddress)
                     .IsRequired()
@@ -324,7 +313,7 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.PurchaseTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Remark).HasMaxLength(200);
+                entity.Property(e => e.Remark).HasMaxLength(300);
 
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.Orders)
@@ -448,21 +437,6 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.TagName)
                     .IsRequired()
                     .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<UsedCoupon>(entity =>
-            {
-                entity.HasOne(d => d.Coupon)
-                    .WithMany(p => p.UsedCoupons)
-                    .HasForeignKey(d => d.CouponId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UsedCoupons_Coupons");
-
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.UsedCoupons)
-                    .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_UsedCoupons_Orders");
             });
 
             OnModelCreatingPartial(modelBuilder);

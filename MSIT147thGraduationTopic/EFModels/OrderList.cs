@@ -11,6 +11,8 @@ namespace MSIT147thGraduationTopic.EFModels
         public int OrderId { get; set; }
         public int SpecId { get; set; }
         public int Quantity { get; set; }
+        public int Price { get; set; }
+        public int Discount { get; set; }
 
         public virtual Order Order { get; set; }
         public virtual Spec Spec { get; set; }

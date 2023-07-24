@@ -8,11 +8,10 @@ namespace MSIT147thGraduationTopic.EFModels
     public partial class CartItem
     {
         public int CartItemId { get; set; }
-        public int CartId { get; set; }
+        public int MemberId { get; set; }
         public int SpecId { get; set; }
         public int Quantity { get; set; }
 
-        public virtual Cart Cart { get; set; }
         public virtual Spec Spec { get; set; }
     }
 }

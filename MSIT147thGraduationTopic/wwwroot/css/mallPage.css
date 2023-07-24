@@ -11,13 +11,6 @@
     height: 550px;
 }
 
-.custom-merchandise {
-    width: 15rem;
-}
-
-    .custom-merchandise .card-body {
-        padding: 0.3rem 0.3rem;
-    }
 
 #backToTop {
     position: fixed;

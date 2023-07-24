@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewData["Title"] = "優惠券列表";
+}
+
+<div class="text-center mb-4">
+    <h1 class="fw-bold mt-4">優惠券列表</h1>
+</div>
+<div class="row" style="--bs-gutter-x:0;">
+    <div class="col-lg-2 offset-1">
+        <div class="text-center mb-3">
+            <img class="img-fluid rounded-circle mb-4"
+                 src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
+            <br>
+            <div class="input-group">
+                <input type="file" class="form-control" aria-label="Select Avatar">
+                <button class="btn btn-primary" type="submit">更換頭像</button>
+            </div>
+        </div>
+        <br />
+        <ul class="ms-5 fs-4" id="sidelist">
+            <li><a href="會員中心.html" class="text-decoration-none">會員中心</a></li>
+            <li><a href="查詢購物紀錄.html" class="text-decoration-none">查詢購物紀錄</a></li>
+            <li><a href="優惠券.html" class="text-decoration-none">優惠券列表</a></li>
+        </ul>
+    </div>
+    <div class="col-lg-6 offset-2">
+        <div>
+            <table class="table table-bordered mb-5 align-middle text-center fs-4">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 30%">優惠券面額</th>
+                        <th scope="col" style="width: 70%">優惠券說明</th>
+
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    <tr>
+                        <td>
+                            9折
+                            <p class="text-danger">即將到期</p>
+                        </td>
+                        <td>
+                            <ul class="couponscript">
+                                <li>適用商品金額(以上)：$3000</li>
+                                <li>適用商品：<a href="">查看適用商品</a></li>
+                                <li>
+                                    有效期限：自 <span>yyyy/MM/dd</span>
+                                    至 <span>yyyy/MM/dd</span>
+                                </li>                               
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="fs-4">
+                            $1000                            
+                        </td>
+                        <td>
+                            <ul class="couponscript">
+                                <li>適用商品金額(以上)：$10000</li>
+                                <li>適用商品：<a href="">查看適用商品</a></li>
+                                <li>
+                                    有效期限：自 <span>yyyy/MM/dd</span>
+                                    至 <span>yyyy/MM/dd</span>
+                                </li>                               
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>       
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-lg justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">上一頁</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+@section Styles{
+    <style>
+        #sidelist {
+            list-style-type: none;
+        }
+
+        .couponscript {
+            list-style-type: none;
+            padding-left: 0%;
+            text-align: left;
+        }
+    </style>
+}
+          

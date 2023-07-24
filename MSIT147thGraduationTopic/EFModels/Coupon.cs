@@ -7,20 +7,12 @@ namespace MSIT147thGraduationTopic.EFModels
 {
     public partial class Coupon
     {
-        public Coupon()
-        {
-            UsedCoupons = new HashSet<UsedCoupon>();
-        }
-
         public int CouponId { get; set; }
-        public int CouponEligibleTagId { get; set; }
+        public int CouponTagId { get; set; }
         public DateTime CouponStartDate { get; set; }
         public DateTime CouponEndDate { get; set; }
-        public int CouponTypeId { get; set; }
-        public decimal? CouponDiscountCondition { get; set; }
-        public decimal CouponRebate { get; set; }
-
-        public virtual Tag CouponEligibleTag { get; set; }
-        public virtual ICollection<UsedCoupon> UsedCoupons { get; set; }
+        public int CouponDiscountTypeId { get; set; }
+        public decimal? CouponCondition { get; set; }
+        public decimal CouponDiscount { get; set; }
     }
 }

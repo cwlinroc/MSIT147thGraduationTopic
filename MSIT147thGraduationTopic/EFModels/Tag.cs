@@ -7,14 +7,7 @@ namespace MSIT147thGraduationTopic.EFModels
 {
     public partial class Tag
     {
-        public Tag()
-        {
-            Coupons = new HashSet<Coupon>();
-        }
-
         public int TagId { get; set; }
         public string TagName { get; set; }
-
-        public virtual ICollection<Coupon> Coupons { get; set; }
     }
 }
