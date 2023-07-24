@@ -55,8 +55,9 @@
                             </td>
                             <td>
                                 @Html.ActionLink("修改", "Edit", "Categories", new { id=item.CategoryId }, new { @class = "btn btn-warning" }) |
-                                @Html.ActionLink("刪除", "Delete", "Categories", new { id=item.CategoryId }
-                        , new { onclick = "return confirm('確定刪除商品類別嗎？')", @class = "btn btn-danger" })
+                                @*@Html.ActionLink("刪除", "Delete", "Categories", new { id=item.CategoryId }
+                        , new { onclick = "return confirm('確定刪除商品類別嗎？')", @class = "btn btn-danger" })*@
+                                <button class="btn btn-danger fordelete" data-categoryid="@item.CategoryId">刪除</button>
                             </td>
                         </tr>
                     }
@@ -70,7 +71,27 @@
 </div>
 
 @section Scripts {
+    <script>
+        $(".fordelete").click((e) => {
+            if (!confirm('確定刪除類別嗎？')) return;
+            const currentcategoryid = $(e.currentTarget).attr("data-categoryid");
 
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/ApiCategory/CheckMerchandiseforDeleteCategory/${currentcategoryid}`);
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const data = JSON.parse(xhr.responseText);
+
+                if (data) {
+                    alert("類別中尚有商品，因此無法刪除");
+                }
+                else {
+                    window.location.href = `/Categories/Delete/${currentcategoryid}`;
+                }
+            })
+        })
+    </script>
 }
 
 @section Styles{

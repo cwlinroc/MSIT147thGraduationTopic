@@ -32,7 +32,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return Json(exists);
         }
-        public IActionResult CheckMerchandiseforDelete(int id)
+        public IActionResult CheckMerchandiseforDeleteBrand(int id)
         {
             var exists = _context.Merchandises.Any(m => m.BrandId == id);
 

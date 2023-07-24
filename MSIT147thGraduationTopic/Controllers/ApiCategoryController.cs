@@ -30,5 +30,11 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return Json(exists);
         }
+        public IActionResult CheckMerchandiseforDeleteCategory(int id)
+        {
+            var exists = _context.Categories.Any(m => m.CategoryId == id);
+
+            return Json(exists);
+        }
     }
 }

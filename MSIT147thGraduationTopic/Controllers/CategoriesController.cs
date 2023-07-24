@@ -121,12 +121,13 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             if (_context.Merchandises.Where(m => m.CategoryId == id).Count() > 0)
             {
-                return Problem("類別中尚有商品，因此無法刪除");//todo return Problem()要改成ErrorMessage/Alert
+                return RedirectToAction(nameof(Index));
             }
-            if (_context.Categories.Count() == 1)
-            {
-                return Problem("類別總數不可為零，因此無法刪除");
-            }
+            //if (_context.Categories.Count() == 1)
+            //{
+            //    //類別總數不可為零，因此無法刪除
+            //    return RedirectToAction(nameof(Index));
+            //}
 
             if (id == null || _context.Categories == null)
             {

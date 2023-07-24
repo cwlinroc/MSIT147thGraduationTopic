@@ -46,13 +46,13 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.CategoryId = value; }
         }
         [DisplayName("商品描述")]
-        [StringLength(50, ErrorMessage = "字數不得超過500字")]
+        [StringLength(500, ErrorMessage = "字數不得超過500字")] //todo 是否可以做成不限制輸入字數，送出再驗證
         public string Description
         {
             get { return _merchandise.Description; }
             set { _merchandise.Description = value; }
         }
-        [DisplayName("商品圖片")]
+        [DisplayName("商品圖片")] //todo 目前會限制必填(再做一個VM?)
         public string ImageUrl
         {
             get { return _merchandise.ImageUrl; }

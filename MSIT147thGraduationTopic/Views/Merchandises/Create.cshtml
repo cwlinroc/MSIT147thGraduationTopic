@@ -42,9 +42,10 @@
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ImageUrl" class="control-label">選擇圖片</label>
+                        @*<label asp-for="ImageUrl" class="control-label">選擇圖片</label>*@
                         @*<input asp-for="ImageUrl" class="form-control" id="imgurl" readonly />*@
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <label class="col-form-label">選擇圖片</label>
                         <input class="form-control" type="file" id="selectfile" name="photo">
 
                         <div class="alert alert-secondary mt-2" id="containdisplay">

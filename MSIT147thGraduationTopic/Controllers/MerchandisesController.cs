@@ -85,7 +85,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 {
                     photo.CopyTo(fileStream);
                 }
-                merchandisevm.ImageUrl = photoPath;
+                //merchandisevm.ImageUrl = photoPath; // todo 改成轉型後再加回去
 
 
                 /*// 使用時間戳系統性改名，避免資料庫內名稱重複
