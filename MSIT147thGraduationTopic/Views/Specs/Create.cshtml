@@ -1,4 +1,4 @@
-﻿@model MSIT147thGraduationTopic.EFModels.Spec
+﻿@model MSIT147thGraduationTopic.Models.ViewModels.SpecVM
 
 @{
     Layout = "_BackstagePage";
@@ -57,6 +57,7 @@
                     <hr />
                     <div class="form-group">
                         <input type="submit" value="新增" class="btn btn-primary" />
+                        @*<input type="submit" id="hiddenbut" style="display:none" />*@
                         @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId }, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
@@ -69,13 +70,14 @@
     <script>
         const merchandisename = document.querySelector("#merchandisename");
         merchandisename.addEventListener("load", () => {
+
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/ApiMerchandise/Merchandise");
-            xhr.send();
+            xhr.open("POST", "/ApiMerchandise/MerchandiseforCreate");
+            xhr.send(merchandiseid);
 
             xhr.addEventListener("load", () => {
                 const datas = JSON.parse(xhr.responseText);
-                var merchandise = datas.Where(m => m.MerchandiseId == MerchandiseId);
+                var merchandise = datas;
                 merchandise.innerHTML = merchandise.MerchandiseName;
             })
         })

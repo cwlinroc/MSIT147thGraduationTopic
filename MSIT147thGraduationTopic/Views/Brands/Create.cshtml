@@ -13,7 +13,7 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Create" method="Post" name="forminput">
+                <form asp-action="Create" method="Post" name="forminput" id="forminput">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="BrandName" class="control-label"></label>
@@ -44,15 +44,22 @@
             xhr.open("POST", "/ApiBrand/CheckBrand");
             xhr.send(formdata);
 
+            let condition;
             xhr.addEventListener("load", () => {
+                console.log("進到LOAD");
                 const data = JSON.parse(xhr.responseText);
+                condition = data ? true : false;
+
                 if (data) {
-                    //event.initEvent(); //todo 無法從這裡啟動
-                    //event.preventDefault(); //todo 無法從這裡關閉
                     alertspan.innerHTML = "此品牌已存在，請重新命名";
+                    console.log("進到最終條件判斷TRUE");
                 }
                 else {
                     alertspan.innerHTML = "";
+                    console.log("進到最終條件判斷FALSE");
+                    const forminput = document.querySelector("#forminput");
+                    HTMLFormElement.prototype.submit.call(forminput);
+                    //$("#forminput").submit(); //form被綁定
                 }
             })
         })

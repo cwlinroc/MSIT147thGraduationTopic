@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Spec>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.SpecVM>
 
 @{
     Layout = "_BackstagePage";
@@ -7,7 +7,7 @@
 
 <div class="container">
     <h1 class="title">商品規格檢視</h1>
-    <button id="TEST">TEST</button>
+
     <div class="bg-light rounded shadow p-5">
         <table class="table table-hover">
             <thead>
@@ -35,7 +35,7 @@
                     <td id="mBrand"></td>
                     <td id="mCategory"></td>
                     <td id="mDescription"></td>
-                    <td><img id="mimage"/></td>
+                    <td><img id="mImage" /></td>
                 </tr>
             </tbody>
         </table>
@@ -107,7 +107,7 @@
                             <td>
                                 @Html.ActionLink("修改", "Edit", "Specs", new { id=item.SpecId }, new { @class = "btn btn-warning" }) |
                                 @Html.ActionLink("刪除", "Delete", "Specs", new { id=item.SpecId }
-                                                    , new { onclick = "return confirm('確定刪除商品規格嗎？')", @class = "btn btn-danger" })
+                        , new { onclick = "return confirm('確定刪除商品規格嗎？')", @class = "btn btn-danger" })
                             </td>
                         </tr>
                     }
@@ -122,15 +122,13 @@
 
 @section Scripts {
     <script>
-        const title = document.querySelector(".title");
-        const TEST = document.querySelector("#TEST");
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
         const mCategory = document.querySelector("#mCategory");
         const mDescription = document.querySelector("#mDescription");
         const mImage = document.querySelector("#mImage");
 
-        TEST.addEventListener("click", () => {
+        $(() => {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/ApiSpec/Merchandise");
             xhr.send();
@@ -143,9 +141,10 @@
                 mBrand.innerHTML = merchandise.brandName;
                 mCategory.innerHTML = merchandise.categoryName;
                 mDescription.innerHTML = merchandise.description; //todo 為何是小寫?
-                mImage.src = (merchandise.imageUrl != null) ? merchandise.imageUrl : ""; //todo 圖片載入不成功
+                mImage.src = (merchandise.imageUrl != null) ? merchandise.imageUrl : "";
             })
         })
+
     </script>
 }
 

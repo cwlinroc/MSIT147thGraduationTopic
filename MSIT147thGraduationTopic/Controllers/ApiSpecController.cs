@@ -20,5 +20,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return Json(datas);
         }
+
+        //[HttpPost]
+        //public IActionResult GetMerchandiseName()
+        //{
+        //    var datas = _context.SpecWithMerchandiseNames.Where(m => m.MerchandiseId == MerchandiseId);
+
+        //    return Json(datas);
+        //}
     }
 }
