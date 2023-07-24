@@ -6,7 +6,8 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            string[] permissions = { "管理員", "經理", "員工" };
+            return View(permissions);
         }
 
     }

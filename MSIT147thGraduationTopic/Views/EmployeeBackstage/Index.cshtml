@@ -1,4 +1,5 @@
-﻿@{
+﻿@model string[]
+@{
     ViewData["Title"] = "Index";
     Layout = "_BackstagePage";
 }
@@ -22,13 +23,11 @@
 
                 <div class="p-4">
                     <h2>員工檢視</h2>
-                    <div class="d-flex justify-content-between">
-                        <form>
-                            <input type="text">
-                            <button type="submit">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                        </form>
+                    <div class="d-flex">
+                        <input type="text" id="query" name="query">
+                        <button type="button" id="queryButton">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -41,6 +40,7 @@
                                 <th>帳號名稱</th>
                                 <th>權限</th>
                                 <th>修改</th>
+                                <th>權限調整</th>
                                 <th>刪除</th>
                             </tr>
                         </thead>
@@ -67,7 +67,7 @@
 
             </div>
 
-            <div class=" bg-light rounded shadow p-2" id="data">
+            <div class=" bg-light rounded shadow p-2 mb-5" id="data">
                 <table class="table">
                     <thead>
                     </thead>
@@ -102,7 +102,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- MainModal -->
 <div class="modal fade" id="edditModal" tabindex="-1" aria-labelledby="edditModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -155,6 +155,34 @@
     </div>
 </div>
 
+<!-- MainModal -->
+<div class="modal fade " id="permissionModal" tabindex="-1" aria-labelledby="permissionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="permissionModalLabel">修改權限為</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-5">
+                <select class="form-select" id="selectPermission">
+                    <option selected disabled hidden>--選擇--</option>
+                    @foreach (var permission in Model)
+                    {
+                        <option value="@permission">@permission</option>
+                    }
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-primary" id="btnSubmit">確認</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
 
 
 
@@ -162,7 +190,8 @@
     <script>
 
         //get Modal
-        const myModal = new bootstrap.Modal(document.querySelector('.modal'))
+        const mainModal = new bootstrap.Modal(document.querySelector('#edditModal'))
+        const permissionModal = new bootstrap.Modal(document.querySelector('#permissionModal'))
         //會員資料
         let employeeData
         //抓取會員資料
@@ -177,6 +206,8 @@
             inputAvatar.value = null
             showOrHideImagePreview()
         })
+        //搜尋按鈕
+        $('#queryButton').click(e => getEmployees($('#query').val()))
 
         /**functions**/
 
@@ -200,9 +231,12 @@
             }
         }
 
-        //Ajax 抓取所有員工資料
-        async function getEmployees() {
-            const response = await fetch('@Url.Content("~/api/apiemployee")')
+        //Ajax 得到員工資料
+        async function getEmployees(query) {
+            let str = ''
+            if (query) str = '/' + query
+
+            const response = await fetch('@Url.Content("~/api/apiemployee")' + str)
 
             if (!response.ok) return
             const data = await response.json()
@@ -229,7 +263,7 @@
                 console.log(data)
                 getEmployees()
                 alert('輸入成功')
-                myModal.hide()
+                mainModal.hide()
             }
         }
 
@@ -253,7 +287,7 @@
                 console.log(data)
                 getEmployees()
                 alert('修改成功')
-                myModal.hide()
+                mainModal.hide()
             }
         }
 
@@ -276,7 +310,7 @@
                 console.log(data)
                 getEmployees()
                 alert('刪除成功')
-                myModal.hide()
+                mainModal.hide()
             }
         }
 
@@ -285,18 +319,21 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                                    <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                                    <td>${element.employeeName}</td>
-                                    <td>${element.employeeAccount}</td>
-                                    <td>${element.permission}</td>
-                                    <td><button class="btn btn-primary edit-btn">修改</button></td>
-                                    <td><button class="btn btn-danger delete-btn">刪除</button></td>
-                                    </tr>`
+                                <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                                <td>${element.employeeName}</td>
+                                <td>${element.employeeAccount}</td>
+                                <td>${element.permission}</td>
+                                <td><button class="btn btn-primary edit-btn">修改</button></td>
+                                <td><button class="btn btn-danger permission-btn">調整權限</button></td>
+                                <td><button class="btn btn-danger delete-btn">刪除</button></td>
+                                </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
             $('.tablebox').find('.delete-btn').click(deleteEmployee)
+            $('.tablebox').find('.permission-btn').click(showEditPermissionModal)
             $('.tablebox').find('tbody').find('tr').click(displayEmployeeDataInRow)
+            displayEmployeeData(0)
         }
 
         //調整為新增表單
@@ -307,7 +344,7 @@
             $('#edditModalLabel').text('新增員工')
             showOrHideImagePreview()
             $('#createAndEdit').attr('data-index', '-1')
-            myModal.show()
+            mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitAdd)
         }
@@ -325,7 +362,7 @@
             $('#email').val(employeeData[index].employeeEmail)
             $('#phone').val(employeeData[index].employeePhone)
 
-            myModal.show()
+            mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitEdit)
         }
@@ -333,6 +370,12 @@
         //顯示點選tr的會員資料
         function displayEmployeeDataInRow(event) {
             const index = +event.currentTarget.dataset.index
+            displayEmployeeData(index)
+        }
+
+        //顯示第n筆會員資料
+        function displayEmployeeData(index) {
+            if (!employeeData.length) return
             const imgName = (employeeData[index].avatarName) ? employeeData[index].avatarName : '_employeeDefault.jpg'
 
             $('#displayName').text(employeeData[index].employeeName)
@@ -343,6 +386,15 @@
             $('#displayTileName').text(employeeData[index].employeeName)
             $('#displayImage').attr('src', '@Url.Content("~/uploads/employeeAvatar/")' + imgName)
         }
+
+        //彈出修改權限modal
+        function showEditPermissionModal(event) {
+            //TODO輸入密碼驗證
+            const index = +$(event.currentTarget).closest('tr').attr('data-index')
+            $('#selectPermission').val(employeeData[index].permission)
+            permissionModal.show()
+        }
+
 
 
     </script>

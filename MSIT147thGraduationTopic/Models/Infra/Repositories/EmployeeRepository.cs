@@ -18,6 +18,14 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employees.Select(o => o.ToDto());
         }
 
+        public IEnumerable<EmployeeDto> GetEmployeesByNameOrAccount(string query)
+        {
+            var employees = _context.Employees
+                .Where(o => o.EmployeeName.Contains(query) || o.EmployeeAccount.Contains(query));
+            return employees.Select(o => o.ToDto());
+        }
+
+
         public int CreateEmployee(EmployeeDto dto)
         {
             var obj = dto.ToEF();
@@ -48,6 +56,9 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context.SaveChanges();
             return employeeId;
         }
+
+
+
 
 
     }

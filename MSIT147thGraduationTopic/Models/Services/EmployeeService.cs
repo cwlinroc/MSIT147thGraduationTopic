@@ -16,7 +16,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly EmployeeRepository _repo;
         private readonly IWebHostEnvironment _environemnt;
 
-        
+
         public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environemnt)
         {
             _context = context;
@@ -27,6 +27,15 @@ namespace MSIT147thGraduationTopic.Models.Services
         public IEnumerable<EmployeeVM> GetAllEmployees()
         {
             return _repo.GetAllEmployees().Select(dto =>
+            {
+                string htmlFilePath = Path.Combine(_environemnt.WebRootPath, "uploads\\employeeAvatar");
+
+                return dto.ToVM();
+            });
+        }
+        public IEnumerable<EmployeeVM> GetEmployeesByNameOrAccount(string query)
+        {            
+            return _repo.GetEmployeesByNameOrAccount(query).Select(dto =>
             {
                 string htmlFilePath = Path.Combine(_environemnt.WebRootPath, "uploads\\employeeAvatar");
 
@@ -69,6 +78,13 @@ namespace MSIT147thGraduationTopic.Models.Services
             string? fileName = file?.FileName;
             return _repo.EditEmployee(dto, employeeId, fileName);
         }
+
+        public int ChangeEmployeePermission(int id, int permissionId)
+        {
+
+        }
+
+
 
         public int DeleteEmployee(int employeeId)
         {
