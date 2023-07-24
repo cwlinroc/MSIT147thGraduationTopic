@@ -8,18 +8,14 @@ using System.Security.Claims;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
-    public class MemberFrontController : Controller
-    {
-        //宣告私人唯讀物件型別屬性。(DB 資料集合)
-        private readonly GraduationTopicContext _context;
-
-        //宣告不公開物件型別屬性。(文章資料服務)
+    public class MemberController : Controller
+    {        
+        private readonly GraduationTopicContext _context;        
         protected UserInfoService _userInfoService { get; set; }
 
         //宣告建構子。(初始化傳入參數為指定類別型別)
-        public MemberFrontController(
-            GraduationTopicContext Context,
-            UserInfoService UserInfoService)
+        public MemberController(GraduationTopicContext Context
+                ,UserInfoService UserInfoService)
         {
             //DI 指派介面屬性注入指定類別案例。(類別位置在 Program.cs 裡面)
             _context = Context;
@@ -94,7 +90,7 @@ namespace MSIT147thGraduationTopic.Controllers
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     //執行 ClaimsIdentity Cookie 用戶驗証物件的操作登入動作。(使用 Cookie 操作內部驗証狀態控管與流程執行  )
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
                     //===== AspNetCore.Authentication 單一範圍的驗証機制組態設置 =====
                     //HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(varClaimsIdentity), authProperties);

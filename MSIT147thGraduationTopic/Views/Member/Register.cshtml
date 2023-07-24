@@ -7,8 +7,8 @@
 </div>
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-8 offset-2">
-        <form id="memberRegisteredForm" name="memberRegisteredForm" class="needs-validation"
-              method="POST" novalidate>
+        <form id="memberRegisterForm" name="memberRegisterForm" class="needs-validation"
+               method="POST" novalidate>
             <!-- MemberName input-->
             <div class="form mb-3">
                 <label for="membername" class="form-label fw-bold">姓名</label>
@@ -16,25 +16,19 @@
                 <div class="invalid-feedback">請輸入姓名</div>
             </div>
             <!-- Gender input-->
-            <div class="form mb-3">
-                <label for="gender" class="form-label fw-bold">性別</label>
-                <br>
+            <div class="form">
+                <label>性別:</label><br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="genderMale"
-                           id="genderMale" required>
-                    <label class="form-check-label" for="genderMale">
-                        男性
-                    </label>
+                    <input type="radio" class="form-check-input" name="gender" value="male" required>
+                    <label class="form-check-label">男性</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="genderFemale"
-                           id="genderFemale" required>
-                    <label class="form-check-label" for="genderFemale">
-                        女性
-                    </label>
+                    <input type="radio" class="form-check-input" name="gender" value="female" required>
+                    <label class="form-check-label">女性</label>
                 </div>
-                <br />
-                <div class="invalid-feedback">請輸入性別</div>
+                @*<div class="invalid-feedback">
+                    請選擇性別！
+                </div>*@
             </div>
             <!-- NickName input-->
             <div class="form mb-3">
@@ -53,29 +47,28 @@
                     密碼:需要8~12位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>
                 <input class="form-control" id="password" name="password" type="password"
-                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}"
-                       oninput="validate(this)" required />
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required />
                 <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
                 <label for="repassword" class="form-label fw-bold">確認密碼</label>
-                <input class="form-control" id="repassword" name="repassword" type="password"
-                       oninput="validate(this)" required>
-                <div class="invalid-feedback"></div>
+                <input class="form-control" id="confirmPassword" name="confirmPassword"
+                       type="password" required>
+                <div class="invalid-feedback">與密碼不符！</div>
             </div>
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">電子信箱</label>
                 <input class="form-control" id="email" type="email" required />
-                <div class="invalid-feedback">電子信箱必填</div>
+                <div class="invalid-feedback">請輸入電子信箱</div>
                 <div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
                 <input class="form-control" id="phone" type="tel" required />
-                <div class="invalid-feedback">手機號碼必填</div>
+                <div class="invalid-feedback">請輸入手機號碼</div>
             </div>
             <!-- Address input-->
             <div class="form-label mb-3">
@@ -83,14 +76,14 @@
                 <div class="input-group">
                     <label class="input-group-text" for="city">縣市</label>
                     <select class="form-select" id="city">
-                        <option selected>請選擇</option>
+                        <option selected></option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
                     </select>
                     <label class="input-group-text" for="district">區域</label>
                     <select class="form-select" id="district">
-                        <option selected>請選擇</option>
+                        <option selected></option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
                         <option value="3">Three</option>
@@ -103,20 +96,10 @@
                 <label class="form-label fw-bold">出生年月日</label>
                 <div class="input-group" id="DateOfBirth">
                     <input type="date" id="DateOfBirthInput" class="form-control" required />
-                    <div class="invalid-feedback">生日必填</div>
+                    <div class="invalid-feedback">請輸入生日</div>
                 </div>
             </div>
-
-            <!-- Submit success message-->
-            <div class="d-none" id="submitSuccessMessage">
-                <div class="text-center mb-3">
-                    <div class="fw-bolder">註冊成功!</div>
-                </div>
-            </div>
-            <!-- Submit error message-->
-            <div class="d-none" id="submitErrorMessage">
-                <div class="text-center text-danger mb-3">資料有誤,請修改!</div>
-            </div>
+                    
             <!-- Submit Button-->
             <div class="d-grid col-lg-8 offset-2 mt-3 mb-5">
                 <button class="btn btn-primary btn-lg" id="submitButton" type="submit">
@@ -139,45 +122,46 @@
     </style>
 }
 
-@section Scripts{
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@section Scripts{    
+    @*<script src="sweetalert2.all.min.js"></script>*@
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields
         (() => {
             'use strict'
 
+            function checkPasswordMatch() {                
+                var password = $('#password').val();
+                var confirmPassword = $('#confirmPassword').val();
+
+                if (password !== confirmPassword) {
+                    $('#confirmPassword').addClass('is-invalid');
+                } else {
+                    $('#confirmPassword').removeClass('is-invalid');
+                }
+            }
+
+            $('#confirmPassword').blur(function () {
+                checkPasswordMatch();
+            });
+            
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             const forms = document.querySelectorAll('.needs-validation')
-
             // Loop over them and prevent submission
             Array.from(forms).forEach(form => {
                 form.addEventListener('submit', event => {
                     if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
+                        event.preventDefault();
+                        event.stopPropagation();
+                        
+                    }else{
+                        
+                        alert('註冊成功！');
                     }
-
                     form.classList.add('was-validated')
+                    
                 }, false)
             })
         })()
 
-        const pwd = $('input[name = "password"]')
-        const repwd = $('input[name = "repassword"]')
-        const repassword = document.memberRegisteredForm.repassword
-
-        function validate(input) {
-            //console.log(pwd.val())
-            if (pwd.val() != repwd.val()) {
-                console.log(repassword.classList)
-                repassword.classList.remove('is-valid')
-                repassword.classList.add('is-invalid')
-                input.setCustomValidity('與密碼不符');
-                
-            }
-
-        }
     </script>
 }
