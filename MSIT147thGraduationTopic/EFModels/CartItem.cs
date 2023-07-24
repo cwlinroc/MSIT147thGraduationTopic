@@ -12,7 +12,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public int SpecId { get; set; }
         public int Quantity { get; set; }
 
-        public virtual Member Member { get; set; }
         public virtual Spec Spec { get; set; }
     }
 }

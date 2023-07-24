@@ -1,4 +1,5 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 
@@ -22,6 +23,9 @@ namespace MSIT147thGraduationTopic.Models.Services
             var members = new List<Member>();
             for (int i = 0; i < amount; i++)
             {
+                string salt = _generator.RandomSalt();
+                string name = _generator.RandomName();
+                string password = name.GetSaltedSha256(salt);
                 members.Add(new Member
                 {
                     MemberName = _generator.RandomName(),
@@ -33,6 +37,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                     Phone = _generator.RandomPhone(),
                     Address = _generator.RandomAddress(),
                     Email = _generator.RandomEmail(),
+                    IsActivated = true,
+                    Salt = _generator.RandomSalt()
                 });
             }
             _repo.AddMembers(members.ToArray());

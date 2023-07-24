@@ -76,11 +76,19 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UsedCoupons]",
-         "ObjectType": 0
+         "Name": "[dbo].[MerchandiseSearch]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[SpecDisplayforOrder]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[SpecWithFullMerchandise]",
+         "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-pp2g83m.GraduationTopic.dbo",
+   "UiHint": "desktop-rae7e6c.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

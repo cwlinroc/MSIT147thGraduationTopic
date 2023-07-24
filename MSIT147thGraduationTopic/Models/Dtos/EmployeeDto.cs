@@ -33,7 +33,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             return new Employee
             {
                 EmployeeAccount = dto.EmployeeAccount,
-                EmployeeAvatarPath = dto.EmployeeAvatarName,
+                AvatarName = dto.EmployeeAvatarName,
                 EmployeeEmail = dto.EmployeeEmail,
                 EmployeeId = dto.EmployeeId,
                 EmployeeName = dto.EmployeeName,
@@ -49,7 +49,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             return new EmployeeDto
             {
                 EmployeeAccount = entity.EmployeeAccount,
-                EmployeeAvatarName = entity.EmployeeAvatarPath,
+                EmployeeAvatarName = entity.AvatarName,
                 EmployeeEmail = entity.EmployeeEmail,
                 EmployeeId = entity.EmployeeId,
                 EmployeeName = entity.EmployeeName,
