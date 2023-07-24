@@ -1,4 +1,5 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 
@@ -22,6 +23,9 @@ namespace MSIT147thGraduationTopic.Models.Services
             var members = new List<Member>();
             for (int i = 0; i < amount; i++)
             {
+                string salt = _generator.RandomSalt();
+                string name = _generator.RandomName();
+                string password = name.GetSaltedSha256(salt);
                 members.Add(new Member
                 {
                     MemberName = _generator.RandomName(),
@@ -33,6 +37,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                     Phone = _generator.RandomPhone(),
                     Address = _generator.RandomAddress(),
                     Email = _generator.RandomEmail(),
+                    IsActivated = true,
+                    Salt = _generator.RandomSalt()
                 });
             }
             _repo.AddMembers(members.ToArray());
@@ -43,11 +49,10 @@ namespace MSIT147thGraduationTopic.Models.Services
             var memberIds = _repo.GetAllMemberID();
             var specIds = _repo.GetAllSpecID();
 
+            _repo.DeleteAllCartItems();
+
             foreach (var memberId in memberIds)
             {
-                if (_repo.GetCartID(memberId) != -1) continue;
-
-                int cartId = _repo.AddCart(new Cart { MemberId = memberId, });
                 int cartItemAmount = _generator.RandomIntBetween(1, 5);
 
                 var chosedSpecIds = _generator.RandomCollectionFrom(specIds, cartItemAmount);
@@ -56,9 +61,9 @@ namespace MSIT147thGraduationTopic.Models.Services
                 {
                     _repo.AddCartItem(new CartItem
                     {
-                        CartId = cartId,
+                        MemberId = memberId,
                         SpecId = specId,
-                        Quantity = _generator.RandomIntBetween(1,5),
+                        Quantity = _generator.RandomIntBetween(1, 5),
                     });
                 }
             }

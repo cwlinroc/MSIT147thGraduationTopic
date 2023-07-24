@@ -47,6 +47,17 @@
             return str;
         }
 
+        public string RandomSalt(int min = 10, int max = 15)
+        {
+            int length = _rand.Next(min, max);
+            string str = string.Empty;
+            for (int i = 0; i < length ; i++)
+            {
+                str += (char)('!' + _rand.Next(94));
+            }
+            return str;
+        }
+
         public string RandomEmail()
         {
             string str = RandomEnString();

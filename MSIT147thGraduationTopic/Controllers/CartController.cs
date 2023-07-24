@@ -11,17 +11,17 @@ namespace MSIT147thGraduationTopic.Controllers
             return View(id);
         }
 
-        [HttpPost]
-        public IActionResult Index([FromBody] CartIVM vm)
-        {
-            if (vm.CartItemIds == null || vm.CartItemIds.Length == 0) return BadRequest(ModelState);
+        //[HttpPost]
+        //public IActionResult Index([FromBody] CartIVM vm)
+        //{
+        //    if (vm.CartItemIds == null || vm.CartItemIds.Length == 0) return BadRequest(ModelState);
 
-            //Response.Headers.Add("REQUIRES_AUTH", "1");
+        //    //Response.Headers.Add("REQUIRES_AUTH", "1");
 
-            string ids = String.Join("&", vm.CartItemIds.Select(o=> "ids=" + o));
+        //    string ids = String.Join("&", vm.CartItemIds.Select(o=> "ids=" + o));
 
-            return Redirect(Url.Content($"~/buy/index?" + ids));
-        }
+        //    return Redirect(Url.Content($"~/buy/index?" + ids));
+        //}
 
 
         //[HttpPost]

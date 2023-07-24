@@ -20,7 +20,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                     where cartItemIds.Contains(cartItem.CartItemId)
                     select new CartItemDisplayDto
                     {
-                        CartId = cartItem.CartId,
+                        MemberId = cartItem.MemberId,
                         CartItemName = merchandise.MerchandiseName + spec.SpecName,
                         CartItemPrice = spec.Price * spec.DiscountPercentage / 100,
                         MerchandiseImageName = merchandise.ImageUrl,
@@ -30,14 +30,6 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                     }).ToList();
         }
 
-        public int GetMemberIdByCartItemId(int cartItemId)
-        {
-            var id = (from cartItem in _context.CartItems
-                      join cart in _context.Carts on cartItem.CartId equals cart.CartId
-                      where cartItem.CartItemId == cartItemId
-                      select cart.MemberId).FirstOrDefault();
-            return id;
-        }
 
         public (string, string) GetMemberAddressAndPhone(int memberId)
         {
@@ -57,6 +49,10 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return coupons.Select(o => o.ToDto()).ToList();
         }
 
-
+        public int GetMemberIdByCartItemId(int cartItemId)
+        {
+            return _context.CartItems.Where(o => o.CartItemId == cartItemId)
+                .Select(o => o.MemberId).FirstOrDefault();
+        }
     }
 }

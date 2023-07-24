@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using MSIT147thGraduationTopic.Models.Services;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -14,19 +17,23 @@ namespace MSIT147thGraduationTopic.Controllers
     public class ApiBuyController : ControllerBase
     {
         private readonly GraduationTopicContext _context;
+        private readonly BuyServices _service;
 
         public ApiBuyController(GraduationTopicContext context)
         {
             _context = context;
+            _service = new BuyServices(context);
         }
 
 
-        public async Task<IEnumerable<Coupon>> GetAllCouponsAvalible(int id)
+        public async Task<IEnumerable<CouponDto>> GetAllCouponsAvalible(int id)
         {
-            var item = new List<Coupon>();
+            var item = _service.GetAllCouponsAvalible(id);
 
             return item;
         }
+
+        
 
         #region --Default參考--
         //// GET: api/ApiBuy

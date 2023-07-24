@@ -1,4 +1,5 @@
-﻿using MSIT147thGraduationTopic.EFModels;
+﻿using Microsoft.EntityFrameworkCore;
+using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
@@ -30,24 +31,18 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return ids;
         }
 
-        public int GetCartID(int memberId)
+        public void DeleteAllCartItems()
         {
-            var cart = _context.Carts.FirstOrDefault(o => o.MemberId == memberId);
-            return (cart == null) ? -1 : cart.CartId;
+            _context.CartItems.RemoveRange(_context.CartItems);
+            _context.SaveChanges();
         }
 
-        public int AddCart(Cart cart)
-        {
-            _context.Carts.Add(cart);
-            _context.SaveChanges();
-            return cart.CartId;
-        }
 
         public int AddCartItem(CartItem cartItem)
         {
             _context.CartItems.Add(cartItem);
             _context.SaveChanges();
-            return cartItem.CartId;
+            return cartItem.MemberId;
         }
 
 
