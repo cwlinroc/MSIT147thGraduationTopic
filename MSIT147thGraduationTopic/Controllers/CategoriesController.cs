@@ -52,7 +52,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] CategoryVM categoryvm)
         {
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
                 _context.Add(categoryvm.category);
                 await _context.SaveChangesAsync();
@@ -93,7 +93,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -133,8 +133,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 return Problem("找不到商品類別資料");
             }
 
-            var brand = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var brand = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
             if (brand == null)
             {
                 return Problem("找不到商品類別資料");

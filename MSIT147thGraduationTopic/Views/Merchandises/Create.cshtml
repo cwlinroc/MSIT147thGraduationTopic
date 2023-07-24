@@ -110,9 +110,8 @@
         DisplayImage();
 
         imageClear.addEventListener("click", (e) => {
-            e.preventDefault();//停用送出表單功能
+            e.preventDefault();
             selectfile.files = null;
-            //[file] = null;
             selectfile.outerHTML = selectfile.outerHTML;
             display.src = "";
             imageClear.style.display = "none";

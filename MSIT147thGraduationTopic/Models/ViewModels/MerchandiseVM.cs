@@ -6,7 +6,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class MerchandiseVM
     {
-        private Merchandise _merchandise = null;
+        private Merchandise _merchandise;
         public Merchandise merchandise
         {
             get { return _merchandise; }
@@ -25,7 +25,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
         [DisplayName("商品名稱")]
         [Required(ErrorMessage = "此為必填欄位")]
-        [StringLength(30, ErrorMessage = "{0}不可超過{1}字")]
+        [StringLength(30, ErrorMessage = "字數不得大於30字")]
         public string MerchandiseName
         {
             get { return _merchandise.MerchandiseName; }
@@ -46,7 +46,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.CategoryId = value; }
         }
         [DisplayName("商品描述")]
-        [MaxLength(500, ErrorMessage = "{0}長度不可超過{1}字")]
+        [StringLength(50, ErrorMessage = "字數不得超過500字")]
         public string Description
         {
             get { return _merchandise.Description; }
@@ -58,7 +58,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _merchandise.ImageUrl; }
             set { _merchandise.ImageUrl = value; }
         }
-        [DisplayName("展示商品")]
+        [DisplayName("於商城展示商品")]
         public bool Display
         {
             get { return _merchandise.Display; }

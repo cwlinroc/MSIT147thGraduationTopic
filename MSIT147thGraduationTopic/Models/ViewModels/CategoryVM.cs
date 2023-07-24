@@ -7,7 +7,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
     public class CategoryVM
     {
 
-        private Category _category = null;
+        private Category _category;
         public Category category
         {
             get { return _category; }

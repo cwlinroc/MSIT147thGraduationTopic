@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Index(string txtKeyword, int searchCondition)
         {
             IEnumerable<MerchandiseSearch> datas = null;
-            datas = from m in _context.MerchandiseSearches //todo 增加tag搜尋?
+            datas = from m in _context.MerchandiseSearches
                     select m;
             if (!string.IsNullOrEmpty(txtKeyword))
             {

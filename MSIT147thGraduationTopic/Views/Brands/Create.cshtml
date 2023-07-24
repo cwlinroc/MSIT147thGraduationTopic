@@ -37,26 +37,22 @@
 
         const submit = document.querySelector("#submit");
         submit.addEventListener("click", (event) => {
-            event.preventDefault(); // todo 關閉後無法重新啟用
+            event.preventDefault();
             var formdata = new FormData(document.forminput);
 
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/ApiBrand/CheckBrand");
+            xhr.open("POST", "/ApiBrand/CheckBrandforCreate");
             xhr.send(formdata);
 
             let condition;
             xhr.addEventListener("load", () => {
-                console.log("進到LOAD");
                 const data = JSON.parse(xhr.responseText);
-                condition = data ? true : false;
 
                 if (data) {
                     alertspan.innerHTML = "此品牌已存在，請重新命名";
-                    console.log("進到最終條件判斷TRUE");
                 }
                 else {
                     alertspan.innerHTML = "";
-                    console.log("進到最終條件判斷FALSE");
                     const forminput = document.querySelector("#forminput");
                     HTMLFormElement.prototype.submit.call(forminput);
                     //$("#forminput").submit(); //https://trackjs.com/blog/when-form-submit-is-not-a-function/
@@ -65,11 +61,11 @@
         })
 
         const input = document.querySelector("#input");
-        input.addEventListener("blur", () => {
+        input.addEventListener("keyup", () => {
             var formdata = new FormData(document.forminput);
 
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/ApiBrand/CheckBrand");
+            xhr.open("POST", "/ApiBrand/CheckBrandforCreate");
             xhr.send(formdata);
 
             xhr.addEventListener("load", () => {

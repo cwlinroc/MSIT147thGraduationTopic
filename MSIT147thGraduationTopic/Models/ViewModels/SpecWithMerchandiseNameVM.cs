@@ -6,7 +6,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class SpecWithMerchandiseNameVM
     {
-        private SpecWithMerchandiseName _specWm = null;
+        private SpecWithMerchandiseName _specWm;
         public SpecWithMerchandiseName spec
         {
             get { return _specWm; }
@@ -38,7 +38,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
 
         [DisplayName("價格")]
-        [Required(ErrorMessage = "價格須為大於0的數字")]
+        [Required(ErrorMessage = "此為必填欄位")]
+        [Range(1, int.MaxValue, ErrorMessage = "價格須為大於0的數字")]
         public int Price
         {
             get { return _specWm.Price; }
@@ -46,25 +47,26 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
 
         [DisplayName("庫存數量")]
-        [Required(ErrorMessage = "庫存數量應至少為0")]
+        [Required(ErrorMessage = "此為必填欄位")]
+        [Range(0, int.MaxValue, ErrorMessage = "庫存數量應至少為0")]
         public int Amount
         {
             get { return _specWm.Amount; }
             set { _specWm.Amount = value; }
         }
-        [DisplayName("品牌名稱")]
+        [DisplayName("折扣比例")]
         public int DiscountPercentage
         {
             get { return _specWm.DiscountPercentage; }
             set { _specWm.DiscountPercentage = value; }
         }
-        [DisplayName("品牌名稱")]
+        [DisplayName("顯示順序")]
         public int DisplayOrder
         {
             get { return _specWm.DisplayOrder; }
             set { _specWm.DisplayOrder = value; }
         }
-        [DisplayName("品牌名稱")]
+        [DisplayName("上架此規格")]
         public bool OnShelf
         {
             get { return _specWm.OnShelf; }
