@@ -11,7 +11,6 @@ namespace MSIT147thGraduationTopic.EFModels
         {
             Evaluations = new HashSet<Evaluation>();
             OrderLists = new HashSet<OrderList>();
-            UsedCoupons = new HashSet<UsedCoupon>();
         }
 
         public int OrderId { get; set; }
@@ -19,6 +18,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public int PaymentMethodId { get; set; }
         public bool Payed { get; set; }
         public DateTime PurchaseTime { get; set; }
+        public int? UsedCouponId { get; set; }
         public int? PaymentAmount { get; set; }
         public string DeliveryAddress { get; set; }
         public string ContactPhoneNumber { get; set; }
@@ -28,6 +28,5 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual PaymentMethod PaymentMethod { get; set; }
         public virtual ICollection<Evaluation> Evaluations { get; set; }
         public virtual ICollection<OrderList> OrderLists { get; set; }
-        public virtual ICollection<UsedCoupon> UsedCoupons { get; set; }
     }
 }

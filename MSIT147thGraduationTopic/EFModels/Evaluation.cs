@@ -12,7 +12,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public int MemberId { get; set; }
         public int OrderId { get; set; }
         public string Comment { get; set; }
-        public string ImageUrl { get; set; }
         public int Score { get; set; }
 
         public virtual Member Member { get; set; }

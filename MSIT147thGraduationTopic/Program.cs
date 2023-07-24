@@ -65,6 +65,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=memberfront}/{action=register}/{id?}");
+    pattern: "{controller=memberfront}/{action=ShoppingHistory}/{id?}");
 
 app.Run();

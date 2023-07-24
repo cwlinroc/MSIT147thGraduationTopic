@@ -9,7 +9,6 @@ namespace MSIT147thGraduationTopic.EFModels
     {
         public Member()
         {
-            Carts = new HashSet<Cart>();
             Evaluations = new HashSet<Evaluation>();
             Orders = new HashSet<Order>();
         }
@@ -21,15 +20,14 @@ namespace MSIT147thGraduationTopic.EFModels
         public bool Gender { get; set; }
         public string Account { get; set; }
         public string Password { get; set; }
+        public string Salt { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
-        public string Salt { get; set; }
-        public bool IsActived { get; set; }
-        public string ConfirmGuid { get; set; }
+        public bool IsActivated { get; set; }
+        public string ConfirmGuild { get; set; }
 
-        public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Evaluation> Evaluations { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }

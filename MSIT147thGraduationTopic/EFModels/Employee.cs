@@ -14,6 +14,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public int Permission { get; set; }
         public string EmployeeEmail { get; set; }
         public string EmployeePhone { get; set; }
-        public string EmployeeAvatarPath { get; set; }
+        public string AvatarName { get; set; }
     }
 }
