@@ -111,26 +111,36 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="createAndEdit" name="createAndEdit" data-index="-1">
+                <form id="createAndEdit" name="createAndEdit" data-index="-1" class="needs-validation" novalidate>
                     <div class="mb-3">
                         <label for="name" class="col-form-label">姓名:</label>
-                        <input type="text" class="form-control" id="name" name="EmployeeName">
+                        <input type="text" class="form-control" id="name" name="EmployeeName" required>
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入姓名</div>
                     </div>
                     <div class="mb-3">
                         <label for="account" class="col-form-label">帳號名稱:</label>
                         <input type="text" class="form-control" id="account" name="EmployeeAccount">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入帳號</div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="col-form-label">密碼:</label>
                         <input type="text" class="form-control" id="password" name="EmployeePassword">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入密碼</div>
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="col-form-label">電話:</label>
                         <input type="text" class="form-control" id="phone" name="EmployeePhone">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入電話</div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="col-form-label">Email:</label>
                         <input type="text" class="form-control" id="email" name="EmployeeEmail">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入Email</div>
                     </div>
                     <div class="mb-3">
                         <label for="photo" class="col-form-label">頭像:</label>
@@ -185,8 +195,8 @@
 
 
 
-
 @section Scripts{
+    <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
 
         //get Modal
@@ -248,6 +258,8 @@
 
         //Ajax 新增員工
         async function submitAdd() {
+            if (!createValidator()) return;
+
             const formData = new FormData(document.createAndEdit)
 
             const response = await fetch('@Url.Content("~/api/apiemployee")', {
@@ -319,14 +331,14 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                                <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                                <td>${element.employeeName}</td>
-                                <td>${element.employeeAccount}</td>
-                                <td>${element.permission}</td>
-                                <td><button class="btn btn-primary edit-btn">修改</button></td>
-                                <td><button class="btn btn-danger permission-btn">調整權限</button></td>
-                                <td><button class="btn btn-danger delete-btn">刪除</button></td>
-                                </tr>`
+                                                                        <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                                                                        <td>${element.employeeName}</td>
+                                                                        <td>${element.employeeAccount}</td>
+                                                                        <td>${element.permission}</td>
+                                                                        <td><button class="btn btn-primary edit-btn">修改</button></td>
+                                                                        <td><button class="btn btn-danger permission-btn">調整權限</button></td>
+                                                                        <td><button class="btn btn-danger delete-btn">刪除</button></td>
+                                                                        </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
@@ -343,6 +355,7 @@
             $('#account,#password').parent().css('display', 'block')
             $('#edditModalLabel').text('新增員工')
             showOrHideImagePreview()
+            clearAllValidFeedBack()
             $('#createAndEdit').attr('data-index', '-1')
             mainModal.show()
             $('#btnSubmit').off()
@@ -356,6 +369,7 @@
             $('#account,#password').parent().css('display', 'none')
             $('#edditModalLabel').text('修改員工資料')
             showOrHideImagePreview()
+            clearAllValidFeedBack()
             const index = event.currentTarget.closest('tr').dataset.index
             $('#createAndEdit').attr('data-index', index)
             $('#name').val(employeeData[index].employeeName)
@@ -395,6 +409,124 @@
             permissionModal.show()
         }
 
+        //新增驗證
+        //function createValidator() {
+        //    const form = $('.needs-validation')
+        //    if (!form.hasClass('is-custom-validated')) {
+        //        form.find('input').on('keyup', createValidator)
+        //        form.addClass('is-custom-validated')
+        //    }
+
+        //    const nameValid = !!$('#name').val()
+        //    showValidFeedBack($('#name').get(), nameValid)
+        //    const accountValid = !!$('#account').val()
+        //    showValidFeedBack($('#account').get(), accountValid)
+        //    const passwordValid = !!$('#password').val()
+        //    showValidFeedBack($('#password').get(), passwordValid)
+        //    const phoneValid = !!$('#phone').val()
+        //    showValidFeedBack($('#phone').get(), phoneValid)
+        //    const emailValid = !!$('#email').val()
+        //    showValidFeedBack($('#email').get(), emailValid)
+        //    return nameValid && accountValid && passwordValid && phoneValid && emailValid
+        //}
+
+        ////修改驗證
+        //function editValidator() {
+        //    const form = $('.needs-validation')
+        //    if (!form.hasClass('is-custom-validated')) {
+        //        form.find('input').on('keyup', editValidator)
+        //        form.addClass('is-custom-validated')
+        //    }
+
+        //    const nameValid = !!$('#name').val()
+        //    showValidFeedBack($('#name').get(), nameValid)
+        //    const phoneValid = !!$('#phone').val()
+        //    showValidFeedBack($('#phone').get(), phoneValid)
+        //    const emailValid = !!$('#email').val()
+        //    showValidFeedBack($('#email').get(), emailValid)
+        //    return nameValid && phoneValid && emailValid
+        //}
+
+        //顯示驗證結果
+        //function showValidFeedBack(input, isValid) {
+        //    if (isValid) {
+        //        $(input).addClass('is-valid').removeClass('is-invalid')
+        //    } else {
+        //        $(input).addClass('is-invalid').removeClass('is-valid')
+        //    }
+        //}
+
+        //function showValidFeedBack(input, isValid) {
+        //    if (isValid) {
+        //        $(input).addClass('is-valid').removeClass('is-invalid')
+        //    } else {
+        //        $(input).addClass('is-invalid').removeClass('is-valid')
+        //    }
+        //}
+
+        //清除驗證結果
+        //function clearAllValidFeedBack() {
+        //    const form = $('.needs-validation')
+        //    form.find('input').removeClass('is-invalid is-valid').off('keyup')
+        //    form.removeClass('is-custom-validated')
+        //}
+
+        ////1. const myValid = new MyBootsrapValidator(表單element)
+        const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
+
+        //新增表單驗證
+        function createValidator() {
+            ////2. myValid.validateFunction( 回傳bool的函式 ) //自訂判斷整個表單是否格式正確，正確回傳true
+            myValid.validateFunction(() => {
+                const name = document.querySelector('#name')
+                const nameValid = !!name.value
+                ////3. input元素.setValidate( 回傳bool的函式 , [錯誤訊息字串] )  //自訂判斷這個input是否格式正確，如果有輸入錯誤字串會更改顯示的錯誤訊息
+                ////ps:可以使用 input元素.setValidate(...).setValidate(...) 串接多個條件判斷  只要其中有錯誤就會顯示第一個錯的錯誤，包含錯誤信息
+                name.setValidate(() => nameValid)
+
+                const account = document.querySelector('#account')
+                const accountValid = !!account.value
+                account.setValidate(() => accountValid)
+
+                const password = document.querySelector('#password')
+                const passwordValid = !!password.value
+                password.setValidate(() => passwordValid)
+
+                const phone = document.querySelector('#phone')
+                const phoneValid = !!phone.value
+                phone.setValidate(() => phoneValid)
+
+                const email = document.querySelector('#email')
+                const emailValid = !!email.value
+                email.setValidate(() => emailValid)
+                ////要全部都正確，才能送回true確認表單正確
+                return nameValid && phoneValid && emailValid && passwordValid && accountValid
+            })
+            ////4. myValid.startValidate() //開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
+            return myValid.startValidate()
+        }
+
+        //修改表單驗證
+        function editValidator() {
+            myValid.validateFunction(() => {
+                const nameValid = !!$('#name').val()
+                document.querySelector('#name').setValidate(() => nameValid)
+                const phoneValid = !!$('#phone').val()
+                document.querySelector('#phone').setValidate(() => phoneValid)
+                const emailValid = !!$('#email').val()
+                document.querySelector('#email').setValidate(() => emailValid)
+                return nameValid && phoneValid && emailValid
+            })
+            return myValid.startValidate()
+        }
+
+
+
+
+        function clearAllValidFeedBack() {
+            ////5. myValid.endtValidate() //結束驗證，順便清除顯示錯誤(如果送出表單後頁面會跳走，這個函式就用不到了)
+            myValid.endtValidate()
+        }
 
 
     </script>

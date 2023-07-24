@@ -79,10 +79,10 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.EditEmployee(dto, employeeId, fileName);
         }
 
-        public int ChangeEmployeePermission(int id, int permissionId)
-        {
+        //public int ChangeEmployeePermission(int id, int permissionId)
+        //{
 
-        }
+        //}
 
 
 

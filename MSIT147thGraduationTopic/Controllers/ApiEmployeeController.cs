@@ -51,13 +51,13 @@ namespace MSIT147thGraduationTopic.Controllers
             return employeeId;
         }
 
-        [HttpPut("permission/{id}")]
-        public ActionResult<int> UpdateEmployeePermission(int id, string permission)
-        {
-            //var employeeId = _service.EditEmployee(dto, id, avatar);
+        //[HttpPut("permission/{id}")]
+        //public ActionResult<int> UpdateEmployeePermission(int id, string permission)
+        //{
+        //    var employeeId = _service.EditEmployee(dto, id, avatar);
 
-            return employeeId;
-        }
+        //    return employeeId;
+        //}
 
         [HttpDelete("{id}")]
         public ActionResult<int> UpdateEmployee(int id)
