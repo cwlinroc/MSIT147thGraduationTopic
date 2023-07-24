@@ -1,0 +1,165 @@
+﻿@model MSIT147thGraduationTopic.Models.ViewModels.MerchandiseVM
+
+@{
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "新增商品";
+}
+
+<div class="container">
+    <h1 class="container">新增商品</h1>
+
+    <div class="bg-light rounded shadow p-5">
+        <h4>輸入商品資料</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="MerchandiseName" class="control-label"></label>
+                        <input asp-for="MerchandiseName" class="form-control" />
+                        <span asp-validation-for="MerchandiseName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BrandId" class="control-label"></label>
+                        <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId" id="inputbrandid">
+                            <option value="0">未選擇品牌</option>
+                        </select>
+                        @*不知為何，使用Ajax語法指定id，選項還是產生在上方的選單中
+                        <select class="form-select" name="BrandId" id="inputbrandid">
+                        <option value="0">未選擇</option>
+                        </select>*@
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryId" class="control-label"></label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId" id="inputcategoryid">
+                            <option value="0">未選擇商品類別</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control" id="textarea"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ImageUrl" class="control-label">選擇圖片</label>
+                        @*<input asp-for="ImageUrl" class="form-control" id="imgurl" readonly />*@
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <input class="form-control" type="file" id="selectfile" name="photo">
+
+                        <div class="alert alert-secondary mt-2" id="containdisplay">
+                            <img id="display" />
+                            <button id="imageClear" class="btn btn-warning">取消圖片</button>
+                        </div>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Display" /> @Html.DisplayNameFor(model => model.Display)
+                        </label>
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <input type="submit" value="新增" class="btn btn-primary" />
+                        @Html.ActionLink("取消", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @*產生下拉選項*@
+    <script>
+        const brand = document.querySelector("#inputbrandid");
+        const category = document.querySelector("#inputcategoryid");
+
+        brand.addEventListener("load", () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/ApiMerchandise/Brands");
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const datas = JSON.parse(xhr.responseText);
+                var brands = datas.map(b => {
+                    return (`<option value="${b.BrandId}">${b.BrandName}</option>`)
+                })
+                brand.innerHTML = brands.join("");
+            })
+        })
+
+        category.addEventListener("load", () => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/ApiMerchandise/Categories");
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const datas = JSON.parse(xhr.responseText);
+                var categories = datas.map(c => {
+                    return (`<option value="${c.CategoryId}">${c.CategoryName}</option>`)
+                })
+                brand.innerHTML = categories.join("");
+            })
+        })
+    </script>
+    @*產生圖片路徑、預覽*@
+    <script>
+        const display = document.querySelector("#display");
+        const imageClear = document.querySelector("#imageClear");
+
+        DisplayImage();
+
+        imageClear.addEventListener("click", (e) => {
+            e.preventDefault();//停用送出表單功能
+            selectfile.files = null;
+            //[file] = null;
+            selectfile.outerHTML = selectfile.outerHTML;
+            display.src = "";
+            imageClear.style.display = "none";
+            DisplayImage();
+        })
+
+        function DisplayImage() {
+            //重置檔案上傳後需重新指定selectfile
+            const selectfile = document.querySelector("#selectfile");
+            selectfile.addEventListener("change", () => {
+                const [file] = selectfile.files;
+                if (file) {
+                    display.src = URL.createObjectURL(file);
+                    imageClear.style.display = "inline";
+                } else {
+                    display.src = "";
+                    imageClear.style.display = "none";
+                }
+            })
+        }
+    </script>
+}
+
+@section Styles{
+    <style>
+        .title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        #containdisplay {
+            height: 200px;
+        }
+
+        #display {
+            max-height: 170px;
+            margin: 10px, 0;
+        }
+
+        #textarea {
+            height: 150px;
+            overflow: auto;
+        }
+
+        #imageClear {
+            display: none;
+            float: right;
+        }
+    </style>
+}

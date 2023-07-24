@@ -37,5 +37,9 @@
     --bs-accordion-active-bg: #505050;
 }
 
+:root {
+    --bs-body-bg-rgb: 190, 240, 255;
+}
+
 
 

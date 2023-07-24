@@ -17,6 +17,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             return View();
         }
+        
 
         public IActionResult Privacy()
         {

@@ -1,0 +1,111 @@
+﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Evaluation>
+
+@{
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "BackStage";
+}
+
+
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>*@
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div>
+                <div class="row g-3 align-items-center ">
+                    <div class="col-auto ms-auto float-end d-flex align-items-center">
+                        <input type="text" class="form-control-sm d-flex mx-2 " id="keywoud" style="height: 38px;">
+                        <img src="~/images/search.jpg" class="rounded-3 d-flex" />
+                    </div>
+                    
+                </div>
+            </div>
+            <table class="table bg-white mt-3 rounded-3">
+                <thead>
+                    <tr>
+                        <th>
+                            勾選
+                            @*@Html.DisplayNameFor(model => model.Comment)*@
+                        </th>
+                        <th>
+                          
+                            @Html.DisplayNameFor(model => model.OrderId)
+                        </th>
+                        <th>
+                            @*@Html.DisplayNameFor(model => model.MerchandiseName)*@
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Score)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Comment)
+                        </th>
+                        <th>
+                            刪除
+                            @*@Html.DisplayNameFor(model => model.Order)*@
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input class="form-check-input" type="checkbox" id="gridCheck">
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OrderId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Merchandise.MerchandiseName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Score)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Comment)
+                            </td>
+                            <td>
+                                 <button type="submit" class="btn btn-primary">刪除</button>
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.EvaluationId">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.EvaluationId">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.EvaluationId">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-1"></div>
+    </div>   
+</div>
+
+@section Scripts{
+    <style>
+
+    </style>
+}

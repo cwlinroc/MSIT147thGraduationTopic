@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
+    <PackageReference Include="PagedList.Mvc" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
