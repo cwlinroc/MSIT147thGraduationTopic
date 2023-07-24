@@ -33,9 +33,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options => 
         {
             //未登入時會自動移轉到此網址。
-            options.LoginPath = new PathString("");
+            options.LoginPath = new PathString("/MemberFront/NoLogin");
             //未授權角色時會自動移轉到此網址。
-            options.AccessDeniedPath = new PathString("");
+            options.AccessDeniedPath = new PathString("/MemberFront/NoRole");
             //登入10分後會失效
             options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
         });

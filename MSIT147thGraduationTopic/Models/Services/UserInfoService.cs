@@ -18,15 +18,15 @@
         public string GetUserInfo_Md()
         {
             //取得 ClaimsIdentity 驗証欄位集合項目。
-            var varClaim = _HttpContextAccessor.HttpContext.User.Claims.ToList();
-            var varEmail = varClaim.Where(a => a.Type == "Email").FirstOrDefault().Value;
-            var varUserName = varClaim.Where(a => a.Type == "UserName").FirstOrDefault().Value;
+            var Claim = _HttpContextAccessor.HttpContext.User.Claims.ToList();
+            var Email = Claim.Where(a => a.Type == "Email").SingleOrDefault().Value;
+            var UserName = Claim.Where(a => a.Type == "UserName").SingleOrDefault().Value;
 
             //取得 ClaimsIdentity 驗証欄位用戶名稱。
-            var varAccount = _HttpContextAccessor.HttpContext.User.Identity.Name;
+            var Account = _HttpContextAccessor.HttpContext.User.Identity.Name;
 
             //傳回結果。
-            return varEmail + " = " + varAccount + " = " + varUserName;
+            return Email + " = " + Account + " = " + UserName;
         }
 
     }
