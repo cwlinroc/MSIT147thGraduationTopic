@@ -45,18 +45,16 @@
             <div class="form mb-3">
                 <label for="password" class="form-label fw-bold">
                     密碼:需要8~12位英文字母及數字組合，包含至少一個大寫字母及小寫字母
-                </label>
-                <input class="form-control" id="password" name="password" type="password"
-                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required />
-                <i id="checkEye1" class="fas fa-eye"></i>
+                </label>                
+                <input class="form-control fs-4" id="password" type="password"
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required /> 
                 <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
-                <label for="repassword" class="form-label fw-bold">確認密碼</label>
-                <input class="form-control" id="confirmPassword" name="confirmPassword"
+                <label for="confirmPassword" class="form-label fw-bold">確認密碼</label>                
+                <input class="form-control" id="confirmPassword"
                        type="password" required>
-                <i id="checkEye2" class="fas fa-eye"></i>
                 <div class="invalid-feedback">與密碼不符！</div>
             </div>
             <!-- Email address input-->
@@ -64,7 +62,7 @@
                 <label for="email" class="form-label fw-bold">電子信箱</label>
                 <input class="form-control" id="email" type="email" required />
                 <div class="invalid-feedback">請輸入電子信箱</div>
-                <div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>
+                @*<div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>*@
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
@@ -76,19 +74,15 @@
             <div class="form-label mb-3">
                 <label for="address" class="form-label fw-bold">地址</label>
                 <div class="input-group">
-                    <label class="input-group-text" for="city">縣市</label>
-                    <select class="form-select" id="city">
+                    <label class="input-group-text" for="selectCity">縣市</label>
+                    <select class="form-select" id="selectCity">
                         <option selected></option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        
                     </select>
-                    <label class="input-group-text" for="district">區域</label>
-                    <select class="form-select" id="district">
+                    <label class="input-group-text" for="selectDistrict">區域</label>
+                    <select class="form-select" id="selectDistrict">
                         <option selected></option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        
                     </select>
                     <input class="form-control" id="address" type="text" />
                 </div>
@@ -121,21 +115,7 @@
         #district {
             max-width: 200px
         }
-
-        /*密碼顯示切換*/
-        #checkEye1 {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-        }
-
-        #checkEye2 {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-        }
+        
     </style>
 }
 
@@ -160,7 +140,50 @@
             $('#confirmPassword').blur(function () {
                 checkPasswordMatch();
             });
+
+            const selCity = document.querySelector('#selectCity');
+            const selDistrict = document.querySelector('#selectDistrict');            
+
+            LoadCities();
+
+            async function LoadCities() {
+                try {
+                    const response = await fetch('/api/cities');
+                    const datas = await response.json();
+
+                    var cities = datas.map(city => {
+                        return (`<option value="${city}">${city}</option>`);
+                    });
+
+                    selCity.innerHTML = cities.join("");
+                    LoadDistricts();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            async function LoadDistricts() {
+                try {
+                    const city = selCity.options[selCity.selectedIndex].value;
+                    const response = await fetch(`/api/districts?city=${city}`);
+                    const datas = await response.json();
+
+                    var districts = datas.map(district => {
+                        return (`<option value="${district}">${district}</option>`);
+                    });
+
+                    selDistrict.innerHTML = districts.join("");
+                    LoadRoads();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            selCity.addEventListener('change', () => {
+                LoadDistricts();
+            });
             
+
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             const forms = document.querySelectorAll('.needs-validation')
             // Loop over them and prevent submission

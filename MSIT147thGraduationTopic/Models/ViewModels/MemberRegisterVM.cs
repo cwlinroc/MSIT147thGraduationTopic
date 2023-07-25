@@ -106,6 +106,16 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
     }
 
+    public class AddressVM
+    {
+        public class Record
+        {
+            public string city { get; set; }
+            public string site_id { get; set; }
+            
+        }
+    }
+
     public class DateTimeRangeAttribute : ValidationAttribute
     {
         private readonly DateTime _minDate;

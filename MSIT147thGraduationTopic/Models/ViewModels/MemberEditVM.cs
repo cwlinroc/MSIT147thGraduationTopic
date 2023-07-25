@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
-    public class MemberFrontEditVM
+    public class MemberEditVM
     {
         private Member _member = null;
         public Member Member
@@ -13,7 +13,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _member = value; }
         }
 
-        public MemberFrontEditVM()
+        public MemberEditVM()
         {
             _member = new Member();
         }
@@ -77,9 +77,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
     public static partial class Members
     {
-        public static MemberFrontEditVM ToEditVM(this MemberDto dto)
+        public static MemberEditVM ToEditVM(this MemberDto dto)
         {
-            return new MemberFrontEditVM
+            return new MemberEditVM
             {
                 MemberId = dto.MemberId,
                 NickName = dto.NickName,

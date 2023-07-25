@@ -73,5 +73,8 @@ namespace MSIT147thGraduationTopic.Models.Services
         }
     }
 
-    
+    public class AddressService
+    {
+
+    }
 }
