@@ -72,20 +72,21 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Create
             ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")]
                 MerchandiseVM merchandisevm, IFormFile photo)
-        {            
+        {
+            merchandisevm.ImageUrl = null;
             if (photo != null)
             {
                 if (photo.ContentType != "image")
                 {
                     return View(merchandisevm);
                 }
-                // todo 將圖片系統性改名後上傳
-                string photoPath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", photo.FileName);
+                // todo 將圖片系統性改名後上傳 //todo 讀取圖片時再串接_host.WebRootPath
+                string photoPath = Path.Combine(/*_host.WebRootPath, */"uploads/merchandisePicture", photo.FileName);
+                merchandisevm.ImageUrl = photoPath;
                 using (var fileStream = new FileStream(photoPath, FileMode.Create))
                 {
                     photo.CopyTo(fileStream);
                 }
-                //merchandisevm.ImageUrl = photoPath; // todo 改成轉型後再加回去
 
 
                 /*// 使用時間戳系統性改名，避免資料庫內名稱重複

@@ -44,7 +44,6 @@
             xhr.open("POST", "/ApiBrand/CheckBrandforCreate");
             xhr.send(formdata);
 
-            let condition;
             xhr.addEventListener("load", () => {
                 const data = JSON.parse(xhr.responseText);
 

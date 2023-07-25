@@ -20,7 +20,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             return new CouponDto
             {
                 CouponId = coupon.CouponId,
-                CouponTagId = coupon.CouponTagId,
+                CouponTagId = coupon.CouponTagId.Value,
                 CouponStartDate = coupon.CouponStartDate,
                 CouponCondition = coupon.CouponCondition,
                 CouponEndDate = coupon.CouponEndDate,

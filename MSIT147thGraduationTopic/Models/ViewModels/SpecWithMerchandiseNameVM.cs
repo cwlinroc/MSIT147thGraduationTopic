@@ -23,8 +23,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _specWm.SpecId; }
             set { _specWm.SpecId = value; }
         }
-        [DisplayName("品牌名稱")]
-        [Required(ErrorMessage = "此為必填欄位")]
+        [DisplayName("規格名稱")]
         public string SpecName
         {
             get { return _specWm.SpecName; }
@@ -35,6 +34,12 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         {
             get { return _specWm.MerchandiseId; }
             set { _specWm.MerchandiseId = value; }
+        }
+        [DisplayName("規格名稱")]
+        public string MerchandiseName
+        {
+            get { return _specWm.MerchandiseName; }
+            set { _specWm.MerchandiseName = value; }
         }
 
         [DisplayName("價格")]

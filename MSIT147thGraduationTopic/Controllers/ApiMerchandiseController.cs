@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -20,18 +21,50 @@ namespace MSIT147thGraduationTopic.Controllers
             return Json(datas);
         }
 
-        public IActionResult Brands()
+        public IActionResult GenerateBrandOptions()
         {
-            var datas = _context.Brands.OrderBy(a => a.BrandId);
+            var datas = _context.Brands.OrderBy(b => b.BrandId);
 
             return Json(datas);
         }
 
-        public IActionResult Categories()
+        public IActionResult GenerateCategoryOptions()
         {
-            var datas = _context.Categories.OrderBy(a => a.CategoryId);
+            var datas = _context.Categories.OrderBy(c => c.CategoryId);
 
             return Json(datas);
+        }
+
+        [HttpPost]
+        public IActionResult CheckMerchandiseforCreate(MerchandiseVM merchandisevm)
+        {
+            var exists = _context.Merchandises.Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
+
+            return Json(exists);
+        }
+
+
+
+
+
+
+
+
+
+        [HttpPost]
+        public IActionResult CheckMerchandiseforEdit(MerchandiseVM merchandisevm)
+        {
+            var exists = _context.Merchandises
+                .Where(m => m.MerchandiseId != merchandisevm.MerchandiseId)
+                .Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
+
+            return Json(exists);
+        }
+        public IActionResult CheckSpecforDeleteMerchandise(int id)
+        {
+            var exists = _context.Specs.Any(s => s.SpecId == id);
+
+            return Json(exists);
         }
     }
 }

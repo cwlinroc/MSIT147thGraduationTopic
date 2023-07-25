@@ -76,14 +76,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UsedCoupons]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[EvaluationInput]",
-         "ObjectType": 3
-      },
-      {
          "Name": "[dbo].[MerchandiseSearch]",
          "ObjectType": 3
       },

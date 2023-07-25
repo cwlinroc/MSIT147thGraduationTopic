@@ -13,18 +13,19 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Create">
+                <form asp-action="Create" method="Post" name="forminput" id="forminput">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="MerchandiseName" class="control-label"></label>
                         <input asp-for="MerchandiseName" class="form-control" />
-                        <span asp-validation-for="MerchandiseName" class="text-danger"></span>
+                        <span asp-validation-for="MerchandiseName" class="text-danger" id="alertspanforname"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="BrandId" class="control-label"></label>
                         <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId" id="inputbrandid">
-                            <option value="0">未選擇品牌</option>
+                            <option value="0" selected disabled hidden>--請選擇品牌--</option>
                         </select>
+                        <span class="text-danger" id="alertspanforbrand"></span>
                         @*不知為何，使用Ajax語法指定id，選項還是產生在上方的選單中
                         <select class="form-select" name="BrandId" id="inputbrandid">
                         <option value="0">未選擇</option>
@@ -33,13 +34,14 @@
                     <div class="form-group">
                         <label asp-for="CategoryId" class="control-label"></label>
                         <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId" id="inputcategoryid">
-                            <option value="0">未選擇商品類別</option>
+                            <option value="0" selected disabled hidden>--請選擇商品類別--</option>
                         </select>
+                        <span class="text-danger" id="alertspanforcategory"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Description" class="control-label"></label>
-                        <textarea name="Description" class="form-control" id="textarea"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <textarea name="Description" class="form-control" id="descriptionarea"></textarea>
+                        <span asp-validation-for="Description" class="text-danger" id="alertspanfordescription"></span>
                     </div>
                     <div class="form-group">
                         @*<label asp-for="ImageUrl" class="control-label">選擇圖片</label>*@
@@ -47,6 +49,7 @@
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
                         <label class="col-form-label">選擇圖片</label>
                         <input class="form-control" type="file" id="selectfile" name="photo">
+                        <span class="text-danger" id="alertspanforimage"></span>
 
                         <div class="alert alert-secondary mt-2" id="containdisplay">
                             <img id="display" />
@@ -60,7 +63,7 @@
                     </div>
                     <hr />
                     <div class="form-group">
-                        <input type="submit" value="新增" class="btn btn-primary" />
+                        <input type="submit" value="新增" class="btn btn-primary" id="submit" />
                         @Html.ActionLink("取消", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
@@ -77,7 +80,7 @@
 
         brand.addEventListener("load", () => {
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/ApiMerchandise/Brands");
+            xhr.open("GET", "/ApiMerchandise/GenerateBrandOptions");
             xhr.send();
 
             xhr.addEventListener("load", () => {
@@ -91,7 +94,7 @@
 
         category.addEventListener("load", () => {
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/ApiMerchandise/Categories");
+            xhr.open("GET", "/ApiMerchandise/GenerateCategoryOptions");
             xhr.send();
 
             xhr.addEventListener("load", () => {
@@ -134,6 +137,55 @@
             })
         }
     </script>
+    @*錯誤提示訊息*@
+    <script>
+        const alertName = document.querySelector("#alertspanforname");
+        const alertBrand = document.querySelector("#alertspanforbrand");
+        const alertCategory = document.querySelector("#alertspanforcategory");
+        const alertDescription = document.querySelector("#alertspanfordescription");
+        const alertImage = document.querySelector("#alertspanforimage");
+
+        const submit = document.querySelector("#submit");
+        submit.addEventListener("click", async(event) => {
+            event.preventDefault();
+            var formdata = new FormData(document.forminput);
+
+            const response = await fetch(`@Url.Content("~/ApiMerchandise/CheckMerchandiseforCreate")`, {
+                body: formdata,
+                method: "POST"
+            });
+            const checkNameJson = await response.text()
+            const checkName = JSON.parse(checkNameJson)
+            console.log(checkName)
+            if (checkName) {
+                alertName.innerHTML = "此商品名稱已存在，請重新命名";
+            }
+            else {
+                alertName.innerHTML = "";
+            }
+
+            let checkdescription = $("#descriptionarea").val().length;
+            if (checkdescription > 500) {
+                alertDescription.innerHTML = "商品說明不可長於500字，請修正";
+            }
+            else {
+                alertDescription.innerHTML = "";
+            }
+
+            //xhr.addEventListener("load", () => {
+            //    const data = JSON.parse(xhr.responseText);
+
+            //    if (data) {
+            //        alertName.innerHTML = "此商品名稱已存在，請重新命名";
+            //    }
+            //    else {
+            //        alertName.innerHTML = "";
+            //        const forminput = document.querySelector("#forminput");
+            //        HTMLFormElement.prototype.submit.call(forminput);
+            //    }
+            //})
+        })
+    </script>
 }
 
 @section Styles{
@@ -152,7 +204,7 @@
             margin: 10px, 0;
         }
 
-        #textarea {
+        #descriptionarea {
             height: 150px;
             overflow: auto;
         }
