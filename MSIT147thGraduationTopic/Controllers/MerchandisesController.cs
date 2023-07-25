@@ -75,11 +75,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             merchandisevm.ImageUrl = null;
             if (photo != null)
-            {
-                if (photo.ContentType != "image")
-                {
-                    return View(merchandisevm);
-                }
+            {                
                 // todo 將圖片系統性改名後上傳 //todo 讀取圖片時再串接_host.WebRootPath
                 string photoPath = Path.Combine(/*_host.WebRootPath, */"uploads/merchandisePicture", photo.FileName);
                 merchandisevm.ImageUrl = photoPath;

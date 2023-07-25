@@ -18,14 +18,14 @@
                     <div class="form-group">
                         <label asp-for="MerchandiseName" class="control-label"></label>
                         <input asp-for="MerchandiseName" class="form-control" />
-                        <span asp-validation-for="MerchandiseName" class="text-danger" id="alertspanforname"></span>
+                        <span asp-validation-for="MerchandiseName" class="text-danger foralert" id="alertspanforname"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="BrandId" class="control-label"></label>
                         <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId" id="inputbrandid">
                             <option value="0" selected disabled hidden>--請選擇品牌--</option>
                         </select>
-                        <span class="text-danger" id="alertspanforbrand"></span>
+                        <span class="text-danger foralert" id="alertspanforbrand"></span>
                         @*不知為何，使用Ajax語法指定id，選項還是產生在上方的選單中
                         <select class="form-select" name="BrandId" id="inputbrandid">
                         <option value="0">未選擇</option>
@@ -36,12 +36,12 @@
                         <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId" id="inputcategoryid">
                             <option value="0" selected disabled hidden>--請選擇商品類別--</option>
                         </select>
-                        <span class="text-danger" id="alertspanforcategory"></span>
+                        <span class="text-danger foralert" id="alertspanforcategory"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Description" class="control-label"></label>
                         <textarea name="Description" class="form-control" id="descriptionarea"></textarea>
-                        <span asp-validation-for="Description" class="text-danger" id="alertspanfordescription"></span>
+                        <span asp-validation-for="Description" class="text-danger foralert" id="alertspanfordescription"></span>
                     </div>
                     <div class="form-group">
                         @*<label asp-for="ImageUrl" class="control-label">選擇圖片</label>*@
@@ -49,7 +49,7 @@
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
                         <label class="col-form-label">選擇圖片</label>
                         <input class="form-control" type="file" id="selectfile" name="photo">
-                        <span class="text-danger" id="alertspanforimage"></span>
+                        <span class="text-danger foralert" id="alertspanforimage"></span>
 
                         <div class="alert alert-secondary mt-2" id="containdisplay">
                             <img id="display" />
@@ -139,6 +139,9 @@
     </script>
     @*錯誤提示訊息*@
     <script>
+
+        let alertspan = document.querySelector(".foralert"); // todo 為何只會抓第一個?
+        console.log(alertspan);
         const alertName = document.querySelector("#alertspanforname");
         const alertBrand = document.querySelector("#alertspanforbrand");
         const alertCategory = document.querySelector("#alertspanforcategory");
@@ -148,9 +151,16 @@
         const submit = document.querySelector("#submit");
         submit.addEventListener("click", async(event) => {
             event.preventDefault();
+            alertspan.innerHTML = "";
+            console.log(alertspan);
+            alertName.innerHTML = "";
+            alertBrand.innerHTML = "";
+            alertCategory.innerHTML = "";
+            alertDescription.innerHTML = "";
+            alertImage.innerHTML = "";
+            
             var formdata = new FormData(document.forminput);
-
-            const response = await fetch(`@Url.Content("~/ApiMerchandise/CheckMerchandiseforCreate")`, {
+            const response = await fetch(`@Url.Content("~/ApiMerchandise/CheckforCreateMerchandise")`, {
                 body: formdata,
                 method: "POST"
             });
@@ -160,16 +170,14 @@
             if (checkName) {
                 alertName.innerHTML = "此商品名稱已存在，請重新命名";
             }
-            else {
-                alertName.innerHTML = "";
+            if ($("#inputbrandid").val() == null) {
+                alertBrand.innerHTML = "請選擇品牌";
             }
-
-            let checkdescription = $("#descriptionarea").val().length;
-            if (checkdescription > 500) {
-                alertDescription.innerHTML = "商品說明不可長於500字，請修正";
+            if ($("#inputcategoryid").val() == null) {
+                alertCategory.innerHTML = "請選擇商品類別";
             }
-            else {
-                alertDescription.innerHTML = "";
+            if ($("#descriptionarea").val().length > 500) {
+                alertDescription.innerHTML = "商品說明不可多於500字，請縮短長度";
             }
 
             //xhr.addEventListener("load", () => {

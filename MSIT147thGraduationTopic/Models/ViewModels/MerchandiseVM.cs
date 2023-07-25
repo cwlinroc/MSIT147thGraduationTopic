@@ -43,7 +43,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.CategoryId = value; }
         }
         [DisplayName("商品描述")]
-        //[StringLength(500, ErrorMessage = "字數不得超過500字")] //todo 改成前端驗證
         public string? Description
         {
             get { return _merchandise.Description; }

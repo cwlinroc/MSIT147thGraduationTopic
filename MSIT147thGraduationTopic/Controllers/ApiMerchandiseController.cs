@@ -36,9 +36,14 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public IActionResult CheckMerchandiseforCreate(MerchandiseVM merchandisevm)
+        public IActionResult CheckforCreateMerchandise(MerchandiseVM merchandisevm, IFormFile photo)
         {
             var exists = _context.Merchandises.Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
+            
+            if (photo.ContentType != null && photo.ContentType != "image/jpeg" && photo.ContentType != "image/png")
+            {
+                return Json(exists, "非圖片"); //todo 做成陣列再回傳
+            }
 
             return Json(exists);
         }
@@ -52,7 +57,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
         [HttpPost]
-        public IActionResult CheckMerchandiseforEdit(MerchandiseVM merchandisevm)
+        public IActionResult CheckforEditMerchandise(MerchandiseVM merchandisevm, IFormFile photo)
         {
             var exists = _context.Merchandises
                 .Where(m => m.MerchandiseId != merchandisevm.MerchandiseId)
