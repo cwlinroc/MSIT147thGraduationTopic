@@ -4,6 +4,7 @@ using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -22,15 +23,20 @@ namespace MSIT147thGraduationTopic.Controllers
             _service = new EmployeeService(context, environemnt);
         }
 
-
         [HttpGet]
         public ActionResult<List<EmployeeVM>> GetAllEmployees()
         {
             return _service.GetAllEmployees().ToList();
         }
 
+        [HttpGet("{query}")]
+        public ActionResult<List<EmployeeVM>> GetEmployeesByNameOrAccount(string query)
+        {
+            return _service.GetEmployeesByNameOrAccount(query).ToList();
+        }
+
         [HttpPost]
-        public ActionResult<int> CreateEmployee([FromForm] EmployeeCreateVM vm, [FromForm] IFormFile avatar)
+        public ActionResult<int> CreateEmployee([FromForm] EmployeeCreateVM vm, [FromForm] IFormFile? avatar)
         {
             var employeeId = _service.CreateEmployee(vm.ToDto(), avatar);
 
@@ -38,9 +44,17 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<int> UpdateEmployee([FromForm] EmployeeEditDto dto, int id, [FromForm] IFormFile avatar)
+        public ActionResult<int> UpdateEmployee([FromForm] EmployeeEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
             var employeeId = _service.EditEmployee(dto, id, avatar);
+
+            return employeeId;
+        }
+
+        [HttpPut("permission/{id}")]
+        public ActionResult<int> UpdateEmployeePermission(int id, string permission)
+        {
+            var employeeId = _service.ChangeEmployeePermission(id, permission);
 
             return employeeId;
         }

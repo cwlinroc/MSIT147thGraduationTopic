@@ -192,7 +192,7 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.Avatar).HasMaxLength(100);
 
-                entity.Property(e => e.ConfirmGuild)
+                entity.Property(e => e.ConfirmGuid)
                     .HasMaxLength(20)
                     .IsUnicode(false);
 

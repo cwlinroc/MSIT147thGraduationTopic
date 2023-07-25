@@ -1,57 +1,109 @@
-﻿using MSIT147thGraduationTopic.Models.Dtos;
+﻿using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
 using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class MemberRegisterVM
     {
+        private Member _member = null;
+        public Member Member
+        {
+            get { return _member; }
+            set { _member = value; }
+        }
+
+        public MemberRegisterVM()
+        {
+            _member = new Member();
+        }
+
         [Display(Name = "編號")]
-        public int MemberId { get; set; }
+        public int MemberId
+        {
+            get { return _member.MemberId; }
+            set { _member.MemberId = value; }
+        }
 
         [Display(Name = "姓名")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string MemberName { get; set; }        
+        public string MemberName
+        {
+            get { return _member.MemberName; }
+            set { _member.MemberName = value; }
+        }
 
         [Display(Name = "暱稱")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string NickName { get; set; }
+        public string NickName
+        {
+            get { return _member.NickName; }
+            set { _member.NickName = value; }
+        }
 
         [Display(Name = "生日")]
         [Required(ErrorMessage = "{0}必填")]
         [DateTimeRange(-100, -18, ErrorMessage = "年齡不可大於100歲,小於18歲!")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth
+        {
+            get { return _member.DateOfBirth; }
+            set { _member.DateOfBirth = value; }
+        }
 
         [Display(Name = "性別")]
         [Required(ErrorMessage = "{0}必填")]
-        public bool? Gender { get; set; }
+        public bool? Gender
+        {
+            get { return _member.Gender; }
+            set { _member.Gender = (bool)value; }
+        }
 
         [Display(Name = "帳號")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(15, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Account { get; set; }
+        public string Account
+        {
+            get { return _member.Account; }
+            set { _member.Account = value; }
+        }
 
         [Display(Name = "密碼")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(65, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Password { get; set; }
+        public string Password
+        {
+            get { return _member.Password; }
+            set { _member.Password = value; }
+        }
 
         [Display(Name = "手機號碼")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Phone { get; set; }
+        public string Phone
+        {
+            get { return _member.Phone; }
+            set { _member.Phone = value; }
+        }
 
         [Display(Name = "地址")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Address { get; set; }
+        public string Address
+        {
+            get { return _member.Address; }
+            set { _member.Address = value; }
+        }
 
         [Display(Name = "Email")]
+        [EmailAddress]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Email { get; set; }
+        public string Email
+        {
+            get { return _member.Email; }
+            set { _member.Email = value; }
+        }
 
-        [Display(Name = "頭像")]
-        public string Avatar { get; set; }
     }
 
     public class DateTimeRangeAttribute : ValidationAttribute
@@ -84,14 +136,14 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
     }
 
-    public static class Members
+    public static partial class Members
     {
-        public static MemberRegisterVM ToVM(this MemberDto dto)
+        public static MemberRegisterVM ToRegisterVM(this MemberDto dto)
         {
             return new MemberRegisterVM
             {
                 MemberId = dto.MemberId,
-                MemberName = dto.MemberName,                
+                MemberName = dto.MemberName,
                 NickName = dto.NickName,
                 DateOfBirth = dto.DateOfBirth,
                 Gender = dto.Gender,
@@ -99,8 +151,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Password = dto.Password,
                 Phone = dto.Phone,
                 Address = dto.Address,
-                Email = dto.Email,
-                Avatar = dto.Avatar,
+                Email = dto.Email
             };
         }
     }

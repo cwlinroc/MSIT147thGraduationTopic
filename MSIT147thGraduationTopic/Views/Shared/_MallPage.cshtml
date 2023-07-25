@@ -58,9 +58,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-nowrap" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link text-nowrap" href="登入.html">註冊</a></li>
+                        <li class="nav-item"><a class="nav-link text-nowrap" href="Register.html">註冊</a></li>
                         <li class="nav-item">
-                            <a class="nav-link" href="登入.html">
+                            <a class="nav-link" href="">
                                 <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>購物車
                             </a>
                         </li>
@@ -75,7 +75,7 @@
             <div class="modal-dialog  modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-4 " id="loginModalLabel">會員登入</h1>
+                        <h1 class="modal-title fs-4 " id="loginModalLabel">登入</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -83,7 +83,7 @@
                             <div class="row">
                                 <div class="col-10 mx-auto">
 
-                                    @using (Html.BeginForm("LogIn", "Home"))
+                                    @using (Html.BeginForm("LogIn", "MemberFront"))
                                     {
                                         @Html.AntiForgeryToken()
                                         <!-- Account input-->
@@ -94,13 +94,18 @@
                                         <!-- Password input-->
                                         <div class="form-label mb-3">
                                             <label for="password" class="fw-bold">密碼</label>
-                                            <input class="form-control" id="password" type="text" name="Password" />
+                                            <input class="form-control" id="password" type="password" name="Password" />
                                         </div>
-                                        <div>
-                                            <a href="">忘記密碼</a>
+                                        <div class="form-check form-check-inline mb-3">
+                                            <input class="form-check-input" type="checkbox" id="chkRemember">
+                                            <label class="form-check-label" for="chkRemember">
+                                                記住我
+                                            </label>
                                         </div>
+                                        <span class="offset-6"><a href="" class="text-decoration-none">忘記密碼</a></span>
+                                        
                                         <div>
-                                            <button type="submit" class="btn btn-primary">登入</button>
+                                            <button type="submit" class="btn btn-primary me-2">登入</button>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                                         </div>
                                     }

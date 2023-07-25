@@ -15,8 +15,8 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly GraduationTopicContext _context;
         private readonly EmployeeRepository _repo;
         private readonly IWebHostEnvironment _environemnt;
-
-
+        //TODO add to app settings
+        private readonly string[] _permissions = { "管理員", "經理", "員工" };
         public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environemnt)
         {
             _context = context;
@@ -33,8 +33,17 @@ namespace MSIT147thGraduationTopic.Models.Services
                 return dto.ToVM();
             });
         }
+        public IEnumerable<EmployeeVM> GetEmployeesByNameOrAccount(string query)
+        {
+            return _repo.GetEmployeesByNameOrAccount(query).Select(dto =>
+            {
+                string htmlFilePath = Path.Combine(_environemnt.WebRootPath, "uploads\\employeeAvatar");
 
-        public int CreateEmployee(EmployeeDto dto, IFormFile file)
+                return dto.ToVM();
+            });
+        }
+
+        public int CreateEmployee(EmployeeDto dto, IFormFile? file)
         {
             if (file != null)
             {
@@ -55,7 +64,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.CreateEmployee(dto);
         }
 
-        public int EditEmployee(EmployeeEditDto dto, int employeeId, IFormFile file)
+        public int EditEmployee(EmployeeEditDto dto, int employeeId, IFormFile? file)
         {
             if (file != null)
             {
@@ -69,6 +78,19 @@ namespace MSIT147thGraduationTopic.Models.Services
             string? fileName = file?.FileName;
             return _repo.EditEmployee(dto, employeeId, fileName);
         }
+
+        public int ChangeEmployeePermission(int id, string permission)
+        {
+            string s = _permissions[0];
+
+            int permissionId = Array.IndexOf(_permissions, permission) + 1;
+
+            if (permissionId <= 0 || permissionId > 3) return -1;
+
+            return _repo.ChangeEmployeePermission(id, permissionId);
+        }
+
+
 
         public int DeleteEmployee(int employeeId)
         {

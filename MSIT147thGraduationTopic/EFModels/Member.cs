@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public string Email { get; set; }
         public string Avatar { get; set; }
         public bool IsActivated { get; set; }
-        public string ConfirmGuild { get; set; }
+        public string ConfirmGuid { get; set; }
 
         public virtual ICollection<Evaluation> Evaluations { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
