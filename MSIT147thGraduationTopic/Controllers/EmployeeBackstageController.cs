@@ -4,10 +4,11 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class EmployeeBackstageController : Controller
     {
+        //TODO add in appsettings
+        private readonly string[] _roles = { "管理員", "經理", "員工" };
         public IActionResult Index()
         {
-            string[] permissions = { "管理員", "經理", "員工" };
-            return View(permissions);
+            return View(_roles);
         }
 
     }

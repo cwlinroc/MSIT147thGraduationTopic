@@ -46,6 +46,16 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employeeId;
         }
 
+        public int ChangeEmployeePermission(int id, int permissionId)
+        {
+            var employee = _context.Employees.FirstOrDefault(o => o.EmployeeId == id);
+            if (employee == null) return -1;
+
+            employee.Permission = permissionId;
+            _context.SaveChanges();
+            return id;
+        }
+
         public int DeleteEmployee(int employeeId)
         {
             var employee = _context.Employees.Find(employeeId);
