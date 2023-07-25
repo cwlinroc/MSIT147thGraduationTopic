@@ -48,6 +48,7 @@
                 </label>
                 <input class="form-control" id="password" name="password" type="password"
                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required />
+                <i id="checkEye1" class="fas fa-eye"></i>
                 <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
@@ -55,6 +56,7 @@
                 <label for="repassword" class="form-label fw-bold">確認密碼</label>
                 <input class="form-control" id="confirmPassword" name="confirmPassword"
                        type="password" required>
+                <i id="checkEye2" class="fas fa-eye"></i>
                 <div class="invalid-feedback">與密碼不符！</div>
             </div>
             <!-- Email address input-->
@@ -118,6 +120,21 @@
 
         #district {
             max-width: 200px
+        }
+
+        /*密碼顯示切換*/
+        #checkEye1 {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+
+        #checkEye2 {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
         }
     </style>
 }
