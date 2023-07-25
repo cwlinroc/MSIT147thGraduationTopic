@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MSIT147thGraduationTopic.Controllers
@@ -51,13 +53,16 @@ namespace MSIT147thGraduationTopic.Controllers
             return employeeId;
         }
 
+        public record Container([Required] string Permission);
+
         [HttpPut("permission/{id}")]
-        public ActionResult<int> UpdateEmployeePermission(int id, string permission)
+        public ActionResult<int> UpdateEmployeePermission(Container permission, int id = 0)
         {
-            var employeeId = _service.ChangeEmployeePermission(id, permission);
+            var employeeId = _service.ChangeEmployeePermission(id, permission.Permission);
 
             return employeeId;
         }
+
 
         [HttpDelete("{id}")]
         public ActionResult<int> UpdateEmployee(int id)

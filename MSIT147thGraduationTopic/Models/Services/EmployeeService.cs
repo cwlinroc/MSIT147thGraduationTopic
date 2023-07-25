@@ -90,8 +90,6 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.ChangeEmployeePermission(id, permissionId);
         }
 
-
-
         public int DeleteEmployee(int employeeId)
         {
             return _repo.DeleteEmployee(employeeId);

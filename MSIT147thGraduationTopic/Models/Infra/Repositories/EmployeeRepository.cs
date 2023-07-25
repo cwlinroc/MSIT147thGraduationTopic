@@ -67,9 +67,6 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employeeId;
         }
 
-
-
-
-
+        
     }
 }
