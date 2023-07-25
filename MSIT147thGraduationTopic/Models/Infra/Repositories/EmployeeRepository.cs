@@ -18,6 +18,14 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employees.Select(o => o.ToDto());
         }
 
+        public IEnumerable<EmployeeDto> GetEmployeesByNameOrAccount(string query)
+        {
+            var employees = _context.Employees
+                .Where(o => o.EmployeeName.Contains(query) || o.EmployeeAccount.Contains(query));
+            return employees.Select(o => o.ToDto());
+        }
+
+
         public int CreateEmployee(EmployeeDto dto)
         {
             var obj = dto.ToEF();
@@ -38,6 +46,16 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employeeId;
         }
 
+        public int ChangeEmployeePermission(int id, int permissionId)
+        {
+            var employee = _context.Employees.FirstOrDefault(o => o.EmployeeId == id);
+            if (employee == null) return -1;
+
+            employee.Permission = permissionId;
+            _context.SaveChanges();
+            return id;
+        }
+
         public int DeleteEmployee(int employeeId)
         {
             var employee = _context.Employees.Find(employeeId);
@@ -48,6 +66,9 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context.SaveChanges();
             return employeeId;
         }
+
+
+
 
 
     }
