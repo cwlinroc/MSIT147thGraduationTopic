@@ -60,9 +60,9 @@
 
             <div class=" bg-light rounded shadow p-2 mb-4">
 
-                <h2 class="mt-4 ms-3">員工:大中天</h2>
+                <h2 class="mt-4 ms-3">員工:<span id="displayTileName"></span></h2>
                 <figure class="p-4">
-                    <img src="">
+                    <img src="" id="displayImage">
                 </figure>
 
             </div>
@@ -74,29 +74,28 @@
                     <tbody>
                         <tr>
                             <td class="text-nowrap">姓名</td>
-                            <td>大中天</td>
+                            <td id="displayName"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">帳號名稱</td>
-                            <td>Big Middle Sky</td>
+                            <td id="displayAccount"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">電話</td>
-                            <td>0933000000</td>
+                            <td id="displayPhone"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">Email</td>
-                            <td>bms9487564651132131@yahoo.com.tw</td>
+                            <td id="displayEmail"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">權限</td>
-                            <td>工讀生</td>
+                            <td id="displayPermission"></td>
                         </tr>
                     </tbody>
                 </table>
 
             </div>
-
 
         </div>
 
@@ -286,17 +285,18 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                    <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                    <td>${element.employeeName}</td>
-                    <td>${element.employeeAccount}</td>
-                    <td>${element.permission}</td>
-                    <td><button class="btn btn-primary edit-btn">修改</button></td>
-                    <td><button class="btn btn-danger delete-btn">刪除</button></td>
-                    </tr>`
+                                    <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                                    <td>${element.employeeName}</td>
+                                    <td>${element.employeeAccount}</td>
+                                    <td>${element.permission}</td>
+                                    <td><button class="btn btn-primary edit-btn">修改</button></td>
+                                    <td><button class="btn btn-danger delete-btn">刪除</button></td>
+                                    </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
             $('.tablebox').find('.delete-btn').click(deleteEmployee)
+            $('.tablebox').find('tbody').find('tr').click(displayEmployeeDataInRow)
         }
 
         //調整為新增表單
@@ -329,6 +329,21 @@
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitEdit)
         }
+
+        //顯示點選tr的會員資料
+        function displayEmployeeDataInRow(event) {
+            const index = +event.currentTarget.dataset.index
+            const imgName = (employeeData[index].avatarName) ? employeeData[index].avatarName : '_employeeDefault.jpg'
+
+            $('#displayName').text(employeeData[index].employeeName)
+            $('#displayAccount').text(employeeData[index].employeeAccount)
+            $('#displayPhone').text(employeeData[index].employeePhone)
+            $('#displayEmail').text(employeeData[index].employeeEmail)
+            $('#displayPermission').text(employeeData[index].permission)
+            $('#displayTileName').text(employeeData[index].employeeName)
+            $('#displayImage').attr('src', '@Url.Content("~/uploads/employeeAvatar/")' + imgName)
+        }
+
 
     </script>
 }

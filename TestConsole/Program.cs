@@ -4,8 +4,8 @@ using MSIT147thGraduationTopic.Models.Services;
 
 var service = new RandomInsertService(null);
 
-//service.AddRandomMembers(4);
-service.AddRandomCart();
+service.AddRandomMembers(20);
+//service.AddRandomCart();
 
 Console.WriteLine("success");
 

@@ -13,10 +13,10 @@ builder.Services.AddDbContext<GraduationTopicContext>(
     option => option.UseSqlServer(builder.Configuration.GetConnectionString
     ("GraduationTopicConnection")));
 
-//AspNetCore.Authentication ¥Î¤áÅçµý¾Þ§@¾÷¨îµù¥U DI  (¦b Controller ½d³ò¥~¨Ï¥Î¤è¦¡)
+//AspNetCore.Authentication ï¿½Î¤ï¿½ï¿½ï¿½ï¿½ï¿½Þ§@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½U DI  (ï¿½b Controller ï¿½dï¿½ï¿½~ï¿½Ï¥Î¤è¦¡)
 builder.Services.AddHttpContextAccessor();
 
-//¦Û­q¥Î¤áµn¤J¸ê°T¾Þ§@µù¥U DI
+//ï¿½Û­qï¿½Î¤ï¿½nï¿½Jï¿½ï¿½Tï¿½Þ§@ï¿½ï¿½ï¿½U DI
 builder.Services.AddScoped<UserInfoService>();
 
 builder.Services.AddDistributedMemoryCache();
@@ -28,15 +28,15 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-//==== AspNetCore.Authentication ¥þ°ì½d³òªºÅçµý¾÷¨î²ÕºA³]¸m ===== (¥þÀô¹Ò cookie ®M¥Î)
+//==== AspNetCore.Authentication ï¿½ï¿½ï¿½ï¿½dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÕºAï¿½]ï¿½m ===== (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ cookie ï¿½Mï¿½ï¿½)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)    
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options => 
         {
-            //¥¼µn¤J®É·|¦Û°Ê²¾Âà¨ì¦¹ºô§}¡C
+            //ï¿½ï¿½ï¿½nï¿½Jï¿½É·|ï¿½Û°Ê²ï¿½ï¿½ï¿½ì¦¹ï¿½ï¿½ï¿½}ï¿½C
             options.LoginPath = new PathString("/Member/NoLogin");
-            //¥¼±ÂÅv¨¤¦â®É·|¦Û°Ê²¾Âà¨ì¦¹ºô§}¡C
+            //ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½É·|ï¿½Û°Ê²ï¿½ï¿½ï¿½ì¦¹ï¿½ï¿½ï¿½}ï¿½C
             options.AccessDeniedPath = new PathString("/Member/NoRole");
-            //µn¤J10¤À«á·|¥¢®Ä
+            //ï¿½nï¿½J10ï¿½ï¿½ï¿½ï¿½|ï¿½ï¿½ï¿½ï¿½
             options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
         });
 
@@ -55,8 +55,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-//==== AspNetCore.Authentication ¥Î¤áµn¤JÅçµý¾Þ§@¾÷¨î¨Ï¥Î ====
-//°õ¦æ¶¶§Ç¤£¯àÄA­Ë¤£µMÅçµý¥\¯à·|µLªk¥¿±`¤u§@¡C
+//==== AspNetCore.Authentication ï¿½Î¤ï¿½nï¿½Jï¿½ï¿½ï¿½ï¿½Þ§@ï¿½ï¿½ï¿½ï¿½Ï¥ï¿½ ====
+//ï¿½ï¿½ï¿½æ¶¶ï¿½Ç¤ï¿½ï¿½ï¿½ï¿½Aï¿½Ë¤ï¿½ï¿½Mï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½|ï¿½Lï¿½kï¿½ï¿½ï¿½`ï¿½uï¿½@ï¿½C
 app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();

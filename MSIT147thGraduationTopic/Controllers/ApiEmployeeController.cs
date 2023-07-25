@@ -30,7 +30,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public ActionResult<int> CreateEmployee([FromForm] EmployeeCreateVM vm, [FromForm] IFormFile avatar)
+        public ActionResult<int> CreateEmployee([FromForm] EmployeeCreateVM vm, [FromForm] IFormFile? avatar)
         {
             var employeeId = _service.CreateEmployee(vm.ToDto(), avatar);
 
@@ -38,7 +38,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<int> UpdateEmployee([FromForm] EmployeeEditDto dto, int id, [FromForm] IFormFile avatar)
+        public ActionResult<int> UpdateEmployee([FromForm] EmployeeEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
             var employeeId = _service.EditEmployee(dto, id, avatar);
 
