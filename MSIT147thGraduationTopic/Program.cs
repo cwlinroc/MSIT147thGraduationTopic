@@ -41,6 +41,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Evaluations}/{action=Index}/{id?}");
+    pattern: "{controller=Evaluation}/{action=EIndex}/{id?}");
 
 app.Run();
