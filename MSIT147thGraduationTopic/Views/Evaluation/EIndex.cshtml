@@ -37,12 +37,12 @@
                     </div>
 
                     <div class="d-flex ms-auto float-end">
-                        <div id="score" class="float-end rounded-3 mx-3 py-1" style="background-color:	#F1E1FF">
-                            <img id="stsr1" src="" style="height:27px" />
-                            <img id="stsr2" src="/images/空星.png" style="height:27px" />
-                            <img id="stsr3" src="/images/空星.png" style="height:27px" />
-                            <img id="stsr4" src="/images/空星.png" style="height:27px" />
-                            <img id="stsr5" src="/images/空星.png" style="height:27px" />
+                        <div id="score" class="float-end mx-1 mt-3">
+                            <img id="stsr1" src="/images/空星.png" style="height:40px " />
+                            <img id="stsr2" src="/images/空星.png" style="height:40px" />
+                            <img id="stsr3" src="/images/空星.png" style="height:40px" />
+                            <img id="stsr4" src="/images/空星.png" style="height:40px" />
+                            <img id="stsr5" src="/images/空星.png" style="height:40px" />
                         </div>
                     </div>
                 </div>
@@ -85,12 +85,12 @@
                             </div>
 
                             <div class="d-flex ms-auto float-end">
-                                <div id="score" class="float-end">
-                                    <img src="/images/一星.png" style="height:40px" />
-                                    <img src="/images/二星.png" style="height:40px" />
-                                    <img src="/images/三星.png" style="height:40px" />
-                                    <img src="/images/四星.png" style="height:40px" />
-                                    <img src="/images/五星.png" style="height:40px" />
+                                <div id="score" class="float-end rounded-3  " >
+                                    <img id="stsr1" src="/images/空星.png" style="height:40px " />
+                                    <img id="stsr2" src="/images/空星.png" style="height:40px" />
+                                    <img id="stsr3" src="/images/空星.png" style="height:40px" />
+                                    <img id="stsr4" src="/images/空星.png" style="height:40px" />
+                                    <img id="stsr5" src="/images/空星.png" style="height:40px" />
                                 </div>
                             </div>
                             </div>
@@ -104,26 +104,13 @@
 
 
             })
-        })
-
-
-
-        //const scoreValue = parseFloat(score.value);
-
-        //if (scoreValue == 0) {
-        //    btnedit.style.display = 'block';
-        //} else {
-        //    btnedit.style.display = 'none';
-        //}
-
-
-
-
+        })    
     </script>
+
     <script src="../js/jquery-3.7.0.min.js"></script>
     <script>
         const starImages = [
-            "/images/空星星.png",
+            "/images/空星.png",
             "/images/一星.png",
             "/images/二星.png",
             "/images/三星.png",
@@ -132,6 +119,7 @@
         ];
 
         const stars = $('#score>img');
+        let score = 0;
 
         stars.hover(
             function () {
@@ -145,14 +133,28 @@
             }
         );
         $img.click(function () {
-            $img.prop("src", "images/star.gif");
-            $("img:lt(" + ($(this).index() + 1) + ")").prop("src", "images/chngstar.gif");
+            $img.prop("src", starImages[0]);
+            $("img:lt(" + ($(this).index() + 1) + ")").prop("src", starImages[i + 1]);
 
         })
         $img.dblclick(function () {
 
-            $img.prop("src", "/images/空星星.png");
+            $img.prop("src", "/images/空星.png");
         })
+    </script>
+
+    <script>
+        //const scoreValue = parseFloat(score.value);
+
+        //if (scoreValue == 0) {
+        //    btnedit.style.display = 'block';
+        //} else {
+        //    btnedit.style.display = 'none';
+        //}
+
+
+
+
     </script>
 }
 
