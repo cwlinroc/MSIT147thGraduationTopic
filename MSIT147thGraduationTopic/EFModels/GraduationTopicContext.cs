@@ -42,7 +42,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
             }
         }
 
@@ -78,6 +78,10 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.CouponDiscount).HasColumnType("money");
 
                 entity.Property(e => e.CouponEndDate).HasColumnType("date");
+
+                entity.Property(e => e.CouponName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.CouponStartDate).HasColumnType("date");
             });
@@ -169,7 +173,7 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.Avatar).HasMaxLength(100);
 
-                entity.Property(e => e.ConfirmGuild)
+                entity.Property(e => e.ConfirmGuid)
                     .HasMaxLength(20)
                     .IsUnicode(false);
 

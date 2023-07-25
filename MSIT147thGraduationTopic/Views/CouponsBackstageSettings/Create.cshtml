@@ -1,11 +1,8 @@
-﻿@using MSIT147thGraduationTopic.Models.Dtos
-@model (IEnumerable<CouponDto>,IEnumerable<CouponDto>)
-@{
+﻿@{
     Layout = "_BackstagePage";
     ViewData["Title"] = "優惠券管理系統";
-    var listA = Model.Item1;
-    var listB = Model.Item2;
 }
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -53,75 +50,70 @@
         </nav>
         <!-- Page Content-->
         <section class="py-5">
-            <div class="text-center mb-5">
-                <h1 class="fw-bolder">優惠券管理系統</h1>
-                <p class="lead fw-normal text-muted mb-0"></p>
-            </div>
             <div class="container px-5 my-5">
-                <table class="table table-dark table-hover" id="tabDiscount">
-                    <thead>
-                        <tr>
-                            <th scope="col">序號</th>
-                            <th scope="col">優惠券名稱</th>
-                            <th scope="col">適用對象</th>
-                            <th scope="col">活動開始日期</th>
-                            <th scope="col">活動結束日期</th>
-                            <th scope="col">打折優惠</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (CouponDto c in listA)
-                            {
-                                <tr>
-                                    <td scope="col">@c.CouponId</td>
-                                    <td scope="col">@c.CouponName</td>
-                                    <td scope="col">@c.CouponTagId</td>
-                                    <td scope="col">@c.CouponStartDate</td>
-                                    <td scope="col">@c.CouponEndDate</td>
-                                    <td scope="col">@c.CouponDiscount</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="container px-5 my-5">
-                <table class="table table-dark table-hover" id="tabRebate">
-                    <thead>
-                        <tr>
-                            <th scope="col">序號</th>
-                            <th scope="col">優惠券名稱</th>
-                            <th scope="col">適用對象</th>
-                            <th scope="col">活動開始日期</th>
-                            <th scope="col">活動結束日期</th>
-                            <th scope="col">額度門檻</th>
-                            <th scope="col">折扣金額</th>
-                            <th scope="col">修改</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (CouponDto c in listB)
-                            {
-                                <tr>
-                                    <td scope="col">@c.CouponId</td>
-                                    <td scope="col">@c.CouponName</td>
-                                    <td scope="col">@c.CouponTagId</td>
-                                    <td scope="col">@c.CouponStartDate</td>
-                                    <td scope="col">@c.CouponEndDate</td>
-                                    <td scope="col">@c.CouponCondition.GetValueOrDefault()</td>
-                                    <td scope="col">@c.CouponDiscount</td>
-                                    <td scope="col">
-                                    <button id="btnEdit" class="btn btn-success">
-                                    修改
-                                    </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
+                <div class="text-center mb-5">
+                    <h1 class="fw-bolder">新增優惠券</h1>
+                    <p class="lead fw-normal text-muted mb-0"></p>
+                </div>
+                <div class="container px-5 my-5">
+                    <div class="row justify-content-center">
+                        <div class="col-8">
+                            優惠券名稱<input type="text" class="form-control" placeholder="請輸入優惠券名稱">
+                        </div>
+                        <div class="col-8">
+                            適用對象<select class="form-select form-control" placeholder="請選擇適用對象">
+                                <option></option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="col-8">
+                            開始日期<input type="date" class="form-control" placeholder="請輸入使用期限">
+                        </div>
+                        <div class="col-8">
+                            結束日期<input type="date" class="form-control" placeholder="請輸入使用期限">
+                        </div>
+                        <ul class="nav nav-pills mb-3 col-8" id="CouponCondition" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="btnDiscount" data-bs-toggle="pill"
+                                        data-bs-target="#Discount" type="button" role="tab" aria-controls="Discount"
+                                        aria-selected="true">
+                                    打折
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="btnRebate" data-bs-toggle="pill"
+                                        data-bs-target="#Rebate" type="button" role="tab" aria-controls="Rebate"
+                                        aria-selected="false">
+                                    滿額送
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content col-8" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="Discount" role="tabpanel" aria-labelledby="btnDiscount">
+                                <div class="form-group">
+                                    <label for="txtDiscountPercentage">折扣百分比</label>
+                                    <input type="number" class="form-control" id="txtDiscountPercentage" placeholder="請輸入折扣百分比">
+                                </div>
+                            </div>
+                            <div class="tab-pane fade " id="Rebate" role="tabpanel" aria-labelledby="btnRebate">
+                                <div class="form-group">
+                                    <label for="txtConsumptionAmount">消費額度</label>
+                                    <input type="number" class="form-control" id="txtConsumptionAmount" placeholder="請輸入消費額度">
+                                </div>
+                                <div class="form-group">
+                                    <label for="txtGiftDiscount">折扣</label>
+                                    <input type="number" class="form-control" id="txtGiftDiscount" placeholder="請輸入折扣">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center px-5 my-5">
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary" id="btnCreate">新增</button>
+                            <button type="button" class="btn btn-primary">返回</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section class="py-5 bg-light">
@@ -180,7 +172,8 @@
     <script>
         $(document).ready(function () {
             // 將margin-right屬性設置為20px
-            $('#Discount').css('margin-right', '20px');
+            $('#btnDiscount').css('margin-right', '20px');
+            $('#btnCreate').css('margin-right','20px');
         });
     </script>
 
