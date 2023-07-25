@@ -64,7 +64,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         {
             entity.EmployeeName = dto.EmployeeName;
             entity.EmployeePhone = dto.EmployeePhone;
-            entity.EmployeePhone = dto.EmployeePhone;
+            entity.EmployeeEmail = dto.EmployeeEmail;
         }
 
 
