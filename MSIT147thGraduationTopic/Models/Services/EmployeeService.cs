@@ -95,14 +95,14 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.DeleteEmployee(employeeId);
         }
 
-        public async Task<EmployeeDto?> ValidateEmployeeAccount(string account, string password)
-        {
-            var employee = await _repo.GetEmployeeByAccount(account);
-            if (employee == null) return null;
+        //public async Task<EmployeeDto?> ValidateEmployeeAccount(string account, string password)
+        //{
+        //    var employee = await _repo.GetEmployeeByAccount(account);
+        //    if (employee == null) return null;
 
 
 
-        }
+        //}
 
 
     }

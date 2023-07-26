@@ -5,17 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Security.Claims;
+using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
+using Microsoft.Extensions.Options;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
     public class MemberController : Controller
-    {        
-        private readonly GraduationTopicContext _context;        
+    {
+        private readonly GraduationTopicContext _context;
         protected UserInfoService _userInfoService { get; set; }
 
         //宣告建構子。(初始化傳入參數為指定類別型別)
         public MemberController(GraduationTopicContext Context
-                ,UserInfoService UserInfoService)
+                , UserInfoService UserInfoService)
         {
             //DI 指派介面屬性注入指定類別案例。(類別位置在 Program.cs 裡面)
             _context = Context;
@@ -50,6 +54,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogIn(Models.ViewModels.LogInVM formdata)
         {
+
             //依據帳號與密碼檢索取得此登入用戶記錄。            
             var emp = (from a in _context.Employees
                        where a.EmployeeAccount == formdata.Account
@@ -125,6 +130,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             //傳回文字內容訊息。
             return Content("登入成功!");
+
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Configuration;
 
@@ -40,6 +41,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
         });
 
+
+builder.Services.Configure<MyModels>(
+    builder.Configuration.GetSection("MyModels"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -65,6 +70,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=employeebackstage}/{action=Index}/{id?}");
+    pattern: "{controller=home}/{action=Index}/{id?}");
 
 app.Run();

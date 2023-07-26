@@ -69,6 +69,10 @@
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
                         <li class="nav-item">
+                            <a class="nav-link text-nowrap" href="#" id="btnLogOut">測試用登出</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link text-nowrap" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
                         </li>
                         <li class="nav-item"><a class="nav-link text-nowrap" href="Register.html">註冊</a></li>
@@ -96,8 +100,7 @@
                             <div class="row">
                                 <div class="col-10 mx-auto">
 
-                                    @using (Html.BeginForm("LogIn", "MemberFront"))
-                                    {
+                                    <form name="LoginForm">
                                         @Html.AntiForgeryToken()
                                         <!-- Account input-->
                                         <div class="form-label mb-3">
@@ -118,10 +121,10 @@
                                         <span class="offset-6"><a href="" class="text-decoration-none">忘記密碼</a></span>
 
                                         <div>
-                                            <button type="submit" class="btn btn-primary me-2">登入</button>
+                                            <button type="button" class="btn btn-primary me-2" id="btnLogIn">登入</button>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                                         </div>
-                                    }
+                                    </form>
 
                                 </div>
                             </div>
