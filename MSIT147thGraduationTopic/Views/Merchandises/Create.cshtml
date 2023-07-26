@@ -141,7 +141,7 @@
     <script>
 
         let alertspan = document.querySelector(".foralert"); // todo 為何只會抓第一個?
-        console.log(alertspan);
+        //console.log(alertspan);
         const alertName = document.querySelector("#alertspanforname");
         const alertBrand = document.querySelector("#alertspanforbrand");
         const alertCategory = document.querySelector("#alertspanforcategory");
@@ -149,49 +149,50 @@
         const alertImage = document.querySelector("#alertspanforimage");
 
         const submit = document.querySelector("#submit");
-        submit.addEventListener("click", async(event) => {
+        submit.addEventListener("click", async (event) => {
             event.preventDefault();
             alertspan.innerHTML = "";
-            console.log(alertspan);
+            //console.log(alertspan);
             alertName.innerHTML = "";
             alertBrand.innerHTML = "";
             alertCategory.innerHTML = "";
             alertDescription.innerHTML = "";
             alertImage.innerHTML = "";
-            
+
             var formdata = new FormData(document.forminput);
             const response = await fetch(`@Url.Content("~/ApiMerchandise/CheckforCreateMerchandise")`, {
                 body: formdata,
                 method: "POST"
             });
-            const checkNameJson = await response.text()
-            const checkName = JSON.parse(checkNameJson)
-            console.log(checkName)
+            const returnJsonBag = await response.text()
+            const checkResult = JSON.parse(returnJsonBag)
+            const checkName = checkResult[0]
+            const checkFile = checkResult[1]
             if (checkName) {
                 alertName.innerHTML = "此商品名稱已存在，請重新命名";
             }
-            if ($("#inputbrandid").val() == null) {
+            if (!$("#inputbrandid").val()) {
                 alertBrand.innerHTML = "請選擇品牌";
             }
-            if ($("#inputcategoryid").val() == null) {
+            if (!$("#inputcategoryid").val()) {
                 alertCategory.innerHTML = "請選擇商品類別";
             }
             if ($("#descriptionarea").val().length > 500) {
                 alertDescription.innerHTML = "商品說明不可多於500字，請縮短長度";
             }
-
-            //xhr.addEventListener("load", () => {
-            //    const data = JSON.parse(xhr.responseText);
-
-            //    if (data) {
-            //        alertName.innerHTML = "此商品名稱已存在，請重新命名";
-            //    }
-            //    else {
-            //        alertName.innerHTML = "";
-            //        const forminput = document.querySelector("#forminput");
-            //        HTMLFormElement.prototype.submit.call(forminput);
-            //    }
-            //})
+            if (checkFile) {
+                alertImage.innerHTML = "檔案格式不合，請重新上傳";
+                selectfile.files = null;
+                selectfile.outerHTML = selectfile.outerHTML;
+                display.src = "";
+                imageClear.style.display = "none";
+                DisplayImage();
+            }
+            if (!checkName && $("#inputbrandid").val() && $("#inputcategoryid").val() &&
+                    $("#descriptionarea").val().length <= 500 && !checkFile) {
+                const forminput = document.querySelector("#forminput");
+                HTMLFormElement.prototype.submit.call(forminput);
+            }
         })
     </script>
 }

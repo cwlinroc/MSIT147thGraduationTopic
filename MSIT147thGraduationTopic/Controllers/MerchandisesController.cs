@@ -75,42 +75,17 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             merchandisevm.ImageUrl = null;
             if (photo != null)
-            {                
-                // todo 將圖片系統性改名後上傳 //todo 讀取圖片時再串接_host.WebRootPath
-                string photoPath = Path.Combine(/*_host.WebRootPath, */"uploads/merchandisePicture", photo.FileName);
-                merchandisevm.ImageUrl = photoPath;
-                using (var fileStream = new FileStream(photoPath, FileMode.Create))
+            {
+                // 使用隨機數改名，避免資料庫內名稱重複
+                string newImageName = Guid.NewGuid().GetHashCode() + Path.GetFileName(photo.FileName);
+                merchandisevm.ImageUrl = Path.Combine("uploads/merchandisePicture", newImageName);
+                //產生圖片上傳路徑  //todo 讀取圖片時再串接_host.WebRootPath
+                string savePhotoPath = Path.Combine(_host.WebRootPath, merchandisevm.ImageUrl);
+
+                using (var fileStream = new FileStream(savePhotoPath, FileMode.Create))
                 {
                     photo.CopyTo(fileStream);
                 }
-
-
-                /*// 使用時間戳系統性改名，避免資料庫內名稱重複
-				txt_ImageURL.Text = DateTime.Now.ToString("yyyyMMddhhmmssffff") + 
-																Path.GetFileName(imagePath);
-
-				MessageBox.Show($"圖片選擇成功,路徑:{imagePath}");
-
-				btn_CancelImage.Enabled = true;
-
-				//顯示預覽圖片
-				//pictureBox_Image.Image = Image.FromFile(imagePath);
-				//使用Bitmap轉檔，並兩次使用以達到暫存效果(??)並降低系統負擔
-				using (var bmpTemp = new Bitmap(imagePath))
-				{
-					pictureBox_Image.Image = new Bitmap(bmpTemp);
-				}*/
-                /*string targetFolderPath = @"images/MerchandisePicture/";
-			string imageName = Path.GetFileName(imagePath);
-			// 使用時間戳系統性改名，避免資料庫內名稱重複
-			string renamedtargetFilePath = targetFolderPath + txt_ImageURL.Text;
-
-			try
-			{
-				File.Copy(imagePath, renamedtargetFilePath);//(來源路徑(原始名), 目標路徑(改名))
-
-				MessageBox.Show($"圖片上傳成功");
-			}*/
             }
 
             if (ModelState.IsValid)
