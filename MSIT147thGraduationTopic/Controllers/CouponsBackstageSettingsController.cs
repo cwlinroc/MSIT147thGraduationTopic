@@ -17,8 +17,8 @@ namespace MSIT147thGraduationTopic.Controllers
         }
         public IActionResult Index()
         {
-            var couponlistA = _repo.showCoupons(0);
-            var couponlistB = _repo.showCoupons(1);
+            var couponlistA = _repo.ShowCoupons(0);
+            var couponlistB = _repo.ShowCoupons(1);
             
             return View((couponlistA, couponlistB));
         }

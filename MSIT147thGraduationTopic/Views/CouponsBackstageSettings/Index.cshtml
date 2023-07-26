@@ -58,6 +58,7 @@
                 <p class="lead fw-normal text-muted mb-0"></p>
             </div>
             <div class="container px-5 my-5">
+                <h2 class="text-center">折價優惠券</h2>
                 <table class="table table-dark table-hover" id="tabDiscount">
                     <thead>
                         <tr>
@@ -67,6 +68,8 @@
                             <th scope="col">活動開始日期</th>
                             <th scope="col">活動結束日期</th>
                             <th scope="col">打折優惠</th>
+                            <th scope="col">修改</th>
+                            <th scope="col">刪除</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,6 +83,16 @@
                                     <td scope="col">@c.CouponStartDate</td>
                                     <td scope="col">@c.CouponEndDate</td>
                                     <td scope="col">@c.CouponDiscount</td>
+                                    <td scope="col">
+                                        <button id="btnEdit" class="btn btn-success">
+                                            修改
+                                        </button>
+                                    </td>
+                                    <td scope="col">
+                                        <button id="btnDelete" class="btn btn-danger">
+                                            刪除
+                                        </button>
+                                    </td>
                                 </tr>
                             }
                         }
@@ -87,6 +100,7 @@
                 </table>
             </div>
             <div class="container px-5 my-5">
+                <h2 class="text-center">滿額送優惠券</h2>
                 <table class="table table-dark table-hover" id="tabRebate">
                     <thead>
                         <tr>
@@ -98,6 +112,7 @@
                             <th scope="col">額度門檻</th>
                             <th scope="col">折扣金額</th>
                             <th scope="col">修改</th>
+                            <th scope="col">刪除</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,9 +128,14 @@
                                     <td scope="col">@c.CouponCondition.GetValueOrDefault()</td>
                                     <td scope="col">@c.CouponDiscount</td>
                                     <td scope="col">
-                                    <button id="btnEdit" class="btn btn-success">
-                                    修改
-                                    </button>
+                                        <button id="btnEdit" class="btn btn-success">
+                                            修改
+                                        </button>
+                                    </td>
+                                    <td scope="col">
+                                        <button id="btnDelete" class="btn btn-danger">
+                                            刪除
+                                        </button>
                                     </td>
                                 </tr>
                             }
