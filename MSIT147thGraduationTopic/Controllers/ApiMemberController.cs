@@ -26,13 +26,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public ApiMemberController(GraduationTopicContext context
             , IWebHostEnvironment environment
-            , IOptions<MyModels> myModels)
+            , IOptions<OptionSettings> options)
         {
             _context = context;
             _environment = environment;
             _service = new MemberService(context, environment);
 
-            _employeeRoles = myModels.Value.EmployeeRoles!;
+            _employeeRoles = options.Value.EmployeeRoles!;
         }
 
         [HttpGet]
@@ -63,66 +63,64 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.DeleteMember(id);
         }
 
+        //public record LoginRecord([Required] string Account, [Required] string Password, bool chkRemember);
         public record LoginRecord([Required] string Account, [Required] string Password, bool chkRemember);
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn(LoginRecord record)
         {
-            var memberTask = _context.Members.Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar })
-                .FirstOrDefaultAsync(o => o.Account == record.Account);
-            var empTask = _context.Employees
-                    .FirstOrDefaultAsync(o => o.EmployeeAccount == record.Account);
-
-            await Task.WhenAll(memberTask, empTask);
-
-            var member = memberTask.Result;
-            var emp = empTask.Result;
-
-            List<Claim>? claims = null;
-
-            if (member == null && emp == null) return string.Empty;
-
-            if (member != null)
-            {
-                string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
-                if (member.Password != saltedPassword) return string.Empty;
-
-                claims = new List<Claim>
-                            {
-                                new Claim(ClaimTypes.Name, member.Account),
-                                new Claim("UserName", member.MemberName),
-                                new Claim("AvatarName", member.Avatar),
-                                new Claim(ClaimTypes.Email, member.Email),
-                                new Claim(ClaimTypes.Role, "Member")
-                            };
-            }
+            var emp = await _context.Employees
+                                .FirstOrDefaultAsync(o => o.EmployeeAccount == record.Account);
 
             if (emp != null)
             {
                 string saltedPassword = record.Password.GetSaltedSha256(emp.Salt);
                 if (emp.EmployeePassword != saltedPassword) return string.Empty;
 
-                claims = new List<Claim>
+                var claims = new List<Claim>
                             {
                                 new Claim(ClaimTypes.Name, emp.EmployeeAccount),
                                 new Claim("UserName", emp.EmployeeName),
-                                new Claim("AvatarName", emp.AvatarName),
+                                new Claim("AvatarName", emp.AvatarName??""),
                                 new Claim(ClaimTypes.Email, emp.EmployeeEmail),
                                 new Claim(ClaimTypes.Role, _employeeRoles[emp.Permission-1])
                             };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                return Url.Content("~/employeebackstage/welcome");
             }
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var member = await _context.Members
+                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar })
+                .FirstOrDefaultAsync(o => o.Account == record.Account);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            if (member != null)
+            {
+                string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
+                if (member.Password != saltedPassword) return string.Empty;
 
-            return Url.Content("~/home/index");
+                var claims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Name, member.Account),
+                                new Claim("UserName", member.MemberName),
+                                new Claim("AvatarName", member.Avatar??""),
+                                new Claim(ClaimTypes.Email, member.Email),
+                                new Claim(ClaimTypes.Role, "Member")
+                            };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                return "reload";
+            }
+            return string.Empty;
         }
 
         [HttpGet("logout")]
-        public async Task<ActionResult<bool>> LogOut()
+        public async Task<ActionResult<string>> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return true;
+            return Url.Content("~/home/index");
         }
 
         ////載入縣市

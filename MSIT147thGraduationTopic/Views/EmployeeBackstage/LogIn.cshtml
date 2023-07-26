@@ -58,7 +58,7 @@
         async function changeAccount() {
             const formData = new FormData(document.logForm)
 
-            const response = await fetch(`@Url.Content("~/employeebackstage/changeaccount")`, {
+            const response = await fetch(`@Url.Content("~/employeebackstage/welcome")`, {
                 body: formData,
                 method: 'POST'
             })
@@ -68,7 +68,7 @@
                 console.log(loginSucceed)
                 if (loginSucceed) {
                     alert('登入成功')
-                    window.location.href = '@Url.Content("~/employeebackstage/changeaccount")'
+                    window.location.href = '@Url.Content("~/employeebackstage/welcome")'
                 }
                 else {
                     alert('帳號密碼輸入錯誤')                    

@@ -34,7 +34,7 @@ namespace MSIT147thGraduationTopic.Controllers
             return View();
         }
 
-        public IActionResult ChangeAccount()
+        public IActionResult Welcome()
         {
             string userName = HttpContext.User.FindFirstValue("UserName");
             string role = HttpContext.User.FindFirstValue(ClaimTypes.Role);
