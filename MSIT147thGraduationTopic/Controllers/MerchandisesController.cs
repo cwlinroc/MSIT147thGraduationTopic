@@ -77,7 +77,7 @@ namespace MSIT147thGraduationTopic.Controllers
             if (photo != null)
             {
                 // 使用隨機數改名，避免資料庫內名稱重複
-                string newImageName = Guid.NewGuid().GetHashCode() + Path.GetFileName(photo.FileName);
+                string newImageName = Guid.NewGuid().GetHashCode() + photo.FileName;
                 merchandisevm.ImageUrl = Path.Combine("uploads/merchandisePicture", newImageName);
                 //產生圖片上傳路徑  //todo 讀取圖片時再串接_host.WebRootPath
                 string savePhotoPath = Path.Combine(_host.WebRootPath, merchandisevm.ImageUrl);

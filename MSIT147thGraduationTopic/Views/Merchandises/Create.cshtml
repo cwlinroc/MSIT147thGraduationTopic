@@ -17,7 +17,7 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="MerchandiseName" class="control-label"></label>
-                        <input asp-for="MerchandiseName" class="form-control" />
+                        <input asp-for="MerchandiseName" class="form-control" id="inputname" />
                         <span asp-validation-for="MerchandiseName" class="text-danger foralert" id="alertspanforname"></span>
                     </div>
                     <div class="form-group">
@@ -139,9 +139,6 @@
     </script>
     @*錯誤提示訊息*@
     <script>
-
-        let alertspan = document.querySelector(".foralert"); // todo 為何只會抓第一個?
-        //console.log(alertspan);
         const alertName = document.querySelector("#alertspanforname");
         const alertBrand = document.querySelector("#alertspanforbrand");
         const alertCategory = document.querySelector("#alertspanforcategory");
@@ -151,13 +148,7 @@
         const submit = document.querySelector("#submit");
         submit.addEventListener("click", async (event) => {
             event.preventDefault();
-            alertspan.innerHTML = "";
-            //console.log(alertspan);
-            alertName.innerHTML = "";
-            alertBrand.innerHTML = "";
-            alertCategory.innerHTML = "";
-            alertDescription.innerHTML = "";
-            alertImage.innerHTML = "";
+            $(".foralert").html("");
 
             var formdata = new FormData(document.forminput);
             const response = await fetch(`@Url.Content("~/ApiMerchandise/CheckforCreateMerchandise")`, {
@@ -168,8 +159,11 @@
             const checkResult = JSON.parse(returnJsonBag)
             const checkName = checkResult[0]
             const checkFile = checkResult[1]
+            if (!$("#inputname").val()) {
+                alertName.innerHTML = "請輸入商品名稱";
+            }
             if (checkName) {
-                alertName.innerHTML = "此商品名稱已存在，請重新命名";
+                alertName.innerHTML = "已有同名商品，請重新命名";
             }
             if (!$("#inputbrandid").val()) {
                 alertBrand.innerHTML = "請選擇品牌";
@@ -192,6 +186,7 @@
                     $("#descriptionarea").val().length <= 500 && !checkFile) {
                 const forminput = document.querySelector("#forminput");
                 HTMLFormElement.prototype.submit.call(forminput);
+                console.log("按下送出");
             }
         })
     </script>
