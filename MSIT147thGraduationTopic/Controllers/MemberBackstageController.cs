@@ -2,7 +2,7 @@
 
 namespace MSIT147thGraduationTopic.Controllers
 {
-    public class MembersBackstageController : Controller
+    public class MemberBackstageController : Controller
     {
         public IActionResult Index()
         {

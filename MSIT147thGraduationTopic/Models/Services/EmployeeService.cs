@@ -14,13 +14,13 @@ namespace MSIT147thGraduationTopic.Models.Services
     {
         private readonly GraduationTopicContext _context;
         private readonly EmployeeRepository _repo;
-        private readonly IWebHostEnvironment _environemnt;
+        private readonly IWebHostEnvironment _environment;
         //TODO add to app settings
         private readonly string[] _permissions = { "管理員", "經理", "員工" };
-        public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environemnt)
+        public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environment)
         {
             _context = context;
-            _environemnt = environemnt;
+            _environment = environment;
             _repo = new EmployeeRepository(context);
         }
 
@@ -28,7 +28,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             return _repo.GetAllEmployees().Select(dto =>
             {
-                string htmlFilePath = Path.Combine(_environemnt.WebRootPath, "uploads\\employeeAvatar");
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
 
                 return dto.ToVM();
             });
@@ -37,7 +37,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             return _repo.GetEmployeesByNameOrAccount(query).Select(dto =>
             {
-                string htmlFilePath = Path.Combine(_environemnt.WebRootPath, "uploads\\employeeAvatar");
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
 
                 return dto.ToVM();
             });
@@ -47,7 +47,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             if (file != null)
             {
-                string path = Path.Combine(_environemnt.WebRootPath, @"uploads\employeeAvatar", file.FileName);
+                string path = Path.Combine(_environment.WebRootPath, @"uploads\employeeAvatar", file.FileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
@@ -68,7 +68,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             if (file != null)
             {
-                string path = Path.Combine(_environemnt.WebRootPath, @"uploads\employeeAvatar", file.FileName);
+                string path = Path.Combine(_environment.WebRootPath, @"uploads\employeeAvatar", file.FileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {

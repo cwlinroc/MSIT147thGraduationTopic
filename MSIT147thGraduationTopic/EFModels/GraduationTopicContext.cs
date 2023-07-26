@@ -25,7 +25,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<CouponOwner> CouponOwners { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Evaluation> Evaluations { get; set; }
-        public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
@@ -36,7 +35,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Spec> Specs { get; set; }
         public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
         public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
-        public virtual DbSet<SpecWithMerchandiseName> SpecWithMerchandiseNames { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -44,7 +42,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
             }
         }
 
@@ -80,6 +78,10 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.CouponDiscount).HasColumnType("money");
 
                 entity.Property(e => e.CouponEndDate).HasColumnType("date");
+
+                entity.Property(e => e.CouponName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.CouponStartDate).HasColumnType("date");
             });
@@ -158,27 +160,6 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Evaluations_Orders");
-            });
-
-            modelBuilder.Entity<EvaluationInput>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("EvaluationInput");
-
-                entity.Property(e => e.Avatar).HasMaxLength(50);
-
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.MerchandiseName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.NickName).HasMaxLength(30);
-
-                entity.Property(e => e.SpecName)
-                    .IsRequired()
-                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Member>(entity =>
@@ -403,23 +384,6 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(50)
                     .HasColumnName("ImageURL");
-
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.MerchandiseName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.SpecName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<SpecWithMerchandiseName>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("SpecWithMerchandiseName");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
 

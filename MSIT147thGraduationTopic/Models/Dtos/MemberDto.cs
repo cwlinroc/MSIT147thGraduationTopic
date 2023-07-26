@@ -1,4 +1,6 @@
-﻿using MSIT147thGraduationTopic.EFModels;
+﻿using Humanizer;
+using MSIT147thGraduationTopic.EFModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.Dtos
 {
@@ -15,6 +17,32 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string Address { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
+        public string Salt { get; set; }
+        public bool IsActivated { get; set; }
+        public string ConfirmGuid { get; set; }
+    }
+
+    public class MemberEditDto
+    {
+        public string? NickName { get; set; }
+        public string? Password { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public string? Address { get; set; }
+        public string? Avatar { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public string Salt { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public string ConfirmGuid { get; set; }
+        [Required]
+        public bool IsActivated { get; set; }
+    }
+
+    public class MemberSearchDto
+    {
+        public int? MemberID { get; set; }
+        public string MemberName { get; set; }
+        public int? MaxQueryNumber { get; set; }
     }
 
     static public class MemberTransfer
@@ -34,40 +62,44 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 Address = dto.Address,
                 Email = dto.Email,
                 Avatar = dto.Avatar,
+                Salt = dto.Salt,
+                ConfirmGuid = dto.ConfirmGuid,
+                IsActivated = dto.IsActivated,
             };
         }
 
-        static public MemberDto ToDto(this Member ef)
+        static public MemberDto ToDto(this Member entity)
         {
             return new MemberDto
             {
-                MemberId = ef.MemberId,
-                MemberName = ef.MemberName,
-                NickName = ef.NickName,
-                DateOfBirth = ef.DateOfBirth,
-                Gender = ef.Gender,
-                Account = ef.Account,
-                Password = ef.Password,
-                Phone = ef.Phone,
-                Address = ef.Address,
-                Email = ef.Email,
-                Avatar = ef.Avatar,
+                MemberId = entity.MemberId,
+                MemberName = entity.MemberName,
+                NickName = entity.NickName,
+                DateOfBirth = entity.DateOfBirth,
+                Gender = entity.Gender,
+                Account = entity.Account,
+                Password = entity.Password,
+                Phone = entity.Phone,
+                Address = entity.Address,
+                Email = entity.Email,
+                Avatar = entity.Avatar,
+                Salt = entity.Salt,
+                ConfirmGuid = entity.ConfirmGuid,
+                IsActivated = entity.IsActivated,
             };
         }
 
-        static public void ChangeByDto(this Member ef, MemberDto dto)
+        static public void ChangeByEditDto(this Member entity, MemberEditDto dto)
         {
-            ef.MemberId = dto.MemberId;
-            ef.MemberName = dto.MemberName;           
-            ef.NickName = dto.NickName;
-            ef.DateOfBirth = dto.DateOfBirth;
-            ef.Gender = dto.Gender;
-            ef.Account = dto.Account;
-            ef.Password = dto.Password;
-            ef.Phone = dto.Phone;
-            ef.Address = dto.Address;
-            ef.Email = dto.Email;
-            ef.Avatar = dto.Avatar;
+            entity.NickName = dto.NickName;
+            entity.Password = dto.Password;
+            entity.Phone = dto.Phone;
+            entity.Address = dto.Address;
+            entity.Email = dto.Email;
+            entity.Avatar = dto.Avatar;
+            entity.Salt = dto.Salt;
+            entity.ConfirmGuid = dto.ConfirmGuid;
+            entity.IsActivated = dto.IsActivated;
         }
     }
 }
