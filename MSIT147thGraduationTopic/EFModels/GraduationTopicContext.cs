@@ -25,6 +25,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<CouponOwner> CouponOwners { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Evaluation> Evaluations { get; set; }
+        public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
@@ -134,11 +135,6 @@ namespace MSIT147thGraduationTopic.EFModels
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Salt)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Evaluation>(entity =>
@@ -160,6 +156,27 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Evaluations_Orders");
+            });
+
+            modelBuilder.Entity<EvaluationInput>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("EvaluationInput");
+
+                entity.Property(e => e.Avatar).HasMaxLength(100);
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+
+                entity.Property(e => e.MerchandiseName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.NickName).HasMaxLength(30);
+
+                entity.Property(e => e.SpecName)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Member>(entity =>

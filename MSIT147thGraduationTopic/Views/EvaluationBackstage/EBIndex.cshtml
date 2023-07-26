@@ -20,7 +20,7 @@
                         <input type="text" class="form-control-sm d-flex mx-2 " id="keywoud" style="height: 38px;">
                         <img src="~/images/search.jpg" class="rounded-3 d-flex" />
                     </div>
-                    
+
                 </div>
             </div>
             <table class="table bg-white mt-3 rounded-3">
@@ -31,11 +31,11 @@
                             @*@Html.DisplayNameFor(model => model.Comment)*@
                         </th>
                         <th>
-                          
+
                             @Html.DisplayNameFor(model => model.OrderId)
                         </th>
                         <th>
-                            @*@Html.DisplayNameFor(model => model.MerchandiseName)*@
+                            @Html.DisplayNameFor(model => model.Merchandise.MerchandiseName)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Score)
@@ -70,7 +70,7 @@
                                 @Html.DisplayFor(modelItem => item.Comment)
                             </td>
                             <td>
-                                 <button type="submit" class="btn btn-primary">刪除</button>
+                                <button type="submit" class="btn btn-primary">刪除</button>
                             </td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.EvaluationId">Edit</a> |
@@ -101,7 +101,7 @@
             </nav>
         </div>
         <div class="col-1"></div>
-    </div>   
+    </div>
 </div>
 
 @section Scripts{
