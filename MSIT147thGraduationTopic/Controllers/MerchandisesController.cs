@@ -70,19 +70,19 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")]
-                MerchandiseVM merchandisevm, IFormFile photo)
+            ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo")]
+                MerchandiseVM merchandisevm)
         {
             merchandisevm.ImageUrl = null;
-            if (photo != null)
+            if (merchandisevm.photo != null)
             {
                 // 使用隨機數改名，避免資料庫內名稱重複
-                string newImageName = Guid.NewGuid().GetHashCode() + photo.FileName;
-                merchandisevm.ImageUrl = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", newImageName);
+                merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
+                string savepath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", merchandisevm.ImageUrl);
                 // 複製圖片到資料夾
-                using (var fileStream = new FileStream(merchandisevm.ImageUrl, FileMode.Create))
+                using (var fileStream = new FileStream(savepath, FileMode.Create))
                 {
-                    photo.CopyTo(fileStream);
+                    merchandisevm.photo.CopyTo(fileStream);
                 }
             }
 

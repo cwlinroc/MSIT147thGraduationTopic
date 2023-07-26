@@ -36,16 +36,16 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public IActionResult CheckforCreateMerchandise(MerchandiseVM merchandisevm, IFormFile photo)
+        public IActionResult CheckforCreateMerchandise(MerchandiseVM merchandisevm)
         {
             bool[] package = new bool[2];
 
             package[0] = _context.Merchandises.Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
 
             package[1] = false;
-            if (photo != null)
+            if (merchandisevm.photo != null)
             {
-                if (!photo.ContentType.Contains("image")) package[1] = true;
+                if (!merchandisevm.photo.ContentType.Contains("image")) package[1] = true;
             }
             //↓ photo為null時會造成photo.ContentType.Contains("image")有NullReference錯誤，因此無法使用三元運算
             //package[1] = (photo.ContentType != null && !photo.ContentType.Contains("image")) ? true : false;

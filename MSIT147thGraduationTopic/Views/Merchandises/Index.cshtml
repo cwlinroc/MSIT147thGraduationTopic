@@ -53,7 +53,7 @@
                     <th>
                         @Html.DisplayNameFor(model => model.ImageUrl)
                     </th>
-                    <th>
+                    <th style="text-align:center">
                         @Html.DisplayNameFor(model => model.Display)
                     </th>
                     <th></th>
@@ -82,9 +82,13 @@
                                 @Html.DisplayFor(modelItem => item.Description)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ImageUrl)
+                                @{
+                                    string imageurl = string.IsNullOrEmpty(item.ImageUrl) ? "default.png" : item.ImageUrl;
+
+                                }
+                                <img src=@Url.Content("~/uploads/merchandisePicture/" + imageurl) class="imgtumbnail"/>
                             </td>
-                            <td>
+                            <td style="text-align:center">
                                 @Html.DisplayFor(modelItem => item.Display)
                             </td>
                             <td>
@@ -117,6 +121,11 @@
         .conditionname {
             max-width: 120px;
             min-width: 120px;
+        }
+
+        .imgtumbnail{
+            max-width: 70px;
+            min-width: 70px;
         }
     </style>
 }

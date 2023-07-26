@@ -59,6 +59,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _merchandise.Display; }
             set { _merchandise.Display = value; }
         }
-        public IFormFile photo { get; set; }
+        public IFormFile? photo { get; set; }
     }
 }
