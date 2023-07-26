@@ -88,7 +88,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(merchandisevm.merchandise); //todo 無法成功上傳，還差最後一步
+                _context.Add(merchandisevm.merchandise);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

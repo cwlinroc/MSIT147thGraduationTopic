@@ -159,21 +159,12 @@
             const checkResult = JSON.parse(returnJsonBag)
             const checkName = checkResult[0]
             const checkFile = checkResult[1]
-            if (!$("#inputname").val()) {
-                alertName.innerHTML = "請輸入商品名稱";
-            }
-            if (checkName) {
-                alertName.innerHTML = "已有同名商品，請重新命名";
-            }
-            if (!$("#inputbrandid").val()) {
-                alertBrand.innerHTML = "請選擇品牌";
-            }
-            if (!$("#inputcategoryid").val()) {
-                alertCategory.innerHTML = "請選擇商品類別";
-            }
-            if ($("#descriptionarea").val().length > 500) {
-                alertDescription.innerHTML = "商品說明不可多於500字，請縮短長度";
-            }
+
+            if (!$("#inputname").val()) alertName.innerHTML = "請輸入商品名稱";
+            if (checkName) alertName.innerHTML = "已有同名商品，請重新命名";
+            if (!$("#inputbrandid").val()) alertBrand.innerHTML = "請選擇品牌";
+            if (!$("#inputcategoryid").val()) alertCategory.innerHTML = "請選擇商品類別";
+            if ($("#descriptionarea").val().length > 500) alertDescription.innerHTML = "商品說明不可多於500字，請縮短長度";
             if (checkFile) {
                 alertImage.innerHTML = "檔案格式不合，請重新上傳";
                 selectfile.files = null;

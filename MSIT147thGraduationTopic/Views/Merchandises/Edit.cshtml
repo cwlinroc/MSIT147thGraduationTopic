@@ -13,33 +13,41 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Edit" method="Post" name="forminput" id="forminput">
+                <form asp-action="Edit" method="Post" name="forminput" id="forminput" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="MerchandiseId" />
                     <div class="form-group">
                         <label asp-for="MerchandiseName" class="control-label"></label>
                         <input asp-for="MerchandiseName" class="form-control" id="inputname" />
-                        <span asp-validation-for="MerchandiseName" class="text-danger" id="alertspanforname"></span>
+                        <span asp-validation-for="MerchandiseName" class="text-danger foralert" id="alertspanforname"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="BrandId" class="control-label"></label>
                         <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId" id="inputbrandid"></select>
-                        <span asp-validation-for="BrandId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="CategoryId" class="control-label"></label>
                         <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId" id="inputcategoryid"></select>
-                        <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Description" class="control-label"></label>
-                        <input asp-for="Description" class="form-control" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <textarea asp-for="Description" class="form-control" id="descriptionarea"></textarea>
+                        <span asp-validation-for="Description" class="text-danger foralert" id="alertspanfordescription"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ImageUrl" class="control-label"></label>
-                        <input asp-for="ImageUrl" class="form-control" />
+                        @*<label asp-for="ImageUrl" class="control-label"></label>*@
+                        <input asp-for="ImageUrl" class="form-control" style="display:none" id="origimageurl" />
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
+
+                        <label class="col-form-label">選擇圖片</label>
+                        <input class="form-control" type="file" id="selectfile" name="photo">
+                        <span class="text-danger foralert" id="alertspanforimage"></span>
+
+                        <div class="alert alert-secondary mt-2" id="containdisplay">
+                            <img id="display" />
+                            <button id="imageCancel" class="btn btn-warning">復原圖片</button>
+                            <button id="imageDelete" class="btn btn-warning">刪除圖片</button>
+                        </div>
                     </div>
                     <div class="form-group form-check">
                         <label class="form-check-label">
@@ -48,7 +56,7 @@
                     </div>
                     <hr />
                     <div class="form-group">
-                        <input type="submit" value="儲存變更" class="btn btn-primary" />
+                        <input type="submit" value="儲存變更" class="btn btn-primary" id="submit" />
                         @Html.ActionLink("取消", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
@@ -58,14 +66,14 @@
 </div>
 
 @section Scripts {
+    @*產生下拉選項*@
     <script>
         const brand = document.querySelector("#inputbrandid");
         const category = document.querySelector("#inputcategoryid");
-        console.log(brand);
 
         brand.addEventListener("load", () => {
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/ApiMerchandise/Brands");
+            xhr.open("GET", "/ApiMerchandise/GenerateBrandOptions");
             xhr.send();
 
             xhr.addEventListener("load", () => {
@@ -79,7 +87,7 @@
 
         category.addEventListener("load", () => {
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/ApiMerchandise/Categories");
+            xhr.open("GET", "/ApiMerchandise/GenerateCategoryOptions");
             xhr.send();
 
             xhr.addEventListener("load", () => {
@@ -91,6 +99,85 @@
             })
         })
     </script>
+
+    @*產生圖片路徑、預覽*@
+    <script>
+        const originalImageUrl = ($("#origimageurl").val())
+                ? "~/uploads/merchandisePicture/" + $("#origimageurl").val()
+                : "~/uploads/merchandisePicture/default.png";
+        @*const display = document.querySelector("#display");
+        const imageClear = document.querySelector("#imageClear");
+
+        DisplayImage();
+
+        imageClear.addEventListener("click", (e) => {
+        e.preventDefault();
+        selectfile.files = null;
+        selectfile.outerHTML = selectfile.outerHTML;
+        display.src = "";
+        imageClear.style.display = "none";
+        DisplayImage();
+        })*@
+            DisplayImage();
+        function DisplayImage() {
+            display.src = originalImageUrl;
+            //重置檔案上傳後需重新指定selectfile
+            const selectfile = document.querySelector("#selectfile");
+            selectfile.addEventListener("change", () => {
+                const [file] = selectfile.files;
+                if (file) {
+                    display.src = URL.createObjectURL(file);
+                    imageCancel.style.display = "inline";
+                    imageDelete.style.display = "none";
+                } else {
+                    display.src = originalImageUrl;
+                    imageCancel.style.display = "none";
+                    imageDelete.style.display = "inline";
+                }
+            })
+        }
+    </script>
+
+    @*錯誤提示訊息*@
+    <script>
+        const alertName = document.querySelector("#alertspanforname");
+        const alertDescription = document.querySelector("#alertspanfordescription");
+        const alertImage = document.querySelector("#alertspanforimage");
+
+        const submit = document.querySelector("#submit");
+        submit.addEventListener("click", async (event) => {
+            event.preventDefault();
+            $(".foralert").html("");
+
+            var formdata = new FormData(document.forminput);
+            const response = await fetch(`@Url.Content("~/ApiMerchandise/CheckforEditMerchandise")`, {
+                body: formdata,
+                method: "POST"
+            });
+            const returnJsonBag = await response.text()
+            const checkResult = JSON.parse(returnJsonBag)
+            const checkName = checkResult[0]
+            const checkFile = checkResult[1]
+
+            if (!$("#inputname").val()) alertName.innerHTML = "請輸入商品名稱";
+            if (checkName) alertName.innerHTML = "已有同名商品，請重新命名";
+            if ($("#descriptionarea").val().length > 500) alertDescription.innerHTML = "商品說明不可多於500字，請縮短長度";
+            if (checkFile) {
+                alertImage.innerHTML = "檔案格式不合，請重新上傳";
+                selectfile.files = null;
+                selectfile.outerHTML = selectfile.outerHTML;
+                display.src = "~/uploads/merchandisePicture/" + origImageUrl.val();
+                imageClear.style.display = "none";
+                DisplayImage();
+            }
+            if (!checkName && $("#inputbrandid").val() && $("#inputcategoryid").val() &&
+                $("#descriptionarea").val().length <= 500 && !checkFile) {
+                const forminput = document.querySelector("#forminput");
+                HTMLFormElement.prototype.submit.call(forminput);
+                console.log("按下送出");
+            }
+        })
+    </script>
 }
 
 @section Styles{
@@ -98,6 +185,30 @@
         .title {
             margin-top: 30px;
             margin-bottom: 10px;
+        }
+
+        #containdisplay {
+            height: 200px;
+        }
+
+        #display {
+            max-height: 170px;
+            margin: 10px, 0;
+        }
+
+        #descriptionarea {
+            height: 150px;
+            overflow: auto;
+        }
+
+        #imageCancel {
+            display: none;
+            float: right;
+        }
+
+        #imageDelete {
+            display: inline;
+            float: right;
         }
     </style>
 }

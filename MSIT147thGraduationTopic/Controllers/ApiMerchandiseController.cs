@@ -53,23 +53,28 @@ namespace MSIT147thGraduationTopic.Controllers
             return Json(package);
         }
 
-
-
-
-
-
-
-
-
         [HttpPost]
-        public IActionResult CheckforEditMerchandise(MerchandiseVM merchandisevm, IFormFile photo)
+        public IActionResult CheckforEditMerchandise(MerchandiseVM merchandisevm)
         {
-            var exists = _context.Merchandises
+            bool[] package = new bool[2];
+
+            package[0] = _context.Merchandises
                 .Where(m => m.MerchandiseId != merchandisevm.MerchandiseId)
                 .Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
 
-            return Json(exists);
+            package[1] = false;
+            if (merchandisevm.photo != null)
+            {
+                if (!merchandisevm.photo.ContentType.Contains("image")) package[1] = true;
+            }
+
+            return Json(package);
         }
+
+
+
+
+
         public IActionResult CheckSpecforDeleteMerchandise(int id)
         {
             var exists = _context.Specs.Any(s => s.SpecId == id);

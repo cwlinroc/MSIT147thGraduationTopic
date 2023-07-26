@@ -84,7 +84,6 @@
                             <td>
                                 @{
                                     string imageurl = string.IsNullOrEmpty(item.ImageUrl) ? "default.png" : item.ImageUrl;
-
                                 }
                                 <img src=@Url.Content("~/uploads/merchandisePicture/" + imageurl) class="imgtumbnail"/>
                             </td>
