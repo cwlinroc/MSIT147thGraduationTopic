@@ -1,5 +1,6 @@
 ﻿using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.EFModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -18,13 +19,18 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employees.Select(o => o.ToDto());
         }
 
-        public IEnumerable<EmployeeDto> GetEmployeesByNameOrAccount(string query)
+        public IEnumerable<EmployeeDto> queryEmployeesByNameOrAccount(string query)
         {
             var employees = _context.Employees
                 .Where(o => o.EmployeeName.Contains(query) || o.EmployeeAccount.Contains(query));
             return employees.Select(o => o.ToDto());
         }
 
+        public async Task<EmployeeDto?> GetEmployeeByAccount(string account)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(o => o.EmployeeAccount == account);
+            return employee?.ToDto();
+        }
 
         public int CreateEmployee(EmployeeDto dto)
         {
@@ -67,6 +73,6 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employeeId;
         }
 
-        
+
     }
 }

@@ -34,7 +34,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet("{query}")]
         public ActionResult<List<EmployeeVM>> GetEmployeesByNameOrAccount(string query)
         {
-            return _service.GetEmployeesByNameOrAccount(query).ToList();
+            return _service.queryEmployeesByNameOrAccount(query).ToList();
         }
 
         [HttpPost]

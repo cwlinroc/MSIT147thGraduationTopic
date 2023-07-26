@@ -42,7 +42,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
             }
         }
 
@@ -134,6 +134,11 @@ namespace MSIT147thGraduationTopic.EFModels
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Evaluation>(entity =>
@@ -156,27 +161,6 @@ namespace MSIT147thGraduationTopic.EFModels
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Evaluations_Orders");
             });
-
-            //modelBuilder.Entity<EvaluationInput>(entity =>
-            //{
-            //    entity.HasNoKey();
-
-            //    entity.ToView("EvaluationInput");
-
-            //    entity.Property(e => e.Avatar).HasMaxLength(100);
-
-            //    entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-            //    entity.Property(e => e.MerchandiseName)
-            //        .IsRequired()
-            //        .HasMaxLength(30);
-
-            //    entity.Property(e => e.NickName).HasMaxLength(30);
-
-            //    entity.Property(e => e.SpecName)
-            //        .IsRequired()
-            //        .HasMaxLength(50);
-            //});
 
             modelBuilder.Entity<Member>(entity =>
             {
@@ -402,21 +386,6 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.MerchandiseName)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.SpecName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<SpecWithFullMerchandise>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("SpecWithMerchandiseName");
 
                 entity.Property(e => e.MerchandiseName)
                     .IsRequired()

@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewData["Title"] = "LogIn";
+    Layout = "_BackstagePage";
+}
+
+<div class="container px-5">
+    <div class="row">
+        <div class="col-1 col-md-2 col-lg-3 col-xxl-4"> </div>
+        <div class="col-10 col-md-8 col-lg-6 col-xxl-4 py-5">
+            <form name="logForm">
+                <div class="mb-3">
+                    <label for="inputText" class="form-label">帳號</label>
+                    <input type="text" class="form-control" id="inputAccount" name="account">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">密碼</label>
+                    <input type="password" class="form-control" id="inputPassword" name="password">
+                </div>
+                <button type="button" class="btn btn-primary" id="btnChangeAccount">變更帳號並登入</button>
+            </form>
+
+
+            <div class="my-4">
+                <button type="button" id="demo0">demo admin</button>
+                <button type="button" id="demo1">demo 11</button>
+                <button type="button" id="demo2">demo 22</button>
+            </div>
+
+
+        </div>
+        <div class="col-1 col-md-2 col-lg-3 col-xxl-4"> </div>
+    </div>
+
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+
+        $('#demo0').click(() => {
+            $('#inputAccount').val('admin')
+            $('#inputPassword').val('admin')
+        })
+        $('#demo1').click(() => {
+            $('#inputAccount').val('11')
+            $('#inputPassword').val('11')
+        })
+        $('#demo2').click(() => {
+            $('#inputAccount').val('22')
+            $('#inputPassword').val('22')
+        })
+
+        $('#btnChangeAccount').click(changeAccount)
+
+        async function changeAccount() {
+            const formData = new FormData(document.logForm)
+
+            const response = await fetch(`@Url.Content("~/employeebackstage/changeaccount")`, {
+                body: formData,
+                method: 'POST'
+            })
+
+            if (response.ok) {
+                const loginSucceed = await response.json()
+                console.log(loginSucceed)
+                if (loginSucceed) {
+                    alert('登入成功')
+                    window.location.href = '@Url.Content("~/employeebackstage/changeaccount")'
+                }
+                else {
+                    alert('帳號密碼輸入錯誤')                    
+                }
+            }
+        }
+
+        
+
+    </script>
+}
+
+@section Styles{
+    <style>
+
+    </style>
+}
+
+

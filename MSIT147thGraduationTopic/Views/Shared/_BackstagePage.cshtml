@@ -1,4 +1,22 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var user = HttpContextAccessor?.HttpContext?.User;
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;
+    string? userName = string.Empty;
+    string? avatarName = string.Empty;
+
+    if (isAuthorized ?? false)
+    {
+        userName = user.FindFirstValue("UserName");
+        avatarName = user.FindFirstValue("AvatarName");
+        if (string.IsNullOrEmpty(avatarName)) avatarName = "_employeeDefault.jpg";
+    }
+}
+
+
+<!DOCTYPE html>
 <html lang="zh-Hant-TW">
 
 <head>
@@ -35,18 +53,22 @@
 
             <a class="navbar-brand " href="#">後臺管理系統 </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeaderContent"
-                    aria-controls="navbarHeaderContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarHeaderContent">
-
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-
-                    <li class="nav-item"><a class="nav-link" href="#">登入</a></li>
-                </ul>
-            </div>
+            @{
+                if (isAuthorized ?? false)
+                {
+                    <img src="@Url.Content($"~/uploads/employeeAvatar/{avatarName}")" id="navbarAvatar" class="rounded-circle ms-auto">
+                    <div class="navbar-nav ms-2">
+                        <span class="navbar-text me-3 text-white">@userName</span>
+                        <a class="nav-link" aria-current="page" href="#">修改個人資料</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" aria-current="page" href="@Url.Content("~/EmployeeBackstage/LogIn")">登入</a>
+                    </div>
+                }
+            }
 
         </div>
     </nav>

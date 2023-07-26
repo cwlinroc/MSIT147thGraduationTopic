@@ -76,10 +76,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[EvaluationInput]",
-         "ObjectType": 3
-      },
-      {
          "Name": "[dbo].[MerchandiseSearch]",
          "ObjectType": 3
       },
@@ -92,7 +88,7 @@
          "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-rae7e6c.GraduationTopic.dbo",
+   "UiHint": "desktop-pp2g83m.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

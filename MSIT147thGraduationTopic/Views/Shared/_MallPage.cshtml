@@ -1,4 +1,15 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var user = HttpContextAccessor?.HttpContext?.User;
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;
+    string? userName = string.Empty;
+    if (isAuthorized ?? false)
+    {
+        userName = user?.Claims.FirstOrDefault(o => o.Type == "UserName")?.Value;
+    }
+}
+<!DOCTYPE html>
 <html lang="zh-Hant-TW">
 
 <head>

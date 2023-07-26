@@ -1,0 +1,14 @@
+﻿@model (string,string)
+@{
+    ViewData["Title"] = "ChangeAccount";
+    string userName = Model.Item1;
+    string role = Model.Item2;
+}
+
+
+<div class="container mt-5">
+    <div class="d-flex mt-4">
+        <h2>@(role+" ")@(userName+" ")已登入</h2>
+    </div>
+</div>
+
