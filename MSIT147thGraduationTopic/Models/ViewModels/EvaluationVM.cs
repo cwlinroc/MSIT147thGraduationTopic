@@ -20,11 +20,18 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public string Comment { get; set; }
         [DisplayName("星星評分")]
         public int Score { get; set; }
+        public List<Comments> comments { get; set; }
+
 
         public virtual Member Member { get; set; }
         public virtual Merchandise Merchandise { get; set; }
         public virtual Order Order { get; set; }
 
+    }
+    public class Comments
+    {
+        public string Comment { get; set; }
+        public int Score { get; set; }
     }
 
     static public class EvaluationTransfer

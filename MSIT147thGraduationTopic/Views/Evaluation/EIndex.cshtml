@@ -24,7 +24,7 @@
                     <h6 id="OrderId">訂單編號:000000  </h6>
                 </div>
             </div>
-
+            <form method="post" action="~/Evaluation/EIndex">
             <div style="border-block-color:#FFDDAA;border-width: 2px">
                 <div class="mt-4 d-flex align-items-center">
                     <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
@@ -55,6 +55,7 @@
                 </div>
 
             </div>
+            </form >
         </div>
         <div class="col-2"></div>
     </div>
@@ -131,12 +132,12 @@
             function () {
                 stars.attr('src', starImages[0]);
             }
-        );
-        $img.click(function () {
-            $img.prop("src", starImages[0]);
-            $("img:lt(" + ($(this).index() + 1) + ")").prop("src", starImages[i + 1]);
+        //);
+        //$img.click(function () {
+        //    $img.prop("src", starImages[0]);
+        //    $("img:lt(" + ($(this).index() + 1) + ")").prop("src", starImages[i + 1]);
 
-        })
+        //})
         $img.dblclick(function () {
 
             $img.prop("src", "/images/空星.png");
