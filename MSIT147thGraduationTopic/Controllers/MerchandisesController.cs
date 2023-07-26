@@ -56,7 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Create
-        public IActionResult Create() //todo 上傳還沒做完
+        public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
@@ -78,11 +78,9 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 // 使用隨機數改名，避免資料庫內名稱重複
                 string newImageName = Guid.NewGuid().GetHashCode() + photo.FileName;
-                merchandisevm.ImageUrl = Path.Combine("uploads/merchandisePicture", newImageName);
-                //產生圖片上傳路徑  //todo 讀取圖片時再串接_host.WebRootPath
-                string savePhotoPath = Path.Combine(_host.WebRootPath, merchandisevm.ImageUrl);
-
-                using (var fileStream = new FileStream(savePhotoPath, FileMode.Create))
+                merchandisevm.ImageUrl = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", newImageName);
+                // 複製圖片到資料夾
+                using (var fileStream = new FileStream(merchandisevm.ImageUrl, FileMode.Create))
                 {
                     photo.CopyTo(fileStream);
                 }
@@ -90,7 +88,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(merchandisevm.merchandise);
+                _context.Add(merchandisevm.merchandise); //todo 無法成功上傳，還差最後一步
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

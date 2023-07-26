@@ -24,7 +24,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.MerchandiseId = value; }
         }
         [DisplayName("商品名稱")]
-        [Required(ErrorMessage = "此為必填欄位")]
         public string MerchandiseName
         {
             get { return _merchandise.MerchandiseName; }

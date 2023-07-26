@@ -13,13 +13,13 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Edit">
+                <form asp-action="Edit" method="Post" name="forminput" id="forminput">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="MerchandiseId" />
                     <div class="form-group">
                         <label asp-for="MerchandiseName" class="control-label"></label>
-                        <input asp-for="MerchandiseName" class="form-control" />
-                        <span asp-validation-for="MerchandiseName" class="text-danger"></span>
+                        <input asp-for="MerchandiseName" class="form-control" id="inputname" />
+                        <span asp-validation-for="MerchandiseName" class="text-danger" id="alertspanforname"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="BrandId" class="control-label"></label>
