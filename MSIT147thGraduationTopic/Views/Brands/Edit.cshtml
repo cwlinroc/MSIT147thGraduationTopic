@@ -13,7 +13,7 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Edit" method="Post" name="forminput">
+                <form asp-action="Edit" method="Post" name="forminput" id="forminput">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="BrandId" />
                     <div class="form-group">
@@ -38,38 +38,39 @@
 
         const submit = document.querySelector("#submit");
         submit.addEventListener("click", (event) => {
-            event.preventDefault(); // todo 關閉後無法重新啟動
+            event.preventDefault();
             var formdata = new FormData(document.forminput);
 
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/ApiBrand/CheckBrand");
+            xhr.open("POST", "/ApiBrand/CheckBrandforEdit");
             xhr.send(formdata);
 
+            let condition;
             xhr.addEventListener("load", () => {
                 const data = JSON.parse(xhr.responseText);
+
                 if (data) {
-                    event.initEvent(); //todo 無法從這裡啟動
-                    //event.preventDefault(); //todo 無法從這裡關閉
                     alertspan.innerHTML = "此品牌已存在，請重新命名";
                 }
                 else {
                     alertspan.innerHTML = "";
+                    const forminput = document.querySelector("#forminput");
+                    HTMLFormElement.prototype.submit.call(forminput);
                 }
             })
         })
 
         const input = document.querySelector("#input");
-        input.addEventListener("blur", () => {
+        input.addEventListener("keyup", () => {
             var formdata = new FormData(document.forminput);
 
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/ApiBrand/CheckBrand");
+            xhr.open("POST", "/ApiBrand/CheckBrandforEdit");
             xhr.send(formdata);
 
             xhr.addEventListener("load", () => {
                 const data = JSON.parse(xhr.responseText);
-                console.log(xhr.responseText);
-                console.log(data);
+
                 if (data) {
                     alertspan.innerHTML = "此品牌已存在，請重新命名";
                 }

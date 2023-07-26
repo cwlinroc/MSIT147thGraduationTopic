@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Index(string txtKeyword, int searchCondition)
         {
             IEnumerable<MerchandiseSearch> datas = null;
-            datas = from m in _context.MerchandiseSearches //todo 增加tag搜尋?
+            datas = from m in _context.MerchandiseSearches
                     select m;
             if (!string.IsNullOrEmpty(txtKeyword))
             {
@@ -72,20 +72,17 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Create
             ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")]
                 MerchandiseVM merchandisevm, IFormFile photo)
-        {            
+        {
+            merchandisevm.ImageUrl = null;
             if (photo != null)
-            {
-                if (photo.ContentType != "image")
-                {
-                    return View(merchandisevm);
-                }
-                // todo 將圖片系統性改名後上傳
-                string photoPath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", photo.FileName);
+            {                
+                // todo 將圖片系統性改名後上傳 //todo 讀取圖片時再串接_host.WebRootPath
+                string photoPath = Path.Combine(/*_host.WebRootPath, */"uploads/merchandisePicture", photo.FileName);
+                merchandisevm.ImageUrl = photoPath;
                 using (var fileStream = new FileStream(photoPath, FileMode.Create))
                 {
                     photo.CopyTo(fileStream);
                 }
-                merchandisevm.ImageUrl = photoPath;
 
 
                 /*// 使用時間戳系統性改名，避免資料庫內名稱重複

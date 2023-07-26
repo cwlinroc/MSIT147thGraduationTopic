@@ -35,7 +35,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 list.Add(brandvm);
             }
 
-            return (list != null) ? View(list) : Problem("找不到品牌資料");//Entity set 'GraduationTopicContext.Brands'  is null.
+            return (list != null) ? View(list) : Problem("找不到品牌資料");
         }
 
         // GET: Brands/Create
@@ -92,7 +92,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -120,20 +120,20 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             if (_context.Merchandises.Where(m => m.BrandId == id).Count() > 0)
             {
-                return Problem("品牌中尚有商品，因此無法刪除");
+                return RedirectToAction(nameof(Index));
             }
-            if (_context.Brands.Count() == 1)
-            {
-                return Problem("品牌總數不可為零，因此無法刪除");
-            }
+            //if (_context.Brands.Count() == 1)
+            //{
+            //    //品牌總數不可為零，因此無法刪除
+            //    return RedirectToAction(nameof(Index));
+            //}
 
             if (id == null || _context.Brands == null)
             {
                 return Problem("找不到品牌資料");
             }
 
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(m => m.BrandId == id);
+            var brand = await _context.Brands.FirstOrDefaultAsync(m => m.BrandId == id);
             if (brand == null)
             {
                 return Problem("找不到品牌資料");
