@@ -60,7 +60,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-nowrap" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link text-nowrap" href="Register.html">註冊</a></li>
+                        <li class="nav-item">@Html.ActionLink("註冊", "CreateMember", "ApiMember")</li>
                         <li class="nav-item">
                             <a class="nav-link" href="">
                                 <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>購物車
@@ -104,7 +104,7 @@
                                                 記住我
                                             </label>
                                         </div>
-                                        <span class="offset-6"><a href="" class="text-decoration-none">忘記密碼</a></span>
+                                        <span class="offset-6">@Html.ActionLink("忘記密碼", "ForgetPwd", "Member")</span>
 
                                         <div>
                                             <button type="submit" class="btn btn-primary me-2">登入</button>

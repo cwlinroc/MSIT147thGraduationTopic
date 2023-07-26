@@ -8,11 +8,11 @@
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-8 offset-2">
         <form id="memberRegisterForm" name="memberRegisterForm" class="needs-validation"
-               method="POST" novalidate>
+              action="/ApiMember/CreateMember" method="POST" novalidate>
             <!-- MemberName input-->
             <div class="form mb-3">
-                <label for="membername" class="form-label fw-bold">姓名</label>
-                <input class="form-control" id="membername" type="text" required />
+                <label for="memberName" class="form-label fw-bold">姓名</label>
+                <input class="form-control" id="memberName" name="MemberName" type="text" required />
                 <div class="invalid-feedback">請輸入姓名</div>
             </div>
             <!-- Gender input-->
@@ -33,12 +33,12 @@
             <!-- NickName input-->
             <div class="form mb-3">
                 <label for="nickname" class="form-label fw-bold">暱稱</label>
-                <input class="form-control" id="nickname" type="text" />
+                <input class="form-control" id="nickName" name="NickName" type="text" />
             </div>
             <!-- Account input-->
             <div class="form mb-3">
                 <label for="account" class="form-label fw-bold">帳號</label>
-                <input class="form-control" id="account" type="text" required />
+                <input class="form-control" id="account" name="Account" type="text" required />
                 <div class="invalid-feedback">請輸入帳號</div>
             </div>
             <!-- Password input-->
@@ -46,7 +46,7 @@
                 <label for="password" class="form-label fw-bold">
                     密碼:需要8~12位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>                
-                <input class="form-control fs-4" id="password" type="password"
+                <input class="form-control fs-4" id="password" name="Password" type="password"
                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required /> 
                 <div class="invalid-feedback">請輸入密碼</div>
             </div>
@@ -60,14 +60,14 @@
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">電子信箱</label>
-                <input class="form-control" id="email" type="email" required />
+                <input class="form-control" id="email" name="Email" type="email" required />
                 <div class="invalid-feedback">請輸入電子信箱</div>
                 @*<div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>*@
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
-                <input class="form-control" id="phone" type="tel" required />
+                <input class="form-control" id="phone" name="Phone" type="tel" required />
                 <div class="invalid-feedback">請輸入手機號碼</div>
             </div>
             <!-- Address input-->
@@ -75,23 +75,24 @@
                 <label for="address" class="form-label fw-bold">地址</label>
                 <div class="input-group">
                     <label class="input-group-text" for="selectCity">縣市</label>
-                    <select class="form-select" id="selectCity">
+                    <select class="form-select" id="selectCity" name="selectCity">
                         <option selected></option>
                         
                     </select>
                     <label class="input-group-text" for="selectDistrict">區域</label>
-                    <select class="form-select" id="selectDistrict">
+                    <select class="form-select" id="selectDistrict" name="selectDistrict">
                         <option selected></option>
                         
                     </select>
-                    <input class="form-control" id="address" type="text" />
+                    <input class="form-control" id="address" name="address" type="text" />
                 </div>
             </div>
             <!-- Date of birth input-->
             <div class="form mb-5">
                 <label class="form-label fw-bold">出生年月日</label>
-                <div class="input-group" id="DateOfBirth">
-                    <input type="date" id="DateOfBirthInput" class="form-control" required />
+                <div class="input-group">
+                    <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-control" 
+                        required />
                     <div class="invalid-feedback">請輸入生日</div>
                 </div>
             </div>
@@ -126,9 +127,9 @@
         (() => {
             'use strict'
 
-            function checkPasswordMatch() {                
-                var password = $('#password').val();
-                var confirmPassword = $('#confirmPassword').val();
+            function checkPasswordMatch() {
+                const password = $('#password').val();
+                const confirmPassword = $('#confirmPassword').val();
 
                 if (password !== confirmPassword) {
                     $('#confirmPassword').addClass('is-invalid');
@@ -148,7 +149,7 @@
 
             async function LoadCities() {
                 try {
-                    const response = await fetch('/api/cities');
+                    const response = await fetch('/member/cities');
                     const datas = await response.json();
 
                     var cities = datas.map(city => {
@@ -165,7 +166,7 @@
             async function LoadDistricts() {
                 try {
                     const city = selCity.options[selCity.selectedIndex].value;
-                    const response = await fetch(`/api/districts?city=${city}`);
+                    const response = await fetch(`/member/districts?city=${city}`);
                     const datas = await response.json();
 
                     var districts = datas.map(district => {
@@ -181,8 +182,7 @@
 
             selCity.addEventListener('change', () => {
                 LoadDistricts();
-            });
-            
+            });            
 
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             const forms = document.querySelectorAll('.needs-validation')

@@ -17,6 +17,14 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             var members = _context.Members.ToList();
             return members.Select(o => o.ToDto());
         }
+
+        public IEnumerable<MemberDto> GetMembersByNameOrAccount(string query)
+        {
+            var members = _context.Members
+                .Where(o => o.MemberName.Contains(query) || o.Account.Contains(query));
+            return members.Select(o => o.ToDto());
+        }
+
         public int CreateMember(MemberDto dto)
         {
             var db = new GraduationTopicContext();
