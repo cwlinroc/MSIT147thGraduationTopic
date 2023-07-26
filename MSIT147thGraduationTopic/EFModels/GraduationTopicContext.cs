@@ -157,26 +157,26 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasConstraintName("FK_Evaluations_Orders");
             });
 
-            modelBuilder.Entity<EvaluationInput>(entity =>
-            {
-                entity.HasNoKey();
+            //modelBuilder.Entity<EvaluationInput>(entity =>
+            //{
+            //    entity.HasNoKey();
 
-                entity.ToView("EvaluationInput");
+            //    entity.ToView("EvaluationInput");
 
-                entity.Property(e => e.Avatar).HasMaxLength(100);
+            //    entity.Property(e => e.Avatar).HasMaxLength(100);
 
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+            //    entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
 
-                entity.Property(e => e.MerchandiseName)
-                    .IsRequired()
-                    .HasMaxLength(30);
+            //    entity.Property(e => e.MerchandiseName)
+            //        .IsRequired()
+            //        .HasMaxLength(30);
 
-                entity.Property(e => e.NickName).HasMaxLength(30);
+            //    entity.Property(e => e.NickName).HasMaxLength(30);
 
-                entity.Property(e => e.SpecName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-            });
+            //    entity.Property(e => e.SpecName)
+            //        .IsRequired()
+            //        .HasMaxLength(50);
+            //});
 
             modelBuilder.Entity<Member>(entity =>
             {
@@ -412,7 +412,7 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<SpecWithMerchandiseName>(entity =>
+            modelBuilder.Entity<SpecWithFullMerchandise>(entity =>
             {
                 entity.HasNoKey();
 
