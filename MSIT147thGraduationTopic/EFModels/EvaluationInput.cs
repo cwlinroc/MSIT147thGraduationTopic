@@ -7,9 +7,6 @@ namespace MSIT147thGraduationTopic.EFModels
 {
     public partial class EvaluationInput
     {
-        public int MemberId { get; set; }
-        public string Avatar { get; set; }
-        public string NickName { get; set; }
         public int OrderId { get; set; }
         public string MerchandiseName { get; set; }
         public int MerchandiseId { get; set; }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Evaluation>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM>
 
 @{
     Layout = "_BackstagePage";
@@ -73,8 +73,8 @@
                                 <button type="submit" class="btn btn-primary">刪除</button>
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.EvaluationId">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.EvaluationId">Details</a> |
+                               @* <a asp-action="Edit" asp-route-id="@item.EvaluationId">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.EvaluationId">Details</a> |*@
                                 <a asp-action="Delete" asp-route-id="@item.EvaluationId">Delete</a>
                             </td>
                         </tr>

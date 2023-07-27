@@ -135,12 +135,6 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Evaluation>(entity =>
             {
-                entity.HasOne(d => d.Member)
-                    .WithMany(p => p.Evaluations)
-                    .HasForeignKey(d => d.MemberId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Evaluations_Members");
-
                 entity.HasOne(d => d.Merchandise)
                     .WithMany(p => p.Evaluations)
                     .HasForeignKey(d => d.MerchandiseId)
@@ -160,15 +154,11 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.ToView("EvaluationInput");
 
-                entity.Property(e => e.Avatar).HasMaxLength(100);
-
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
 
                 entity.Property(e => e.MerchandiseName)
                     .IsRequired()
                     .HasMaxLength(30);
-
-                entity.Property(e => e.NickName).HasMaxLength(30);
 
                 entity.Property(e => e.SpecName)
                     .IsRequired()

@@ -1,23 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Xml.Linq;
+using static MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
     public class EvaluationController : Controller
     {
-        public IActionResult EIndex()
+        private readonly GraduationTopicContext db = new GraduationTopicContext();
+
+
+
+        //以OrderId撈訂單資料
+        public IActionResult EIndex(int OrderId)
         {
-            EvaluationInput evaluationInput = new EvaluationInput();
-            return View(evaluationInput);
+            var model = from x in db.EvaluationInputs
+                        where x.OrderId == OrderId
+                        select new EvaluationVM
+                        {
+                            OrderId = x.OrderId,
+                            MerchandiseId = x.MerchandiseId,
+                            SpecId = x.SpecId
+                        };           
+            return View(model);
         }
-        [HttpPost]
-        public IActionResult EIndex(List<Comments> comments)
+        
+        [HttpPost]  
+        public IActionResult EIndex(int OrderId,List<Comments> comments)
         {
-            for (int i = 0; i < comments.Count; i++)
+            foreach (var item in comments)
             {
-                string comment = comments[i].Comment;
-                var score = comments[i].Score;
+                var data = new Evaluation();
+                data.OrderId = OrderId;
+                data.MerchandiseId = item.MerchandiseId;
+                data.Comment= item.Comment;
+                data.Score = item.Score;
             }
             return View();
         }
@@ -25,3 +43,8 @@ namespace MSIT147thGraduationTopic.Controllers
 
     }
 }
+//for (int i = 0; i < comments.Count; i++)
+//{
+//    string comment = comments[i].Comment;
+//    var score = comments[i].Score;
+//}

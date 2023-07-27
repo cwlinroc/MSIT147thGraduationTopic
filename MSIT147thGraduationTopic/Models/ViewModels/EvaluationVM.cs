@@ -7,9 +7,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
     {
         public int EvaluationId { get; set; }
         public int MerchandiseId { get; set; }
-        public int MemberId { get; set; }
-        public string Avatar { get; set; }
-        public string NickName { get; set; }
+        //public int MemberId { get; set; }
+        //public string Avatar { get; set; }
+        //public string NickName { get; set; }
         [DisplayName("訂單編號")]
         public int OrderId { get; set; }
         [DisplayName("商品名稱")]
@@ -22,17 +22,23 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public int Score { get; set; }
         public List<Comments> comments { get; set; }
 
+        public class Comments //要回傳的資料
+        {
+            public int MerchandiseId { get; set; }
+            public string MerchandiseName { get; set; }
+            public int SpecId { get; set; }
+            public string SpecName { get; set; }
+            public string Comment { get; set; }
+            public int Score { get; set; }
+        }
+
 
         public virtual Member Member { get; set; }
         public virtual Merchandise Merchandise { get; set; }
         public virtual Order Order { get; set; }
 
     }
-    public class Comments
-    {
-        public string Comment { get; set; }
-        public int Score { get; set; }
-    }
+    
 
     static public class EvaluationTransfer
     {

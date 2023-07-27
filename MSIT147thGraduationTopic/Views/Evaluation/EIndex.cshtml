@@ -14,47 +14,48 @@
 
 
             <div class="d-flex mt-3 ">
-                <div id="Avatar" class="d-flex align-items-center ">
+                @*<div id="Avatar" class="d-flex align-items-center ">
                     <img src="http://picsum.photos/80/80?random=10" class="rounded-circle" />
                 </div>
                 <div class="d-flex align-items-center mx-3">
                     <h5 id="NickName" style="font-family: Microsoft JhengHei;">飛天小女警</h5>
-                </div>
+                </div>*@
                 <div class="ms-auto d-flex flex-column justify-content-end align-items-end ">
-                    <h6 id="OrderId">訂單編號:000000  </h6>
+                    <h6 id="OrderId">訂單編號:@(Model.OrderId)</h6>
                 </div>
             </div>
             <form method="post" action="~/Evaluation/EIndex">
-            <div style="border-block-color:#FFDDAA;border-width: 2px">
-                <div class="mt-4 d-flex align-items-center">
-                    <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
-                        <div class="mx-1 mt-2">
-                            <h6 id="MerchandiseName"> 商品名稱</h6>
+                @for (int i = 0; i < Model.comments.Count; i++){
+                    var item = Model.comments[i];        
+                    <div style="border-block-color:#FFDDAA;border-width: 2px">
+                    <div class="mt-4 d-flex align-items-center">
+                        <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
+                            <div class="mx-1 mt-2">
+                                    <h6 id="MerchandiseName">@(item.MerchandiseName[i])</h6>
+                            </div>
+                            <div class="mt-2">
+                                    <h6 id="SpecName">@(item.SpecName[i])</h6>
+                            </div>
                         </div>
-                        <div class="mt-2">
-                            <h6 id="SpecName">商品規格 </h6>
+
+                        <div class="d-flex ms-auto float-end">
+                            <div id="score" name="score" class="float-end mx-1 mt-3">
+                                <img id="stsr1" src="/images/空星.png" style="height:40px " />
+                                <img id="stsr2" src="/images/空星.png" style="height:40px" />
+                                <img id="stsr3" src="/images/空星.png" style="height:40px" />
+                                <img id="stsr4" src="/images/空星.png" style="height:40px" />
+                                <img id="stsr5" src="/images/空星.png" style="height:40px" />
+                            </div>
                         </div>
                     </div>
-
-                    <div class="d-flex ms-auto float-end">
-                        <div id="score" class="float-end mx-1 mt-3">
-                            <img id="stsr1" src="/images/空星.png" style="height:40px " />
-                            <img id="stsr2" src="/images/空星.png" style="height:40px" />
-                            <img id="stsr3" src="/images/空星.png" style="height:40px" />
-                            <img id="stsr4" src="/images/空星.png" style="height:40px" />
-                            <img id="stsr5" src="/images/空星.png" style="height:40px" />
-                        </div>
+                    <div class="form-floating mx-2 my-2">
+                        <textarea id="commentText" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2">@(Model.Comment)</label>
+                        <button id="send" type="submit" class="btn btn-primary float-end mt-2">送出</button>
+                        <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
                     </div>
                 </div>
-                <div class="form-floating mx-2 my-2">
-                    <textarea id="commentText" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
-                    <label for="floatingTextarea2">評論</label>
-                    <button id="send" type="submit" class="btn btn-primary float-end mt-2">送出</button>
-                    <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
-
-                </div>
-
-            </div>
+                }
             </form >
         </div>
         <div class="col-2"></div>
@@ -67,7 +68,7 @@
         const orderId = document.querySelector('#OrderId');
 
         const xhr = new XMLHttpRequest();
-        xhr.open('Get', '/ApiEvaluation/index')
+        xhr.open('Get', '/Evaluation/EIndex')
         xhr.send();
         xhr.addEventListener("load", function () {
             const datas = JSON.parse(xhr.responseText);
@@ -132,16 +133,19 @@
             function () {
                 stars.attr('src', starImages[0]);
             }
-        //);
-        //$img.click(function () {
-        //    $img.prop("src", starImages[0]);
-        //    $("img:lt(" + ($(this).index() + 1) + ")").prop("src", starImages[i + 1]);
+        );
 
-        //})
-        $img.dblclick(function () {
+        stars.click(function () {
+            const index = stars.index(this);
+            stars.attr("src", starImages[0]);
+            $("img:lt(" + (index + 1) + ")").attr("src", starImages[i + 1]);
 
-            $img.prop("src", "/images/空星.png");
-        })
+        });
+
+        stars.dblclick(function () {
+
+            stars.attr("src", "/images/空星.png");
+        });
     </script>
 
     <script>
