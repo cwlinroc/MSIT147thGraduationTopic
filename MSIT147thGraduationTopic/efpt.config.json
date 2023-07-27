@@ -86,9 +86,13 @@
       {
          "Name": "[dbo].[SpecWithFullMerchandise]",
          "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[SpecWithMerchandiseName]",
+         "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-pp2g83m.GraduationTopic.dbo",
+   "UiHint": "desktop-43t56sd.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

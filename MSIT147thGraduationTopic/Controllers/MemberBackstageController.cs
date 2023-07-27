@@ -6,7 +6,7 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("GetAllMembers", "ApiMember");
         }
     }
 }

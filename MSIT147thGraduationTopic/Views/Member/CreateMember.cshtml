@@ -194,12 +194,18 @@
                         event.stopPropagation();
                         Swal.fire({
                             icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',                            
+                            title: '註冊失敗!',
+                            text: '資料有錯誤,請修改',
+                            allowOutsideClick: false,
                         })
+                        return;
                     }else{
-                        
-                        alert('註冊成功！');
+                        Swal.fire({
+                            icon: 'success',
+                            title: '註冊成功!',
+                            text: '請至信箱收取認證信',
+                            allowOutsideClick: false
+                        }).then()
                     }
                     form.classList.add('was-validated')
                     

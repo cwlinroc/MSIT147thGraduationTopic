@@ -1,4 +1,5 @@
-﻿$(".custom-merchandise").hover(
+﻿'use strict'
+$(".custom-merchandise").hover(
     e => $(e.currentTarget).addClass("shadow-lg"),
     e => $(e.currentTarget).removeClass("shadow-lg")
 )
@@ -21,7 +22,7 @@ $(window).scroll(e => {
 $('#btnLogIn').click(LogIn)
 $('#btnLogOut').click(LogOut)
 
-$('#chkRemember').
+
 
 //Ajax 登入
 async function LogIn() {
@@ -58,7 +59,7 @@ async function LogIn() {
         icon: 'success',
         title: '登入成功!',
         allowOutsideClick: false
-    }).then(result => {        
+    }).then(result => {
         if (url == 'reload') {
             window.location.reload()
         }
@@ -67,12 +68,23 @@ async function LogIn() {
         }
     })
 
-    //if (url == 'reload') {
-    //    window.location.reload()
-    //}
-    //else {
-    //    window.location.href = url
-    //}
+    if (localStorage.chkRemember && localStorage.chkRemember !== '') {
+        $('#chkRemember').attr('checked', 'checked');
+        $('#loginAccount').val(localStorage.loginAccount);
+    } else {
+        $('#chkRemember').removeattr('ckecked');
+        $('#loginAccount').val('');
+    }
+
+    $('#chkRemember').click(function () {
+        if ($('#chkRemember').is(':checked')) {
+            localStorage.loginAccount = $('#loginAccount').val();
+            localStorage.chkRemember = $('#chkRemember').val();
+        } else {
+            localStorage.loginAccount = '';
+            localStorage.chkRemember = '';
+        }
+    }    
 
 }
 
