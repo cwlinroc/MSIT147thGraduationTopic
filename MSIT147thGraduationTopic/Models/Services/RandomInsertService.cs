@@ -115,48 +115,54 @@ namespace MSIT147thGraduationTopic.Models.Services
                 }
             }
         }
+
         public void AddRandomOrders()
         {
-            var memberIds = _repo.GetAllMemberID();
-            var specIds = _repo.GetAllSpecID();
+            var members = _context.Members.ToArray();
+            var specs = _context.Specs.ToArray();
 
-            foreach (var memberId in memberIds)
+            foreach (var member in members)
             {
                 int orderAmount = _generator.RandomIntBetween(1, 10);
-
-                var member = _context.Members.FirstOrDefault(m => m.MemberId == memberId);
-                //var chosedSpecIds = _generator.RandomCollectionFrom(specIds, cartItemAmount);
 
                 for (int i = 0; i < orderAmount; i++)
                 {
                     var order = new Order
                     {
-                        MemberId = memberId,
+                        MemberId = member.MemberId,
                         PaymentMethodId = _generator.RandomIntBetween(1, 3),
                         Payed = true,
                         PurchaseTime = _generator.RandomDateBetweenDays(-100, -3),
                         DeliveryAddress = member.Address,
                         ContactPhoneNumber = member.Phone
-
                     };
 
+                    _context.Orders.Add(order);
+                    _context.SaveChanges();
 
+                    int itemAmount = _generator.RandomIntBetween(1, 10);
+                    var boughtSpecs = _generator.RandomCollectionFrom(specs, itemAmount);
+                    int totalPrice = 0;
 
-
+                    foreach (var spec in boughtSpecs)
+                    {
+                        var orderlist = new OrderList
+                        {
+                            OrderId = order.OrderId,
+                            SpecId = spec.SpecId,
+                            Quantity = _generator.RandomIntBetween(1, 10),
+                            Price = spec.Price,
+                            Discount = spec.DiscountPercentage
+                        };
+                        _context.OrderLists.Add(orderlist);
+                        totalPrice += spec.Price * spec.DiscountPercentage / 100;
+                    }
+                    order.PaymentAmount = totalPrice;
+                    _context.SaveChanges();
                 }
             }
         }
 
-        //public int OrderId { get; set; }
-        //public int MemberId { get; set; }
-        //public int PaymentMethodId { get; set; }
-        //public bool Payed { get; set; }
-        //public DateTime PurchaseTime { get; set; }
-        //public int? UsedCouponId { get; set; }
-        //public int? PaymentAmount { get; set; }
-        //public string DeliveryAddress { get; set; }
-        //public string ContactPhoneNumber { get; set; }
-        //public string Remark { get; set; }
 
 
     }

@@ -99,7 +99,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
                 if (member.Password != saltedPassword) return string.Empty;
-
+                
                 var claims = new List<Claim>
                             {
                                 new Claim(ClaimTypes.Name, member.Account),

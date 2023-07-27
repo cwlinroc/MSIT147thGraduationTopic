@@ -86,6 +86,10 @@
       {
          "Name": "[dbo].[SpecWithFullMerchandise]",
          "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[SpecWithMerchandiseName]",
+         "ObjectType": 3
       }
    ],
    "UiHint": "desktop-pp2g83m.GraduationTopic.dbo",
