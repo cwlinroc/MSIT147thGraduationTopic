@@ -6,7 +6,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class BrandVM
     {
-        private Brand _brand = null;
+        private Brand _brand;
         public Brand brand
         {
             get { return _brand; }

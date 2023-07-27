@@ -14,9 +14,25 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public IActionResult CheckCategory(CategoryVM categoryvm)
+        public IActionResult CheckCategoryforCreate(CategoryVM categoryvm)
         {
             var exists = _context.Categories.Any(c => c.CategoryName == categoryvm.CategoryName);
+
+            return Json(exists);
+        }
+
+        [HttpPost]
+        public IActionResult CheckCategoryforEdit(CategoryVM categoryvm)
+        {
+            var exists = _context.Categories
+                .Where(c => c.CategoryId != categoryvm.CategoryId)
+                .Any(c => c.CategoryName == categoryvm.CategoryName);
+
+            return Json(exists);
+        }
+        public IActionResult CheckMerchandiseforDeleteCategory(int id)
+        {
+            var exists = _context.Categories.Any(m => m.CategoryId == id);
 
             return Json(exists);
         }

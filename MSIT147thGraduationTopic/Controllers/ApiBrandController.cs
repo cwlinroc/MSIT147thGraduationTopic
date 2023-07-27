@@ -16,9 +16,25 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public IActionResult CheckBrand(BrandVM brandvm)
+        public IActionResult CheckBrandforCreate(BrandVM brandvm)
         {
             var exists = _context.Brands.Any(b => b.BrandName == brandvm.BrandName);
+
+            return Json(exists);
+        }
+
+        [HttpPost]
+        public IActionResult CheckBrandforEdit(BrandVM brandvm)
+        {
+            var exists = _context.Brands
+                .Where(b => b.BrandId != brandvm.BrandId)
+                .Any(b => b.BrandName == brandvm.BrandName);
+
+            return Json(exists);
+        }
+        public IActionResult CheckMerchandiseforDeleteBrand(int id)
+        {
+            var exists = _context.Merchandises.Any(m => m.BrandId == id);
 
             return Json(exists);
         }

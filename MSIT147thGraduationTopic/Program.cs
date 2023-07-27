@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.Configure<OptionSettings>(builder.Configuration.GetSection("OptionSettings"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -29,8 +33,8 @@ builder.Services.AddSession(options =>
 });
 
 //==== AspNetCore.Authentication 全域範圍的驗証機制組態設置 ===== (全環境 cookie 套用)
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)    
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options => 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
         {
             //未登入時會自動移轉到此網址。
             options.LoginPath = new PathString("/Member/NoLogin");
@@ -39,6 +43,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             ///登入10分後會失效
             options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
         });
+
+
 
 var app = builder.Build();
 

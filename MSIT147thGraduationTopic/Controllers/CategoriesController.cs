@@ -52,7 +52,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] CategoryVM categoryvm)
         {
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
                 _context.Add(categoryvm.category);
                 await _context.SaveChangesAsync();
@@ -93,7 +93,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -121,20 +121,20 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             if (_context.Merchandises.Where(m => m.CategoryId == id).Count() > 0)
             {
-                return Problem("類別中尚有商品，因此無法刪除");//todo return Problem()要改成ErrorMessage/Alert
+                return RedirectToAction(nameof(Index));
             }
-            if (_context.Categories.Count() == 1)
-            {
-                return Problem("類別總數不可為零，因此無法刪除");
-            }
+            //if (_context.Categories.Count() == 1)
+            //{
+            //    //類別總數不可為零，因此無法刪除
+            //    return RedirectToAction(nameof(Index));
+            //}
 
             if (id == null || _context.Categories == null)
             {
                 return Problem("找不到商品類別資料");
             }
 
-            var brand = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var brand = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
             if (brand == null)
             {
                 return Problem("找不到商品類別資料");

@@ -33,9 +33,9 @@ namespace MSIT147thGraduationTopic.Models.Services
                 return dto.ToVM();
             });
         }
-        public IEnumerable<EmployeeVM> GetEmployeesByNameOrAccount(string query)
+        public IEnumerable<EmployeeVM> queryEmployeesByNameOrAccount(string query)
         {
-            return _repo.GetEmployeesByNameOrAccount(query).Select(dto =>
+            return _repo.queryEmployeesByNameOrAccount(query).Select(dto =>
             {
                 string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
 
@@ -90,11 +90,20 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.ChangeEmployeePermission(id, permissionId);
         }
 
-
-
         public int DeleteEmployee(int employeeId)
         {
             return _repo.DeleteEmployee(employeeId);
         }
+
+        //public async Task<EmployeeDto?> ValidateEmployeeAccount(string account, string password)
+        //{
+        //    var employee = await _repo.GetEmployeeByAccount(account);
+        //    if (employee == null) return null;
+
+
+
+        //}
+
+
     }
 }
