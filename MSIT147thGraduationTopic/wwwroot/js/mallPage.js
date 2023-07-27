@@ -21,6 +21,8 @@ $(window).scroll(e => {
 $('#btnLogIn').click(LogIn)
 $('#btnLogOut').click(LogOut)
 
+$('#chkRemember').
+
 //Ajax 登入
 async function LogIn() {
     //驗證
@@ -46,20 +48,22 @@ async function LogIn() {
         Swal.fire({
             icon: 'error',
             title: '登入失敗',
-            text: '帳號或密碼錯誤'
-        }).then(result => {
-            if (result.isConfirmed) {
-                window.location.reload()
-            }
+            text: '帳號或密碼錯誤',
+            allowOutsideClick: false
         })
         return
     }
 
-    Swal.fire('登入成功!').then(result => {
-        if (result.isConfirmed) {
+    Swal.fire({
+        icon: 'success',
+        title: '登入成功!',
+        allowOutsideClick: false
+    }).then(result => {        
+        if (url == 'reload') {
             window.location.reload()
-        } else {
-            window.location.reload()
+        }
+        else {
+            window.location.href = url
         }
     })
 
@@ -80,9 +84,13 @@ async function LogOut() {
     if (response.ok) {
         const url = await response.text()
         if (url) {
-            Swal.fire('登出成功!').then(result => {
+            Swal.fire({
+                icon: 'success',
+                title: '登出成功!',
+                allowOutsideClick: false
+            }).then(result => {
                 if (result.isConfirmed) {
-                    window.location.href = url
+                    window.location.reload()
                 }
             })
         }

@@ -112,7 +112,7 @@ namespace MSIT147thGraduationTopic.Controllers
                                 new Claim("UserName", member.MemberName),
                                 new Claim("AvatarName", member.Avatar??""),
                                 new Claim(ClaimTypes.Email, member.Email),
-                                new Claim(ClaimTypes.Role, "Member")
+                                new Claim(ClaimTypes.Role, "會員")
                             };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
