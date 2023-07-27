@@ -71,6 +71,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=ApiMember}/{action=CreateMember}/{id?}");
+    pattern: "{controller=home}/{action=index}/{id?}");
 
 app.Run();

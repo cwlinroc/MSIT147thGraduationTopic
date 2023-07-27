@@ -263,8 +263,8 @@
         //Ajax 新增員工
         async function submitAdd() {
             if (!createValidator()) return;
-            
-            const account = $('#')
+
+            const formData = new FormData(document.createAndEdit)
 
             const response = await fetch('@Url.Content("~/api/apiemployee")', {
                 body: formData,
@@ -462,7 +462,7 @@
                 const password = document.querySelector('#password')
                 const passwordValid = !!password.value
                 const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
-                password.setValidate(() => passwordValid, '請輸入密碼').setValidate(() => passwordPatternValid,'密碼不符合格式(必須包含英文大小寫及數字)')
+                password.setValidate(() => passwordValid, '請輸入密碼')//.setValidate(() => passwordPatternValid,'密碼不符合格式(必須包含英文大小寫及數字)')
 
                 const phone = document.querySelector('#phone')
                 const phoneValid = !!phone.value
@@ -472,7 +472,7 @@
                 const email = document.querySelector('#email')
                 const emailValid = !!email.value
                 const emailPatternValid = /^\w+@@\w+$/.test(email.value)
-                email.setValidate(() => emailValid, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
+                email.setValidate(() => emailValid, '請輸入Email')//.setValidate(() => emailPatternValid, 'Email格式錯誤')
                 //// 要全部都正確，才能送回true確認表單正確
                 return nameValid && phoneValid && emailValid && passwordValid && accountValid
             })

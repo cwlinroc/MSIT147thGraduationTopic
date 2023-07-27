@@ -43,18 +43,32 @@ async function LogIn() {
     const url = await response.text()
 
     if (!url) {
-        alert('帳號密碼錯誤')
+        Swal.fire({
+            icon: 'error',
+            title: '登入失敗',
+            text: '帳號或密碼錯誤'
+        }).then(result => {
+            if (result.isConfirmed) {
+                window.location.reload()
+            }
+        })
         return
     }
 
-    alert('登入成功')
+    Swal.fire('登入成功!').then(result => {
+        if (result.isConfirmed) {
+            window.location.reload()
+        } else {
+            window.location.reload()
+        }
+    })
 
-    if (url == 'reload') {
-        window.location.reload()
-    }
-    else {
-        window.location.href = url
-    }
+    //if (url == 'reload') {
+    //    window.location.reload()
+    //}
+    //else {
+    //    window.location.href = url
+    //}
 
 }
 
@@ -66,8 +80,11 @@ async function LogOut() {
     if (response.ok) {
         const url = await response.text()
         if (url) {
-            alert('成功登出')
-            window.location.href = url
+            Swal.fire('登出成功!').then(result => {
+                if (result.isConfirmed) {
+                    window.location.href = url
+                }
+            })
         }
     }
 }
