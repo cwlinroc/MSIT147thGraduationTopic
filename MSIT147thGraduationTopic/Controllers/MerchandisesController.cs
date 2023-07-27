@@ -25,7 +25,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Merchandises
         public async Task<IActionResult> Index(string txtKeyword, int searchCondition)
         {
-            IEnumerable<MerchandiseSearch> datas = null;
+            IEnumerable<MerchandiseSearch> datas;
             datas = from m in _context.MerchandiseSearches
                     select m;
             if (!string.IsNullOrEmpty(txtKeyword))
@@ -52,7 +52,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 list.Add(merchandisesearchvm);
             }
 
-            return (list != null) ? View(list) : Problem("找不到商品資料");
+            return View(list);
         }
 
         // GET: Merchandises/Create
@@ -76,7 +76,10 @@ namespace MSIT147thGraduationTopic.Controllers
             merchandisevm.ImageUrl = null;
 
             if (merchandisevm.photo != null)
+            {
+                merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                 saveMerchandiseImageToFile(merchandisevm.ImageUrl, merchandisevm.photo);
+            }
 
             if (ModelState.IsValid)
             {
@@ -90,7 +93,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Edit/5
-        public async Task<IActionResult> Edit(int? id) //todo 變更&預覽圖片還沒做
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Merchandises == null) return NotFound();
 
@@ -120,12 +123,14 @@ namespace MSIT147thGraduationTopic.Controllers
             //沒圖→有圖
             if (merchandisevm.ImageUrl == null && merchandisevm.photo != null)
             {
+                merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                 saveMerchandiseImageToFile(merchandisevm.ImageUrl, merchandisevm.photo);
             }
             //有圖→新圖
             if (merchandisevm.ImageUrl != null && merchandisevm.photo != null)
             {
                 deleteMerchandiseImageFromFile(merchandisevm.ImageUrl);
+                merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                 saveMerchandiseImageToFile(merchandisevm.ImageUrl, merchandisevm.photo);
             }
             //有圖→刪除
@@ -176,12 +181,9 @@ namespace MSIT147thGraduationTopic.Controllers
         {
           return (_context.Merchandises?.Any(e => e.MerchandiseId == id)).GetValueOrDefault();
         }
-        private void saveMerchandiseImageToFile(string? ImageUrl, IFormFile photo)
+        private void saveMerchandiseImageToFile(string ImageUrl, IFormFile photo)
         {
-            // 使用隨機數改名，避免資料庫內名稱重複
-            ImageUrl = Guid.NewGuid().ToString() + photo.FileName;
             string savepath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", ImageUrl);
-            // 複製圖片到資料夾
             using (var fileStream = new FileStream(savepath, FileMode.Create))
             {
                 photo.CopyTo(fileStream);

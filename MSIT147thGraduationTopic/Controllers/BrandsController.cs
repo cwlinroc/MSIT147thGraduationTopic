@@ -35,7 +35,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 list.Add(brandvm);
             }
 
-            return (list != null) ? View(list) : Problem("找不到品牌資料");
+            return View(list);
         }
 
         // GET: Brands/Create

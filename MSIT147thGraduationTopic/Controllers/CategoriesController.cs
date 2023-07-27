@@ -35,7 +35,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 list.Add(categoryvm);
             }
 
-            return (list != null) ? View(list) : Problem("找不到商品類別資料");
+            return View(list);
         }
 
         // GET: Categories/Create

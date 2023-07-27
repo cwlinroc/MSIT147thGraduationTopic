@@ -20,7 +20,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs
-        public async Task<IActionResult> Index(int merchandiseid) // todo 上方增加該項商品資料
+        public async Task<IActionResult> Index(int merchandiseid)
         {
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
             
