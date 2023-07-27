@@ -23,8 +23,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _spec.SpecId; }
             set { _spec.SpecId = value; }
         }
-        [DisplayName("品牌名稱")]
-        [Required(ErrorMessage = "此為必填欄位")]
+        [DisplayName("規格名稱")]
         public string SpecName
         {
             get { return _spec.SpecName; }

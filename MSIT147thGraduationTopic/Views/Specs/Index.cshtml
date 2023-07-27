@@ -49,7 +49,7 @@
                     <th>
                         檢視序號
                     </th>
-                    <th>
+                    <th style="display:none">
                         @Html.DisplayNameFor(model => model.MerchandiseId)
                     </th>
                     <th>
@@ -83,7 +83,7 @@
                             <td>
                                 @count
                             </td>
-                            <td>
+                            <td style="display:none" id="getMerchandiseId">
                                 @Html.DisplayFor(modelItem => item.MerchandiseId)
                             </td>
                             <td>
@@ -129,14 +129,14 @@
         const mImage = document.querySelector("#mImage");
 
         $(() => {
+            const merchandiseid = $("#getMerchandiseId").text(); //todo 無商品規格時會沒有值可以傳
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/ApiSpec/Merchandise");
+            xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
             xhr.send();
 
             xhr.addEventListener("load", () => {
                 const datas = JSON.parse(xhr.responseText);
-                var merchandise = datas[0];
-                console.log(merchandise);
+                console.log(datas);
                 mName.innerHTML = merchandise.merchandiseName;
                 mBrand.innerHTML = merchandise.brandName;
                 mCategory.innerHTML = merchandise.categoryName;

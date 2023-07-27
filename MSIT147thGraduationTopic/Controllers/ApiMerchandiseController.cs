@@ -73,7 +73,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult CheckSpecforDeleteMerchandise(int id)
         {
-            var exists = _context.Specs.Any(s => s.SpecId == id);
+            var exists = _context.Specs.Any(s => s.MerchandiseId == id);
 
             return Json(exists);
         }

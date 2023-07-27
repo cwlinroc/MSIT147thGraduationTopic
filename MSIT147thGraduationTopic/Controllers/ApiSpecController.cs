@@ -14,9 +14,9 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public IActionResult Merchandise()
+        public IActionResult ShowMerchandise(int merchandiseid)
         {
-            var datas = _context.MerchandiseSearches.Select(m => m);
+            var datas = _context.MerchandiseSearches.Where(m => m.MerchandiseId == merchandiseid).First();
 
             return Json(datas);
         }
