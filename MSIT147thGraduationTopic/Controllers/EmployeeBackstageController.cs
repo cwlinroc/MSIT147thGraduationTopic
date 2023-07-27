@@ -9,24 +9,31 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.WebSockets;
 using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
     public class EmployeeBackstageController : Controller
     {
         //TODO add in appsettings
-        private readonly string[] _roles = { "管理員", "經理", "員工" };
         private readonly GraduationTopicContext _context;
+        private readonly IOptions<OptionSettings> _options;
+        private readonly string[] _employeeRoles;
         private readonly EmployeeService _service;
 
-        public EmployeeBackstageController(GraduationTopicContext context, IWebHostEnvironment environment)
+        public EmployeeBackstageController(GraduationTopicContext context
+            , IWebHostEnvironment environment
+            , IOptions<OptionSettings> options)
         {
             _context = context;
-            _service = new EmployeeService(context, environment);
+            _options = options;
+            _employeeRoles = options.Value.EmployeeRoles!;
+            _service = new EmployeeService(context, environment, _employeeRoles);
         }
         public IActionResult Index()
         {
-            return View(_roles);
+            return View(_employeeRoles);
         }
 
         public IActionResult LogIn()
@@ -55,7 +62,7 @@ namespace MSIT147thGraduationTopic.Controllers
             var saltedPassword = record.password.GetSaltedSha256(employee.Salt);
             if (employee.EmployeePassword != saltedPassword) return Json(false);
 
-            var role = _roles[employee.Permission - 1];
+            var role = _employeeRoles[employee.Permission - 1];
 
             var claims = new List<Claim>
                         {

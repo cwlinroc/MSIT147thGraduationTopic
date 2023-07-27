@@ -40,7 +40,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 EmployeePassword = dto.EmployeePassword,
                 Permission = dto.Permission,
                 EmployeePhone = dto.EmployeePhone,
-                //Salt = dto.Salt,
+                Salt = dto.Salt,
             };
         }
 
