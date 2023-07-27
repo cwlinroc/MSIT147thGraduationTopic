@@ -78,7 +78,7 @@ namespace MSIT147thGraduationTopic.Controllers
             if (merchandisevm.photo != null)
             {
                 merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
-                saveMerchandiseImageToFile(merchandisevm.ImageUrl, merchandisevm.photo);
+                saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
             }
 
             if (ModelState.IsValid)
@@ -124,19 +124,19 @@ namespace MSIT147thGraduationTopic.Controllers
             if (merchandisevm.ImageUrl == null && merchandisevm.photo != null)
             {
                 merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
-                saveMerchandiseImageToFile(merchandisevm.ImageUrl, merchandisevm.photo);
+                saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
             }
             //有圖→新圖
             if (merchandisevm.ImageUrl != null && merchandisevm.photo != null)
             {
-                deleteMerchandiseImageFromFile(merchandisevm.ImageUrl);
+                deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
                 merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
-                saveMerchandiseImageToFile(merchandisevm.ImageUrl, merchandisevm.photo);
+                saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
             }
             //有圖→刪除
             if (merchandisevm.ImageUrl != null && merchandisevm.photo == null && merchandisevm.deleteImageIndicater == true)
             {
-                deleteMerchandiseImageFromFile(merchandisevm.ImageUrl);
+                deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
                 merchandisevm.ImageUrl = null;
             }
 
@@ -172,6 +172,8 @@ namespace MSIT147thGraduationTopic.Controllers
                 .FirstOrDefaultAsync(m => m.MerchandiseId == id);
             if (merchandise == null) return Problem("找不到商品資料");
 
+            if (!string.IsNullOrEmpty(merchandise.ImageUrl))
+                deleteMerchandiseImageFromUploads(merchandise.ImageUrl);
             _context.Merchandises.Remove(merchandise);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -181,7 +183,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
           return (_context.Merchandises?.Any(e => e.MerchandiseId == id)).GetValueOrDefault();
         }
-        private void saveMerchandiseImageToFile(string ImageUrl, IFormFile photo)
+        private void saveMerchandiseImageToUploads(string ImageUrl, IFormFile photo)
         {
             string savepath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", ImageUrl);
             using (var fileStream = new FileStream(savepath, FileMode.Create))
@@ -189,7 +191,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 photo.CopyTo(fileStream);
             }
         }
-        private void deleteMerchandiseImageFromFile(string ImageUrl)
+        private void deleteMerchandiseImageFromUploads(string ImageUrl)
         {
             string deletepath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", ImageUrl);
             System.IO.File.Delete(deletepath);

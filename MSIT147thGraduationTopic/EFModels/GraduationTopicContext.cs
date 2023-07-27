@@ -403,6 +403,8 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.ToView("SpecWithMerchandiseName");
 
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+
                 entity.Property(e => e.MerchandiseName)
                     .IsRequired()
                     .HasMaxLength(30);
