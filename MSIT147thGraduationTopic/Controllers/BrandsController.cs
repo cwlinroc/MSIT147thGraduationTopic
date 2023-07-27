@@ -35,13 +35,14 @@ namespace MSIT147thGraduationTopic.Controllers
                 list.Add(brandvm);
             }
 
-            return (list != null) ? View(list) : Problem("找不到品牌資料");//Entity set 'GraduationTopicContext.Brands'  is null.
+            return (list != null) ? View(list) : Problem("找不到品牌資料");
         }
 
         // GET: Brands/Create
         public IActionResult Create()
         {
-            return View();
+            BrandVM brandvm = new BrandVM();
+            return View(brandvm);
         }
 
         // POST: Brands/Create
@@ -49,15 +50,15 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] BrandVM brandvm)
         {
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
-                _context.Add(brand);
+                _context.Add(brandvm.brand);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            return View(brandvm);
         }
 
         // GET: Brands/Edit/5
@@ -76,7 +77,6 @@ namespace MSIT147thGraduationTopic.Controllers
 
             BrandVM brandvm = new BrandVM();
             brandvm.brand = brand;
-
             return View(brandvm);
         }
 
@@ -85,23 +85,23 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName")] BrandVM brandvm)
         {
-            if (id != brand.BrandId)
+            if (id != brandvm.BrandId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(brand);
+                    _context.Update(brandvm.brand);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BrandExists(brand.BrandId))
+                    if (!BrandExists(brandvm.BrandId))
                     {
                         return NotFound();
                     }
@@ -112,19 +112,28 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            return View(brandvm);
         }
 
         // GET: Brands/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (_context.Merchandises.Where(m => m.BrandId == id).Count() > 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            //if (_context.Brands.Count() == 1)
+            //{
+            //    //品牌總數不可為零，因此無法刪除
+            //    return RedirectToAction(nameof(Index));
+            //}
+
             if (id == null || _context.Brands == null)
             {
                 return Problem("找不到品牌資料");
             }
 
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(m => m.BrandId == id);
+            var brand = await _context.Brands.FirstOrDefaultAsync(m => m.BrandId == id);
             if (brand == null)
             {
                 return Problem("找不到品牌資料");

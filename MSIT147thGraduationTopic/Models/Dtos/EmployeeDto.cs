@@ -56,7 +56,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 EmployeePassword = entity.EmployeePassword,
                 Permission = entity.Permission,
                 EmployeePhone = entity.EmployeePhone,
-                Salt = entity.Salt,
+                //Salt = entity.Salt,
             };
         }
 
@@ -64,7 +64,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         {
             entity.EmployeeName = dto.EmployeeName;
             entity.EmployeePhone = dto.EmployeePhone;
-            entity.EmployeePhone = dto.EmployeePhone;
+            entity.EmployeeEmail = dto.EmployeeEmail;
         }
 
 

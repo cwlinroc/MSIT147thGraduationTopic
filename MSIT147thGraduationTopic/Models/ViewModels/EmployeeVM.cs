@@ -8,7 +8,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public int EmployeeId { get; set; }
         public string? EmployeeName { get; set; }
         public string? EmployeeAccount { get; set; }
-        public int Permission { get; set; }
+        public string? Permission { get; set; }
         public string? EmployeeEmail { get; set; }
         public string? EmployeePhone { get; set; }
         public string? AvatarName { get; set; }
@@ -26,12 +26,19 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [Required(AllowEmptyStrings = false)]
         public string? EmployeePhone { get; set; }
     }
-    
 
-    static public class EmployyeeVMTransfer
+
+    static public class EmployeeVMTransfer
     {
         static public EmployeeVM ToVM(this EmployeeDto dto)
         {
+            string permission = dto.Permission switch
+            {
+                1 => "管理員",
+                2 => "經理",
+                3 => "員工",
+                _ => "員工"
+            };
             return new EmployeeVM
             {
                 EmployeeId = dto.EmployeeId,
@@ -39,7 +46,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 EmployeeAccount = dto.EmployeeAccount,
                 EmployeeEmail = dto.EmployeeEmail,
                 EmployeePhone = dto.EmployeePhone,
-                Permission = dto.Permission,
+                Permission = permission,
                 AvatarName = dto.EmployeeAvatarName,
             };
         }

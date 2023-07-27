@@ -1,5 +1,6 @@
 ﻿using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.EFModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -18,6 +19,19 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employees.Select(o => o.ToDto());
         }
 
+        public IEnumerable<EmployeeDto> queryEmployeesByNameOrAccount(string query)
+        {
+            var employees = _context.Employees
+                .Where(o => o.EmployeeName.Contains(query) || o.EmployeeAccount.Contains(query));
+            return employees.Select(o => o.ToDto());
+        }
+
+        public async Task<EmployeeDto?> GetEmployeeByAccount(string account)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(o => o.EmployeeAccount == account);
+            return employee?.ToDto();
+        }
+
         public int CreateEmployee(EmployeeDto dto)
         {
             var obj = dto.ToEF();
@@ -32,10 +46,20 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             if (employee == null) return -1;
 
             employee.ChangeByEditDto(dto);
-            employee.AvatarName = fileName;
+            if (!string.IsNullOrEmpty(fileName)) employee.AvatarName = fileName;
 
             _context.SaveChanges();
             return employeeId;
+        }
+
+        public int ChangeEmployeePermission(int id, int permissionId)
+        {
+            var employee = _context.Employees.FirstOrDefault(o => o.EmployeeId == id);
+            if (employee == null) return -1;
+
+            employee.Permission = permissionId;
+            _context.SaveChanges();
+            return id;
         }
 
         public int DeleteEmployee(int employeeId)

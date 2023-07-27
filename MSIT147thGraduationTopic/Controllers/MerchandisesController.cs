@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Index(string txtKeyword, int searchCondition)
         {
             IEnumerable<MerchandiseSearch> datas = null;
-            datas = from m in _context.MerchandiseSearches //todo 增加tag搜尋?
+            datas = from m in _context.MerchandiseSearches
                     select m;
             if (!string.IsNullOrEmpty(txtKeyword))
             {
@@ -56,11 +56,12 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Create
-        public IActionResult Create() //todo 上傳&預覽圖片還沒做
+        public IActionResult Create() //todo 上傳還沒做完
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
-            return View();
+            MerchandiseVM merchandisevm = new MerchandiseVM();
+            return View(merchandisevm);
         }
 
         // POST: Merchandises/Create
@@ -69,22 +70,19 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")] 
-                Merchandise merchandise, IFormFile photo)
+            ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")]
+                MerchandiseVM merchandisevm, IFormFile photo)
         {
-            if (photo.ContentType != "image")
-            {
-                return View(merchandise);
-            }
+            merchandisevm.ImageUrl = null;
             if (photo != null)
-            {
-                // todo 將圖片系統性改名後上傳
-                string photoPath = Path.Combine(_host.WebRootPath, "uploads/merchandisePicture", photo.FileName);
+            {                
+                // todo 將圖片系統性改名後上傳 //todo 讀取圖片時再串接_host.WebRootPath
+                string photoPath = Path.Combine(/*_host.WebRootPath, */"uploads/merchandisePicture", photo.FileName);
+                merchandisevm.ImageUrl = photoPath;
                 using (var fileStream = new FileStream(photoPath, FileMode.Create))
                 {
                     photo.CopyTo(fileStream);
                 }
-                merchandise.ImageUrl = photoPath;
 
 
                 /*// 使用時間戳系統性改名，避免資料庫內名稱重複
@@ -117,13 +115,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(merchandise);
+                _context.Add(merchandisevm.merchandise);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandise.BrandId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", merchandise.CategoryId);
-            return View(merchandise);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", merchandisevm.CategoryId);
+            return View(merchandisevm);
         }
 
         // GET: Merchandises/Edit/5
@@ -152,9 +150,10 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")] Merchandise merchandise)
+        public async Task<IActionResult> Edit(int id, 
+            [Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display")] MerchandiseVM merchandisevm)
         {
-            if (id != merchandise.MerchandiseId)
+            if (id != merchandisevm.MerchandiseId)
             {
                 return NotFound();
             }
@@ -163,12 +162,12 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 try
                 {
-                    _context.Update(merchandise);
+                    _context.Update(merchandisevm.merchandise);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MerchandiseExists(merchandise.MerchandiseId))
+                    if (!MerchandiseExists(merchandisevm.MerchandiseId))
                     {
                         return NotFound();
                     }
@@ -179,49 +178,35 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandise.BrandId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", merchandise.CategoryId);
-            return View(merchandise);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", merchandisevm.CategoryId);
+            return View(merchandisevm);
         }
 
         // GET: Merchandises/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (_context.Specs.Where(s => s.MerchandiseId == id).Count() > 0)
+            {
+                return Problem("商品尚有規格資料，因此無法刪除");
+            }
+
             if (id == null || _context.Merchandises == null)
             {
-                return NotFound();
+                return Problem("找不到商品資料");
             }
 
             var merchandise = await _context.Merchandises
-                .Include(m => m.Brand)
-                .Include(m => m.Category)
                 .FirstOrDefaultAsync(m => m.MerchandiseId == id);
             if (merchandise == null)
             {
-                return NotFound();
+                return Problem("找不到商品資料");
             }
 
-            return View(merchandise);
-        }
-
-        // POST: Merchandises/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Merchandises == null)
-            {
-                return Problem("Entity set 'GraduationTopicContext.Merchandises'  is null.");
-            }
-            var merchandise = await _context.Merchandises.FindAsync(id);
-            if (merchandise != null)
-            {
-                _context.Merchandises.Remove(merchandise);
-            }
-            
+            _context.Merchandises.Remove(merchandise);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
+    }
 
         private bool MerchandiseExists(int id)
         {

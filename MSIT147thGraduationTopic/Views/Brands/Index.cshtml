@@ -13,7 +13,7 @@
             @using (Html.BeginForm())
             {
                 <div class="row">
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-sm-5">
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="searchCondition">關鍵字搜尋</label>
                             <input type="text" name="txtKeyword" class="form-control" aria-label="Text input with dropdown button">
@@ -55,8 +55,9 @@
                             </td>
                             <td>
                                 @Html.ActionLink("修改", "Edit", "Brands", new { id=item.BrandId }, new { @class = "btn btn-warning" }) |
-                                @Html.ActionLink("刪除", "Delete", "Brands", new { id=item.BrandId }
-                        , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })
+                                @*@Html.ActionLink("刪除", "Delete", "Brands", new { id=item.BrandId }
+                        , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })*@
+                                <button class="btn btn-danger fordelete" data-brandid="@item.BrandId">刪除</button>
                             </td>
                         </tr>
                     }
@@ -70,7 +71,27 @@
 </div>
 
 @section Scripts {
+    <script>
+        $(".fordelete").click((e) => {
+            if (!confirm('確定刪除品牌嗎？')) return;
+            const currentbrandid = $(e.currentTarget).attr("data-brandid");
 
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/ApiBrand/CheckMerchandiseforDeleteBrand/${currentbrandid}`);
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const data = JSON.parse(xhr.responseText);
+
+                if (data) {
+                    alert("品牌中尚有商品，因此無法刪除");
+                }
+                else {
+                    window.location.href = `/Brands/Delete/${currentbrandid}`;
+                }
+            })
+        })
+    </script>
 }
 
 @section Styles{

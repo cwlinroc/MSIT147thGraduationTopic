@@ -24,21 +24,21 @@ namespace MSIT147thGraduationTopic.Models.Services
             for (int i = 0; i < amount; i++)
             {
                 string salt = _generator.RandomSalt();
-                string name = _generator.RandomName();
-                string password = name.GetSaltedSha256(salt);
+                string account = _generator.RandomEnString();
+                string password = account.GetSaltedSha256(salt);
                 members.Add(new Member
                 {
                     MemberName = _generator.RandomName(),
                     NickName = _generator.RandomNickName(),
                     DateOfBirth = _generator.RandomBirthDate(),
                     Gender = _generator.RandomBool(),
-                    Account = _generator.RandomEnString(),
-                    Password = _generator.RandomEnString(),
+                    Account = account,
+                    Password = password,
                     Phone = _generator.RandomPhone(),
                     Address = _generator.RandomAddress(),
                     Email = _generator.RandomEmail(),
                     IsActivated = true,
-                    Salt = _generator.RandomSalt()
+                    Salt = salt
                 });
             }
             _repo.AddMembers(members.ToArray());
@@ -68,7 +68,5 @@ namespace MSIT147thGraduationTopic.Models.Services
                 }
             }
         }
-
-
     }
 }

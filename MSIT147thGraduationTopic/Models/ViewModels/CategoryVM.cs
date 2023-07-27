@@ -1,12 +1,13 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class CategoryVM
     {
 
-        private Category _category = null;
+        private Category _category;
         public Category category
         {
             get { return _category; }
@@ -24,6 +25,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _category.CategoryId = value; }
         }
         [DisplayName("類別名稱")]
+        [Required(ErrorMessage = "此為必填欄位")]
         public string CategoryName
         {
             get { return _category.CategoryName; }

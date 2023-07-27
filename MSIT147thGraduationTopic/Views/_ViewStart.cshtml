@@ -1,3 +1,21 @@
-﻿@{
-    Layout = "_MallPage";
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var user = HttpContextAccessor?.HttpContext?.User;
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;
+    if (isAuthorized ?? false)
+    {
+        Layout = user.FindFirstValue(ClaimTypes.Role) switch
+        {
+            "管理員" => "_BackstagePage",
+            "經理" => "_BackstagePage",
+            "員工" => "_BackstagePage",
+            _ => "_MallPage",
+        };
+    }
+    else
+    {
+        Layout = "_MallPage";
+    }
 }

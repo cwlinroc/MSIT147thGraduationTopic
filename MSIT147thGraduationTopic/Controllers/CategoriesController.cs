@@ -41,7 +41,8 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Categories/Create
         public IActionResult Create()
         {
-            return View();
+            CategoryVM categoryvm = new CategoryVM();
+            return View(categoryvm);
         }
 
         // POST: Categories/Create
@@ -49,15 +50,15 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] Category category)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] CategoryVM categoryvm)
         {
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _context.Add(categoryvm.category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(categoryvm);
         }
 
         // GET: Categories/Edit/5
@@ -85,23 +86,23 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName")] CategoryVM categoryvm)
         {
-            if (id != category.CategoryId)
+            if (id != categoryvm.CategoryId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid) //todo 檢查名稱重複
+            if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(categoryvm.category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.CategoryId))
+                    if (!CategoryExists(categoryvm.CategoryId))
                     {
                         return NotFound();
                     }
@@ -112,19 +113,28 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(categoryvm);
         }
 
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (_context.Merchandises.Where(m => m.CategoryId == id).Count() > 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            //if (_context.Categories.Count() == 1)
+            //{
+            //    //類別總數不可為零，因此無法刪除
+            //    return RedirectToAction(nameof(Index));
+            //}
+
             if (id == null || _context.Categories == null)
             {
                 return Problem("找不到商品類別資料");
             }
 
-            var brand = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var brand = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
             if (brand == null)
             {
                 return Problem("找不到商品類別資料");

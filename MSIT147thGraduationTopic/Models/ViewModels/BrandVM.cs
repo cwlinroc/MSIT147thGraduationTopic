@@ -6,7 +6,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class BrandVM
     {
-        private Brand _brand = null;
+        private Brand _brand;
         public Brand brand
         {
             get { return _brand; }
@@ -24,7 +24,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _brand.BrandId = value; }
         }
         [DisplayName("品牌名稱")]
-        [Required]
+        [Required(ErrorMessage = "此為必填欄位")]
         public string BrandName
         {
             get { return _brand.BrandName; }
