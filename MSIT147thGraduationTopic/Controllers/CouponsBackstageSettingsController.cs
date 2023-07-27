@@ -26,7 +26,12 @@ namespace MSIT147thGraduationTopic.Controllers
             return View();
         }
 
-        public IActionResult Edit()
+        public IActionResult DiscountEdit()
+        {
+            return View();
+        }
+
+        public IActionResult RebateEdit()
         {
             return View();
         }

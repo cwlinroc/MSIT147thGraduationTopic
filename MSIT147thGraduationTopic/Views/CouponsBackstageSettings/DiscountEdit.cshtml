@@ -2,13 +2,14 @@
     Layout = "_BackstagePage";
     ViewData["Title"] = "優惠券管理系統";
 }
+
 <header class="container px-5 mt-5">
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a id="hrefHomePage">優惠券管理系統</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">新增優惠券</li>
+            <li class="breadcrumb-item active" aria-current="page">打折優惠券修改頁面</li>
         </ol>
     </nav>
 </header>
@@ -18,61 +19,28 @@
         <section class="py-5">
             <div class="container px-5 my-5">
                 <div class="text-center mb-5">
-                    <h1 class="fw-bolder">新增優惠券</h1>
+                    <h1 class="fw-bolder">打折優惠券修改頁面</h1>
                     <p class="lead fw-normal text-muted mb-0"></p>
                 </div>
                 <div class="container px-5 my-5">
                     <div class="row justify-content-center">
-                        <div class="col-8">
+                        <div class="col-8 mb-3">
                             優惠券名稱<input type="text" class="form-control" placeholder="請輸入優惠券名稱">
                         </div>
-                        <div class="col-8">
+                        <div class="col-8 mb-3">
                             適用對象<select class="form-select form-control" placeholder="請選擇適用對象">
                                 <option></option>
                             </select>
                         </div>
                         <br>
-                        <div class="col-8">
+                        <div class="col-8 mb-3">
                             開始日期<input type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
-                        <div class="col-8">
+                        <div class="col-8 mb-3">
                             結束日期<input type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
-                        <div class="col-8">
-                            <ul class="nav nav-pills mb-3 col-8" id="CouponCondition" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="btnDiscount" data-bs-toggle="pill"
-                                            data-bs-target="#Discount" type="button" role="tab" aria-controls="Discount"
-                                            aria-selected="true">
-                                        打折
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="btnRebate" data-bs-toggle="pill"
-                                            data-bs-target="#Rebate" type="button" role="tab" aria-controls="Rebate"
-                                            aria-selected="false">
-                                        滿額送
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="tab-content col-8" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="Discount" role="tabpanel" aria-labelledby="btnDiscount">
-                                <div class="form-group">
-                                    <label for="txtDiscountPercentage">折扣百分比</label>
-                                    <input type="number" class="form-control" id="txtDiscountPercentage" placeholder="請輸入折扣百分比">
-                                </div>
-                            </div>
-                            <div class="tab-pane fade " id="Rebate" role="tabpanel" aria-labelledby="btnRebate">
-                                <div class="form-group">
-                                    <label for="txtConsumptionAmount">消費額度</label>
-                                    <input type="number" class="form-control" id="txtConsumptionAmount" placeholder="請輸入消費額度">
-                                </div>
-                                <div class="form-group">
-                                    <label for="txtGiftDiscount">折扣</label>
-                                    <input type="number" class="form-control" id="txtGiftDiscount" placeholder="請輸入折扣">
-                                </div>
-                            </div>
+                        <div class="col-8 mb-3">
+                            折扣百分比<input type="number" class="form-control" placeholder="請輸入折扣百分比">
                         </div>
                     </div>
                     <div class="row justify-content-center px-5 my-5">
@@ -96,8 +64,6 @@
                         <span class="text-muted">目前資料筆數:0/0</span>
                     </div>
                 </div>
-            </div>
-            <div>
             </div>
         </section>
     </main>
@@ -152,7 +118,6 @@
                 }
             })
         })
-
         $('#hrefHomePage').on('click', function () {
             Swal.fire({
                 title: '確定要返回主頁面?',
@@ -173,4 +138,5 @@
             $('#btnCreate').css('margin-right', '20px');
         });
     </script>
+
 }
