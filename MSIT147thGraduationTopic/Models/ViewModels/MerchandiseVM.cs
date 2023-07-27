@@ -60,5 +60,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.Display = value; }
         }
         public IFormFile? photo { get; set; }
+        public bool? deleteImageIndicater { get; set; }
     }
 }

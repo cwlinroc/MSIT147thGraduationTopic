@@ -24,7 +24,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Index(string txtKeyword)
         {
             IEnumerable<Brand> datas = null;
-            datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b 
+            datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b
                 : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
 
             List<BrandVM> list = new List<BrandVM>();
@@ -119,34 +119,22 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (_context.Merchandises.Where(m => m.BrandId == id).Count() > 0)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            //if (_context.Brands.Count() == 1)
-            //{
-            //    //品牌總數不可為零，因此無法刪除
-            //    return RedirectToAction(nameof(Index));
-            //}
+                return RedirectToAction(nameof(Index));            
 
             if (id == null || _context.Brands == null)
-            {
                 return Problem("找不到品牌資料");
-            }
 
             var brand = await _context.Brands.FirstOrDefaultAsync(m => m.BrandId == id);
-            if (brand == null)
-            {
-                return Problem("找不到品牌資料");
-            }
+            if (brand == null) return Problem("找不到品牌資料");
 
-                _context.Brands.Remove(brand);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            _context.Brands.Remove(brand);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool BrandExists(int id)
         {
-          return (_context.Brands?.Any(e => e.BrandId == id)).GetValueOrDefault();
+            return (_context.Brands?.Any(e => e.BrandId == id)).GetValueOrDefault();
         }
     }
 }
