@@ -17,6 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="7.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.32.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -25,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\uploads\merchandisePicture\" />
+    <Folder Include="wwwroot\uploads\Avatar\" />
     <Folder Include="wwwroot\uploads\Avatar\" />
   </ItemGroup>
 

@@ -5,6 +5,7 @@ using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace MSIT147thGraduationTopic.Models.Services
@@ -32,6 +33,16 @@ namespace MSIT147thGraduationTopic.Models.Services
             });
         }
 
+        public IEnumerable<MemberVM> GetMembersByNameOrAccount(string query)
+        {
+            return _repo.GetMembersByNameOrAccount(query).Select(dto =>
+            {
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
+
+                return dto.ToVM();
+            });
+        }
+
         public int CreateMember(MemberDto dto, IFormFile file)
         {
             if (file != null)
@@ -47,7 +58,9 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             var salt = new RandomGenerator().RandomSalt();
             dto.Salt = salt;
-            dto.Password = dto.Password?.GetSaltedSha256(salt);           
+            dto.Password = dto.Password?.GetSaltedSha256(salt);
+            dto.IsActivated = false;
+            dto.ConfirmGuid = Convert.ToString(Guid.NewGuid());
 
             return _repo.CreateMember(dto);
         }
@@ -72,9 +85,6 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.DeleteMember(memberId);
         }
     }
-
-    public class AddressService
-    {
-
-    }
+    
+    
 }

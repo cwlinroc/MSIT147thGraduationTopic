@@ -55,8 +55,6 @@
                             </td>
                             <td>
                                 @Html.ActionLink("修改", "Edit", "Brands", new { id=item.BrandId }, new { @class = "btn btn-warning" }) |
-                                @*@Html.ActionLink("刪除", "Delete", "Brands", new { id=item.BrandId }
-                        , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" })*@
                                 <button class="btn btn-danger fordelete" data-brandid="@item.BrandId">刪除</button>
                             </td>
                         </tr>

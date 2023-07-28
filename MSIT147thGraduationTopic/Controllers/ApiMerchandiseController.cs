@@ -36,38 +36,44 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public IActionResult CheckforCreateMerchandise(MerchandiseVM merchandisevm, IFormFile photo)
+        public IActionResult CheckforCreateMerchandise(MerchandiseVM merchandisevm)
         {
-            var exists = _context.Merchandises.Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
-            
-            if (photo.ContentType != null && photo.ContentType != "image/jpeg" && photo.ContentType != "image/png")
-            {
-                return Json(exists, "非圖片"); //todo 做成陣列再回傳
-            }
+            bool[] package = new bool[2];
 
-            return Json(exists);
+            package[0] = _context.Merchandises.Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
+
+            package[1] = false;
+            if (merchandisevm.photo != null)
+            {
+                if (!merchandisevm.photo.ContentType.Contains("image")) package[1] = true;
+            }
+            //↓ photo為null時會造成photo.ContentType.Contains("image")有NullReference錯誤，因此無法使用三元運算
+            //package[1] = (photo.ContentType != null && !photo.ContentType.Contains("image")) ? true : false;
+
+            return Json(package);
         }
 
-
-
-
-
-
-
-
-
         [HttpPost]
-        public IActionResult CheckforEditMerchandise(MerchandiseVM merchandisevm, IFormFile photo)
+        public IActionResult CheckforEditMerchandise(MerchandiseVM merchandisevm)
         {
-            var exists = _context.Merchandises
+            bool[] package = new bool[2];
+
+            package[0] = _context.Merchandises
                 .Where(m => m.MerchandiseId != merchandisevm.MerchandiseId)
                 .Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
 
-            return Json(exists);
+            package[1] = false;
+            if (merchandisevm.photo != null)
+            {
+                if (!merchandisevm.photo.ContentType.Contains("image")) package[1] = true;
+            }
+
+            return Json(package);
         }
+
         public IActionResult CheckSpecforDeleteMerchandise(int id)
         {
-            var exists = _context.Specs.Any(s => s.SpecId == id);
+            var exists = _context.Specs.Any(s => s.MerchandiseId == id);
 
             return Json(exists);
         }
