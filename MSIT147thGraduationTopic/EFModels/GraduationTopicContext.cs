@@ -273,7 +273,7 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(50)
+                    .HasMaxLength(150)
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
@@ -405,7 +405,7 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(50)
+                    .HasMaxLength(150)
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");

@@ -151,7 +151,7 @@
 
             if (!$("#inputspecname").val()) alertName.innerHTML = "請輸入規格名稱";
             if (checkName) alertName.innerHTML = "已有同名規格，請重新命名";
-            if ($("#inputprice").val() < 1) alertPrice.innerHTML = "價格不得為0以下的數字";
+            if ($("#inputprice").val() < 1) alertPrice.innerHTML = "價格須為正整數";
             if ($("#inputamount").val() < 0) alertAmount.innerHTML = "庫存數量應至少為0";
             if ($("#inputdiscount").val() <= 0 || $("#inputdiscount").val() > 100) alertDiscount.innerHTML = "請輸入介於1-100的數字";
             if ($("#inputorder").val() < 1) alertDisplayOrder.innerHTML = "排序順序須為正整數";

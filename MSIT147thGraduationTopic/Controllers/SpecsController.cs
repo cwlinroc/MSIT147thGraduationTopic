@@ -154,18 +154,14 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Specs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Specs == null)
-            {
-                return Problem("找不到規格資料");
-            }
+            if (id == null || _context.Specs == null) return Problem("找不到規格資料");
 
             var spec = await _context.Specs
                 .FirstOrDefaultAsync(s => s.SpecId == id);
-            if (spec == null)
-            {
-                return Problem("找不到規格資料");
-            }
+            if (spec == null) return Problem("找不到規格資料");
 
+            if (!string.IsNullOrEmpty(spec.ImageUrl))
+                deleteSpecImageFromUploads(spec.ImageUrl);
             _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

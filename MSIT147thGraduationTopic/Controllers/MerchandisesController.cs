@@ -36,9 +36,26 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 if (searchCondition == 2)
                 {
-                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
+                    datas = null;
+                    var merchandiseIdFormSpec = _context.Specs
+                        .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
+                    
+                    List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
+                    foreach (int id in merchandiseIdFormSpec)
+                    {
+                        MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
+                        if (unit != null)
+                        {
+                            templist.Add(unit);
+                        }
+                    }
+                    datas = templist;
                 }
                 if (searchCondition == 3)
+                {
+                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
+                }
+                if (searchCondition == 4)
                 {
                     datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
                 }

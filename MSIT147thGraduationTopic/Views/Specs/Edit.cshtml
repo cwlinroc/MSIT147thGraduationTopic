@@ -170,7 +170,7 @@
             $(".foralert").html("");
 
             var formdata = new FormData(document.forminput);
-            const response = await fetch(`@Url.Content("~/ApiSpec/CheckforCreateSpec")`, {
+            const response = await fetch(`@Url.Content("~/ApiSpec/CheckforEditSpec")`, {
                 body: formdata,
                 method: "POST"
             });
@@ -181,7 +181,7 @@
 
             if (!$("#inputspecname").val()) alertName.innerHTML = "請輸入規格名稱";
             if (checkName) alertName.innerHTML = "已有同名規格，請重新命名";
-            if ($("#inputprice").val() < 1) alertPrice.innerHTML = "價格不得為0以下的數字";
+            if ($("#inputprice").val() < 1) alertPrice.innerHTML = "價格須為正整數";
             if ($("#inputamount").val() < 0) alertAmount.innerHTML = "庫存數量應至少為0";
             if ($("#inputdiscount").val() <= 0 || $("#inputdiscount").val() > 100) alertDiscount.innerHTML = "請輸入介於1-100的數字";
             if ($("#inputorder").val() < 1) alertDisplayOrder.innerHTML = "排序順序須為正整數";
@@ -189,8 +189,9 @@
                 alertImage.innerHTML = "檔案格式不合，請重新上傳";
                 selectfile.files = null;
                 selectfile.outerHTML = selectfile.outerHTML;
-                display.src = "";
-                imageClear.style.display = "none";
+                display.src = originalImagePath;
+                imageCancel.style.display = "none";
+                imageDelete.style.display = (originalImageUrl) ? "inline" : "none";
                 DisplayImage();
             }
             if ($("#inputspecname").val() && !checkName && $("#inputprice").val() > 0 && $("#inputamount").val() >= 0 &&
@@ -209,6 +210,24 @@
         .title {
             margin-top: 30px;
             margin-bottom: 10px;
+        }
+
+        #containdisplay {
+            height: 200px;
+        }
+
+        #display {
+            max-height: 170px;
+            margin: 10px, 0;
+        }
+
+        #imageCancel {
+            display: none;
+            float: right;
+        }
+
+        #imageDelete {
+            float: right;
         }
     </style>
 }
