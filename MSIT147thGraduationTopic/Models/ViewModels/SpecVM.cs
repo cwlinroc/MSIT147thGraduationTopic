@@ -51,13 +51,13 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
 
         [DisplayName("規格圖片")]
-        public string ImageUrl
+        public string? ImageUrl
         {
             get { return _spec.ImageUrl; }
             set { _spec.ImageUrl = value; }
         }
 
-        [DisplayName("折扣比例")]
+        [DisplayName("折扣比例(%)")]
         public int DiscountPercentage
         {
             get { return _spec.DiscountPercentage; }

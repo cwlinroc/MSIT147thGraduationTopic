@@ -171,11 +171,10 @@
                 imageClear.style.display = "none";
                 DisplayImage();
             }
-            if (!checkName && $("#inputbrandid").val() && $("#inputcategoryid").val() &&
-                    $("#descriptionarea").val().length <= 500 && !checkFile) {
+            if ($("#inputname").val() && !checkName && $("#inputbrandid").val() &&
+                $("#inputcategoryid").val() && $("#descriptionarea").val().length <= 500 && !checkFile) {
                 const forminput = document.querySelector("#forminput");
                 HTMLFormElement.prototype.submit.call(forminput);
-                console.log("按下送出");
             }
         })
     </script>

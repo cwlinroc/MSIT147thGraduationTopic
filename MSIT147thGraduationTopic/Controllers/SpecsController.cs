@@ -13,10 +13,12 @@ namespace MSIT147thGraduationTopic.Controllers
     public class SpecsController : Controller
     {
         private readonly GraduationTopicContext _context;
+        private readonly IWebHostEnvironment _host;
 
-        public SpecsController(GraduationTopicContext context)
+        public SpecsController(GraduationTopicContext context, IWebHostEnvironment host)
         {
             _context = context;
+            _host = host;
         }
 
         // GET: Specs
@@ -25,13 +27,14 @@ namespace MSIT147thGraduationTopic.Controllers
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
 
             List<SpecVM> list = new List<SpecVM>();
-            
+
             if (datas.Count() == 0)
             {
-                SpecVM specvmforCarrier = new SpecVM();
-                specvmforCarrier.merchandiseIdCarrier = merchandiseid;
-                specvmforCarrier.SpecName = "**此商品尚無規格，請新增規格資料**";
-                list.Add(specvmforCarrier);
+                //SpecVM specvmforCarrier = new SpecVM();
+                //specvmforCarrier.merchandiseIdCarrier = merchandiseid;
+                //specvmforCarrier.SpecName = "**此商品尚無規格，請新增規格資料**";
+                //list.Add(specvmforCarrier);
+                return RedirectToAction("IndexForNoSpec", new { merchandiseid = merchandiseid });
             }
 
             foreach (Spec s in datas)
@@ -44,9 +47,16 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return View(list);
         }
+        public IActionResult IndexForNoSpec(int merchandiseid)
+        {
+            SpecVM specvmforCarrier = new SpecVM();
+            specvmforCarrier.merchandiseIdCarrier = merchandiseid;
+            specvmforCarrier.SpecName = "**此商品尚無規格，請新增規格資料**";
+            return View(specvmforCarrier);
+        }
 
         // GET: Specs/Create
-        public IActionResult Create(int merchandiseIdCarrier) //todo 生成的商品value並非ID，因此不能產生正確的規格資料
+        public IActionResult Create(int merchandiseIdCarrier)
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
@@ -60,13 +70,19 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] SpecVM specvm)
+            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
         {
             if (ModelState.IsValid)
             {
+                if (specvm.photo != null)
+                {
+                    specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName;
+                    saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
+                }
+
                 _context.Add(specvm.spec);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
             return View(specvm);
@@ -98,7 +114,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int id, 
-            [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] SpecVM specvm)
+            [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
         {
             if (id != specvm.SpecId)
             {
@@ -152,6 +168,19 @@ namespace MSIT147thGraduationTopic.Controllers
         private bool SpecExists(int id)
         {
           return (_context.Specs?.Any(e => e.SpecId == id)).GetValueOrDefault();
+        }
+        private void saveSpecImageToUploads(string ImageUrl, IFormFile photo)
+        {
+            string savepath = Path.Combine(_host.WebRootPath, "uploads/specPicture", ImageUrl);
+            using (var fileStream = new FileStream(savepath, FileMode.Create))
+            {
+                photo.CopyTo(fileStream);
+            }
+        }
+        private void deleteSpecImageFromUploads(string ImageUrl)
+        {
+            string deletepath = Path.Combine(_host.WebRootPath, "uploads/specPicture", ImageUrl);
+            System.IO.File.Delete(deletepath);
         }
     }
 }

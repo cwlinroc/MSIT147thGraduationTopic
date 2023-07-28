@@ -67,12 +67,15 @@
                         @Html.DisplayNameFor(model => model.Amount)
                     </th>
                     <th>
+                        @Html.DisplayNameFor(model => model.ImageUrl)
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.DiscountPercentage)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.DisplayOrder)
                     </th>
-                    <th>
+                    <th style="text-align:center">
                         @Html.DisplayNameFor(model => model.OnShelf)
                     </th>
                     <th></th>
@@ -101,12 +104,16 @@
                                 @Html.DisplayFor(modelItem => item.Amount)
                             </td>
                             <td>
+                                @{ string imageurl = string.IsNullOrEmpty(item.ImageUrl) ? "default.png" : item.ImageUrl; }
+                                <img src="@Url.Content("~/uploads/specPicture/" + imageurl)" class="imgtumbnail" />
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.DiscountPercentage)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.DisplayOrder)
                             </td>
-                            <td>
+                            <td style="text-align:center">
                                 @Html.DisplayFor(modelItem => item.OnShelf)
                             </td>
                             <td>
@@ -135,7 +142,6 @@
 
         $(() => {
             const merchandiseid = $("#getMerchandiseId").text();
-            console.log("商品ID:" + merchandiseid)
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
             xhr.send();
