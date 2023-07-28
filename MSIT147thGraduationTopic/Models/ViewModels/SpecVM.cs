@@ -77,5 +77,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
         public IFormFile? photo { get; set; }
         public int? merchandiseIdCarrier { get; set; }
+        public bool? deleteImageIndicater { get; set; }
     }
 }

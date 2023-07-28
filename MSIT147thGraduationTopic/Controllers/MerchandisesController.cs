@@ -135,7 +135,7 @@ namespace MSIT147thGraduationTopic.Controllers
                     merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
-                //有圖→刪除s
+                //有圖→刪除
                 if (merchandisevm.ImageUrl != null && merchandisevm.photo == null && merchandisevm.deleteImageIndicater == true)
                 {
                     deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
