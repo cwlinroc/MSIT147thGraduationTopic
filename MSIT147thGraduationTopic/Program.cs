@@ -71,6 +71,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=EmployeeBackstage}/{action=Index}/{id?}");
+    pattern: "{controller=CouponsBackstageSettings}/{action=Index}/{id?}");
 
 app.Run();

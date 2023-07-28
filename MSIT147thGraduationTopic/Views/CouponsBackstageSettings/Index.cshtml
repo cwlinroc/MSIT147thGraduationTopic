@@ -3,8 +3,8 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "優惠券管理系統";
-    var listA = Model.Item1;
-    var listB = Model.Item2;
+    var listDiscount = Model.Item1;
+    var listRebate = Model.Item2;
 }
 
 <body class="d-flex flex-column h-100">
@@ -17,96 +17,101 @@
             </div>
             <div class="container px-5 my-5">
                 <h2 class="text-center">折價優惠券</h2>
-                <table class="table table-dark table-hover" id="tabDiscount">
-                    <thead>
-                        <tr>
-                            <th scope="col">序號</th>
-                            <th scope="col">優惠券名稱</th>
-                            <th scope="col">適用對象</th>
-                            <th scope="col">活動開始日期</th>
-                            <th scope="col">活動結束日期</th>
-                            <th scope="col">打折優惠</th>
-                            <th scope="col">修改</th>
-                            <th scope="col">刪除</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (CouponDto c in listA)
-                            {
-                                <tr>
-                                    <td scope="col">@c.CouponId</td>
-                                    <td scope="col">@c.CouponName</td>
-                                    <td scope="col">@c.CouponTagId</td>
-                                    <td scope="col">@c.CouponStartDate</td>
-                                    <td scope="col">@c.CouponEndDate</td>
-                                    <td scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
-                                    <td scope="col">
-                                        <button id="btnEditDiscont" class="btn btn-success">
-                                            修改
-                                        </button>
-                                    </td>
-                                    <td scope="col">
-                                        <button id="btnDelete" class="btn btn-danger">
-                                            刪除
-                                        </button>
-                                    </td>
-                                </tr>
+                <form id="listOfDiscount" name="listOfDiscount" data-index="-1" class="needs-validation" novalidate>
+                    <table class="table table-dark table-hover" id="tabDiscount">
+                        <thead>
+                            <tr>
+                                <th scope="col">序號</th>
+                                <th scope="col">優惠券名稱</th>
+                                <th scope="col">適用對象</th>
+                                <th scope="col">活動開始日期</th>
+                                <th scope="col">活動結束日期</th>
+                                <th scope="col">打折優惠</th>
+                                <th scope="col">修改</th>
+                                <th scope="col">刪除</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (CouponDto c in listDiscount)
+                                {
+                                    <tr>
+                                        <td scope="col">@c.CouponId</td>
+                                        <td scope="col">@c.CouponName</td>
+                                        <td scope="col">@c.CouponTagId</td>
+                                        <td scope="col">@c.CouponStartDate</td>
+                                        <td scope="col">@c.CouponEndDate</td>
+                                        <td scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
+                                        <td scope="col">
+                                            <button id="btnEditDiscont" class="btn btn-success">
+                                                修改
+                                            </button>
+                                        </td>
+                                        <td scope="col">
+                                            <button id="btnDelete" class="btn btn-danger">
+                                                刪除
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+
                             }
-                        }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </form>
             </div>
             <div class="container px-5 my-5">
                 <h2 class="text-center">滿額送優惠券</h2>
-                <table class="table table-dark table-hover" id="tabRebate">
-                    <thead>
-                        <tr>
-                            <th scope="col">序號</th>
-                            <th scope="col">優惠券名稱</th>
-                            <th scope="col">適用對象</th>
-                            <th scope="col">活動開始日期</th>
-                            <th scope="col">活動結束日期</th>
-                            <th scope="col">額度門檻</th>
-                            <th scope="col">折扣金額</th>
-                            <th scope="col">修改</th>
-                            <th scope="col">刪除</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (CouponDto c in listB)
-                            {
-                                <tr>
-                                    <td scope="col">@c.CouponId</td>
-                                    <td scope="col">@c.CouponName</td>
-                                    <td scope="col">@c.CouponTagId</td>
-                                    <td scope="col">@c.CouponStartDate</td>
-                                    <td scope="col">@c.CouponEndDate</td>
-                                    <td scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
-                                    <td scope="col">@c.CouponDiscount.ToString("#.##")</td>
-                                    <td scope="col">
-                                        <button id="btnEditRebate" class="btn btn-success">
-                                            修改
-                                        </button>
-                                    </td>
-                                    <td scope="col">
-                                        <button id="btnDelete" class="btn btn-danger">
-                                            刪除
-                                        </button>
-                                    </td>
-                                </tr>
+                <form id="listOfRebate" name="listOfRebate" data-index="-1" class="needs-validation" novalidate>
+                    <table class="table table-dark table-hover" id="tabRebate">
+                        <thead>
+                            <tr>
+                                <th scope="col">序號</th>
+                                <th scope="col">優惠券名稱</th>
+                                <th scope="col">適用對象</th>
+                                <th scope="col">活動開始日期</th>
+                                <th scope="col">活動結束日期</th>
+                                <th scope="col">額度門檻</th>
+                                <th scope="col">折扣金額</th>
+                                <th scope="col">修改</th>
+                                <th scope="col">刪除</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                foreach (CouponDto c in listRebate)
+                                {
+                                    <tr>
+                                        <td scope="col">@c.CouponId</td>
+                                        <td scope="col">@c.CouponName</td>
+                                        <td scope="col">@c.CouponTagId</td>
+                                        <td scope="col">@c.CouponStartDate</td>
+                                        <td scope="col">@c.CouponEndDate</td>
+                                        <td scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
+                                        <td scope="col">@c.CouponDiscount.ToString("#.##")</td>
+                                        <td scope="col">
+                                            <button id="btnEditRebate" class="btn btn-success">
+                                                修改
+                                            </button>
+                                        </td>
+                                        <td scope="col">
+                                            <button id="btnDelete" class="btn btn-danger">
+                                                刪除
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
                             }
-                        }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </form>
             </div>
             <div class="container px-5 my-5 text-center">
                 <button class="btn btn-primary" id="btnCreate">新增</button>
             </div>
         </section>
         <section class="py-5 bg-light">
-            
         </section>
         <section class="py-5 bg-light">
             <div class="container px-5 my-5">
@@ -141,34 +146,74 @@
 
 @section Scripts{
     <script>
-        $(document).ready(function () {
-            // tab點擊事件
-            $('.nav-link').on('click', function () {
-                // 從 'data-bs-target' 屬性獲取目標選項卡的 id
-                const targettabid = $(this).attr('data-bs-target');
+        $('#btnEditDiscont').on('click', function () {
+            console.log('123')
+            location.href = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit")`;
+        })
 
-                //屏蔽其他標籤
-                $('.tab-pane').removeclass('show active');
+        $('#btnEditRebate').on('click', function () {
+            console.log('456')
+            location.href = `@Url.Content("~/CouponsBackstageSettings/Create")`;
+        })
 
-                // 將“show active”顯示到選擇的標籤頁面
-                $(targettabid).addclass('show active');
-            });
-        });
+        $('#btnCreate').on('click', function () {
+            console.log('789')
+            location.href = `@Url.Content("~/CouponsBackstageSettings/Create")`;
+        })
 
+        ////優惠券種類標籤
+        //$(document).ready(function () {
+        //    // tab點擊事件
+        //    $('.nav-link').on('click', function () {
+        //        // 從 'data-bs-target' 屬性獲取目標選項卡的 id
+        //        const targettabid = $(this).attr('data-bs-target');
+
+        //        //屏蔽其他標籤
+        //        $('.tab-pane').removeclass('show active');
+
+        //        // 將“show active”顯示到選擇的標籤頁面
+        //        $(targettabid).addclass('show active');
+        //    });
+        //});
+
+        //按鈕間隔
         $(document).ready(function () {
             // 將margin-right屬性設置為20px
             $('#Discount').css('margin-right', '20px');
         });
 
-        $('#btnEditDiscont').on('click',function(){
-            location.href = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit")`;
-        })
-        $('#btnEditRebate').on('click', function () {
-            location.href = `@Url.Content("~/CouponsBackstageSettings/RebateEdit")`;
-        })
+                //按鈕超連結
 
-        $('#btnCreate').on('click', function () {
-            location.href = `@Url.Content("~/CouponsBackstageSettings/Create")`;
-        })
+
+                //Ajax刪除
+                //async function DeleteDiscount(event) {
+                //    const formData = new FormData(document.listOfDiscount)
+                //    const index = $('#listOfDiscount').attr('data-index')
+                //    const id = couponData[index].couponId
+
+                //    const response = await fetch(`@Url.Content("~/api/apiCoupon")/${id}`,{method:'DELETE'})
+
+                //    Swal.fire({
+                //        title: '確定要刪除優惠券？',
+                //        text: "優惠券資料將會被移除！",
+                //        icon: 'warning',
+                //        showCancelButton: true,
+                //        confirmButtonColor: '#FF2D2D',
+                //        cancelButtonColor: '#019858',
+                //        confirmButtonText: '刪除'
+                //                        cancelButtonColor: '取消'
+                //    }).then((result) => {
+                //        if (result.isConfirmed) {
+                //            const data = await response.json()
+                //            consloe.log(data)
+
+                //            Swal.fire(
+                //                '刪除',
+                //                '資料已刪除',
+                //                '完成'
+                //            )
+                //        }
+                //    })
+                //}
     </script>
 }
