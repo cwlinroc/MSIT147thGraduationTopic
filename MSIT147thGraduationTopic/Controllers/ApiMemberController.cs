@@ -41,12 +41,18 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetAllMembers().ToList();
         }
 
+        [HttpGet("{query}")]
+        public ActionResult<List<MemberVM>> GetMembersByNameOrAccount(string query)
+        {
+            return _service.GetMembersByNameOrAccount(query).ToList();
+        }
+
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile avatar)
         {
-            var employeeId = _service.CreateMember(vm.ToDto(), avatar);
+            var memberId = _service.CreateMember(vm.ToDto(), avatar);
 
-            return employeeId;
+            return memberId;
         }
 
         [HttpPut("{id}")]

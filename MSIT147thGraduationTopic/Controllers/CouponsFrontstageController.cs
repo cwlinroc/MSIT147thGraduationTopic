@@ -4,36 +4,22 @@ using MSIT147thGraduationTopic.Models.Infra.Repositories;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
-    public class CouponsBackstageSettingsController : Controller
+    public class CouponsFrontstageController : Controller
     {
         private readonly GraduationTopicContext _context;
         private readonly CouponRepository _repo;
-        public CouponsBackstageSettingsController(GraduationTopicContext context)
+        public CouponsFrontstageController(GraduationTopicContext context)
         {
             _context = context;
             _repo = new CouponRepository(context);
         }
+
         public IActionResult Index()
         {
             var couponlistA = _repo.ShowCoupons(0);
             var couponlistB = _repo.ShowCoupons(1);
-            
+
             return View((couponlistA, couponlistB));
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        public IActionResult DiscountEdit()
-        {
-            return View();
-        }
-
-        public IActionResult RebateEdit()
-        {
-            return View();
         }
     }
 }

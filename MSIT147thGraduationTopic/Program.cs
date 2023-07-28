@@ -74,6 +74,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=cart}/{action=Index}/{id?}");
+    pattern: "{controller=EmployeeBackstage}/{action=Index}/{id?}");
 
 app.Run();
