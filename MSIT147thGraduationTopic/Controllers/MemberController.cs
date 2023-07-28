@@ -8,6 +8,9 @@ using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MSIT147thGraduationTopic.Models.ViewModels;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -15,24 +18,27 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         private readonly GraduationTopicContext _context;
         private IWebHostEnvironment _environment;
+        private AddressVM _address;
 
-        
+
         protected UserInfoService _userInfoService { get; set; }
-        
+
         public MemberController(GraduationTopicContext Context
-                , UserInfoService UserInfoService, IWebHostEnvironment environment)
+                , UserInfoService UserInfoService, IWebHostEnvironment environment
+                , IOptions<OptionSettings> options)
         {
             //DI 指派介面屬性注入指定類別案例。(類別位置在 Program.cs 裡面)
             _context = Context;
             _userInfoService = UserInfoService;
             _environment = environment;
+            _address = options.Value.Address;
         }
 
         public IActionResult CreateMember()
         {
             return View();
-        }  
-        
+        }
+
         public IActionResult LogIn()
         {
             return View();
@@ -53,42 +59,63 @@ namespace MSIT147thGraduationTopic.Controllers
             return View(_userInfoService.GetUserInfo());
         }
 
-        //AddressVM.Record _addressdata = new AddressVM.Record();
 
-        //public AddressVM.Record GetDataFromJsonFile()
-        //{
-        //    var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
-        //    var fileInfo = fileProvider.GetFileInfo("datas/111address.json");
 
-        //    if (fileInfo.Exists)
-        //    {
-        //        using (var stream = fileInfo.CreateReadStream())
-        //        using (var reader = new StreamReader(stream))
-        //        {
-        //            var json = reader.ReadToEnd();
-        //            _addressdata = JsonConvert.DeserializeObject<AddressVM.Record>(json);
-        //            return _addressdata;
-        //        }
-        //    }
+        public JObject GetDataFromJsonFile()
+        {
+            var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
+            var fileInfo = fileProvider.GetFileInfo("~/datas/CityCountyData.json");
 
-        //    return null;
-        //}
+            if (fileInfo.Exists)
+            {
+                using (var stream = fileInfo.CreateReadStream())
+                using (var reader = new StreamReader(stream))
+                {
+                    var json = reader.ReadToEnd();
 
-        ////載入縣市
-        //[NonAction]
-        //public IActionResult Cities()
-        //{
-        //    var cities = _addressdata.Select(a => a.city).Distinct();
-        //    return Json(cities);
-        //}
+                    return JObject.Parse(json);
+                }
+            }
 
-        ////根據縣市載入鄉鎮區
-        //[NonAction]
-        //public IActionResult Districts(string city)
-        //{
-        //    var district = _addressdata.Where(a => a.city == city)
-        //        .Select(a => a.site_id).Distinct();
-        //    return Json(district);
-        //}
+            return null;
+        }
+
+
+
+        //載入縣市
+
+        public IActionResult Cities()
+        {
+            var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
+            var fileInfo = fileProvider.GetFileInfo("datas/CityCountyData.json");
+            using (var stream = fileInfo.CreateReadStream())
+            using (var reader = new StreamReader(stream))
+            {
+                JsonReader jsonReader = new JsonTextReader(reader);
+                var json = (JArray)JToken.ReadFrom(jsonReader);
+                var cities = json.Select(x => x["CityName"]);
+                //return Json(cities.ToObject<string>());
+                return Json(cities.Select(x => x.ToObject<string>()));
+            }
+        }
+
+        public IActionResult Areas(string? city)
+        {            
+            //if (city == null) city = "臺中市";
+
+            var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
+            var fileInfo = fileProvider.GetFileInfo("datas/CityCountyData.json");
+            using (var stream = fileInfo.CreateReadStream())
+            using (var reader = new StreamReader(stream))
+            {
+                JsonReader jsonReader = new JsonTextReader(reader);
+                var json = (JArray)JToken.ReadFrom(jsonReader);
+                var sites = json
+                    .FirstOrDefault(x => x["CityName"].ToObject<string>() == city)["AreaList"]
+                    .Select(x => x["AreaName"]);                
+                return Json(sites.Select(x => x.ToObject<string>()));
+            }
+        }
+
     }
 }
