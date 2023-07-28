@@ -53,7 +53,7 @@
                     <th>
                         @Html.DisplayNameFor(model => model.ImageUrl)
                     </th>
-                    <th>
+                    <th style="text-align:center">
                         @Html.DisplayNameFor(model => model.Display)
                     </th>
                     <th></th>
@@ -82,16 +82,16 @@
                                 @Html.DisplayFor(modelItem => item.Description)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ImageUrl)
+                                @{ string imageurl = string.IsNullOrEmpty(item.ImageUrl) ? "default.png" : item.ImageUrl; }
+                                <img src="@Url.Content("~/uploads/merchandisePicture/" + imageurl)" class="imgtumbnail" />
                             </td>
-                            <td>
+                            <td style="text-align:center">
                                 @Html.DisplayFor(modelItem => item.Display)
                             </td>
                             <td>
                                 @Html.ActionLink("修改商品資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
                                 @Html.ActionLink("檢視商品規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-success" }) |
-                                @Html.ActionLink("刪除", "Delete", "Merchandises", new { id=item.MerchandiseId }
-                                                    , new { onclick = "return confirm('確定刪除品牌嗎？')", @class = "btn btn-danger" }) |
+                                <button class="btn btn-danger fordelete" data-merchandiseid="@item.MerchandiseId">刪除</button> |
                                 @Html.ActionLink("檢視評價", "Index", "Evaluations", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-info" })
                             </td>
                         </tr>
@@ -106,6 +106,29 @@
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        $(".fordelete").click((e) => {
+            if (!confirm('確定刪除商品嗎？')) return;
+            const currentmerchandiseid = $(e.currentTarget).attr("data-merchandiseid");
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/ApiMerchandise/CheckSpecforDeleteMerchandise/${currentmerchandiseid}`);
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const data = JSON.parse(xhr.responseText);
+
+                if (data) {
+                    alert("商品中尚有規格資料，因此無法刪除");
+                }
+                else {
+                    window.location.href = `/Merchandises/Delete/${currentmerchandiseid}`;
+                }
+            })
+        })
+    </script>
+}
 
 @section Styles{
     <style>
@@ -117,6 +140,11 @@
         .conditionname {
             max-width: 120px;
             min-width: 120px;
+        }
+
+        .imgtumbnail{
+            max-width: 70px;
+            min-width: 70px;
         }
     </style>
 }

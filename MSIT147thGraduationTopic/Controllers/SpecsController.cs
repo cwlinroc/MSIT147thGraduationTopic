@@ -20,15 +20,25 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs
-        public async Task<IActionResult> Index(int merchandiseid) // todo 上方增加該項商品資料
+        public async Task<IActionResult> Index(int merchandiseid)
         {
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
-            
+
             List<SpecVM> list = new List<SpecVM>();
+            
+            if (datas.Count() == 0)
+            {
+                SpecVM specvmforCarrier = new SpecVM();
+                specvmforCarrier.merchandiseIdCarrier = merchandiseid;
+                specvmforCarrier.SpecName = "**此商品尚無規格，請新增規格資料**";
+                list.Add(specvmforCarrier);
+            }
+
             foreach (Spec s in datas)
             {
                 SpecVM specvm = new SpecVM();
                 specvm.spec = s;
+                specvm.merchandiseIdCarrier = merchandiseid;
                 list.Add(specvm);
             }
 
@@ -36,11 +46,12 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs/Create
-        public IActionResult Create() //todo 生成的商品value並非ID，因此不能產生正確的規格資料
+        public IActionResult Create(int merchandiseIdCarrier) //todo 生成的商品value並非ID，因此不能產生正確的規格資料
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
-            return View();
-            //return View(merchandiseid);
+            SpecVM specvm = new SpecVM();
+            specvm.MerchandiseId = merchandiseIdCarrier;
+            return View(specvm);
         }
 
         // POST: Specs/Create
@@ -49,20 +60,20 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] Spec spec)
+            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] SpecVM specvm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(spec);
+                _context.Add(specvm.spec);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", spec.MerchandiseId);
-            return View(spec);
+            ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
+            return View(specvm);
         }
 
         // GET: Specs/Edit/5
-        public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int? id) //todo 無法傳入商品ID，因此取消後不能順利呈現Index
+        public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int? id)
         {
             if (id == null || _context.Specs == null)
             {
@@ -75,7 +86,10 @@ namespace MSIT147thGraduationTopic.Controllers
                 return NotFound();
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", spec.MerchandiseId);
-            return View(spec);
+
+            SpecVM specvm = new SpecVM();
+            specvm.spec = spec;
+            return View(specvm);
         }
 
         // POST: Specs/Edit/5
@@ -83,9 +97,10 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int id, [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] Spec spec)
+        public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int id, 
+            [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,DisplayOrder,OnShelf,DiscountPercentage")] SpecVM specvm)
         {
-            if (id != spec.SpecId)
+            if (id != specvm.SpecId)
             {
                 return NotFound();
             }
@@ -94,12 +109,12 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 try
                 {
-                    _context.Update(spec);
+                    _context.Update(specvm.spec);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SpecExists(spec.SpecId))
+                    if (!SpecExists(specvm.SpecId))
                     {
                         return NotFound();
                     }
@@ -110,8 +125,8 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", spec.MerchandiseId);
-            return View(spec);
+            ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
+            return View(specvm);
         }
 
         // GET: Specs/Delete/5

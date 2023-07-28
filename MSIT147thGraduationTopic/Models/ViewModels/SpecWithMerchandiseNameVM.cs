@@ -59,6 +59,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _specWm.Amount; }
             set { _specWm.Amount = value; }
         }
+
         [DisplayName("折扣比例")]
         public int DiscountPercentage
         {

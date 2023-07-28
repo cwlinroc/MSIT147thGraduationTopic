@@ -21,32 +21,42 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="SpecName" class="control-label"></label>
-                        <input asp-for="SpecName" class="form-control" />
-                        <span asp-validation-for="SpecName" class="text-danger"></span>
+                        <input asp-for="SpecName" class="form-control" id="inputspecname" />
+                        <span asp-validation-for="SpecName" class="text-danger" id="alertspanforname"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none">
                         <label asp-for="MerchandiseId" class="control-label"></label>
-                        <select asp-for="MerchandiseId" class="form-control" asp-items="ViewBag.MerchandiseId"></select>
-                        <input asp-for="MerchandiseId" class="form-control" readonly />@*//todo hidden*@
+                        <input asp-for="MerchandiseId" class="form-control" id="showmerchandiseid" />
                     </div>
                     <div class="form-group">
                         <label asp-for="Price" class="control-label"></label>
-                        <input asp-for="Price" class="form-control" />
+                        <input asp-for="Price" class="form-control" min="1" value="1" id="inputprice" />
                         <span asp-validation-for="Price" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Amount" class="control-label"></label>
-                        <input asp-for="Amount" class="form-control" />
+                        <input asp-for="Amount" class="form-control" min="0" value="0" id="inputamount" />
                         <span asp-validation-for="Amount" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <label class="col-form-label">選擇圖片</label>
+                        <input class="form-control" type="file" id="selectfile" name="photo">
+                        <span class="text-danger foralert" id="alertspanforimage"></span>
+
+                        <div class="alert alert-secondary mt-2" id="containdisplay">
+                            <img id="display" />
+                            <button id="imageClear" class="btn btn-warning">取消圖片</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="DiscountPercentage" class="control-label"></label>
-                        <input asp-for="DiscountPercentage" class="form-control" />
+                        <input asp-for="DiscountPercentage" class="form-control" min="1" max="100" value="100" id="inputdiscount" />
                         <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="DisplayOrder" class="control-label"></label>
-                        <input asp-for="DisplayOrder" class="form-control" />
+                        <input asp-for="DisplayOrder" class="form-control" min="1" value="1" id="inputorder" />
                         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
                     </div>
                     <div class="form-group form-check">
@@ -56,9 +66,8 @@
                     </div>
                     <hr />
                     <div class="form-group">
-                        <input type="submit" value="新增" class="btn btn-primary" />
-                        @*<input type="submit" id="hiddenbut" style="display:none" />*@
-                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId }, new { @class = "btn btn-secondary" })
+                        <input type="submit" value="新增" class="btn btn-primary" id="submit" />
+                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId}, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>
@@ -68,19 +77,25 @@
 
 @section Scripts {
     <script>
-        const merchandisename = document.querySelector("#merchandisename");
-        merchandisename.addEventListener("load", () => {
+        const merchandiseid = $("#showmerchandiseid").val();
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/ApiMerchandise/MerchandiseforCreate");
-            xhr.send(merchandiseid);
+        $(() => {
+            const merchandisename = document.querySelector("#merchandisename");
+            merchandisename.addEventListener("load", () => {
 
-            xhr.addEventListener("load", () => {
-                const datas = JSON.parse(xhr.responseText);
-                var merchandise = datas;
-                merchandise.innerHTML = merchandise.MerchandiseName;
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
+                xhr.send();
+
+                xhr.addEventListener("load", () => {
+                    const datas = JSON.parse(xhr.responseText);
+                    console.log(datas);
+                    var merchandise = datas[0];
+                    console.log(merchandise);
+                    merchandisename.innerHTML = merchandise.MerchandiseName;
+                })
             })
-        })
+        });
     </script>
 }
 
