@@ -5,26 +5,16 @@ using System.Collections.Generic;
 
 namespace MSIT147thGraduationTopic.EFModels
 {
-    public partial class Spec
+    public partial class SpecWithMerchandiseName
     {
-        public Spec()
-        {
-            CartItems = new HashSet<CartItem>();
-            OrderLists = new HashSet<OrderList>();
-        }
-
         public int SpecId { get; set; }
         public string SpecName { get; set; }
         public int MerchandiseId { get; set; }
+        public string MerchandiseName { get; set; }
         public int Price { get; set; }
         public int Amount { get; set; }
-        public string ImageUrl { get; set; }
         public int DiscountPercentage { get; set; }
         public int DisplayOrder { get; set; }
         public bool OnShelf { get; set; }
-
-        public virtual Merchandise Merchandise { get; set; }
-        public virtual ICollection<CartItem> CartItems { get; set; }
-        public virtual ICollection<OrderList> OrderLists { get; set; }
     }
 }

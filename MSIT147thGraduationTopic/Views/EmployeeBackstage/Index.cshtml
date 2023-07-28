@@ -359,15 +359,15 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                        <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                        <td>${element.employeeName}</td>
-                        <td>${element.employeeAccount}</td>
-                        <td>${element.permission}</td>
-                        <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                        <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
-                        <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-                        <td></td>
-                        </tr>`
+                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                    <td>${element.employeeName}</td>
+                    <td>${element.employeeAccount}</td>
+                    <td>${element.permission}</td>
+                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+                    <td></td>
+                    </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
@@ -462,7 +462,7 @@
                 const password = document.querySelector('#password')
                 const passwordValid = !!password.value
                 const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
-                password.setValidate(() => passwordValid, '請輸入密碼')//.setValidate(() => passwordPatternValid,'密碼不符合格式(必須包含英文大小寫及數字)')
+                password.setValidate(() => passwordValid, '請輸入密碼').setValidate(() => passwordPatternValid, '密碼不符合格式(必須包含英文大小寫及數字)')
 
                 const phone = document.querySelector('#phone')
                 const phoneValid = !!phone.value
@@ -471,10 +471,11 @@
 
                 const email = document.querySelector('#email')
                 const emailValid = !!email.value
-                const emailPatternValid = /^\w+@@\w+$/.test(email.value)
-                email.setValidate(() => emailValid, '請輸入Email')//.setValidate(() => emailPatternValid, 'Email格式錯誤')
+                const emailPatternValid = /^\w+@@\w+/.test(email.value)
+                email.setValidate(() => emailValid, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
                 //// 要全部都正確，才能送回true確認表單正確
-                return nameValid && phoneValid && emailValid && passwordValid && accountValid
+                return nameValid && phoneValid && emailValid && passwordValid
+                    && accountValid && passwordPatternValid && emailPatternValid
             })
             //// 4. myValid.startValidate() //開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
             return myValid.startValidate()
