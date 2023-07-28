@@ -78,22 +78,24 @@
 @section Scripts {
     <script>
         const merchandiseid = $("#showmerchandiseid").val();
-        console.log(merchandiseid);
-        const merchandisename = document.querySelector("#merchandisename");
-        merchandisename.addEventListener("load", () => {
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
-            xhr.send();
+        $(() => {
+            const merchandisename = document.querySelector("#merchandisename");
+            merchandisename.addEventListener("load", () => {
 
-            xhr.addEventListener("load", () => {
-                const datas = JSON.parse(xhr.responseText);
-                console.log(datas);
-                var merchandise = datas[0];
-                console.log(merchandise);
-                merchandisename.innerHTML = merchandise.MerchandiseName;
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
+                xhr.send();
+
+                xhr.addEventListener("load", () => {
+                    const datas = JSON.parse(xhr.responseText);
+                    console.log(datas);
+                    var merchandise = datas[0];
+                    console.log(merchandise);
+                    merchandisename.innerHTML = merchandise.MerchandiseName;
+                })
             })
-        })
+        });
     </script>
 }
 

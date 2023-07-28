@@ -39,8 +39,7 @@
                     <td id="mCategory"></td>
                     <td id="mDescription"></td>
                     <td><img id="mImage" class="imgtumbnail" /></td>
-                    <td id="getMerchandiseId" style="display:none">
-                        @Html.DisplayFor(modelItem => Model.First().merchandiseIdCarrier)
+                    <td id="getMerchandiseId" style="display:none">@Html.DisplayFor(modelItem => Model.First().merchandiseIdCarrier)
                     </td>
                 </tr>
             </tbody>
@@ -128,11 +127,6 @@
 
 @section Scripts {
     <script>
-        console.log(@Model.First().merchandiseIdCarrier);
-
-    </script>
-
-    <script>
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
         const mCategory = document.querySelector("#mCategory");
@@ -141,7 +135,7 @@
 
         $(() => {
             const merchandiseid = $("#getMerchandiseId").text();
-            console.log(merchandiseid);
+            console.log("商品ID:" + merchandiseid)
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
             xhr.send();
