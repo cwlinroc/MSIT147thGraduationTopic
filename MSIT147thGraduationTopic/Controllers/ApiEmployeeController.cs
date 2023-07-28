@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.ComponentModel.DataAnnotations;
@@ -18,11 +21,13 @@ namespace MSIT147thGraduationTopic.Controllers
         private readonly EmployeeService _service;
         private readonly IWebHostEnvironment _environment;
 
-        public ApiEmployeeController(GraduationTopicContext context, IWebHostEnvironment environment)
+        public ApiEmployeeController(GraduationTopicContext context
+            , IWebHostEnvironment environment
+            , IOptions<OptionSettings> options)
         {
             _context = context;
             _environment = environment;
-            _service = new EmployeeService(context, environment);
+            _service = new EmployeeService(context, environment, options.Value.EmployeeRoles!);
         }
 
         [HttpGet]

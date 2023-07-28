@@ -24,7 +24,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.MerchandiseId = value; }
         }
         [DisplayName("商品名稱")]
-        [Required(ErrorMessage = "此為必填欄位")]
         public string MerchandiseName
         {
             get { return _merchandise.MerchandiseName; }
@@ -60,6 +59,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _merchandise.Display; }
             set { _merchandise.Display = value; }
         }
-        public IFormFile photo { get; set; }
+        public IFormFile? photo { get; set; }
+        public bool? deleteImageIndicater { get; set; }
     }
 }

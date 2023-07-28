@@ -15,13 +15,15 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly GraduationTopicContext _context;
         private readonly EmployeeRepository _repo;
         private readonly IWebHostEnvironment _environment;
-        //TODO add to app settings
-        private readonly string[] _permissions = { "管理員", "經理", "員工" };
-        public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environment)
+        private readonly string[] _roles ;
+        public EmployeeService(GraduationTopicContext context
+            , IWebHostEnvironment environment
+            , string[] roles)
         {
             _context = context;
             _environment = environment;
             _repo = new EmployeeRepository(context);
+            _roles = roles;
         }
 
         public IEnumerable<EmployeeVM> GetAllEmployees()
@@ -81,9 +83,9 @@ namespace MSIT147thGraduationTopic.Models.Services
 
         public int ChangeEmployeePermission(int id, string permission)
         {
-            string s = _permissions[0];
+            string s = _roles[0];
 
-            int permissionId = Array.IndexOf(_permissions, permission) + 1;
+            int permissionId = Array.IndexOf(_roles, permission) + 1;
 
             if (permissionId <= 0 || permissionId > 3) return -1;
 

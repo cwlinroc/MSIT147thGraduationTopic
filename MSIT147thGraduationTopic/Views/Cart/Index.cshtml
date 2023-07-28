@@ -72,25 +72,25 @@
 
             const htmls = items.map(o => {
                 return `<tr>
-                    <td>
-                        <input type="hidden" value="${o.cartItemId}"/>
-                        <input type="checkbox" class="form-check-input">
-                    </td>
-                        <td>${o.cartItemName}</td>
-                        <td>$<span class="cartItemPrice">${o.cartItemPrice}</span></td>
-                    <td>
-                        <div class="input-group d-flex justify-content-center">
-                            <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
-                                            <input type="number" value="${o.quantity}" class="text-center cart-item-number"
-                                    style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
-                            <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
-                        </div>
-                    </td>
-                            <td>$<span class="ItemTotalPrice">${o.cartItemPrice * o.quantity}</span></td>
-                    <td>
-                                <btn class="btn btn-danger cart-item-delete">刪除</btn>
-                    </td>
-                </tr>`
+                            <td>
+                                <input type="hidden" value="${o.cartItemId}"/>
+                                <input type="checkbox" class="form-check-input">
+                            </td>
+                                <td>${o.cartItemName}</td>
+                                <td>$<span class="cartItemPrice">${o.cartItemPrice}</span></td>
+                            <td>
+                                <div class="input-group d-flex justify-content-center">
+                                    <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                                                    <input type="number" value="${o.quantity}" class="text-center cart-item-number"
+                                            style="width: 100px;" min="0" oninput="this.value = Math.abs(this.value)">
+                                    <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                                </div>
+                            </td>
+                                    <td>$<span class="ItemTotalPrice">${o.cartItemPrice * o.quantity}</span></td>
+                            <td>
+                                        <btn class="btn btn-danger cart-item-delete">刪除</btn>
+                            </td>
+                        </tr>`
             })
             document.querySelector('tbody').innerHTML = htmls.join('')
             addBtnEvent()
@@ -126,6 +126,7 @@
         //刪除按鈕
         function deleteBtnEvent() {
             $(".cart-item-delete").click(e => {
+                if (!confirm('確認刪除該項目?')) return
                 deleteCartItem(e.currentTarget)
                 $(e.currentTarget).closest('tr').remove()
                 caculateCheckedItemsTotalPrice()
@@ -178,7 +179,7 @@
         }
 
 
-        
+
         //Ajax送出訂單
 
         async function sendOrder() {
@@ -198,8 +199,8 @@
             }
             //const response = await fetch('@Url.Content($"~/cart/index")', requestOptions);
             const response = await fetch('@Url.Content($"~/api/apicart")', requestOptions);
-            
-            if (response.status === 400){
+
+            if (response.status === 400) {
                 console.log('fail')
                 return
             }

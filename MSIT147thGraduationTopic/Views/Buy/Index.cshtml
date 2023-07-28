@@ -24,8 +24,8 @@
             {
                 int sum = item.CartItemPrice * item.Quantity;
                 total += sum;
+                @*<tr data-cartItemId="@item.CartItemId">*@
                 <tr>
-                    <input type="hidden" value="@item.CartItemId">
                     <td>@item.CartItemName</td>
                     <td>$<span>@item.CartItemPrice</span></td>
                     <td>@item.Quantity</td>
@@ -53,7 +53,7 @@
 
 <div class="container p-5 my-5 bg-light rounded shadow">
 
-    <form>
+    <form name="orderForm" method="post" enctype="application/x-www-form-urlencoded">
 
         <div class="form-group row mb-3">
             <label for="inputAddress" class="col-form-label col-sm-2 text-center">寄送地址</label>
@@ -64,14 +64,15 @@
         <div class="form-group row mb-3">
             <label for="inputPhone" class="col-form-label col-sm-2 text-center">連絡電話</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="inputPhone" name="Address" value="@ViewBag.MemberPhone">
+                <input type="text" class="form-control" id="inputPhone" name="Phone" value="@ViewBag.MemberPhone">
             </div>
         </div>
 
         <div class="form-group row mb-3">
             <label for="inputCoupons" class="col-form-label col-sm-2 text-center">使用優惠卷</label>
             <div class="col-sm-8 d-flex justify-content-between pt-2">
-                <p>無</p>
+                <input type="hidden" name="CouponId" value="" />
+                <p id="usedCoupon">無</p>
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                         data-bs-target="#couponModal">
                     選擇優惠卷
@@ -83,20 +84,20 @@
             <label for="inputCoupons" class="col-form-label col-sm-2 text-center">付款方式</label>
             <div class="col-sm-8 d-flex">
                 <div class="form-check me-4">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
+                    <input class="form-check-input" type="radio" name="Payment" id="radioPayment1" value="1" checked>
+                    <label class="form-check-label" for="radioPayment1">
                         信用卡
                     </label>
                 </div>
                 <div class="form-check me-4">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                    <label class="form-check-label" for="flexRadioDefault2">
+                    <input class="form-check-input" type="radio" name="Payment" id="radioPayment2" value="2">
+                    <label class="form-check-label" for="radioPayment2">
                         LinePay
                     </label>
                 </div>
                 <div class="form-check me-4">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
-                    <label class="form-check-label" for="flexRadioDefault3">
+                    <input class="form-check-input" type="radio" name="Payment" id="radioPayment3" value="3">
+                    <label class="form-check-label" for="radioPayment3">
                         銀行匯款
                     </label>
                 </div>
@@ -106,7 +107,7 @@
         <div class="form-group row mb-3">
             <label for="inputCoupons" class="col-form-label col-sm-2 text-center">備註</label>
             <div class="col-sm-8">
-                <textarea class="form-control" id="inputCoupons" name="Address"></textarea>
+                <textarea class="form-control" id="inputCoupons" name="Remark"></textarea>
             </div>
         </div>
 
@@ -114,7 +115,7 @@
             <hr>
             <label for="inputCoupons" class="col-form-label col-sm-2 text-center"></label>
             <div class="col-sm-8">
-                <button type="button" class="btn btn-warning">送出訂單</button>
+                <button type="submit" class="btn btn-warning" id="submitOrder">送出訂單</button>
                 <button type="button" class="btn btn-warning ms-3">取消訂單</button>
             </div>
         </div>
@@ -190,9 +191,7 @@
             $(e.currentTarget).prop('checked', true)
         })
 
-
-
-
+        
 
 
 

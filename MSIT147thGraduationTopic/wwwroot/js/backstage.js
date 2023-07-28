@@ -1,4 +1,4 @@
-
+Ôªø
 $(document).ready(function () {
     $('#sidebarToggle').on('click', function () {
         $('.sidebar').toggleClass('active');
@@ -16,13 +16,13 @@ $(document).ready(function () {
 $('#btnLogOut').click(LogOut)
 
 async function LogOut() {
-    console.log('test')
+    
     const response = await fetch(ROOT + '/api/apimember/logout')
 
     if (response.ok) {
         const url = await response.text()
         if (url) {
-            alert('¶®•\µn•X')
+            alert('ÊàêÂäüÁôªÂá∫')
             window.location.href = url
         }
     }

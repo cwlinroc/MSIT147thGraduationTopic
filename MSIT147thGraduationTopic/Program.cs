@@ -4,11 +4,14 @@ using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Configuration;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.Configure<OptionSettings>(builder.Configuration.GetSection("OptionSettings"));
+builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -27,7 +30,7 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromMinutes(10);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });

@@ -98,19 +98,20 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             var member = await _context.Members
-                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar })
+                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar, o.MemberId })
                 .FirstOrDefaultAsync(o => o.Account == record.Account);
 
             if (member != null)
             {
                 string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
                 if (member.Password != saltedPassword) return string.Empty;
-
+                
                 var claims = new List<Claim>
                             {
                                 new Claim(ClaimTypes.Name, member.Account),
                                 new Claim("UserName", member.MemberName),
                                 new Claim("AvatarName", member.Avatar??""),
+                                new Claim("MemberId", member.MemberId.ToString()),
                                 new Claim(ClaimTypes.Email, member.Email),
                                 new Claim(ClaimTypes.Role, "會員")
                             };
