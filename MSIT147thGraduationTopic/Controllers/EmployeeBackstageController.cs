@@ -48,36 +48,5 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
 
-        //TODO-cw 分層移位置
-        public record LogInRecord([Required] string account, [Required] string password);
-        [HttpPost]
-        public async Task<IActionResult> ChangeAccount(LogInRecord record)
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var employee = _context.Employees.FirstOrDefault(o => o.EmployeeAccount == record.account);
-            if (employee == null) return Json(false);
-
-            var saltedPassword = record.password.GetSaltedSha256(employee.Salt);
-            if (employee.EmployeePassword != saltedPassword) return Json(false);
-
-            var role = _employeeRoles[employee.Permission - 1];
-
-            var claims = new List<Claim>
-                        {
-                            new (ClaimTypes.Name, employee.EmployeeAccount),
-                            new ("UserName", employee.EmployeeName),
-                            new ("AvatarName", employee.AvatarName??""),
-                            new (ClaimTypes.Email, employee.EmployeeEmail),
-                            new (ClaimTypes.Role, role)
-                        };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-            return Json(true);
-        }
-
     }
 }

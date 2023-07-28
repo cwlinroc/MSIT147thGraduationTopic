@@ -331,28 +331,62 @@
             }
         }
 
+
         //Ajax 刪除員工
+
         async function deleteEmployee(event) {
-            if (!confirm('是否確認刪除該員工')) return
-            //TODO 輸入密碼確認  不可刪管理員
-            const formData = new FormData(document.createAndEdit)
-            const index = event.currentTarget.closest('tr').dataset.index
-            const id = employeeData[index].employeeId
 
-            const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
+            const text = await swal({
+                text: '請輸入密碼確認',
+                content: 'input',
+                button:{
+                    text:"確認",
+                    closeModal:false
+                }
+            })
 
-            if (response.status == 400) {
-                console.log("輸入格式錯誤")
-            }
+            console.log(text)
 
-            if (response.ok) {
-                const data = await response.json()
-                console.log(data)
-                getEmployees()
-                alert('刪除成功')
-                mainModal.hide()
-            }
+            //const formData = new FormData(document.createAndEdit)
+            //const index = event.currentTarget.closest('tr').dataset.index
+            //const id = employeeData[index].employeeId
+
+            //const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
+
+            //if (response.status == 400) {
+            //    console.log("輸入格式錯誤")
+            //}
+
+            //if (response.ok) {
+            //    const data = await response.json()
+            //    console.log(data)
+            //    getEmployees()
+            //    alert('刪除成功')
+            //    mainModal.hide()
+            //}
         }
+
+        //async function deleteEmployee(event) {
+        //    if (!confirm('是否確認刪除該員工')) return
+        //    //TODO 輸入密碼確認  不可刪管理員
+        //    const formData = new FormData(document.createAndEdit)
+        //    const index = event.currentTarget.closest('tr').dataset.index
+        //    const id = employeeData[index].employeeId
+
+        //    const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
+
+        //    if (response.status == 400) {
+        //        console.log("輸入格式錯誤")
+        //    }
+
+        //    if (response.ok) {
+        //        const data = await response.json()
+        //        console.log(data)
+        //        getEmployees()
+        //        alert('刪除成功')
+        //        mainModal.hide()
+        //    }
+        //}
 
         //列出員工
         function displayEmployees() {

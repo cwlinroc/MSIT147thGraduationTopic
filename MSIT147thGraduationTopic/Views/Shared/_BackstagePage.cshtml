@@ -150,13 +150,8 @@
                      data-bs-parent="#accordionExample">
 
                     <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">員工檢視</a>
+                        <a href="~/employeebackstage" class="stretched-link text-light">員工檢視</a>
                     </div>
-
-                    <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">權限調整</a>
-                    </div>
-
 
                 </div>
             </div>
@@ -193,7 +188,13 @@
 
         </div>
 
-        <div class="mt-auto p-4">
+        <div class="mt-auto px-4 mb-3">
+            <a href="~/employeebackstage/login" class="text-light" id="btnReLogIn" btnLogOut">
+                <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>切換帳號登入
+            </a>
+        </div>
+
+        <div class="px-4 mb-3">
             <a href="#" class="text-light" id="btnLogOut" btnLogOut">
                 <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>登出並回到首頁
             </a>
