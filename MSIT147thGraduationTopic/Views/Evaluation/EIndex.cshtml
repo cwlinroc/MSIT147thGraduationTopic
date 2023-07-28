@@ -1,4 +1,4 @@
-﻿@model List<MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM>
 @{
     ViewData["Title"] = "Index";
 
@@ -12,8 +12,8 @@
         <div class="col-8 ">
 
 
-            @foreach(var Item in Model)
-            {
+            @*@foreach(var Item in Model)
+            {*@
             <div class="d-flex mt-3 ">
                 <div id="Avatar" class="d-flex align-items-center ">
                     <img src="http://picsum.photos/80/80?random=10" class="rounded-circle" />
@@ -22,12 +22,12 @@
                     <h5 id="NickName" style="font-family: Microsoft JhengHei;">飛天小女警</h5>
                 </div>
                 <div class="ms-auto d-flex flex-column justify-content-end align-items-end ">
-                    <h6 id="OrderId">訂單編號:@(Item.OrderId)</h6>
+                    <h6 id="OrderId">訂單編號:@(Model.OrderId)</h6>
                 </div>
             </div>
             <form method="post" action="~/Evaluation/EIndex">
-                @for (int i = 0; i < Model[i].comments.Count; i++){
-                        var item = Item.comments[i];
+                @for (int i = 0; i < Model.comments.Count; i++){
+                        var item = Model.comments[i];
                         <div style="border-block-color:#FFDDAA;border-width: 2px">
                     <div class="mt-4 d-flex align-items-center">
                         <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
@@ -58,7 +58,7 @@
                 </div>
                 }
                 </form>
-            }
+            @*}*@
             </div>         
         <div class="col-2"></div>
     </div>

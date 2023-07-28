@@ -22,13 +22,16 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             //記得刪
             if (OrderId == 0) { OrderId = 1; }
+
             var model = (from x in _context.EvaluationInputs
                         where x.OrderId == OrderId
                         select new EvaluationVM
                         {
-                            OrderId = x.OrderId,
+                            OrderId = x.OrderId,                            
                             MerchandiseId = x.MerchandiseId,
-                            SpecId = x.SpecId
+                            MerchandiseName = x.MerchandiseName,
+                            SpecId = x.SpecId,
+                            SpecName = x.SpecName
                         }).ToList();           
             return View(model);
         }
