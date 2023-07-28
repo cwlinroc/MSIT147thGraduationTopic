@@ -76,12 +76,12 @@
                 <div class="input-group">
                     <label class="input-group-text" for="selectCity">縣市</label>
                     <select class="form-select" id="selectCity" name="selectCity">
-                        <option selected></option>
+                        
                         
                     </select>
                     <label class="input-group-text" for="selectDistrict">區域</label>
                     <select class="form-select" id="selectDistrict" name="selectDistrict">
-                        <option selected></option>
+                       
                         
                     </select>
                     <input class="form-control" id="address" name="address" type="text"/>
@@ -92,7 +92,7 @@
                 <label class="form-label fw-bold">出生年月日</label>
                 <div class="input-group">
                     <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-control" 
-                        required />
+                           required />
                     <div class="invalid-feedback">請輸入生日</div>
                 </div>
             </div>
@@ -109,23 +109,25 @@
 
 @section Styles{
     <style>
-        #city {
+        #selectCity {
             max-width: 200px
         }
 
-        #district {
+        #selectDistrict {
             max-width: 200px
         }
         
     </style>
 }
 
-@section Scripts{    
-    <script src="sweetalert2.all.min.js"></script>
+@section Scripts{
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields
         (() => {
             'use strict'
+
+            var today = new Date().toISOString().split('T')[0];
+            $("#DateOfBirth").attr('max', today);
 
             function checkPasswordMatch() {
                 const password = $('#password').val();
@@ -149,11 +151,11 @@
 
             async function LoadCities() {
                 try {
-                    const response = await fetch('/member/cities');
+                    const response = await fetch('/Member/Cities');
                     const datas = await response.json();
 
                     var cities = datas.map(city => {
-                        return (`<option value="${CityName}">${CityName}</option>`);
+                        return (`<option value="${city}">${city}</option>`);
                     });
 
                     selCity.innerHTML = cities.join("");
@@ -166,15 +168,14 @@
             async function LoadDistricts() {
                 try {
                     const city = selCity.options[selCity.selectedIndex].value;
-                    const response = await fetch(`/member/Areas?city=${CityName}`);
+                    const response = await fetch(`/Member/Districts?city=${city}`);
                     const datas = await response.json();
 
                     var districts = datas.map(district => {
-                        return (`<option value="${AreaName}">${AreaName}</option>`);
+                        return (`<option value="${district}">${district}</option>`);
                     });
 
-                    selDistrict.innerHTML = districts.join("");
-                    LoadRoads();
+                    selDistrict.innerHTML = districts.join("");                    
                 } catch (error) {
                     console.error(error);
                 }

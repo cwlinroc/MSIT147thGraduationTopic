@@ -99,7 +99,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
         }
 
-        public IActionResult Areas(string? city)
+        public IActionResult Districts(string? city)
         {            
             //if (city == null) city = "臺中市";
 
@@ -110,10 +110,10 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 JsonReader jsonReader = new JsonTextReader(reader);
                 var json = (JArray)JToken.ReadFrom(jsonReader);
-                var sites = json
+                var areas = json
                     .FirstOrDefault(x => x["CityName"].ToObject<string>() == city)["AreaList"]
                     .Select(x => x["AreaName"]);                
-                return Json(sites.Select(x => x.ToObject<string>()));
+                return Json(areas.Select(x => x.ToObject<string>()));
             }
         }
 

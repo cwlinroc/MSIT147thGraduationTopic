@@ -1,5 +1,4 @@
-﻿'use strict'
-$(".custom-merchandise").hover(
+﻿$(".custom-merchandise").hover(
     e => $(e.currentTarget).addClass("shadow-lg"),
     e => $(e.currentTarget).removeClass("shadow-lg")
 )
@@ -22,7 +21,32 @@ $(window).scroll(e => {
 $('#btnLogIn').click(LogIn)
 $('#btnLogOut').click(LogOut)
 
+//RememberMe
+//$(function () {
+//    if (localStorage.chkRemember && localStorage.chkRemember !== '') {
+//        $('#chkRemember').attr('checked', 'checked');
+//        $('#loginAccount').val(localStorage.loginAccount);
+//        $('#loginPassword').val(localStorage.loginPassword);
+//    } else {
+//        $('#chkRemember').removeAttr('checked');
+//        $('#loginAccount').val('');
+//        $('#loginPassword').val('');
+//    }
 
+//    $('#chkRemember').click(function () {
+
+//        if ($('#chkRemember').is(':checked')) {
+//            // save username and password
+//            localStorage.loginAccount = $('#loginAccount').val();
+//            localStorage.loginPassword = $('#loginPassword').val();
+//            localStorage.chkRemember = $('#chkRemember').val();
+//        } else {
+//            localStorage.loginAccount = '';
+//            localStorage.loginPassword = '';
+//            localStorage.chkRemember = '';
+//        }
+//    });
+//});
 
 //Ajax 登入
 async function LogIn() {
@@ -67,24 +91,6 @@ async function LogIn() {
             window.location.href = url
         }
     })
-
-    if (localStorage.chkRemember && localStorage.chkRemember !== '') {
-        $('#chkRemember').attr('checked', 'checked');
-        $('#loginAccount').val(localStorage.loginAccount);
-    } else {
-        $('#chkRemember').removeattr('ckecked');
-        $('#loginAccount').val('');
-    }
-
-    $('#chkRemember').click(function () {
-        if ($('#chkRemember').is(':checked')) {
-            localStorage.loginAccount = $('#loginAccount').val();
-            localStorage.chkRemember = $('#chkRemember').val();
-        } else {
-            localStorage.loginAccount = '';
-            localStorage.chkRemember = '';
-        }
-    }    
 
 }
 
