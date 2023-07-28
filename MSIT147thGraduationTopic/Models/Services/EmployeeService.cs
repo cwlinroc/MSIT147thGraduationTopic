@@ -97,6 +97,14 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.DeleteEmployee(employeeId);
         }
 
+        //public bool ConfirmWithPassword(int memberId, string password)
+        //{
+        //    (string? password ,string? salt) member = _repo.GetPasswordAndSalt(memberId);
+
+        //    var pwd = 
+
+        //}
+
         //public async Task<EmployeeDto?> ValidateEmployeeAccount(string account, string password)
         //{
         //    var employee = await _repo.GetEmployeeByAccount(account);

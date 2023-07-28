@@ -336,16 +336,23 @@
 
         async function deleteEmployee(event) {
 
-            const text = await swal({
-                text: '請輸入密碼確認',
-                content: 'input',
-                button:{
-                    text:"確認",
-                    closeModal:false
+            const { value: password } = await Swal.fire({
+                title: '請輸入密碼確認',
+                input: 'password',
+                inputLabel: 'Your password',
+                inputValue: "",
+                showCancelButton: true,
+                confirmButtonText: '確認',
+                cancelButtonText: `離開`,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return '請輸入密碼'
+                    }
                 }
             })
+            if (!password) return
 
-            console.log(text)
+            console.log(password)
 
             //const formData = new FormData(document.createAndEdit)
             //const index = event.currentTarget.closest('tr').dataset.index
@@ -393,15 +400,15 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                    <td>${element.employeeName}</td>
-                    <td>${element.employeeAccount}</td>
-                    <td>${element.permission}</td>
-                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
-                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-                    <td></td>
-                    </tr>`
+                            <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                            <td>${element.employeeName}</td>
+                            <td>${element.employeeAccount}</td>
+                            <td>${element.permission}</td>
+                            <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                            <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+                            <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+                            <td></td>
+                            </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)

@@ -73,6 +73,12 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employeeId;
         }
 
-
+        public (string?, string?) GetPasswordAndSalt(int memberId)
+        {
+            var member = _context.Members.Where(o => o.MemberId == memberId)
+                .Select(o => new { o.Password, o.Salt })
+                .FirstOrDefault();
+            return (member?.Password, member?.Salt);
+        }
     }
 }

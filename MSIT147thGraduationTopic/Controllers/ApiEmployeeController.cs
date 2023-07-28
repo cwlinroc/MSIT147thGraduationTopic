@@ -81,9 +81,11 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.DeleteEmployee(id);
         }
 
+        
         public record LogInRecord([Required] string account, [Required] string password);
+
         [HttpPost("login")]
-        public async Task<ActionResult<bool>> ChangeAccount([FromForm]LogInRecord record)
+        public async Task<ActionResult<bool>> ChangeAccount([FromForm] LogInRecord record)
         {
             if (HttpContext.User.Identity?.IsAuthenticated ?? false)
             {
@@ -113,5 +115,19 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return true;
         }
+
+        //[HttpPost("confirm")]
+        //public async Task<ActionResult<bool>> ConfirmPassword(string password)
+        //{
+        //    if (!HttpContext.User.Identity?.IsAuthenticated ?? false) return false;
+
+        //    if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId)) return false;
+
+        //    bool correct = _service.ConfirmWithPassword(memberId, password);
+
+
+
+        //    return true;
+        //}
     }
 }
