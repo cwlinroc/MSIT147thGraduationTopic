@@ -23,25 +23,35 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Index(int merchandiseid)
         {
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
-            
+
             List<SpecVM> list = new List<SpecVM>();
+            
+            if (datas.Count() == 0)
+            {
+                SpecVM specvmforCarrier = new SpecVM();
+                specvmforCarrier.merchandiseIdCarrier = merchandiseid;
+                specvmforCarrier.SpecName = "**此商品尚無規格，請新增規格資料**";
+                list.Add(specvmforCarrier);
+            }
+
             foreach (Spec s in datas)
             {
                 SpecVM specvm = new SpecVM();
                 specvm.spec = s;
+                specvm.merchandiseIdCarrier = merchandiseid;
                 list.Add(specvm);
             }
 
-            return View(list);  //todo 需要單獨傳MerchandiseId進去(用ViewBag?)
+            return View(list);
         }
 
         // GET: Specs/Create
-        public IActionResult Create() //todo 生成的商品value並非ID，因此不能產生正確的規格資料
+        public IActionResult Create(int merchandiseIdCarrier) //todo 生成的商品value並非ID，因此不能產生正確的規格資料
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
+            specvm.MerchandiseId = merchandiseIdCarrier;
             return View(specvm);
-            //return View(merchandiseid);
         }
 
         // POST: Specs/Create

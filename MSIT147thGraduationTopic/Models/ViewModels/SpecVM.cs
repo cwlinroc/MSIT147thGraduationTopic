@@ -7,7 +7,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
     public class SpecVM
     {
         private Spec _spec;
-        public Spec spec
+        public Spec? spec
         {
             get { return _spec; }
             set { _spec = value; }
@@ -37,8 +37,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
 
         [DisplayName("價格")]
-        [Required(ErrorMessage = "此為必填欄位")]
-        [Range(1, int.MaxValue, ErrorMessage = "價格須為大於0的數字")]
         public int Price
         {
             get { return _spec.Price; }
@@ -46,13 +44,19 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
 
         [DisplayName("庫存數量")]
-        [Required(ErrorMessage = "此為必填欄位")]
-        [Range(0, int.MaxValue, ErrorMessage = "庫存數量應至少為0")]
         public int Amount
         {
             get { return _spec.Amount; }
             set { _spec.Amount = value; }
         }
+
+        [DisplayName("規格圖片")]
+        public string ImageUrl
+        {
+            get { return _spec.ImageUrl; }
+            set { _spec.ImageUrl = value; }
+        }
+
         [DisplayName("折扣比例")]
         public int DiscountPercentage
         {
@@ -71,5 +75,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _spec.OnShelf; }
             set { _spec.OnShelf = value; }
         }
+        public IFormFile? photo { get; set; }
+        public int? merchandiseIdCarrier { get; set; }
     }
 }

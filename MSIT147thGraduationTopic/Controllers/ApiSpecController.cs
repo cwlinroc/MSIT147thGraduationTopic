@@ -13,10 +13,10 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public IActionResult ShowMerchandise(int merchandiseid)
+        [HttpGet]
+        public IActionResult ShowMerchandise(int id)
         {
-            var datas = _context.MerchandiseSearches.Where(m => m.MerchandiseId == merchandiseid).First();
+            var datas = _context.MerchandiseSearches.Where(m => m.MerchandiseId == id);
 
             return Json(datas);
         }
