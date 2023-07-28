@@ -15,7 +15,6 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly GraduationTopicContext _context;
         private readonly EmployeeRepository _repo;
         private readonly IWebHostEnvironment _environment;
-        //TODO add to app settings
         private readonly string[] _roles ;
         public EmployeeService(GraduationTopicContext context
             , IWebHostEnvironment environment

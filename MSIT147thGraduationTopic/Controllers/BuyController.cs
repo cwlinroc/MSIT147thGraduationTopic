@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
             string? json = HttpContext.Session.GetString("cartItemIds");
             if (!string.IsNullOrEmpty(json)) ids = JsonSerializer.Deserialize<int[]>(json)!;
 
-            //TODO 刪掉
+            //TODO-cw 刪掉
             if (!ids.Any()) ids = new int[] { 2, 3, 4 };
 
             (int id, string address, string phone) member = _service.GetMemberAddressAndPhone(ids[0]);
@@ -64,12 +64,18 @@ namespace MSIT147thGraduationTopic.Controllers
             int[] cartItemIds = JsonSerializer.Deserialize<int[]>(json)!;
 
 
-            //address
-            //phone
+            int result = _service.CreateOrder(cartItemIds, memberId, record);
+            if(result < 0) return BadRequest();
 
-            //get member
-            string testStr = record.Address + record.Phone + record.Payment + record.Remark +"/"+ memberId ;
-            return Content(testStr);
+
+            //??
+            return RedirectToAction("Succeed");
+        }
+
+
+        public IActionResult Succeed()
+        {
+            return View();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 
@@ -33,7 +34,8 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
         public (string, string) GetMemberAddressAndPhone(int memberId)
         {
-            var result = _context.Members.Select(m => new Tuple<string, string>(m.Address, m.Phone)).FirstOrDefault();
+            var result = _context.Members.Where(o => o.MemberId == memberId)
+                .Select(m => new Tuple<string, string>(m.Address, m.Phone)).FirstOrDefault();
             if (result == null) return ("", "");
             return (result.Item1, result.Item2);
         }
@@ -54,5 +56,39 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return _context.CartItems.Where(o => o.CartItemId == cartItemId)
                 .Select(o => o.MemberId).FirstOrDefault();
         }
+
+        public IEnumerable<(SpecDto, CartItemDto)> GetCartItemsAndSpecs(int[] cartItemIds)
+        {
+            var cartItems = _context.CartItems.Where(o => cartItemIds.Contains(o.CartItemId))
+                .Select(o => o.ToDto()).ToArray();
+
+            var specIds = cartItems.Select(o => o.SpecId);
+            var specs = _context.Specs.Where(o => specIds.Contains(o.SpecId))
+                .Select(o => o.ToDto()).ToArray();
+
+            return cartItems.Select(c => (specs.First(s => s.SpecId == c.SpecId), c));
+        }
+
+        public int CreateOrder(OrderDto dto)
+        {
+            var order = dto.ToEF();
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+            return order.OrderId;
+        }
+
+        public int CreateOrderLists(IEnumerable<OrderListDto> orderlists)
+        {
+            _context.OrderLists.AddRange(orderlists.Select(o => o.ToEF()));
+            return _context.SaveChanges();
+        }
+
+        public int ClearCartItems(int[] cartItemIds)
+        {
+            var cartItems = _context.CartItems.Where(o => cartItemIds.Contains(o.CartItemId));
+            _context.CartItems.RemoveRange(cartItems);
+            return _context.SaveChanges();
+        }
+
     }
 }

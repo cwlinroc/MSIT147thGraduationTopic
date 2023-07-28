@@ -16,7 +16,6 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class EmployeeBackstageController : Controller
     {
-        //TODO add in appsettings
         private readonly GraduationTopicContext _context;
         private readonly IOptions<OptionSettings> _options;
         private readonly string[] _employeeRoles;
@@ -49,7 +48,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
 
-        //TODO 分層移位置
+        //TODO-cw 分層移位置
         public record LogInRecord([Required] string account, [Required] string password);
         [HttpPost]
         public async Task<IActionResult> ChangeAccount(LogInRecord record)

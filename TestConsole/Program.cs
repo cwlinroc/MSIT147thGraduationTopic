@@ -7,11 +7,11 @@ var service = new RandomInsertService(null);
 
 //RandomNumberGenerator.GetInt32(10)
 
-//service.AddRandomMembers(50);
-//service.AddRandomMerchandiseAndSpecs(100);
+service.AddRandomMembers(50);
+service.AddRandomMerchandiseAndSpecs(100);
 
-//service.AddRandomCart();
-//service.AddRandomOrders();
+service.AddRandomCart();
+service.AddRandomOrders();
 
 Console.WriteLine("success");
 
