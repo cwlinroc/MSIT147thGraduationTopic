@@ -34,7 +34,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
 
         public virtual Member Member { get; set; }
+        
         public virtual Merchandise Merchandise { get; set; }
+
         public virtual Order Order { get; set; }
 
     }

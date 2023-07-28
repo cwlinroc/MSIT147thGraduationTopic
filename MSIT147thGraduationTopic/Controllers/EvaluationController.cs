@@ -8,21 +8,28 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class EvaluationController : Controller
     {
-        private readonly GraduationTopicContext db = new GraduationTopicContext();
+        
+        private readonly GraduationTopicContext _context;
 
+        public EvaluationController(GraduationTopicContext context)
+        {
+            _context = context;
+        }
 
 
         //以OrderId撈訂單資料
         public IActionResult EIndex(int OrderId)
         {
-            var model = from x in db.EvaluationInputs
+            //記得刪
+            if (OrderId == 0) { OrderId = 1; }
+            var model = (from x in _context.EvaluationInputs
                         where x.OrderId == OrderId
                         select new EvaluationVM
                         {
                             OrderId = x.OrderId,
                             MerchandiseId = x.MerchandiseId,
                             SpecId = x.SpecId
-                        };           
+                        }).ToList();           
             return View(model);
         }
         
