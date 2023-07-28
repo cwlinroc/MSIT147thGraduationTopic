@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             bool[] package = new bool[2];
 
-            package[0] = _context.Specs.Any(s => s.SpecName == specvm.SpecName);
+            package[0] = _context.Specs.Any(s => s.SpecName == specvm.SpecName);//todo 同一商品ID下才不可同名
 
             package[1] = false;
             if (specvm.photo != null)
