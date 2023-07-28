@@ -12,13 +12,19 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context = context;
         }
 
-        public IEnumerable<CouponDto> ShowCoupons(int id)
+        public IEnumerable<CouponDto> GetAllCoupons()
         {
-            var Coupons = _context.Coupons.Where(c=>c.CouponDiscountTypeId == id ).ToList();
-            return Coupons.Select(c => c.ToDto());
+            var coupons = _context.Coupons.ToList();
+            return coupons.Select(c => c.ToDto());
         }
 
-        public int CraeteCoupon(CouponDto cDto)
+        public IEnumerable<CouponDto> ShowCoupons(int id)
+        {
+            var coupons = _context.Coupons.Where(c=>c.CouponDiscountTypeId == id ).ToList();
+            return coupons.Select(c => c.ToDto());
+        }
+
+        public int CreateCoupon(CouponDto cDto)
         {
             var obj = cDto.ToEF();
             _context.Coupons.Add(obj);

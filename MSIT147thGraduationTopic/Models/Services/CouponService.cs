@@ -9,16 +9,26 @@ namespace MSIT147thGraduationTopic.Models.Services
     {
         private readonly GraduationTopicContext _context;
         private readonly CouponRepository _repo;
+        private readonly IWebHostEnvironment _environment;
 
-        public CouponService(GraduationTopicContext context)
+        public CouponService(GraduationTopicContext context, IWebHostEnvironment environment)
         {
             _context = context;
             _repo = new CouponRepository(context);
+            _environment = environment;
+        }
+
+        public IEnumerable<CouponVM> GetAllCoupons()
+        {
+            return _repo.GetAllCoupons().Select(dto =>
+            {
+                return dto.ToVM();
+            });
         }
 
         public int CreateCoupon(CouponDto cDto)
         {
-            return _repo.CraeteCoupon(cDto);
+            return _repo.CreateCoupon(cDto);
         }
 
         public int EditCoupon(CouponEditDto cEDto,int couponId)

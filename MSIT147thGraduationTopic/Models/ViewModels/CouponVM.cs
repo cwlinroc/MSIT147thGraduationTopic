@@ -72,7 +72,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             };
         }
 
-        static public CouponDto ToDto(this CouponVM cVM)
+        static public CouponDto ToDto(this CouponCreateVM cVM)
         {
             return new CouponDto
             {
