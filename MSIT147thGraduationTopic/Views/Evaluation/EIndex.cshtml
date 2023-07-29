@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Index";
 
+    var firstEvaluation = Model.FirstOrDefault();
 }
 
 
@@ -13,21 +14,21 @@
 
 
             @*@foreach(var Item in Model)
-            {*@
+            {*@               
             <div class="d-flex mt-3 ">
-                <div id="Avatar" class="d-flex align-items-center ">
+               @* <div id="Avatar" class="d-flex align-items-center ">
                     <img src="http://picsum.photos/80/80?random=10" class="rounded-circle" />
                 </div>
                 <div class="d-flex align-items-center mx-3">
                     <h5 id="NickName" style="font-family: Microsoft JhengHei;">飛天小女警</h5>
-                </div>
+                </div>*@
                 <div class="ms-auto d-flex flex-column justify-content-end align-items-end ">
-                    <h6 id="OrderId">訂單編號:@(Model.OrderId)</h6>
+                    <h6 id="OrderId">訂單編號:@(firstEvaluation.OrderId)</h6>
                 </div>
             </div>
             <form method="post" action="~/Evaluation/EIndex">
-                @for (int i = 0; i < Model.comments.Count; i++){
-                        var item = Model.comments[i];
+                @for (int i = 0; i < Model.Count(); i++){
+                        var item = Model.ElementAt(i);
                         <div style="border-block-color:#FFDDAA;border-width: 2px">
                     <div class="mt-4 d-flex align-items-center">
                         <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
@@ -40,7 +41,7 @@
                         </div>
 
                         <div class="d-flex ms-auto float-end">
-                            <div id="score" name="score" class="float-end mx-1 mt-3">
+                            <div id="score" name="Score" class="float-end mx-1 mt-3">
                                 <img id="stsr1" src="/images/空星.png" style="height:40px " />
                                 <img id="stsr2" src="/images/空星.png" style="height:40px" />
                                 <img id="stsr3" src="/images/空星.png" style="height:40px" />
@@ -50,8 +51,8 @@
                         </div>
                     </div>
                     <div class="form-floating mx-2 my-2">
-                        <textarea id="commentText" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
-                        <label for="floatingTextarea2">@(Item.Comment)</label>
+                        <textarea id="commentText" name="Comment" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2">@(item.Comment)</label>
                         <button id="send" type="submit" class="btn btn-primary float-end mt-2">送出</button>
                         <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
                     </div>
@@ -64,7 +65,7 @@
     </div>
 </div>
 @section Scripts{
-    <script>
+   @* <script>
         const score = document.querySelector('#score');
         const btnedit = document.querySelector('#edit');
         const orderId = document.querySelector('#OrderId');
@@ -109,7 +110,7 @@
 
             })
         })    
-    </script>
+    </script>*@
 
     <script src="../js/jquery-3.7.0.min.js"></script>
     <script>
@@ -126,6 +127,7 @@
         let score = 0;
 
         stars.hover(
+            
             function () {
                 const index = stars.index(this);
                 for (let i = 0; i <= index; i++) {
@@ -140,13 +142,18 @@
         stars.click(function () {
             const index = stars.index(this);
             stars.attr("src", starImages[0]);
-            $("img:lt(" + (index + 1) + ")").attr("src", starImages[i + 1]);
+            //$("img:lt(" + (index + 1) + ")").attr("src", starImages[i + 1]);
+            for (let i = 0; i <= index; i++) {
+                stars.eq(i).attr("src", starImages[i + 1]);
+            }
+            score = index + 1;
 
         });
 
         stars.dblclick(function () {
 
             stars.attr("src", "/images/空星.png");
+            score = 0;
         });
     </script>
 

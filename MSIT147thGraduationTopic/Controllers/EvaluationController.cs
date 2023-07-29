@@ -32,7 +32,8 @@ namespace MSIT147thGraduationTopic.Controllers
                             MerchandiseName = x.MerchandiseName,
                             SpecId = x.SpecId,
                             SpecName = x.SpecName
-                        }).ToList();           
+                        }).ToList(); 
+            
             return View(model);
         }
         
