@@ -69,8 +69,8 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.DeleteMember(id);
         }
 
-        //public record LoginRecord([Required] string Account, [Required] string Password, bool chkRemember);
-        public record LoginRecord([Required] string Account, [Required] string Password, bool chkRemember);
+        
+        public record LoginRecord([Required] string Account, [Required] string Password);
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn(LoginRecord record)
         {
@@ -129,19 +129,6 @@ namespace MSIT147thGraduationTopic.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Url.Content("~/home/index");
         }
-
-        ////載入縣市
-        //public IActionResult Cities()
-        //{
-        //    var cities = _context.Address.Select(a => a.City).Distinct();
-        //    return Json(cities);
-        //}
-        ////根據縣市載入鄉鎮區
-        //public IActionResult Districts(string city)
-        //{
-        //    var district = _context.Address.Where(a => a.City == city)
-        //        .Select(a => a.SiteId).Distinct();
-        //    return Json(district);
-        //}
+                
     }
 }

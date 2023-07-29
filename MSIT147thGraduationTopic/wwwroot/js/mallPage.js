@@ -20,33 +20,68 @@ $(window).scroll(e => {
 //Buttons
 $('#btnLogIn').click(LogIn)
 $('#btnLogOut').click(LogOut)
+$('#demoMember').click(() => {
+    $('#loginAccount').val('demoMember99');
+    DemoLogin('demoMember99');
+});
+$('#demoEmployee').click(() => {
+    $('#loginAccount').val('demoEmployee99');
+    DemoLogin('demoEmployee99');
+});
 
-//RememberMe
-//$(function () {
-//    if (localStorage.chkRemember && localStorage.chkRemember !== '') {
-//        $('#chkRemember').attr('checked', 'checked');
-//        $('#loginAccount').val(localStorage.loginAccount);
-//        $('#loginPassword').val(localStorage.loginPassword);
-//    } else {
-//        $('#chkRemember').removeAttr('checked');
-//        $('#loginAccount').val('');
-//        $('#loginPassword').val('');
-//    }
+$('#demoManager').click(() => {
+    $('#loginAccount').val('demoManager99');
+    DemoLogin('demoManager99');
+});
 
-//    $('#chkRemember').click(function () {
+$('#demoAdmin').click(() => {
+    $('#loginAccount').val('demoAdmin99');
+    DemoLogin('demoAdmin99');
+});
 
-//        if ($('#chkRemember').is(':checked')) {
-//            // save username and password
-//            localStorage.loginAccount = $('#loginAccount').val();
-//            localStorage.loginPassword = $('#loginPassword').val();
-//            localStorage.chkRemember = $('#chkRemember').val();
-//        } else {
-//            localStorage.loginAccount = '';
-//            localStorage.loginPassword = '';
-//            localStorage.chkRemember = '';
-//        }
-//    });
-//});
+function DemoLogin(demoAccount) {
+    switch (demoAccount) {
+        case 'demoMember99':
+            $('#loginPassword').val('demoMember99');
+            break;
+        case 'demoEmployee99':
+            $('#loginPassword').val('demoEmployee99');
+            break;
+        case 'demoManager99':
+            $('#loginPassword').val('demoManager99');
+            break;
+        case 'demoAdmin99':
+            $('#loginPassword').val('demoAdmin99');
+            break;
+    }
+}
+
+//記住我
+$(function () {
+    if (localStorage.chkRemember && localStorage.chkRemember != '') {
+        $('#chkRemember').attr('checked', 'checked');
+        $('#loginAccount').val(localStorage.loginAccount);
+        $('#loginPassword').val(localStorage.loginPassword);
+    } else {
+        $('#chkRemember').removeAttr('checked');
+        $('#loginAccount').val('');
+        $('#loginPassword').val('');
+    }
+
+    $('#chkRemember').click(function () {
+
+        if ($('#chkRemember').is(':checked')) {
+            // save username and password
+            localStorage.loginAccount = $('#loginAccount').val();
+            localStorage.loginPassword = $('#loginPassword').val();
+            localStorage.chkRemember = $('#chkRemember').val();
+        } else {
+            localStorage.loginAccount = '';
+            localStorage.loginPassword = '';
+            localStorage.chkRemember = '';
+        }
+    });
+});
 
 //Ajax 登入
 async function LogIn() {
@@ -54,20 +89,20 @@ async function LogIn() {
 
     const account = $('#loginAccount').val()
     const password = $('#loginPassword').val()
-    const chkRemember = $('#chkRemember').prop('checked')
+    //const chkRemember = $('#chkRemember').prop('checked')
 
     const response = await fetch(ROOT + '/api/apimember/login', {
-        body: JSON.stringify({ 'Account': account, 'Password': password, 'chkRemember': chkRemember }),
+        body: JSON.stringify({ 'Account': account, 'Password': password }),
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
     })
 
-    if (!response.ok) {
+    if (!response.ok) {        
         console.log('request failed')
         return
     }
 
-    const url = await response.text()
+    const url = await response.text()   
 
     if (!url) {
         Swal.fire({
@@ -90,7 +125,10 @@ async function LogIn() {
         else {
             window.location.href = url
         }
+       
     })
+
+    
 
 }
 

@@ -16,14 +16,15 @@
                 <div class="invalid-feedback">請輸入姓名</div>
             </div>
             <!-- Gender input-->
-            <div class="form">
-                <label>性別:</label><br>
+            <div class="form mb-3">
+                <label for="gender" class="form-label fw-bold">性別</label>
+                <br>
                 <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" name="gender" value="male" required>
+                    <input type="radio" class="form-check-input" id="genderMale" name="Gender" value="male" required>
                     <label class="form-check-label">男性</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" name="gender" value="female" required>
+                    <input type="radio" class="form-check-input" id="genderFemale" name="Gender" value="female" required>
                     <label class="form-check-label">女性</label>
                 </div>
                 @*<div class="invalid-feedback">
@@ -44,10 +45,10 @@
             <!-- Password input-->
             <div class="form mb-3">
                 <label for="password" class="form-label fw-bold">
-                    密碼:需要8~12位英文字母及數字組合，包含至少一個大寫字母及小寫字母
+                    密碼:需要8~16位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>                
                 <input class="form-control fs-4" id="password" name="Password" type="password"
-                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,12}" required /> 
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}" required /> 
                 <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
@@ -75,13 +76,11 @@
                 <label for="address" class="form-label fw-bold">地址</label>
                 <div class="input-group">
                     <label class="input-group-text" for="selectCity">縣市</label>
-                    <select class="form-select" id="selectCity" name="selectCity">
-                        
+                    <select class="form-select" id="selectCity" name="selectCity">                        
                         
                     </select>
                     <label class="input-group-text" for="selectDistrict">區域</label>
-                    <select class="form-select" id="selectDistrict" name="selectDistrict">
-                       
+                    <select class="form-select" id="selectDistrict" name="selectDistrict">                       
                         
                     </select>
                     <input class="form-control" id="address" name="address" type="text"/>
@@ -99,9 +98,10 @@
                     
             <!-- Submit Button-->
             <div class="d-grid col-lg-8 offset-2 mt-3 mb-5">
-                <button class="btn btn-primary btn-lg" id="submitButton" type="submit">
+                <button class="btn btn-primary btn-lg mb-3" id="submitButton" type="submit">
                     註冊
                 </button>
+                <button type="button" id="demoMemberRegister">demoMember</button>
             </div>
         </form>
     </div>
@@ -121,73 +121,14 @@
 }
 
 @section Scripts{
+    <script src="~/js/createMember.js"></script>
     <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
         (() => {
             'use strict'
 
-            var today = new Date().toISOString().split('T')[0];
-            $("#DateOfBirth").attr('max', today);
-
-            function checkPasswordMatch() {
-                const password = $('#password').val();
-                const confirmPassword = $('#confirmPassword').val();
-
-                if (password !== confirmPassword) {
-                    $('#confirmPassword').addClass('is-invalid');
-                } else {
-                    $('#confirmPassword').removeClass('is-invalid');
-                }
-            }
-
-            $('#confirmPassword').blur(function () {
-                checkPasswordMatch();
-            });
-
-            const selCity = document.querySelector('#selectCity');
-            const selDistrict = document.querySelector('#selectDistrict');            
-
-            LoadCities();
-
-            async function LoadCities() {
-                try {
-                    const response = await fetch('/Member/Cities');
-                    const datas = await response.json();
-
-                    var cities = datas.map(city => {
-                        return (`<option value="${city}">${city}</option>`);
-                    });
-
-                    selCity.innerHTML = cities.join("");
-                    LoadDistricts();
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-
-            async function LoadDistricts() {
-                try {
-                    const city = selCity.options[selCity.selectedIndex].value;
-                    const response = await fetch(`/Member/Districts?city=${city}`);
-                    const datas = await response.json();
-
-                    var districts = datas.map(district => {
-                        return (`<option value="${district}">${district}</option>`);
-                    });
-
-                    selDistrict.innerHTML = districts.join("");                    
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-
-            selCity.addEventListener('change', () => {
-                LoadDistricts();
-            });            
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            //取得全部需要驗證表單
             const forms = document.querySelectorAll('.needs-validation')
-            // Loop over them and prevent submission
+            
             Array.from(forms).forEach(form => {
                 form.addEventListener('submit', event => {
                     if (!form.checkValidity()) {
@@ -204,7 +145,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: '註冊成功!',
-                            text: '請至信箱收取認證信',
+                            //text: '請至信箱收取認證信',
                             allowOutsideClick: false
                         }).then()
                     }

@@ -17,21 +17,16 @@ namespace MSIT147thGraduationTopic.Controllers
     public class MemberController : Controller
     {
         private readonly GraduationTopicContext _context;
-        private IWebHostEnvironment _environment;
-        private AddressVM _address;
-
-
+        private IWebHostEnvironment _environment; 
         protected UserInfoService _userInfoService { get; set; }
 
         public MemberController(GraduationTopicContext Context
-                , UserInfoService UserInfoService, IWebHostEnvironment environment
-                , IOptions<OptionSettings> options)
+                , UserInfoService UserInfoService, IWebHostEnvironment environment)
         {
             //DI 指派介面屬性注入指定類別案例。(類別位置在 Program.cs 裡面)
             _context = Context;
             _userInfoService = UserInfoService;
-            _environment = environment;
-            _address = options.Value.Address;
+            _environment = environment;            
         }
 
         public IActionResult CreateMember()
@@ -59,31 +54,8 @@ namespace MSIT147thGraduationTopic.Controllers
             return View(_userInfoService.GetUserInfo());
         }
 
-
-
-        public JObject GetDataFromJsonFile()
-        {
-            var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
-            var fileInfo = fileProvider.GetFileInfo("~/datas/CityCountyData.json");
-
-            if (fileInfo.Exists)
-            {
-                using (var stream = fileInfo.CreateReadStream())
-                using (var reader = new StreamReader(stream))
-                {
-                    var json = reader.ReadToEnd();
-
-                    return JObject.Parse(json);
-                }
-            }
-
-            return null;
-        }
-
-
-
         //載入縣市
-
+        
         public IActionResult Cities()
         {
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
@@ -99,10 +71,9 @@ namespace MSIT147thGraduationTopic.Controllers
             }
         }
 
+        
         public IActionResult Districts(string? city)
-        {            
-            //if (city == null) city = "臺中市";
-
+        { 
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
             var fileInfo = fileProvider.GetFileInfo("datas/CityCountyData.json");
             using (var stream = fileInfo.CreateReadStream())
