@@ -1,5 +1,29 @@
-﻿const today = new Date().toISOString().split('T')[0];
-$("#DateOfBirth").attr('max', today);
+﻿let memberData = null;
+getMembers();
+
+//Ajax 得到會員資料
+async function getMembers(query) {
+    let str = '';
+    if (query) str = '/' + query;
+
+    const response = await fetch('@Url.Content("~/api/apiMember")' + str);
+
+    if (!response.ok) return;
+    const data = await response.json();
+
+    memberData = data
+    console.log(data);
+    displayMembers();
+}
+
+//列出會員資料
+function displayMembers() {
+    const datas = memberData.map((element) => {
+        const imageName = (element.avatarName) ? element.avatarName : 'avatar_icon.png'
+        return 
+    })    
+    
+}
 
 function checkPasswordMatch() {
     const password = $('#password').val();
@@ -57,21 +81,7 @@ selCity.addEventListener('change', () => {
     LoadDistricts();
 });
 
-$("#demoMemberRegister").click(() => {
-    $('#memberName').val('王石油');
-    $("input[name=Gender][value='male']").attr('checked', true);
-    $('#nickName').val('VVVIP');
-    $('#account').val('demoMember99');
-    $('#password').val('demoMember99');
-    $('#confirmPassword').val('demoMember99');
-    $('#email').val('demoMember99@gmail.com');
-    $('#phone').val('0912345678');
-    $('#selectCity').val('臺北市');
-    $('#selectDistrict').val('大安區');
-    $('#address').val('復興南路一段390號2樓');
-    $('#DateOfBirth').val('1999-09-09');
-})
-
+//取得全部需要驗證表單
 const forms = document.querySelectorAll('.needs-validation')
 
 Array.from(forms).forEach(form => {
@@ -111,12 +121,11 @@ Array.from(forms).forEach(form => {
 
         await Swal.fire({
             icon: 'success',
-            title: '註冊成功!',
+            title: '修改成功!',
             allowOutsideClick: false
         })
 
-        window.location.href = `${ROOT} /home/index`
+        window.location.reload();
 
     }, false)
 })
-

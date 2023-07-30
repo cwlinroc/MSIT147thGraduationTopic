@@ -1,0 +1,30 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="text-center mb-3">
+    <img class="img-fluid rounded-circle mb-4"
+         src="" alt="~/images/avatar_icon.png" />
+    <br>
+    <form>
+        <div class="input-group">
+            <input type="file" class="form-control" aria-label="Select Avatar">
+            <button class="btn btn-primary" type="submit" id="btnSubmit">更換頭像</button>
+        </div>
+    </form>
+    
+</div>
+<br />
+<ul class="ms-5 fs-4" id="sidelist">
+    <li><a href="會員中心.html" class="text-decoration-none">會員中心</a></li>
+    <li><a href="查詢購物紀錄.html" class="text-decoration-none">查詢購物紀錄</a></li>
+    <li><a href="優惠券.html" class="text-decoration-none">優惠券列表</a></li>
+</ul>
+
+@section Styles{
+    <style>
+        #sidelist {
+            list-style-type: none;
+        }
+    </style>
+}

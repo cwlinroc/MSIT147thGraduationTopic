@@ -70,8 +70,7 @@ $(function () {
 
     $('#chkRemember').click(function () {
 
-        if ($('#chkRemember').is(':checked')) {
-            // save username and password
+        if ($('#chkRemember').is(':checked')) {            
             localStorage.loginAccount = $('#loginAccount').val();
             localStorage.loginPassword = $('#loginPassword').val();
             localStorage.chkRemember = $('#chkRemember').val();

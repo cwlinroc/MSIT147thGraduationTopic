@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using System.Linq;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -18,16 +19,23 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return members.Select(o => o.ToDto());
         }
 
-        public IEnumerable<MemberDto> GetMembersByNameOrAccount(string query)
+        public IEnumerable<MemberDto> GetMemberByNameOrAccount(string query)
         {
             var members = _context.Members
                 .Where(o => o.MemberName.Contains(query) || o.Account.Contains(query));
             return members.Select(o => o.ToDto());
         }
 
+        public IEnumerable<MemberDto> GetMemberById(int memberId)
+        {
+            var members = _context.Members
+                .Where(o => o.MemberId == memberId);
+            return members.Select(o => o.ToDto());
+        }
+
         public int CreateMember(MemberDto dto)
         {
-            var db = new GraduationTopicContext();
+            var db = _context;
             var obj = dto.ToEF();
             db.Members.Add(obj);
             db.SaveChanges();

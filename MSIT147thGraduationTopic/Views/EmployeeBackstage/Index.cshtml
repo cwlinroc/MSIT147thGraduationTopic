@@ -203,11 +203,11 @@
         //get Modal
         const mainModal = new bootstrap.Modal(document.querySelector('#edditModal'))
         const permissionModal = new bootstrap.Modal(document.querySelector('#permissionModal'))
-        //會員資料
+        //員工資料
         let employeeData
-        //抓取會員資料
+        //抓取員工資料
         getEmployees()
-        //新增會員按鈕
+        //新增員工按鈕
         $('#btnAdd').click(changeToInsertForm)
         //上傳圖片預覽
         const inputAvatar = document.querySelector('#avatar')
@@ -410,13 +410,13 @@
             $('#btnSubmit').click(submitEdit)
         }
 
-        //顯示點選tr的會員資料
+        //顯示點選tr的員工資料
         function displayEmployeeDataInRow(event) {
             const index = +event.currentTarget.dataset.index
             displayEmployeeData(index)
         }
 
-        //顯示第n筆會員資料
+        //顯示第n筆員工資料
         function displayEmployeeData(index) {
             if (!employeeData.length) return
             const imgName = (employeeData[index].avatarName) ? employeeData[index].avatarName : '_employeeDefault.jpg'
@@ -466,7 +466,7 @@
 
                 const phone = document.querySelector('#phone')
                 const phoneValid = !!phone.value
-                //const Phone
+                const phonePatternValid = /^09\d{8}$/.test(phone.value)
                 phone.setValidate(() => phoneValid)
 
                 const email = document.querySelector('#email')

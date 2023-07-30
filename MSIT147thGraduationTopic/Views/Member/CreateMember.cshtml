@@ -7,8 +7,9 @@
 </div>
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-8 offset-2">
-        <form id="memberRegisterForm" name="memberRegisterForm" class="needs-validation"
-              action="/ApiMember/CreateMember" method="POST" novalidate>
+        <form id="memberRegisterForm" class="needs-validation"
+              action="/ApiMember/CreateMember" method="Post" enctype="multipart/form-data" 
+              novalidate>
             <!-- MemberName input-->
             <div class="form mb-3">
                 <label for="memberName" class="form-label fw-bold">姓名</label>
@@ -45,10 +46,10 @@
             <!-- Password input-->
             <div class="form mb-3">
                 <label for="password" class="form-label fw-bold">
-                    密碼:需要8~16位英文字母及數字組合，包含至少一個大寫字母及小寫字母
+                    密碼:需要6~32位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>                
-                <input class="form-control fs-4" id="password" name="Password" type="password"
-                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}" required /> 
+                <input class="form-control" id="password" name="Password" type="password"
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32}" required /> 
                 <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
@@ -61,14 +62,16 @@
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">電子信箱</label>
-                <input class="form-control" id="email" name="Email" type="email" required />
+                <input class="form-control" id="email" name="Email" type="email" required
+                       pattern="^\w+[-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$" />
                 <div class="invalid-feedback">請輸入電子信箱</div>
                 @*<div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>*@
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
-                <input class="form-control" id="phone" name="Phone" type="tel" required />
+                <input class="form-control" id="phone" name="Phone" type="tel"
+                       pattern="09\d{8}" required />
                 <div class="invalid-feedback">請輸入手機號碼</div>
             </div>
             <!-- Address input-->
@@ -83,22 +86,28 @@
                     <select class="form-select" id="selectDistrict" name="selectDistrict">                       
                         
                     </select>
-                    <input class="form-control" id="address" name="address" type="text"/>
+                    <input class="form-control" id="address" name="Address" type="text"/>
                 </div>
             </div>
             <!-- Date of birth input-->
-            <div class="form mb-5">
+            <div class="form mb-3">
                 <label class="form-label fw-bold">出生年月日</label>
                 <div class="input-group">
                     <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-control" 
                            required />
                     <div class="invalid-feedback">請輸入生日</div>
                 </div>
+            </div>            
+            <!-- Avatar input-->
+            <div class="form mb-5">
+                <label class="form-label fw-bold">頭像</label>
+                <div class="input-group">
+                    <input type="file" id="Avatar" name="Avatar" class="form-control" />                   
+                </div>
             </div>
-                    
             <!-- Submit Button-->
             <div class="d-grid col-lg-8 offset-2 mt-3 mb-5">
-                <button class="btn btn-primary btn-lg mb-3" id="submitButton" type="submit">
+                <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
                     註冊
                 </button>
                 <button type="button" id="demoMemberRegister">demoMember</button>
@@ -121,39 +130,7 @@
 }
 
 @section Scripts{
+    <script src="~/js/MyBootstrapValidator.js"></script>
     <script src="~/js/createMember.js"></script>
-    <script>
-        (() => {
-            'use strict'
-
-            //取得全部需要驗證表單
-            const forms = document.querySelectorAll('.needs-validation')
-            
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        Swal.fire({
-                            icon: 'error',
-                            title: '註冊失敗!',
-                            text: '資料有錯誤,請修改',
-                            allowOutsideClick: false,
-                        })
-                        return;
-                    }else{
-                        Swal.fire({
-                            icon: 'success',
-                            title: '註冊成功!',
-                            //text: '請至信箱收取認證信',
-                            allowOutsideClick: false
-                        }).then()
-                    }
-                    form.classList.add('was-validated')
-                    
-                }, false)
-            })
-        })()
-
-    </script>
+    
 }

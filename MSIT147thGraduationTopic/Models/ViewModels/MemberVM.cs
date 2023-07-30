@@ -58,13 +58,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Email { get; set; }
         public string? Avatar { get; set; }
-
-        [Required]
-        public string? Salt { get; set; }
-        [Required]
-        public bool IsActivated { get; set; }
-        [Required]
-        public string? ConfirmGuid { get; set; }
+        
     }
 
     public class MemberEditVM
@@ -229,9 +223,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Phone = vm.Phone,
                 Address = vm.Address,
                 Email = vm.Email,
-                Salt = vm.Salt,
-                IsActivated = vm.IsActivated,
-                ConfirmGuid = vm.ConfirmGuid,
+                
             };
         }
 

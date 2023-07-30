@@ -40,11 +40,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
         {
             //未登入時會自動移轉到此網址。
-            options.LoginPath = new PathString("/Member/NoLogin");
+            //options.LoginPath = new PathString("/Member/NoLogin");
             //未授權角色時會自動移轉到此網址。
-            options.AccessDeniedPath = new PathString("/Member/NoRole");
-            ///登入10分後會失效
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+            //options.AccessDeniedPath = new PathString("/Member/NoRole");
+            //登入1hr後會失效
+            options.ExpireTimeSpan = TimeSpan.FromHours(1);
         });
 
 

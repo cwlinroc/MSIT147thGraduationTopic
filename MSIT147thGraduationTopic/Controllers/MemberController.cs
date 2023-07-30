@@ -1,32 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using MSIT147thGraduationTopic.EFModels;
-using MSIT147thGraduationTopic.Models.Services;
-using System.Security.Claims;
-using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
-using Microsoft.Extensions.Options;
-using MSIT147thGraduationTopic.Models.Infra.Utility;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using MSIT147thGraduationTopic.Models.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
+using MSIT147thGraduationTopic.Models.Services;
+using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
     public class MemberController : Controller
     {
-        private readonly GraduationTopicContext _context;
-        private IWebHostEnvironment _environment; 
-        protected UserInfoService _userInfoService { get; set; }
+        private readonly GraduationTopicContext _context;        
+        private readonly MemberService _service;
+        private readonly IWebHostEnvironment _environment;
 
-        public MemberController(GraduationTopicContext Context
-                , UserInfoService UserInfoService, IWebHostEnvironment environment)
-        {
-            //DI 指派介面屬性注入指定類別案例。(類別位置在 Program.cs 裡面)
-            _context = Context;
-            _userInfoService = UserInfoService;
-            _environment = environment;            
+
+        public MemberController(GraduationTopicContext context
+                , IWebHostEnvironment environment)
+        {            
+            _context = context;
+            _environment = environment;
+            _service = new MemberService(context, environment);
         }
 
         public IActionResult CreateMember()
@@ -41,20 +36,20 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
         [HttpPost]
-        //[Authorize(Roles = "Member")]
-        public IActionResult MemberCenter()
+        [Authorize(Roles = "Member")]
+        public IActionResult MemberCenter(int memberId)
         {
-            return View(_userInfoService.GetUserInfo());
+            return View(_service.GetMemberById(memberId));
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Member")]
-        public IActionResult ShoppingHistory()
+        [Authorize(Roles = "Member")]
+        public IActionResult ShoppingHistory(int memberId)
         {
-            return View(_userInfoService.GetUserInfo());
+            return View(_service.GetMemberById(memberId));
         }
 
-        //載入縣市
+        
         
         public IActionResult Cities()
         {

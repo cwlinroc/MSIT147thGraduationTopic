@@ -42,21 +42,29 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpGet("{query}")]
-        public ActionResult<List<MemberVM>> GetMembersByNameOrAccount(string query)
+        public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
         {
-            return _service.GetMembersByNameOrAccount(query).ToList();
+            return _service.GetMemberByNameOrAccount(query).ToList();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<List<MemberVM>> GetMemberById(int id)
+        {
+            return _service.GetMemberById(id).ToList();
         }
 
         [HttpPost]
-        public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile avatar)
+        public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)
         {
             var memberId = _service.CreateMember(vm.ToDto(), avatar);
 
             return memberId;
         }
 
+
+
         [HttpPut("{id}")]
-        public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile avatar)
+        public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
             var memberId = _service.EditMember(dto, id, avatar);
 
