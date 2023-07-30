@@ -29,13 +29,15 @@ namespace MSIT147thGraduationTopic.Controllers
             //TODO-cw 刪掉
             if (!ids.Any()) ids = new int[] { 2, 3, 4 };
 
-            (int id, string address, string phone) member = _service.GetMemberAddressAndPhone(ids[0]);
+            var member = _service.GetMemberAddressAndPhone(ids[0]);
+            if (member == null) return BadRequest();
 
-            ViewBag.MemberId = member.id;
-            ViewBag.MemberAddress = member.address;
-            ViewBag.MemberPhone = member.phone;
-
-            //id驗證
+            //TODO-cw id驗證
+            ViewBag.MemberId = member.MemberId;
+            ViewBag.MemberAddress = member.Address;
+            ViewBag.MemberPhone = member.Phone;
+            ViewBag.MemberName = member.MemberName;
+            ViewBag.MemberEmail = member.Email;
 
             var items = _service.GetCartItems(ids);
             return View(items);
@@ -65,7 +67,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
             int result = _service.CreateOrder(cartItemIds, memberId, record);
-            if(result < 0) return BadRequest();
+            if (result < 0) return BadRequest();
 
 
             //??

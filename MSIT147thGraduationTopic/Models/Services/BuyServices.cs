@@ -21,13 +21,13 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.GetCartItems(cartItemIds);
         }
 
-        public (int, string, string) GetMemberAddressAndPhone(int cartItemId)
+        public MemberDto? GetMemberAddressAndPhone(int cartItemId)
         {
             int memberId = _repo.GetMemberIdByCartItemId(cartItemId);
 
-            var result = _repo.GetMemberAddressAndPhone(memberId);
+            var member = _repo.GetMemberAddressAndPhone(memberId);
 
-            return (memberId, result.Item1.Trim(), result.Item2.Trim());
+            return member;
         }
 
         public IEnumerable<CouponDto> GetAllCouponsAvalible(int memberId)

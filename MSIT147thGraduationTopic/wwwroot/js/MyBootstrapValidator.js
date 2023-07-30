@@ -14,6 +14,7 @@
 class MyBootsrapValidator {
     form
     validfunc
+    addedKeyUp = false
     constructor(form) {
         this.form = form
     }
@@ -21,16 +22,19 @@ class MyBootsrapValidator {
         this.validfunc = validfunc
     }
     startValidate() {
-        $(this.form).find('input').on('keyup', () => {
-            $(this.form).find('input').removeClass('is-invalid is-valid')
-            this.validfunc()
-        })
-
+        if (!this.addedKeyUp) {
+            $(this.form).find('input').on('keyup', () => {
+                $(this.form).find('input').removeClass('is-invalid is-valid')
+                this.validfunc()
+            })
+            addedKeyUp = true
+        }
         return (this.validfunc)()
     }
 
     endtValidate() {
         $(this.form).find('input').removeClass('is-invalid is-valid').off('keyup')
+        addedKeyUp = false
     }
 
 }

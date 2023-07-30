@@ -6,11 +6,13 @@
     bool? isAuthorized = user?.Identity?.IsAuthenticated;
     string? userName = string.Empty;
     string? avatarName = string.Empty;
+    string? roleName = string.Empty;
 
     if (isAuthorized ?? false)
     {
         userName = user.FindFirstValue("UserName");
         avatarName = user.FindFirstValue("AvatarName");
+        roleName = user.FindFirstValue(ClaimTypes.Role);
         if (string.IsNullOrEmpty(avatarName)) avatarName = "_employeeDefault.jpg";
     }
 }
@@ -34,10 +36,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- sweetalert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/css/styles.css" rel="stylesheet" />
+    <!-- sweetalert2 -->
+    <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
+    <!-- Animate.css-->
+    <link href="~/css/animate.min.css" rel="stylesheet" />
+
     <link href="~/css/backstage.css" rel="stylesheet" />
     @RenderSection("Styles",false)
 
@@ -206,9 +212,15 @@
     <!-- 選單列表end -->
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- jQuery -->
     <script src="~/lib/jquery/dist/jquery.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/js/sweetalert2.min.js"></script>
+    <!-- wow.js -->
+    <script src="~/js/wow.min.js"></script>
+
     <script>const ROOT = '@Url.Content("~")'</script>
+    <script>const ROLE = '@roleName'</script>
     <script src="~/js/backstage.js"></script>
 
     @RenderSection("Scripts",false)

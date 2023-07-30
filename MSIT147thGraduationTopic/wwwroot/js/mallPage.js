@@ -1,4 +1,11 @@
-﻿$(".custom-merchandise").hover(
+﻿//權限錯誤跳轉
+//if (ROLE == '管理員' || ROLE == '經理' || ROLE == '員工') {
+//    window.location.href = ROOT + '/employeebackstage/welcome'
+//}
+
+
+
+$(".custom-merchandise").hover(
     e => $(e.currentTarget).addClass("shadow-lg"),
     e => $(e.currentTarget).removeClass("shadow-lg")
 )
@@ -24,7 +31,6 @@ $('#btnLogOut').click(LogOut)
 //Ajax 登入
 async function LogIn() {
     //驗證
-
     const account = $('#loginAccount').val()
     const password = $('#loginPassword').val()
     const chkRemember = $('#chkRemember').prop('checked')
@@ -49,27 +55,19 @@ async function LogIn() {
             text: '帳號或密碼錯誤'
         }).then(result => {
             if (result.isConfirmed) {
-                window.location.reload()
+                //window.location.reload()
             }
         })
         return
     }
 
     Swal.fire('登入成功!').then(result => {
-        if (result.isConfirmed) {
+        if (url == 'reload') {
             window.location.reload()
         } else {
-            window.location.reload()
+            window.location.href = url
         }
     })
-
-    //if (url == 'reload') {
-    //    window.location.reload()
-    //}
-    //else {
-    //    window.location.href = url
-    //}
-
 }
 
 //Ajax 登出
@@ -88,3 +86,11 @@ async function LogOut() {
         }
     }
 }
+
+
+
+
+
+
+
+

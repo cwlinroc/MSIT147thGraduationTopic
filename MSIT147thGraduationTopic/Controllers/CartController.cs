@@ -8,7 +8,7 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class CartController : Controller
     {
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = "會員")]
         public IActionResult Index()
         {
             if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))

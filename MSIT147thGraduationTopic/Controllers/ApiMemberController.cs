@@ -87,6 +87,7 @@ namespace MSIT147thGraduationTopic.Controllers
                                 new Claim(ClaimTypes.Name, emp.EmployeeAccount),
                                 new Claim("UserName", emp.EmployeeName),
                                 new Claim("AvatarName", emp.AvatarName??""),
+                                new Claim("EmployeeId", emp.EmployeeId.ToString()),
                                 new Claim(ClaimTypes.Email, emp.EmployeeEmail),
                                 new Claim(ClaimTypes.Role, _employeeRoles[emp.Permission-1])
                             };
@@ -113,7 +114,7 @@ namespace MSIT147thGraduationTopic.Controllers
                                 new Claim("AvatarName", member.Avatar??""),
                                 new Claim("MemberId", member.MemberId.ToString()),
                                 new Claim(ClaimTypes.Email, member.Email),
-                                new Claim(ClaimTypes.Role, "Member")
+                                new Claim(ClaimTypes.Role, "會員")
                             };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));

@@ -309,6 +309,9 @@
 
         //Ajax 修改員工權限
         async function submitChangePermission() {
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
+
             const permission = $('#selectPermission').val()
             const id = $('#selectPermission').attr('data-employeeId')
 
@@ -332,83 +335,45 @@
         }
 
 
+        //TODO 不可刪管理員
         //Ajax 刪除員工
-
         async function deleteEmployee(event) {
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
 
-            const { value: password } = await Swal.fire({
-                title: '請輸入密碼確認',
-                input: 'password',
-                inputLabel: 'Your password',
-                inputValue: "",
-                showCancelButton: true,
-                confirmButtonText: '確認',
-                cancelButtonText: `離開`,
-                inputValidator: (value) => {
-                    if (!value) {
-                        return '請輸入密碼'
-                    }
-                }
-            })
-            if (!password) return
+            const formData = new FormData(document.createAndEdit)
+            const index = event.currentTarget.closest('tr').dataset.index
+            const id = employeeData[index].employeeId
 
-            console.log(password)
+            const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
 
-            //const formData = new FormData(document.createAndEdit)
-            //const index = event.currentTarget.closest('tr').dataset.index
-            //const id = employeeData[index].employeeId
+            if (response.status == 400) {
+                console.log("輸入格式錯誤")
+            }
 
-            //const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
-
-            //if (response.status == 400) {
-            //    console.log("輸入格式錯誤")
-            //}
-
-            //if (response.ok) {
-            //    const data = await response.json()
-            //    console.log(data)
-            //    getEmployees()
-            //    alert('刪除成功')
-            //    mainModal.hide()
-            //}
+            if (response.ok) {
+                const data = await response.json()
+                console.log(data)
+                getEmployees()
+                alert('刪除成功')
+                mainModal.hide()
+            }
         }
-
-        //async function deleteEmployee(event) {
-        //    if (!confirm('是否確認刪除該員工')) return
-        //    //TODO 輸入密碼確認  不可刪管理員
-        //    const formData = new FormData(document.createAndEdit)
-        //    const index = event.currentTarget.closest('tr').dataset.index
-        //    const id = employeeData[index].employeeId
-
-        //    const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
-
-        //    if (response.status == 400) {
-        //        console.log("輸入格式錯誤")
-        //    }
-
-        //    if (response.ok) {
-        //        const data = await response.json()
-        //        console.log(data)
-        //        getEmployees()
-        //        alert('刪除成功')
-        //        mainModal.hide()
-        //    }
-        //}
 
         //列出員工
         function displayEmployees() {
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                            <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                            <td>${element.employeeName}</td>
-                            <td>${element.employeeAccount}</td>
-                            <td>${element.permission}</td>
-                            <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                            <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
-                            <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-                            <td></td>
-                            </tr>`
+                                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                                    <td>${element.employeeName}</td>
+                                    <td>${element.employeeAccount}</td>
+                                    <td>${element.permission}</td>
+                                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+                                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+                                    <td></td>
+                                    </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)

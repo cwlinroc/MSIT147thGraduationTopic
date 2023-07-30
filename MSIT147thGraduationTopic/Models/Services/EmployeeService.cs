@@ -15,7 +15,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly GraduationTopicContext _context;
         private readonly EmployeeRepository _repo;
         private readonly IWebHostEnvironment _environment;
-        private readonly string[] _roles ;
+        private readonly string[] _roles;
         public EmployeeService(GraduationTopicContext context
             , IWebHostEnvironment environment
             , string[] roles)
@@ -97,13 +97,14 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.DeleteEmployee(employeeId);
         }
 
-        //public bool ConfirmWithPassword(int memberId, string password)
-        //{
-        //    (string? password ,string? salt) member = _repo.GetPasswordAndSalt(memberId);
+        public async Task<bool> ConfirmWithPassword(int employeeId, string password)
+        {
+            (string? password, string? salt) employee = await _repo.GetPasswordAndSalt(employeeId);
+            if (employee.password == null || employee.salt == null) return false;
 
-        //    var pwd = 
-
-        //}
+            var saltedPassword = password.GetSaltedSha256(employee.salt);
+            return saltedPassword == employee.password;
+        }
 
         //public async Task<EmployeeDto?> ValidateEmployeeAccount(string account, string password)
         //{

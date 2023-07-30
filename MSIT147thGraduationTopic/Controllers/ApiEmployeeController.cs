@@ -81,7 +81,7 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.DeleteEmployee(id);
         }
 
-        
+
         public record LogInRecord([Required] string account, [Required] string password);
 
         [HttpPost("login")]
@@ -105,6 +105,7 @@ namespace MSIT147thGraduationTopic.Controllers
                             new (ClaimTypes.Name, employee.EmployeeAccount),
                             new ("UserName", employee.EmployeeName),
                             new ("AvatarName", employee.AvatarName??""),
+                            new Claim("EmployeeId", employee.EmployeeId.ToString()),
                             new (ClaimTypes.Email, employee.EmployeeEmail),
                             new (ClaimTypes.Role, role)
                         };
@@ -116,18 +117,19 @@ namespace MSIT147thGraduationTopic.Controllers
             return true;
         }
 
-        //[HttpPost("confirm")]
-        //public async Task<ActionResult<bool>> ConfirmPassword(string password)
-        //{
-        //    if (!HttpContext.User.Identity?.IsAuthenticated ?? false) return false;
+        public record ConfirmRecord([Required] string Password);
+        [HttpPost("confirm")]
+        public async Task<ActionResult<bool>> ConfirmPassword(ConfirmRecord record)
+        {
+            if (!HttpContext.User.Identity?.IsAuthenticated ?? false) return false;
 
-        //    if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId)) return false;
+            var test = HttpContext.User.FindFirstValue("EmployeeId");
 
-        //    bool correct = _service.ConfirmWithPassword(memberId, password);
+            if (!int.TryParse(HttpContext.User.FindFirstValue("EmployeeId"), out int employeeId)) return false;
 
+            bool correction = await _service.ConfirmWithPassword(employeeId, record.Password);
 
-
-        //    return true;
-        //}
+            return correction;
+        }
     }
 }
