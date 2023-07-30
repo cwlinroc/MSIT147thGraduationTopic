@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM>
 @{
     ViewData["Title"] = "Index";
-
-    var firstEvaluation = Model.FirstOrDefault();
 }
 
 
@@ -12,107 +10,72 @@
         <div class="col-2"></div>
         <div class="col-8 ">
 
-
-            @*@foreach(var Item in Model)
-            {*@               
-            <div class="d-flex mt-3 ">
-               @* <div id="Avatar" class="d-flex align-items-center ">
-                    <img src="http://picsum.photos/80/80?random=10" class="rounded-circle" />
-                </div>
-                <div class="d-flex align-items-center mx-3">
-                    <h5 id="NickName" style="font-family: Microsoft JhengHei;">飛天小女警</h5>
-                </div>*@
-                <div class="ms-auto d-flex flex-column justify-content-end align-items-end ">
-                    <h6 id="OrderId">訂單編號:@(firstEvaluation.OrderId)</h6>
-                </div>
-            </div>
-            <form method="post" action="~/Evaluation/EIndex">
-                @for (int i = 0; i < Model.Count(); i++){
-                        var item = Model.ElementAt(i);
-                        <div style="border-block-color:#FFDDAA;border-width: 2px">
-                    <div class="mt-4 d-flex align-items-center">
-                        <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
-                            <div class="mx-1 mt-2">
-                                    <h6 id="MerchandiseName">@(item.MerchandiseName[i])</h6>
-                            </div>
-                            <div class="mt-2">
-                                    <h6 id="SpecName">@(item.SpecName[i])</h6>
-                            </div>
-                        </div>
-
-                        <div class="d-flex ms-auto float-end">
-                            <div id="score" name="Score" class="float-end mx-1 mt-3">
-                                <img id="stsr1" src="/images/空星.png" style="height:40px " />
-                                <img id="stsr2" src="/images/空星.png" style="height:40px" />
-                                <img id="stsr3" src="/images/空星.png" style="height:40px" />
-                                <img id="stsr4" src="/images/空星.png" style="height:40px" />
-                                <img id="stsr5" src="/images/空星.png" style="height:40px" />
-                            </div>
-                        </div>
+            @if (Model != null && Model.Count() > 0)
+            {
+                <div class="d-flex mt-3 ">
+                    <div class="ms-auto d-flex flex-column justify-content-end align-items-end ">
+                        <h5 id="OrderId">訂單編號:@(Model.FirstOrDefault().OrderId)</h5>
                     </div>
-                    <div class="form-floating mx-2 my-2">
-                        <textarea id="commentText" name="Comment" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
-                        <label for="floatingTextarea2">@(item.Comment)</label>
-                        <button id="send" type="submit" class="btn btn-primary float-end mt-2">送出</button>
+                </div>
+                <form method="post" action="~/Evaluation/EIndex">
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+                        var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
+
+                        <div style="border-block-color:#FFDDAA;border-width: 2px">
+                            <div class="mt-4 d-flex align-items-center">
+                                <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
+                                    <div class="mx-1 mt-2">
+                                        <h6 id="MerchandiseName">@(item.MerchandiseName)</h6>
+                                        <input name="comments[i].MerchandiseId" hidden>
+                                    </div>
+                                    <div class="mt-2">
+                                        <h6 id="SpecName_@(i)"> @(item.SpecName)</h6>
+                                        <input name="comments[i].SpecId" hidden>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex ms-auto float-end">
+                                    <div id="score_@(i)" name="Score" class="float-end mx-1 mt-3" itype="starDiv">
+                                        <input id="inputscore_@(i)" name="comments[i].Score" hidden>
+                                        <img id="stsr@(i)_1" src="/images/空星.png" style="height:40px" />
+                                        <img id="stsr@(i)_2" src="/images/空星.png" style="height:40px" />
+                                        <img id="stsr@(i)_3" src="/images/空星.png" style="height:40px" />
+                                        <img id="stsr@(i)_4" src="/images/空星.png" style="height:40px" />
+                                        <img id="stsr@(i)_5" src="/images/空星.png" style="height:40px" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-floating mx-2 mt-2 mb-4">
+                                <textarea id="commentText" name="comments[i].Comment" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2">@(item.Comment)</label>
+                            </div>
+                        </div>
+                    }
+                    <div>
+                        <button id="send" type="submit" class="btn btn-primary float-end mt-2 mx-1">送出</button>
                         <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
                     </div>
-                </div>
-                }
                 </form>
-            @*}*@
-            </div>         
+
+            }
+            else
+            {
+                @*<h2>@(ViewBag.ErrorMessage)</h2>*@
+                @*<script>
+                    alert(@Html.Raw(Html.UrlEncoder.Encode(ViewBag.ErrorMessage)))
+                </script>*@
+            }
+
+            
+
+        </div>
+
         <div class="col-2"></div>
     </div>
 </div>
 @section Scripts{
-   @* <script>
-        const score = document.querySelector('#score');
-        const btnedit = document.querySelector('#edit');
-        const orderId = document.querySelector('#OrderId');
 
-        const xhr = new XMLHttpRequest();
-        xhr.open('Get', '/Evaluation/EIndex')
-        xhr.send();
-        xhr.addEventListener("load", function () {
-            const datas = JSON.parse(xhr.responseText);
-
-            const evaluationdata = datas.map(item => {
-                return (`
-                        <div style="border-block-color:#FFDDAA;border-width: 2px">
-                        <div class="mt-4 d-flex align-items-center">
-                            <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
-                                <div class="mx-1 mt-2">
-                                    <h6 id="MerchandiseName">${datas.MerchandiseName}</h6>
-                                </div>
-                                <div class="mt-2">
-                                    <h6 id="SpecName">${datas.SpecName} </h6>
-                                </div>
-                            </div>
-
-                            <div class="d-flex ms-auto float-end">
-                                <div id="score" class="float-end rounded-3  " >
-                                    <img id="stsr1" src="/images/空星.png" style="height:40px " />
-                                    <img id="stsr2" src="/images/空星.png" style="height:40px" />
-                                    <img id="stsr3" src="/images/空星.png" style="height:40px" />
-                                    <img id="stsr4" src="/images/空星.png" style="height:40px" />
-                                    <img id="stsr5" src="/images/空星.png" style="height:40px" />
-                                </div>
-                            </div>
-                            </div>
-                            <div class="form-floating mx-2 my-2">
-                                <textarea id="commentText" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
-                                <label for="floatingTextarea2">評論</label>
-                                <button id="send" type="submit" class="btn btn-primary float-end mt-2">送出</button>
-                                <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
-                            </div>
-                        </div>`)
-
-
-            })
-        })    
-    </script>*@
-
-    <script src="../js/jquery-3.7.0.min.js"></script>
     <script>
         const starImages = [
             "/images/空星.png",
@@ -123,38 +86,51 @@
             "/images/五星.png",
         ];
 
-        const stars = $('#score>img');
+        let stars = $('div[itype="starDiv"] > img');
         let score = 0;
-
+        //console.log(stars)
+               
         stars.hover(
-            
-            function () {
-                const index = stars.index(this);
-                for (let i = 0; i <= index; i++) {
-                    stars.eq(i).attr('src', starImages[i + 1]);
-                }
+            function () {                                
+                lightingStar($(this));
             },
             function () {
-                stars.attr('src', starImages[0]);
+                //console.log(this.parent().children());
+                $(this).parent().children().attr('src', starImages[0]);
             }
         );
 
         stars.click(function () {
-            const index = stars.index(this);
-            stars.attr("src", starImages[0]);
-            //$("img:lt(" + (index + 1) + ")").attr("src", starImages[i + 1]);
-            for (let i = 0; i <= index; i++) {
-                stars.eq(i).attr("src", starImages[i + 1]);
+            //若要改評分
+            if (score > 0)
+            {
+                $(this).parent().children().attr('src', starImages[0]);
+                $(this).parent().children().bind('mouseenter').bind('mouseleave');
             }
-            score = index + 1;
+            //else{} 直接執行再次評分
+            lightingStar($(this));
+            $(this).parent().children().unbind('mouseenter').unbind('mouseleave');
+            //$(this).siblings("img").unbind('mouseenter').unbind('mouseleave');
 
+            score = $(this).attr('id').split('_')[1];
+            //console.log($(this).parent().find('input').attr('id'));
+            $(this).parent().find('input').val(score);  //將score值放入input
+            //console.log($(this).parent().find('input').val());
         });
 
-        stars.dblclick(function () {
+        let lightingStar = function (obj) {
+            let idArray = obj.attr('id').split('_');  //.split 字串分割
+            //console.log(idArray);
+            let index = idArray[1]; //第n顆星星
+            //console.log(index);
+            for (let i = 0; i <= index; i++) {
+                //stars.eq(i).attr('src', starImages[i + 1]);
+                $("#" + idArray[0] + "_" + i).attr('src', starImages[i]);
+            }
+        }
 
-            stars.attr("src", "/images/空星.png");
-            score = 0;
-        });
+
+        
     </script>
 
     <script>
@@ -165,10 +141,6 @@
         //} else {
         //    btnedit.style.display = 'none';
         //}
-
-
-
-
     </script>
 }
 
