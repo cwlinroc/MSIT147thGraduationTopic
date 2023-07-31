@@ -33,7 +33,7 @@ async function LogOut() {
     }
 }
 
-//使用祕法再次確認
+//使用密碼再次確認
 async function confirmWithPassword() {
     const { value: password } = await Swal.fire({
         title: '請輸入密碼確認',

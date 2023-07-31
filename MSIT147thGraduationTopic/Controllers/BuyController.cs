@@ -27,7 +27,7 @@ namespace MSIT147thGraduationTopic.Controllers
             if (!string.IsNullOrEmpty(json)) ids = JsonSerializer.Deserialize<int[]>(json)!;
 
             //TODO-cw 刪掉
-            if (!ids.Any()) ids = new int[] { 2, 3, 4 };
+            if (!ids.Any()) ids = new int[] { 160, 161, 162 };
 
             var member = _service.GetMemberAddressAndPhone(ids[0]);
             if (member == null) return BadRequest();

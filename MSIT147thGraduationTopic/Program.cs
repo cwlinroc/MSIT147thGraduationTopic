@@ -43,8 +43,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             options.LoginPath = new PathString("/Member/NoLogin");
             //未授權角色時會自動移轉到此網址。
             options.AccessDeniedPath = new PathString("/Member/NoRole");
-            ///登入10分後會失效
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+            ///登入1小時後會失效
+            options.ExpireTimeSpan = TimeSpan.FromHours(1);
         });
 
 
