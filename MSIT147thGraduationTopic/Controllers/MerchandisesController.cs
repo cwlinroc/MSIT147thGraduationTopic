@@ -36,9 +36,26 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 if (searchCondition == 2)
                 {
-                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
+                    datas = null;
+                    var merchandiseIdFormSpec = _context.Specs
+                        .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
+                    
+                    List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
+                    foreach (int id in merchandiseIdFormSpec)
+                    {
+                        MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
+                        if (unit != null)
+                        {
+                            templist.Add(unit);
+                        }
+                    }
+                    datas = templist;
                 }
                 if (searchCondition == 3)
+                {
+                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
+                }
+                if (searchCondition == 4)
                 {
                     datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
                 }
@@ -73,16 +90,15 @@ namespace MSIT147thGraduationTopic.Controllers
             ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo")]
                 MerchandiseVM merchandisevm)
         {
-            merchandisevm.ImageUrl = null;
-
-            if (merchandisevm.photo != null)
-            {
-                merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
-                saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
-            }
 
             if (ModelState.IsValid)
             {
+                if (merchandisevm.photo != null)
+                {
+                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
+                    saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
+                }
+
                 _context.Add(merchandisevm.merchandise);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -119,29 +135,30 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             if (id != merchandisevm.MerchandiseId) return NotFound();
 
-            //(始終沒圖) or (有圖→沒變) => 不用動
-            //沒圖→有圖
-            if (merchandisevm.ImageUrl == null && merchandisevm.photo != null)
-            {
-                merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
-                saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
-            }
-            //有圖→新圖
-            if (merchandisevm.ImageUrl != null && merchandisevm.photo != null)
-            {
-                deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
-                merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
-                saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
-            }
-            //有圖→刪除
-            if (merchandisevm.ImageUrl != null && merchandisevm.photo == null && merchandisevm.deleteImageIndicater == true)
-            {
-                deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
-                merchandisevm.ImageUrl = null;
-            }
 
             if (ModelState.IsValid)
             {
+                //(始終沒圖) or (有圖→沒變) => 不用動
+                //沒圖→有圖
+                if (merchandisevm.ImageUrl == null && merchandisevm.photo != null)
+                {
+                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
+                    saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
+                }
+                //有圖→新圖
+                if (merchandisevm.ImageUrl != null && merchandisevm.photo != null)
+                {
+                    deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
+                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
+                    saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
+                }
+                //有圖→刪除
+                if (merchandisevm.ImageUrl != null && merchandisevm.photo == null && merchandisevm.deleteImageIndicater == true)
+                {
+                    deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
+                    merchandisevm.ImageUrl = null;
+                }
+
                 try
                 {
                     _context.Update(merchandisevm.merchandise);
