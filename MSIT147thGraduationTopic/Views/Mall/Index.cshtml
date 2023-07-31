@@ -1,0 +1,190 @@
+﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.MallDisplay>
+
+@{
+    Layout = "_MallPage";
+    ViewData["Title"] = "尋找商品";
+}
+
+<!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
+@*←**********響應式功能未做****************@
+<nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
+    <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
+        <!-- 關鍵字搜尋 -->
+        <form class="bd-search position-relative me-auto mx-5">
+            <span class="algolia-autocomplete" style="position: relative; display: inline-block; direction: ltr;">
+                <!-- 選擇搜尋條件 -->
+                <label class="input-group-text" for="searchCondition">選擇搜尋條件</label>
+                <select class="form-select conditionname" name="searchCondition">
+                    <option value="1">商品名稱</option>
+                    <option value="2">品牌名稱</option>
+                    <option value="3">類別名稱</option>
+                </select>@*←**********待解決會垂直排列的問題****************@
+                <!-- 輸入關鍵字 -->
+                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="off" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
+                <input type="submit" value="尋找商品" class="btn btn-secondary" />
+                <span class="ds-dropdown-menu" role="listbox" id="algolia-autocomplete-listbox-0" style="position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;">
+                    <div class="ds-dataset-1"></div>
+                </span>
+            </span>
+        </form>
+
+        <div class="dropdown ms-md-auto d-flex mx-5">
+            <!-- 每頁顯示筆數 -->
+            <div class="d-flex select-limit js-select-limit mx-5" style="align-items: center;">
+                每頁顯示 :
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="50">50</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
+                筆
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                <!-- 排序方式 -->
+                <div class="dropdown ms-md-auto">
+                    <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
+                        <option value="0">最新商品</option>
+                        <option value="1">由舊到新</option>
+                        <option value="2">價格由低至高</option>
+                        <option value="3">價格由高至低</option>
+                    </select>
+                </div>
+            }
+        </div>
+
+</nav>
+
+
+<div class="container">
+    <div class="row">
+        <!-- 側邊工具列 -->
+        <div class="col-12 col-md-2 my-3">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
+                <div class="container-fluid ">
+
+                    <!-- 小視窗用摺疊按鈕 -->
+                    <button class="navbar-toggler" href="#sublist" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- 小視窗時摺疊區域 -->
+                    <div class="navbar-collapse collapse">
+                        <ul class="navbar-nav flex-column" id="sublist">
+                            <!-- 摺疊選單1 -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="#sublist1" data-bs-toggle="collapse" aria-expanded="false">商品類別</a>
+                                <ul id="sublist1" class="list-unstyled collapse mx-4">
+                                    <li class="my-1 ">
+                                        <a href="#">類別1</a>
+                                    </li>
+                                    <li class="my-1">
+                                        <a href="#">類別2</a>
+                                    </li>
+                                    <li class="my-1">
+                                        <a href="#">類別3</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- 摺疊選單2 -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="#sublist2" data-bs-toggle="collapse" aria-expanded="false">價格區間</a>
+                                <ul id="sublist2" class="list-unstyled collapse mx-4">
+                                    <li class="my-1">
+                                        <a href="#">改成價格上下限+送出鈕</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+
+        </div>
+
+
+        <!-- 中間商品欄 -->
+        <div class="col-12 col-md-10">
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3" id="showThisPageMerchandise">
+                <!-- 單一商品資料格 -->
+                <div class="col">
+                    <div class="card my-3 mx-2 text-center border-light ">
+                        <img src="圖片/貓罐頭1.webp" class="w-100 img-thumbnail hover-overlay">
+                        <div class="card-body ">
+                            <h6 class="card-title ">商品介紹</h6>
+                            <h5 class="card-text ">商品價格</h5>
+                            <a href="#" class="btn btn-outline-secondary">加入購物車</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分頁 -->
+            <nav aria-label="Page navigation example ">
+                <ul class="pagination justify-content-center mt-4 ">
+                    <li class="page-item border-light">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        let txtKeyword = "";
+        let searchCondition = 1;
+        let pageSize = 20;
+        let displayorder = 0;
+
+        $("#search-input").on("keyup", () => {
+            txtKeyword = $("#search-input").val();
+            console.log(txtKeyword);
+        })
+        $(".conditionname").on("change", (e) => {
+            searchCondition = $(".conditionname").val();
+            console.log(searchCondition);
+        })
+        //todo 送出關鍵字搜尋
+
+        //每頁顯示筆數
+        $(".pageSize").on("click", (e) => {
+            pageSize = $(e.currentTarget).val();
+            console.log(pageSize);
+            SearchProducts();
+        })
+        //選擇排序方式
+        $("#displayorder").on("change", (e) => {
+            displayorder = $("#displayorder").val();
+            console.log(displayorder);
+            SearchProducts();
+        })
+
+        async function SearchProducts() {
+            const response = await fetch(`@Url.Content($"~/ApiMall/DisplaySearchResult/?各參數={}&各參數={}")`);
+            const returnJsonBag = await response.text()
+            const searchResult = JSON.parse(returnJsonBag)
+            // todo 用AJAX生成商品欄位
+        }
+
+    </script>
+}
+
+@section Styles{
+
+}

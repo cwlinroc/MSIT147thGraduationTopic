@@ -31,9 +31,7 @@ namespace MSIT147thGraduationTopic.Controllers
             if (!string.IsNullOrEmpty(txtKeyword))
             {
                 if (searchCondition == 1)
-                {
                     datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
-                }
                 if (searchCondition == 2)
                 {
                     datas = null;
@@ -45,20 +43,14 @@ namespace MSIT147thGraduationTopic.Controllers
                     {
                         MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
                         if (unit != null)
-                        {
                             templist.Add(unit);
-                        }
                     }
                     datas = templist;
                 }
                 if (searchCondition == 3)
-                {
                     datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
-                }
                 if (searchCondition == 4)
-                {
                     datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
-                }
             }
 
             List<MerchandiseSearchVM> list = new List<MerchandiseSearchVM>();
@@ -73,7 +65,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Create
-        public IActionResult Create()
+        public IActionResult Create() //todo 新增上架時間
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
@@ -134,7 +126,6 @@ namespace MSIT147thGraduationTopic.Controllers
                     MerchandiseVM merchandisevm)
         {
             if (id != merchandisevm.MerchandiseId) return NotFound();
-
 
             if (ModelState.IsValid)
             {

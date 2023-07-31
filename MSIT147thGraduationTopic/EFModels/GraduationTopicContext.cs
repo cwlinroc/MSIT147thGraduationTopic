@@ -26,6 +26,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
+        public virtual DbSet<MallDisplay> MallDisplays { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
@@ -44,7 +45,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
             }
         }
 
@@ -181,6 +182,31 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<MallDisplay>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("MallDisplay");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasMaxLength(81);
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(150)
+                    .HasColumnName("ImageURL");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+            });
+
             modelBuilder.Entity<Member>(entity =>
             {
                 entity.Property(e => e.Account)
@@ -273,7 +299,7 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(150)
+                    .HasMaxLength(50)
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
@@ -385,7 +411,7 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.FullName)
                     .IsRequired()
-                    .HasMaxLength(80);
+                    .HasMaxLength(81);
             });
 
             modelBuilder.Entity<SpecWithFullMerchandise>(entity =>
@@ -405,7 +431,7 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(150)
+                    .HasMaxLength(50)
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");

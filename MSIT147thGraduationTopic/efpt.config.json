@@ -80,6 +80,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[MallDisplay]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[MerchandiseSearch]",
          "ObjectType": 3
       },
@@ -96,7 +100,7 @@
          "ObjectType": 3
       }
    ],
-   "UiHint": "libicrystal-base-03.GraduationTopic.dbo",
+   "UiHint": "desktop-rae7e6c.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
