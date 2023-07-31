@@ -11,6 +11,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string NickName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool Gender { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
         public string Account { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
@@ -28,20 +30,22 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string? Password { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
         public string? Address { get; set; }
         public string? Avatar { get; set; }
-        [Required(AllowEmptyStrings = false)]
+        
         public string Salt { get; set; }
-        [Required(AllowEmptyStrings = false)]
+       
         public string ConfirmGuid { get; set; }
-        [Required]
+       
         public bool IsActivated { get; set; }
     }
 
     public class MemberSearchDto
     {
         public int? MemberID { get; set; }
-        public string MemberName { get; set; }
+        public string? MemberName { get; set; }
         public int? MaxQueryNumber { get; set; }
     }
 
@@ -59,6 +63,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 Account = dto.Account,
                 Password = dto.Password,
                 Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
                 Address = dto.Address,
                 Email = dto.Email,
                 Avatar = dto.Avatar,
@@ -77,6 +83,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 NickName = entity.NickName,
                 DateOfBirth = entity.DateOfBirth,
                 Gender = entity.Gender,
+                City = entity.City,
+                District = entity.District,
                 Account = entity.Account,
                 Password = entity.Password,
                 Phone = entity.Phone,
@@ -94,6 +102,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             entity.NickName = dto.NickName;
             entity.Password = dto.Password;
             entity.Phone = dto.Phone;
+            entity.City = dto.City;
+            entity.District = dto.District;
             entity.Address = dto.Address;
             entity.Email = dto.Email;
             entity.Avatar = dto.Avatar;

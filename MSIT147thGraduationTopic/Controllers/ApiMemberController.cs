@@ -41,17 +41,17 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetAllMembers().ToList();
         }
 
-        [HttpGet("{query}")]
-        public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
-        {
-            return _service.GetMemberByNameOrAccount(query).ToList();
-        }
-
-        //[HttpGet("{id}")]
-        //public ActionResult<List<MemberVM>> GetMemberById(int id)
+        //[HttpGet("{query}")]
+        //public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
         //{
-        //    return _service.GetMemberById(id).ToList();
+        //    return _service.GetMemberByNameOrAccount(query).ToList();
         //}
+
+        [HttpGet("{id}")]
+        public ActionResult<List<MemberVM>> GetMemberById(int id)
+        {
+            return _service.GetMemberById(id).ToList();
+        }
 
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)
@@ -70,6 +70,17 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return memberId;
         }
+
+        [HttpPut("memberCenter")]
+        public ActionResult<int> UpdateSelfData([FromForm] MemberEditDto dto, [FromForm] IFormFile? avatar)
+        {
+            int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
+
+            var memberId = _service.EditMember(dto, id, avatar);
+
+            return memberId;
+        }
+
 
         [HttpDelete("{id}")]
         public ActionResult<int> UpdateMember(int id)

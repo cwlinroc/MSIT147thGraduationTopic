@@ -1,4 +1,4 @@
-﻿$('#changeAvatar').click(console.log('test'))
+﻿$('#changeAvatar').click('123')
 
 async function change() {
     const reader = new FileReader()

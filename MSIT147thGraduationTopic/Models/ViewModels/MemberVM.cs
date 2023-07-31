@@ -14,6 +14,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public string Account { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
@@ -50,8 +52,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Phone { get; set; }
 
-        public string selectCity { get; set; }
-        public string selectDistrict { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
 
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Address { get; set; }
@@ -73,6 +75,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
 
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Address { get; set; }
@@ -120,6 +124,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
         public string Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
 
         [Display(Name = "地址")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
@@ -204,6 +210,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Gender = dto.Gender ? "male" : "female",
                 Account = dto.Account,
                 Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
                 Address = dto.Address,
                 Email = dto.Email,
                 Salt = dto.Salt,
@@ -224,7 +232,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Account = vm.Account,
                 Password = vm.Password,
                 Phone = vm.Phone,
-                Address = vm.selectCity + vm.selectDistrict + vm.Address,
+                City = vm.City,
+                District = vm.District,
+                Address = vm.Address,
                 Email = vm.Email,
 
             };
@@ -238,6 +248,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 NickName = dto.NickName,
                 Password = dto.Password,
                 Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
                 Address = dto.Address,
                 Email = dto.Email,
                 Avatar = dto.Avatar,
