@@ -26,7 +26,8 @@
                     密碼:需要6~32位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>
                 <input class="form-control" id="password" name="Password" type="password"
-                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32}"/>                
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32}" required />
+                <div class="invalid-feedback">請輸入密碼</div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
@@ -39,14 +40,16 @@
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">電子信箱</label>
                 <input class="form-control" id="email" name="Email" type="email" 
-                       pattern="^\w+[-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$" />
+                       pattern="^\w+[-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$" required />
+                <div class="invalid-feedback">請輸入電子信箱</div>
                 <div class="invalid-feedback">電子信箱格式錯誤</div>
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
                 <input class="form-control" id="phone" name="Phone" type="tel"
-                       pattern="09\d{8}"/>
+                       pattern="09\d{8}" required />
+                <div class="invalid-feedback">請輸入手機號碼</div>
                 <div class="invalid-feedback">手機格式錯誤</div>
             </div>
             <!-- Address input-->

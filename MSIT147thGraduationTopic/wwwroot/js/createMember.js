@@ -72,7 +72,7 @@ $("#demoMemberRegister").click(() => {
     $('#DateOfBirth').val('1999-09-09');
 })
 
-const forms = document.querySelectorAll('.needs-validation')
+const forms = document.querySelectorAll('.needs-validation');
 
 Array.from(forms).forEach(form => {
     form.addEventListener('submit', async event => {

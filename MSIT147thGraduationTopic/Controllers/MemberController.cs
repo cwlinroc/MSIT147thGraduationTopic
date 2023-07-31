@@ -36,14 +36,14 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = "會員")]
         public IActionResult MemberCenter(int memberId)
         {
             return View(_service.GetMemberById(memberId));
         }
 
         [HttpPost]
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = "會員")]
         public IActionResult ShoppingHistory(int memberId)
         {
             return View(_service.GetMemberById(memberId));

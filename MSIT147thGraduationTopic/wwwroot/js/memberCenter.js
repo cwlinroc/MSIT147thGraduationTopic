@@ -18,11 +18,17 @@ async function getMembers(query) {
 
 //列出會員資料
 function displayMembers() {
-    const datas = memberData.map((element) => {
-        const imageName = (element.avatarName) ? element.avatarName : 'avatar_icon.png'
-        return 
-    })    
-    
+    memberData.map((element) => {
+        $('#nickName').val(element.nickName)
+        $('#password').val(element.password)
+        $('#confirmPassword').val(element.password)
+        $('#email').val(element.email)
+        $('#phone').val(element.phone)
+        $('#selectCity').val(element.selectCity)
+        $('#selectDistrict').val(element.selectDistrict)
+        $('#address').val(element.address)
+    })
+
 }
 
 function checkPasswordMatch() {
