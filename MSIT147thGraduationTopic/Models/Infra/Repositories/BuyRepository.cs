@@ -23,7 +23,8 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                     {
                         MemberId = cartItem.MemberId,
                         CartItemName = merchandise.MerchandiseName + spec.SpecName,
-                        CartItemPrice = spec.Price * spec.DiscountPercentage / 100,
+                        CartItemPrice = spec.Price,
+                        DiscountPercentage = spec.DiscountPercentage,
                         MerchandiseImageName = merchandise.ImageUrl,
                         CartItemId = cartItem.CartItemId,
                         SpecId = cartItem.SpecId,
@@ -32,12 +33,10 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         }
 
 
-        public (string, string) GetMemberAddressAndPhone(int memberId)
+        public MemberDto? GetMemberAddressAndPhone(int memberId)
         {
-            var result = _context.Members.Where(o => o.MemberId == memberId)
-                .Select(m => new Tuple<string, string>(m.Address, m.Phone)).FirstOrDefault();
-            if (result == null) return ("", "");
-            return (result.Item1, result.Item2);
+            var member = _context.Members.FirstOrDefault(o => o.MemberId == memberId);
+            return member?.ToDto();
         }
 
         public IEnumerable<CouponDto> GetAllCouponsAvalible(int memberId)

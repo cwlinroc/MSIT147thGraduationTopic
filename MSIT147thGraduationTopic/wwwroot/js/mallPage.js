@@ -1,4 +1,11 @@
-﻿$(".custom-merchandise").hover(
+﻿//權限錯誤跳轉
+//if (ROLE == '管理員' || ROLE == '經理' || ROLE == '員工') {
+//    window.location.href = ROOT + '/employeebackstage/welcome'
+//}
+
+
+
+$(".custom-merchandise").hover(
     e => $(e.currentTarget).addClass("shadow-lg"),
     e => $(e.currentTarget).removeClass("shadow-lg")
 )
@@ -85,7 +92,6 @@ $(function () {
 //Ajax 登入
 async function LogIn() {
     //驗證
-
     const account = $('#loginAccount').val()
     const password = $('#loginPassword').val()
     //const chkRemember = $('#chkRemember').prop('checked')
@@ -151,3 +157,11 @@ async function LogOut() {
         }
     }
 }
+
+
+
+
+
+
+
+

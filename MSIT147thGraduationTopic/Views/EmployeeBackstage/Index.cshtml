@@ -309,6 +309,9 @@
 
         //Ajax 修改員工權限
         async function submitChangePermission() {
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
+
             const permission = $('#selectPermission').val()
             const id = $('#selectPermission').attr('data-employeeId')
 
@@ -331,10 +334,13 @@
             }
         }
 
+
+        //TODO 不可刪管理員
         //Ajax 刪除員工
         async function deleteEmployee(event) {
-            if (!confirm('是否確認刪除該員工')) return
-            //TODO 輸入密碼確認  不可刪管理員
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
+
             const formData = new FormData(document.createAndEdit)
             const index = event.currentTarget.closest('tr').dataset.index
             const id = employeeData[index].employeeId
@@ -359,15 +365,15 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                    <td>${element.employeeName}</td>
-                    <td>${element.employeeAccount}</td>
-                    <td>${element.permission}</td>
-                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
-                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-                    <td></td>
-                    </tr>`
+                                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                                    <td>${element.employeeName}</td>
+                                    <td>${element.employeeAccount}</td>
+                                    <td>${element.permission}</td>
+                                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+                                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+                                    <td></td>
+                                    </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)

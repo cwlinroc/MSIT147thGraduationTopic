@@ -95,6 +95,7 @@ namespace MSIT147thGraduationTopic.Controllers
                                 new Claim(ClaimTypes.Name, emp.EmployeeAccount),
                                 new Claim("UserName", emp.EmployeeName),
                                 new Claim("AvatarName", emp.AvatarName??""),
+                                new Claim("EmployeeId", emp.EmployeeId.ToString()),
                                 new Claim(ClaimTypes.Email, emp.EmployeeEmail),
                                 new Claim(ClaimTypes.Role, _employeeRoles[emp.Permission-1])
                             };
