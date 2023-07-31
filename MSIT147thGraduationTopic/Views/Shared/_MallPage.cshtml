@@ -80,6 +80,15 @@
                                     <a class="nav-link text-nowrap" href="#" id="btnLogOut">登出</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="@Url.Action("MemberCenter","Member")">會員中心</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="@Url.Action("ShoppingHistory","Member")">購物紀錄</a>
+                                </li>
+                                //<li class="nav-item">
+                                //    <a class="nav-link text-nowrap" href="@Url.Action("","")">優惠券列表</a>
+                                //</li>
+                                <li class="nav-item">                                
                                     <a class="nav-link" href="@Url.Content("~/cart")">
                                         <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>購物車
                                     </a>
@@ -90,7 +99,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-nowrap" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
                                 </li>
-                                <li class="nav-item"><a class="nav-link text-nowrap" href="@Url.Action("CreateMember","Member")">註冊</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="@Url.Action("CreateMember","Member")">註冊</a>
+                                </li>
 
                             }
                         }
@@ -135,7 +146,7 @@
 
                                         <div>
                                             <button type="button" class="btn btn-primary me-2" id="btnLogIn">登入</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-secondary" id="btnCancel" data-bs-dismiss="modal">取消</button>
                                         </div>
                                     </form>
 
@@ -143,7 +154,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" id="demoEmployee">demoEmployee</button>
+                        <button type="button" id="demoAdmin">demoAdmin</button>                       
+                        <button type="button" id="demoManager">demoManager</button>
+                        <button type="button" id="demoMember">demoMember</button>
                     </div>
                 </div>
             </div>

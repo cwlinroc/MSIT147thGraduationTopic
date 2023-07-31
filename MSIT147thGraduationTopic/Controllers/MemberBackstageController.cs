@@ -8,5 +8,11 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult MemberList()
+        {
+            return PartialView("GetAllMembers","ApiMember");
+        }
     }
 }

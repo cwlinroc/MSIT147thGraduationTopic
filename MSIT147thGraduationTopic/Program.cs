@@ -23,9 +23,6 @@ builder.Services.AddDbContext<GraduationTopicContext>(
 //AspNetCore.Authentication 用戶驗証操作機制註冊 DI  (在 Controller 範圍外使用方式)
 builder.Services.AddHttpContextAccessor();
 
-//自訂用戶登入資訊操作註冊 DI
-builder.Services.AddScoped<UserInfoService>();
-
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -74,6 +71,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=Index}/{id?}");
+    pattern: "{controller=member}/{action=membercenter}/{id?}");
 
 app.Run();

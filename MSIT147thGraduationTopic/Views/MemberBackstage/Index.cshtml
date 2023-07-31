@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "會員管理系統";
+}
+
+<section class="py-5">
+    <div class="container px-5 my-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bolder">會員管理系統</h1>
+            <p class="lead fw-normal text-muted"></p>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-1"></div><!--左空白區域-->
+                <div class="col-lg-2">
+                    <label>ID</label>
+                    <input type="text" class="form-control" placeholder="請輸入ID">
+                </div>
+                <div class="col-lg-2">
+                    <label>名稱</label>
+                    <input type="text" class="form-control" placeholder="請輸入名稱">
+                </div>
+                <div class="col-lg-4"></div><!--中空白區域-->
+                <div class="col-lg-2">
+                    <button type="button" class="btn btn-primary">搜尋</button>
+                    <button type="button" class="btn btn-primary">重置</button>
+                </div>
+                <div class="col-lg-1"></div><!--右空白區域-->
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-5 bg-light">
+    @{
+        await Html.RenderPartialAsync("MemberList");
+    }
+</section>
+
+@section Styles{
+
+}
+
+@section Scripts{
+   
+}

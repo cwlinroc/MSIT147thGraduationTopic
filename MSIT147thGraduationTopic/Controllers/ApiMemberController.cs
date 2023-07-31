@@ -42,21 +42,29 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpGet("{query}")]
-        public ActionResult<List<MemberVM>> GetMembersByNameOrAccount(string query)
+        public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
         {
-            return _service.GetMembersByNameOrAccount(query).ToList();
+            return _service.GetMemberByNameOrAccount(query).ToList();
         }
 
+        //[HttpGet("{id}")]
+        //public ActionResult<List<MemberVM>> GetMemberById(int id)
+        //{
+        //    return _service.GetMemberById(id).ToList();
+        //}
+
         [HttpPost]
-        public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile avatar)
+        public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)
         {
             var memberId = _service.CreateMember(vm.ToDto(), avatar);
 
             return memberId;
         }
 
+
+
         [HttpPut("{id}")]
-        public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile avatar)
+        public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
             var memberId = _service.EditMember(dto, id, avatar);
 
@@ -69,8 +77,8 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.DeleteMember(id);
         }
 
-        //public record LoginRecord([Required] string Account, [Required] string Password, bool chkRemember);
-        public record LoginRecord([Required] string Account, [Required] string Password, bool chkRemember);
+        
+        public record LoginRecord([Required] string Account, [Required] string Password);
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn(LoginRecord record)
         {
@@ -130,19 +138,6 @@ namespace MSIT147thGraduationTopic.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Url.Content("~/home/index");
         }
-
-        ////載入縣市
-        //public IActionResult Cities()
-        //{
-        //    var cities = _context.Address.Select(a => a.City).Distinct();
-        //    return Json(cities);
-        //}
-        ////根據縣市載入鄉鎮區
-        //public IActionResult Districts(string city)
-        //{
-        //    var district = _context.Address.Where(a => a.City == city)
-        //        .Select(a => a.SiteId).Distinct();
-        //    return Json(district);
-        //}
+                
     }
 }
