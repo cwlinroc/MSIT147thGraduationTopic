@@ -23,9 +23,6 @@ builder.Services.AddDbContext<GraduationTopicContext>(
 //AspNetCore.Authentication 用戶驗証操作機制註冊 DI  (在 Controller 範圍外使用方式)
 builder.Services.AddHttpContextAccessor();
 
-//自訂用戶登入資訊操作註冊 DI
-builder.Services.AddScoped<UserInfoService>();
-
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -38,11 +35,7 @@ builder.Services.AddSession(options =>
 //==== AspNetCore.Authentication 全域範圍的驗証機制組態設置 ===== (全環境 cookie 套用)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-        {
-            //未登入時會自動移轉到此網址。
-            //options.LoginPath = new PathString("/Member/NoLogin");
-            //未授權角色時會自動移轉到此網址。
-            //options.AccessDeniedPath = new PathString("/Member/NoRole");
+        {            
             //登入1hr後會失效
             options.ExpireTimeSpan = TimeSpan.FromHours(1);
         });
@@ -74,6 +67,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Member}/{action=CreateMember}/{id?}");
+    pattern: "{controller=member}/{action=membercenter}/{id?}");
 
 app.Run();

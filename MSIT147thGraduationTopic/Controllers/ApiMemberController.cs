@@ -47,11 +47,11 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetMemberByNameOrAccount(query).ToList();
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<List<MemberVM>> GetMemberById(int id)
-        {
-            return _service.GetMemberById(id).ToList();
-        }
+        //[HttpGet("{id}")]
+        //public ActionResult<List<MemberVM>> GetMemberById(int id)
+        //{
+        //    return _service.GetMemberById(id).ToList();
+        //}
 
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)

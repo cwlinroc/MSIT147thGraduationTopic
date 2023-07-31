@@ -35,18 +35,18 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
 
-        [HttpPost]
-        [Authorize(Roles = "會員")]
-        public IActionResult MemberCenter(int memberId)
+        //[HttpPost]
+        //[Authorize(Roles = "會員")]
+        public IActionResult MemberCenter()
         {
-            return View(_service.GetMemberById(memberId));
+            return View();
         }
 
-        [HttpPost]
-        [Authorize(Roles = "會員")]
-        public IActionResult ShoppingHistory(int memberId)
+        //[HttpPost]
+        //[Authorize(Roles = "會員")]
+        public IActionResult ShoppingHistory()
         {
-            return View(_service.GetMemberById(memberId));
+            return View();
         }
 
         

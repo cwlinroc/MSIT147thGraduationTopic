@@ -8,21 +8,9 @@
 </div>
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-2 offset-1">
-        <div class="text-center mb-3">
-            <img class="img-fluid rounded-circle mb-4"
-                 src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-            <br>
-            <div class="input-group">
-                <input type="file" class="form-control" aria-label="Select Avatar">
-                <button class="btn btn-primary" type="submit">更換頭像</button>
-            </div>
-        </div>
-        <br />
-        <ul class="ms-5 fs-4" id="sidelist">
-            <li><a href="會員中心.html" class="text-decoration-none">會員中心</a></li>
-            <li><a href="查詢購物紀錄.html" class="text-decoration-none">查詢購物紀錄</a></li>
-            <li><a href="優惠券.html" class="text-decoration-none">優惠券列表</a></li>
-        </ul>
+        @{
+            await Html.RenderPartialAsync("MemberSidebar");
+        }
     </div>
     <div class="col-lg-6 offset-2 fs-4">
         <div class="border px-4 py-2 mb-3">
@@ -110,3 +98,7 @@
         </nav>
     </div>
 </div>
+
+@section Scripts{    
+    <script src="~/js/Member/memberSidebar.js"></script>
+}

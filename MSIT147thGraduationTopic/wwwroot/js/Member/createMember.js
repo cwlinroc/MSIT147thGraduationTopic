@@ -94,7 +94,7 @@ Array.from(forms).forEach(form => {
 
         const response = await fetch(`${ROOT} /api/ApiMember`, {
             body: formData,
-            method: 'POST'
+            method: 'post'
         })
 
         if (!response.ok) {

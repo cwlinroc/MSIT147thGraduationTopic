@@ -1,32 +1,32 @@
 ﻿let memberData = null;
-getMembers();
+getMemberById();
 
 //Ajax 得到會員資料
-async function getMembers(query) {
-    let str = '';
-    if (query) str = '/' + query;
+async function getMemberById(id) {
+    let str = ''
+    if (id) str = '/' + id
 
-    const response = await fetch('@Url.Content("~/api/apiMember")' + str);
+    const response = await fetch(`${ROOT}/api/apiMember/GetMemberById${str}`);
 
     if (!response.ok) return;
     const data = await response.json();
 
     memberData = data
     console.log(data);
-    displayMembers();
+    displayMember();
 }
 
 //列出會員資料
-function displayMembers() {
-    memberData.map((element) => {
-        $('#nickName').val(element.nickName)
-        $('#password').val(element.password)
-        $('#confirmPassword').val(element.password)
-        $('#email').val(element.email)
-        $('#phone').val(element.phone)
-        $('#selectCity').val(element.selectCity)
-        $('#selectDistrict').val(element.selectDistrict)
-        $('#address').val(element.address)
+function displayMember() {
+    memberData.map((e) => {
+        $('#nickName').val(e.nickName)
+        $('#password').val(e.password)
+        $('#confirmPassword').val(e.password)
+        $('#email').val(e.email)
+        $('#phone').val(e.phone)
+        $('#selectCity').val(e.selectCity)
+        $('#selectDistrict').val(e.selectDistrict)
+        $('#address').val(e.address)
     })
 
 }
@@ -98,7 +98,7 @@ Array.from(forms).forEach(form => {
         if (!form.checkValidity()) {
             await Swal.fire({
                 icon: 'error',
-                title: '註冊失敗!',
+                title: '修改失敗!',
                 text: '資料有錯誤,請修改',
                 allowOutsideClick: false,
             })

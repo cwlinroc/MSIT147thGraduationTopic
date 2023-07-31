@@ -7,7 +7,7 @@
     <div class="container px-5 my-5">
         <div class="text-center mb-5">
             <h1 class="fw-bolder">會員管理系統</h1>
-            <p class="lead fw-normal text-muted mb-0"></p>
+            <p class="lead fw-normal text-muted"></p>
         </div>
         <div class="container">
             <div class="row">
@@ -31,18 +31,10 @@
     </div>
 </section>
 <section class="py-5 bg-light">
-    @Html.Partial("MemberList")
+    @{
+        await Html.RenderPartialAsync("MemberList");
+    }
 </section>
-<section class="py-5 bg-light">
-    <div class="container px-5 my-5">
-        <div class="row">
-            <div class="col">
-                <span class="text-muted">目前資料筆數:0/0</span>
-            </div>
-        </div>
-    </div>
-</section>
-
 
 @section Styles{
 

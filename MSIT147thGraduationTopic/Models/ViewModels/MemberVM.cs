@@ -50,6 +50,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Phone { get; set; }
 
+        public string selectCity { get; set; }
+        public string selectDistrict { get; set; }
+
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Address { get; set; }
 
@@ -58,7 +61,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Email { get; set; }
         public string? Avatar { get; set; }
-        
+
     }
 
     public class MemberEditVM
@@ -221,9 +224,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Account = vm.Account,
                 Password = vm.Password,
                 Phone = vm.Phone,
-                Address = vm.Address,
+                Address = vm.selectCity + vm.selectDistrict + vm.Address,
                 Email = vm.Email,
-                
+
             };
         }
 
