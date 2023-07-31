@@ -21,36 +21,30 @@ namespace MSIT147thGraduationTopic.Controllers
                         select new EvaluationVM
                         {
                             OrderId = x.OrderId,
-                            //MerchandiseId = x.MerchandiseId,
                             MerchandiseName = x.Merchandise.MerchandiseName,
                             Comment = x.Comment,
                             Score = x.Score,
-                        };
-
-            //List<EvaluationVM> e = new List<EvaluationVM>();
-            
+                        };            
             return View(model);
 
         }
-         public async Task<IActionResult> Delete(int? evaluationId)
+        public IActionResult Delete(int id)
         {
-            if (evaluationId == null || _context.Evaluations == null)
+            var evaluation = _context.Evaluations.FirstOrDefault(e => e.EvaluationId == id);
+            
+            if (evaluation != null)
             {
-                return NotFound();
+                _context.Evaluations.Remove(evaluation);
+                _context.SaveChanges();
             }
+            
+            return RedirectToAction("EBIndex");
 
-            var evaluation = await _context.Evaluations
-                
-                .Include(e => e.Merchandise)
-                .Include(e => e.Order)
-                .FirstOrDefaultAsync(m => m.EvaluationId == evaluationId);
-            if (evaluation == null)
-            {
-                return NotFound();
-            }
-
-            return View(evaluation);
+            
         }
+
+        
+
     }
 
 }

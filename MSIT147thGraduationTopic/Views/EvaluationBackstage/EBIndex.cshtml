@@ -6,10 +6,6 @@
 }
 
 
-
-@*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
 <div class="container mt-5">
     <div class="row">
         <div class="col-1"></div>
@@ -35,7 +31,7 @@
                             @Html.DisplayNameFor(model => model.OrderId)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Merchandise.MerchandiseName)
+                            @Html.DisplayNameFor(model => model.MerchandiseName)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Score)
@@ -61,7 +57,7 @@
                                 @Html.DisplayFor(modelItem => item.OrderId)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Merchandise.MerchandiseName)
+                                @Html.DisplayFor(modelItem => item.MerchandiseName)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Score)
@@ -70,8 +66,8 @@
                                 @Html.DisplayFor(modelItem => item.Comment)
                             </td>
                             <td>
-                                <button type="submit" id="btnDelete" class="btn btn-primary">刪除</button>
-                                <a asp-action="Delete" asp-route-id="@item.EvaluationId">Delete</a>
+                                <button type="submit" id="btnDelete" class="btn btn-primary" data-id="@item.EvaluationId">刪除</button>
+                                @*<a asp-action="Delete" asp-route-id="@item.EvaluationId">Delete</a>*@
                             </td>
                             
                         </tr>
@@ -103,28 +99,14 @@
 
 @section Scripts{
     <script>
-        ////step1 先找到要控制的對象
-        //const btn = document.querySelector('#btnDelete');
-        ////step2 在甚麼的行為下
-        //btn.addEventListener('click', () => {
-        //    //step3 要做甚麼事 >>透過XMLHttpRequest物件對伺服器發出要求(Request)以及接收伺服器回應(Response)的資料
+        $('.btnDelete').click(function () {
+            var evaluationId = $(this).current('data-id');
 
-        //    //step1 建立Ajax物件
-        //    const xhr = new XMLHttpRequest();
+            console.log(evaluationId);
 
-        //    //step2 對伺服器發出要求
-        //    xhr.open('Get', '/EvaluationBackstage/Delete')   //得到EvaluationBackstageController中Delete回傳的值
-        //    xhr.send();
-
-        //    //step3 接收伺服器回應(Response)的資料
-        //    //load事件表示伺服器已經回應資料了
-        //    xhr.addEventListener('load', () => {
-        //        //接收資料
-        //        const data = xhr.responseText;
-        //        //顯示資料
-              
-        //    })
-
-        //})
+            $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
+                window.location.reload(); //重載畫面
+            });
+        });
     </script>
 }
