@@ -6,15 +6,15 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class SpecWithMerchandiseNameVM
     {
-        private SpecWithMerchandiseName _specWm;
-        public SpecWithMerchandiseName spec
+        private SpecWithFullMerchandise _specWm;
+        public SpecWithFullMerchandise spec
         {
             get { return _specWm; }
             set { _specWm = value; }
         }
         public SpecWithMerchandiseNameVM()
         {
-            _specWm = new SpecWithMerchandiseName();
+            _specWm = new SpecWithFullMerchandise();
         }
 
         [DisplayName("規格ID")]

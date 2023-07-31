@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Configuration;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.Configure<OptionSettings>(builder.Configuration.GetSection("OptionSettings"));
+builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -13,32 +20,34 @@ builder.Services.AddDbContext<GraduationTopicContext>(
     option => option.UseSqlServer(builder.Configuration.GetConnectionString
     ("GraduationTopicConnection")));
 
-//AspNetCore.Authentication �Τ�����ާ@������U DI  (�b Controller �d��~�ϥΤ覡)
+//AspNetCore.Authentication 用戶驗証操作機制註冊 DI  (在 Controller 範圍外使用方式)
 builder.Services.AddHttpContextAccessor();
 
-//�ۭq�Τ�n�J��T�ާ@���U DI
+//自訂用戶登入資訊操作註冊 DI
 builder.Services.AddScoped<UserInfoService>();
 
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromMinutes(10);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
-//==== AspNetCore.Authentication ����d���������պA�]�m ===== (������ cookie �M��)
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)    
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options => 
+//==== AspNetCore.Authentication 全域範圍的驗証機制組態設置 ===== (全環境 cookie 套用)
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
         {
-            //���n�J�ɷ|�۰ʲ���즹���}�C
-            options.LoginPath = new PathString("/MemberFront/NoLogin");
-            //�����v����ɷ|�۰ʲ���즹���}�C
-            options.AccessDeniedPath = new PathString("/MemberFront/NoRole");
-            //�n�J10����|����
+            //未登入時會自動移轉到此網址。
+            options.LoginPath = new PathString("/Member/NoLogin");
+            //未授權角色時會自動移轉到此網址。
+            options.AccessDeniedPath = new PathString("/Member/NoRole");
+            ///登入10分後會失效
             options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
         });
+
+
 
 var app = builder.Build();
 
@@ -55,8 +64,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-//==== AspNetCore.Authentication �Τ�n�J����ާ@����ϥ� ====
-//���涶�Ǥ����A�ˤ��M����\��|�L�k���`�u�@�C
+//==== AspNetCore.Authentication 用戶登入驗証操作機制使用 ====
+//執行順序不能顛倒不然驗証功能會無法正常工作。
 app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -65,6 +74,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Merchandises}/{action=Index}/{id?}");
+    pattern: "{controller=EmployeeBackstage}/{action=Index}/{id?}");
 
 app.Run();

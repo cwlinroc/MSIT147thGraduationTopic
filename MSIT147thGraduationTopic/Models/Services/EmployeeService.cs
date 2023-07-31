@@ -14,30 +14,32 @@ namespace MSIT147thGraduationTopic.Models.Services
     {
         private readonly GraduationTopicContext _context;
         private readonly EmployeeRepository _repo;
-        private readonly IWebHostEnvironment _environemnt;
-        //TODO add to app settings
-        private readonly string[] _permissions = { "管理員", "經理", "員工" };
-        public EmployeeService(GraduationTopicContext context, IWebHostEnvironment environemnt)
+        private readonly IWebHostEnvironment _environment;
+        private readonly string[] _roles ;
+        public EmployeeService(GraduationTopicContext context
+            , IWebHostEnvironment environment
+            , string[] roles)
         {
             _context = context;
-            _environemnt = environemnt;
+            _environment = environment;
             _repo = new EmployeeRepository(context);
+            _roles = roles;
         }
 
         public IEnumerable<EmployeeVM> GetAllEmployees()
         {
             return _repo.GetAllEmployees().Select(dto =>
             {
-                string htmlFilePath = Path.Combine(_environemnt.WebRootPath, "uploads\\employeeAvatar");
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
 
                 return dto.ToVM();
             });
         }
-        public IEnumerable<EmployeeVM> GetEmployeesByNameOrAccount(string query)
+        public IEnumerable<EmployeeVM> queryEmployeesByNameOrAccount(string query)
         {
-            return _repo.GetEmployeesByNameOrAccount(query).Select(dto =>
+            return _repo.queryEmployeesByNameOrAccount(query).Select(dto =>
             {
-                string htmlFilePath = Path.Combine(_environemnt.WebRootPath, "uploads\\employeeAvatar");
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
 
                 return dto.ToVM();
             });
@@ -47,7 +49,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             if (file != null)
             {
-                string path = Path.Combine(_environemnt.WebRootPath, @"uploads\employeeAvatar", file.FileName);
+                string path = Path.Combine(_environment.WebRootPath, @"uploads\employeeAvatar", file.FileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
@@ -68,7 +70,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             if (file != null)
             {
-                string path = Path.Combine(_environemnt.WebRootPath, @"uploads\employeeAvatar", file.FileName);
+                string path = Path.Combine(_environment.WebRootPath, @"uploads\employeeAvatar", file.FileName);
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
@@ -81,20 +83,29 @@ namespace MSIT147thGraduationTopic.Models.Services
 
         public int ChangeEmployeePermission(int id, string permission)
         {
-            string s = _permissions[0];
+            string s = _roles[0];
 
-            int permissionId = Array.IndexOf(_permissions, permission) + 1;
+            int permissionId = Array.IndexOf(_roles, permission) + 1;
 
             if (permissionId <= 0 || permissionId > 3) return -1;
 
             return _repo.ChangeEmployeePermission(id, permissionId);
         }
 
-
-
         public int DeleteEmployee(int employeeId)
         {
             return _repo.DeleteEmployee(employeeId);
         }
+
+        //public async Task<EmployeeDto?> ValidateEmployeeAccount(string account, string password)
+        //{
+        //    var employee = await _repo.GetEmployeeByAccount(account);
+        //    if (employee == null) return null;
+
+
+
+        //}
+
+
     }
 }

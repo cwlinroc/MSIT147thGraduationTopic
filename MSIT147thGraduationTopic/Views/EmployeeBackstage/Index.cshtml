@@ -35,13 +35,14 @@
                     <table class="table table-light table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>頭像</th>
+                                <th class="ps-5" style="width:10rem">頭像</th>
                                 <th>姓名</th>
                                 <th>帳號名稱</th>
                                 <th>權限</th>
-                                <th>修改</th>
-                                <th>權限調整</th>
-                                <th>刪除</th>
+                                <th style="width:5rem" class="text-center">修改</th>
+                                <th style="width:5rem" class="text-center">權限調整</th>
+                                <th style="width:5rem" class="text-center">刪除</th>
+                                <th style="width:3rem" class="text-center"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -185,7 +186,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                <button type="button" class="btn btn-primary" id="btnChangeRole">確認</button>
+                <button type="button" class="btn btn-primary" id="btnChangePermission">確認</button>
             </div>
 
         </div>
@@ -218,6 +219,9 @@
         })
         //搜尋按鈕
         $('#queryButton').click(e => getEmployees($('#query').val()))
+        //修改權限按鈕
+        $('#btnChangePermission').click(submitChangePermission)
+
 
         /**functions**/
 
@@ -303,6 +307,30 @@
             }
         }
 
+        //Ajax 修改員工權限
+        async function submitChangePermission() {
+            const permission = $('#selectPermission').val()
+            const id = $('#selectPermission').attr('data-employeeId')
+
+            const response = await fetch(`@Url.Content("~/api/apiemployee/permission")/${id}`, {
+                body: JSON.stringify({ 'permission': permission }),
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', },
+            })
+
+            if (response.status == 400) {
+                console.log("輸入格式錯誤")
+            }
+
+            if (response.ok) {
+                const data = await response.json()
+                console.log(data)
+                getEmployees()
+                alert('修改成功')
+                permissionModal.hide()
+            }
+        }
+
         //Ajax 刪除員工
         async function deleteEmployee(event) {
             if (!confirm('是否確認刪除該員工')) return
@@ -331,14 +359,15 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-            <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-            <td>${element.employeeName}</td>
-            <td>${element.employeeAccount}</td>
-            <td>${element.permission}</td>
-            <td><button class="btn btn-primary edit-btn">修改</button></td>
-            <td><button class="btn btn-danger permission-btn">調整權限</button></td>
-            <td><button class="btn btn-danger delete-btn">刪除</button></td>
-            </tr>`
+                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                    <td>${element.employeeName}</td>
+                    <td>${element.employeeAccount}</td>
+                    <td>${element.permission}</td>
+                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+                    <td></td>
+                    </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
@@ -406,6 +435,7 @@
             //TODO輸入密碼驗證
             const index = +$(event.currentTarget).closest('tr').attr('data-index')
             $('#selectPermission').val(employeeData[index].permission)
+                .attr('data-employeeId', employeeData[index].employeeId)
             permissionModal.show()
         }
 
@@ -431,17 +461,21 @@
 
                 const password = document.querySelector('#password')
                 const passwordValid = !!password.value
-                password.setValidate(() => passwordValid)
+                const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
+                password.setValidate(() => passwordValid, '請輸入密碼').setValidate(() => passwordPatternValid, '密碼不符合格式(必須包含英文大小寫及數字)')
 
                 const phone = document.querySelector('#phone')
                 const phoneValid = !!phone.value
+                //const Phone
                 phone.setValidate(() => phoneValid)
 
                 const email = document.querySelector('#email')
                 const emailValid = !!email.value
-                email.setValidate(() => emailValid)
+                const emailPatternValid = /^\w+@@\w+/.test(email.value)
+                email.setValidate(() => emailValid, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
                 //// 要全部都正確，才能送回true確認表單正確
-                return nameValid && phoneValid && emailValid && passwordValid && accountValid
+                return nameValid && phoneValid && emailValid && passwordValid
+                    && accountValid && passwordPatternValid && emailPatternValid
             })
             //// 4. myValid.startValidate() //開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
             return myValid.startValidate()

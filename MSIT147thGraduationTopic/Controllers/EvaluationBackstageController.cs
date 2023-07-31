@@ -3,18 +3,14 @@ using MSIT147thGraduationTopic.EFModels;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
-    public class EvaluationsController : Controller
+    public class EvaluationBackstageController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult BackStage()
+        public IActionResult EBIndex()
         {
             List<Evaluation> model = new List<Evaluation>();
 
             return View(model);
-        }
+        }      
     }
+
 }

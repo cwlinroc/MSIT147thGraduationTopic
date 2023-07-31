@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MSIT147thGraduationTopic.Controllers
@@ -14,13 +19,15 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         private readonly GraduationTopicContext _context;
         private readonly EmployeeService _service;
-        private readonly IWebHostEnvironment _environemnt;
+        private readonly IWebHostEnvironment _environment;
 
-        public ApiEmployeeController(GraduationTopicContext context, IWebHostEnvironment environemnt)
+        public ApiEmployeeController(GraduationTopicContext context
+            , IWebHostEnvironment environment
+            , IOptions<OptionSettings> options)
         {
             _context = context;
-            _environemnt = environemnt;
-            _service = new EmployeeService(context, environemnt);
+            _environment = environment;
+            _service = new EmployeeService(context, environment, options.Value.EmployeeRoles!);
         }
 
         [HttpGet]
@@ -32,7 +39,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet("{query}")]
         public ActionResult<List<EmployeeVM>> GetEmployeesByNameOrAccount(string query)
         {
-            return _service.GetEmployeesByNameOrAccount(query).ToList();
+            return _service.queryEmployeesByNameOrAccount(query).ToList();
         }
 
         [HttpPost]
@@ -51,13 +58,16 @@ namespace MSIT147thGraduationTopic.Controllers
             return employeeId;
         }
 
+        public record Container([Required] string Permission);
+
         [HttpPut("permission/{id}")]
-        public ActionResult<int> UpdateEmployeePermission(int id, string permission)
+        public ActionResult<int> UpdateEmployeePermission(Container permission, int id = 0)
         {
-            var employeeId = _service.ChangeEmployeePermission(id, permission);
+            var employeeId = _service.ChangeEmployeePermission(id, permission.Permission);
 
             return employeeId;
         }
+
 
         [HttpDelete("{id}")]
         public ActionResult<int> UpdateEmployee(int id)
