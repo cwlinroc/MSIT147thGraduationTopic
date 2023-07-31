@@ -63,5 +63,14 @@ async function confirmWithPassword() {
     }
 
     const result = await response.json()
+
+    if (!result) {
+        await Swal.fire(
+            '錯誤!',
+            '輸入密碼錯誤!',
+            'error')
+    }
+
+
     return result
 }

@@ -278,7 +278,11 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('輸入成功')
+                await Swal.fire(
+                    '輸入成功!',
+                    '員工資料已新增!',
+                    'success'
+                )
                 mainModal.hide()
             }
         }
@@ -302,7 +306,12 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('修改成功')
+                //alert('修改成功')
+                await Swal.fire(
+                    '修改成功!',
+                    '員工資料已修改!',
+                    'success'
+                )
                 mainModal.hide()
             }
         }
@@ -329,7 +338,12 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('修改成功')
+                //alert('修改成功')
+                await Swal.fire(
+                    '修改成功!',
+                    '員工權限已修改!',
+                    'success'
+                )
                 permissionModal.hide()
             }
         }
@@ -355,7 +369,12 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('刪除成功')
+                //alert('刪除成功')
+                await Swal.fire(
+                    '刪除成功!',
+                    '該員工已刪除!',
+                    'success'
+                )
                 mainModal.hide()
             }
         }
