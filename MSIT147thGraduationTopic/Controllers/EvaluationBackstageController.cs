@@ -20,6 +20,7 @@ namespace MSIT147thGraduationTopic.Controllers
                         
                         select new EvaluationVM
                         {
+                            EvaluationId = x.EvaluationId,
                             OrderId = x.OrderId,
                             MerchandiseName = x.Merchandise.MerchandiseName,
                             Comment = x.Comment,
@@ -28,6 +29,7 @@ namespace MSIT147thGraduationTopic.Controllers
             return View(model);
 
         }
+        [HttpPost]
         public IActionResult Delete(int id)
         {
             var evaluation = _context.Evaluations.FirstOrDefault(e => e.EvaluationId == id);
@@ -38,12 +40,16 @@ namespace MSIT147thGraduationTopic.Controllers
                 _context.SaveChanges();
             }
             
-            return RedirectToAction("EBIndex");
-
-            
+            return RedirectToAction("EBIndex");            
         }
 
-        
+        public IActionResult Search()
+        {
+            
+            return RedirectToAction("EBIndex");
+        }
+
+
 
     }
 
