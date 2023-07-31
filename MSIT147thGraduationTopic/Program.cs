@@ -37,9 +37,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
         {
             //未登入時會自動移轉到此網址。
-            options.LoginPath = new PathString("/Member/NoLogin");
+            //options.LoginPath = new PathString("/Member/NoLogin");
             //未授權角色時會自動移轉到此網址。
-            options.AccessDeniedPath = new PathString("/Member/NoRole");
+            //options.AccessDeniedPath = new PathString("/Member/NoRole");
             ///登入1小時後會失效
             options.ExpireTimeSpan = TimeSpan.FromHours(1);
         });
@@ -71,6 +71,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=member}/{action=membercenter}/{id?}");
+    pattern: "{controller=home}/{action=index}/{id?}");
 
 app.Run();

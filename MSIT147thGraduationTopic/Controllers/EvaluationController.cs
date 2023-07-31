@@ -58,6 +58,9 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             _context.Evaluations.AddRange(datalist);
             //_context.Evaluations.Savechange();
+
+            //刪掉
+            return BadRequest();
         }
 
 
