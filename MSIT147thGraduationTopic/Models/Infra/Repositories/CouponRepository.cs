@@ -58,5 +58,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context.SaveChanges();
             return couponId;
         }
+
+        //public int DetectionName(string name)
+        //{
+        //    var coupon = _context.Coupons.FirstOrDefault(c=>c.CouponName == name);
+
+        //    if(coupon != null)
+        //    {
+
+        //    }
+        //}
     }
 }

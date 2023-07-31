@@ -43,12 +43,12 @@
                                         <td scope="col">@c.CouponEndDate</td>
                                         <td scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
                                         <td scope="col">
-                                            <button id="btnEditDiscont" class="btn btn-success">
+                                            <button type="button" id="btnEditDiscont" class="btn btn-success">
                                                 修改
                                             </button>
                                         </td>
                                         <td scope="col">
-                                            <button id="btnDelete" class="btn btn-danger">
+                                            <button type="button" id="btnDelete" class="btn btn-danger">
                                                 刪除
                                             </button>
                                         </td>
@@ -91,12 +91,12 @@
                                         <td scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
                                         <td scope="col">@c.CouponDiscount.ToString("#.##")</td>
                                         <td scope="col">
-                                            <button id="btnEditRebate" class="btn btn-success">
+                                            <button type="button" id="btnEditRebate" class="btn btn-success">
                                                 修改
                                             </button>
                                         </td>
                                         <td scope="col">
-                                            <button id="btnDelete" class="btn btn-danger">
+                                            <button type="button" id="btnDelete" class="btn btn-danger">
                                                 刪除
                                             </button>
                                         </td>
@@ -146,74 +146,66 @@
 
 @section Scripts{
     <script>
-        $('#btnEditDiscont').on('click', function () {
-            console.log('123')
-            location.href = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit")`;
-        })
-
-        $('#btnEditRebate').on('click', function () {
-            console.log('456')
-            location.href = `@Url.Content("~/CouponsBackstageSettings/Create")`;
-        })
-
-        $('#btnCreate').on('click', function () {
-            console.log('789')
-            location.href = `@Url.Content("~/CouponsBackstageSettings/Create")`;
-        })
-
-        ////優惠券種類標籤
-        //$(document).ready(function () {
-        //    // tab點擊事件
-        //    $('.nav-link').on('click', function () {
-        //        // 從 'data-bs-target' 屬性獲取目標選項卡的 id
-        //        const targettabid = $(this).attr('data-bs-target');
-
-        //        //屏蔽其他標籤
-        //        $('.tab-pane').removeclass('show active');
-
-        //        // 將“show active”顯示到選擇的標籤頁面
-        //        $(targettabid).addclass('show active');
-        //    });
-        //});
-
         //按鈕間隔
         $(document).ready(function () {
             // 將margin-right屬性設置為20px
             $('#Discount').css('margin-right', '20px');
         });
 
-                //按鈕超連結
+        $('#btnEditDiscont').on('click', function () {
+            const couponId = $(this).closest('tr').find('td:eq(0)').text();
+            const editUrl = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit/")${couponId}`;
+            console.log(couponId);
+            location.href = editUrl;
+            //console.log('123')
+            //location.href = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit")`;
+        })
 
+        $('#btnEditRebate').on('click', function () {
+            const couponId = $(this).closest('tr').find('td:eq(0)').text();
+            const editUrl = `@Url.Content("~/CouponsBackstageSettings/RebateEdit/")${couponId}`;
+            console.log(couponId);
+            location.href = editUrl;
+            //console.log('456')
+            //location.href = `@Url.Content("~/CouponsBackstageSettings/RebateEdit")`;
+        })
 
-                //Ajax刪除
-                //async function DeleteDiscount(event) {
-                //    const formData = new FormData(document.listOfDiscount)
-                //    const index = $('#listOfDiscount').attr('data-index')
-                //    const id = couponData[index].couponId
+        //刪除
+        $('.btnDelete').click(function () {
+            const couponId = $(this).closet('tr').find('td:eq(0)').text();
+            const deleteUrl = `@Url.Content("~/api/apicoupon/")${couponId}`;
 
-                //    const response = await fetch(`@Url.Content("~/api/apiCoupon")/${id}`,{method:'DELETE'})
+            Swal.fire({
+                title: '確定要刪除優惠券？',
+                text: '優惠券資料將被移除',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF2D2D',
+                cancelButtonColor: '#019858',
+                confirmButtonText: '刪除',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: deleteUrl,
+                        type: 'DELETE',
+                        success: function (data) {
+                            console.log(data);
+                            Swal.fire('刪除成功', '資料已刪除', '確認').then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                            Swal.fire('刪除失敗', '資料刪除失敗', '確認');
+                        }
+                    });
+                }
+            });
+        });
 
-                //    Swal.fire({
-                //        title: '確定要刪除優惠券？',
-                //        text: "優惠券資料將會被移除！",
-                //        icon: 'warning',
-                //        showCancelButton: true,
-                //        confirmButtonColor: '#FF2D2D',
-                //        cancelButtonColor: '#019858',
-                //        confirmButtonText: '刪除'
-                //                        cancelButtonColor: '取消'
-                //    }).then((result) => {
-                //        if (result.isConfirmed) {
-                //            const data = await response.json()
-                //            consloe.log(data)
-
-                //            Swal.fire(
-                //                '刪除',
-                //                '資料已刪除',
-                //                '完成'
-                //            )
-                //        }
-                //    })
-                //}
+        $('#btnCreate').on('click', function () {
+            location.href = `@Url.Content("~/CouponsBackstageSettings/Create")`;
+        })
     </script>
 }

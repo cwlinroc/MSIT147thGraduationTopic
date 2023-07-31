@@ -26,14 +26,16 @@ namespace MSIT147thGraduationTopic.Controllers
             return View();
         }
 
-        public IActionResult DiscountEdit()
+        public IActionResult DiscountEdit(int id)
         {
-            return View();
+            var couponData = _repo.ShowCoupons(id);
+            return View(couponData);
         }
 
-        public IActionResult RebateEdit()
+        public IActionResult RebateEdit(int id)
         {
-            return View();
+            var couponData = _repo.ShowCoupons(id);
+            return View(couponData);
         }
     }
 }
