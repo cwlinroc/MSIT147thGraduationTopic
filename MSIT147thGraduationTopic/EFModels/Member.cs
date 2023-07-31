@@ -9,7 +9,6 @@ namespace MSIT147thGraduationTopic.EFModels
     {
         public Member()
         {
-            Evaluations = new HashSet<Evaluation>();
             Orders = new HashSet<Order>();
         }
 
@@ -28,7 +27,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public bool IsActivated { get; set; }
         public string ConfirmGuid { get; set; }
 
-        public virtual ICollection<Evaluation> Evaluations { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }
 }
