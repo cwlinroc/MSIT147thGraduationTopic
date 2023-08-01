@@ -73,6 +73,12 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return employeeId;
         }
 
-
+        public async Task<(string?, string?)> GetPasswordAndSalt(int employeeId)
+        {
+            var employee = await _context.Employees.Where(o => o.EmployeeId == employeeId)
+                .Select(o => new { o.EmployeePassword, o.Salt })
+                .FirstOrDefaultAsync();
+            return (employee?.EmployeePassword, employee?.Salt);
+        }
     }
 }

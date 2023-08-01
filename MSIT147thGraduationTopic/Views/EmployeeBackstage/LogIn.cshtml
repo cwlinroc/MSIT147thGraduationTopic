@@ -23,8 +23,8 @@
 
             <div class="my-4">
                 <button type="button" id="demo0">demo admin</button>
-                <button type="button" id="demo1">demo 11</button>
-                <button type="button" id="demo2">demo 22</button>
+                <button type="button" id="demo1">demo manager</button>
+                <button type="button" id="demo2">demo employee</button>
             </div>
 
 
@@ -45,12 +45,12 @@
             $('#inputPassword').val('admin')
         })
         $('#demo1').click(() => {
-            $('#inputAccount').val('11')
-            $('#inputPassword').val('11')
+            $('#inputAccount').val('manager')
+            $('#inputPassword').val('manager')
         })
         $('#demo2').click(() => {
-            $('#inputAccount').val('22')
-            $('#inputPassword').val('22')
+            $('#inputAccount').val('employee')
+            $('#inputPassword').val('employee')
         })
 
         $('#btnChangeAccount').click(changeAccount)
@@ -58,20 +58,29 @@
         async function changeAccount() {
             const formData = new FormData(document.logForm)
 
-            const response = await fetch(`@Url.Content("~/employeebackstage/welcome")`, {
+            showLoadingBox()
+            const response = await fetch(`@Url.Content("~/api/apiemployee/login")`, {
                 body: formData,
                 method: 'POST'
             })
 
             if (response.ok) {
                 const loginSucceed = await response.json()
-                console.log(loginSucceed)
+                hideLoadingBox()
                 if (loginSucceed) {
-                    alert('登入成功')
+                    await Swal.fire(
+                        '成功登入!',
+                        '登入後台管理系統',
+                        'success'
+                    )
                     window.location.href = '@Url.Content("~/employeebackstage/welcome")'
                 }
                 else {
-                    alert('帳號密碼輸入錯誤')                    
+                    await Swal.fire(
+                        '登入失敗!',
+                        '帳號密碼輸入錯誤',
+                        'error'
+                    )
                 }
             }
         }

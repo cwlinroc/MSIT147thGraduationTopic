@@ -14,23 +14,36 @@
 class MyBootsrapValidator {
     form
     validfunc
+    keyupValid
+    addedKeyUp = false
     constructor(form) {
         this.form = form
     }
     validateFunction(validfunc) {
         this.validfunc = validfunc
     }
+    keyupValidateFunction(keyupValid) {
+        this.keyupValid = keyupValid
+    }
     startValidate() {
-        $(this.form).find('input').on('keyup', () => {
-            $(this.form).find('input').removeClass('is-invalid is-valid')
-            this.validfunc()
-        })
-
+        if (!this.addedKeyUp) {
+            if (!this.keyupValid) this.keyupValid = this.validfunc
+            $(this.form).find('input').on('keyup', () => {
+                $(this.form).find('input').removeClass('is-invalid is-valid')
+                this.keyupValid()
+            })
+            $(this.form).find('input[type=radio]').on('click', () => {
+                $(this.form).find('input').removeClass('is-invalid is-valid')
+                this.keyupValid()
+            })
+            this.addedKeyUp = true
+        }
         return (this.validfunc)()
     }
 
     endtValidate() {
         $(this.form).find('input').removeClass('is-invalid is-valid').off('keyup')
+        this.addedKeyUp = false
     }
 
 }

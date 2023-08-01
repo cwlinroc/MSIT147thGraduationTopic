@@ -33,11 +33,21 @@ namespace MSIT147thGraduationTopic.Models.Services
             });
         }
 
-        public IEnumerable<MemberVM> GetMembersByNameOrAccount(string query)
+        public IEnumerable<MemberVM> GetMemberByNameOrAccount(string query)
         {
-            return _repo.GetMembersByNameOrAccount(query).Select(dto =>
+            return _repo.GetMemberByNameOrAccount(query).Select(dto =>
             {
-                string htmlFilePath = Path.Combine(_environment.WebRootPath, "uploads\\employeeAvatar");
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, @"uploads\Avatar");
+
+                return dto.ToVM();
+            });
+        }
+
+        public IEnumerable<MemberVM> GetMemberById(int memberId)
+        {
+            return _repo.GetMemberById(memberId).Select(dto =>
+            {
+                string htmlFilePath = Path.Combine(_environment.WebRootPath, @"uploads\Avatar");
 
                 return dto.ToVM();
             });
@@ -59,7 +69,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             var salt = new RandomGenerator().RandomSalt();
             dto.Salt = salt;
             dto.Password = dto.Password?.GetSaltedSha256(salt);
-            dto.IsActivated = false;
+            dto.IsActivated = true;
             dto.ConfirmGuid = Convert.ToString(Guid.NewGuid());
 
             return _repo.CreateMember(dto);
