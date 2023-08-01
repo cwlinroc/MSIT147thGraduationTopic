@@ -72,11 +72,11 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPut("memberCenter")]
-        public ActionResult<int> UpdateSelfData([FromForm] MemberEditDto dto, [FromForm] IFormFile? avatar)
+        public ActionResult<int> UpdateSelfData([FromForm] MemberCenterEditVM vm, [FromForm] IFormFile? avatar)
         {
             int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
 
-            var memberId = _service.EditMember(dto, id, avatar);
+            var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
 
             return memberId;
         }

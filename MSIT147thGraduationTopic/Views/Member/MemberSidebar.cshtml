@@ -8,7 +8,7 @@
         if (memberAvatar == null)
         {
             <img class="img-fluid rounded-circle mb-4"
-            src="@Url.Content("~/images/avatar_icon.png")" />
+                 src="@Url.Content("~/images/avatar_icon.png")" />
         }
         else
         {
@@ -16,14 +16,12 @@
                  src="@Url.Content("")" />
         }
     }
-    
+
     <br>
-    <form>
-        <div class="input-group">
-            @*<input type="file" id="avatar" class="form-control" aria-label="Select Avatar">*@
-            <button class="btn btn-primary mx-auto" type="button" id="changeAvatar">更換頭像</button>
-        </div>
-    </form>    
+    <div class="input-group">
+        @*<input type="file" id="avatar" class="form-control" aria-label="Select Avatar">*@
+        <button class="btn btn-primary mx-auto" type="button" id="changeAvatar">更換頭像</button>
+    </div>
 </div>
 <br />
 <ul class="offset-3 fs-4" id="sidelist">

@@ -34,11 +34,6 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string? District { get; set; }
         public string? Address { get; set; }
         public string? Avatar { get; set; }
-        
-        public string Salt { get; set; }
-       
-        public string ConfirmGuid { get; set; }
-       
         public bool IsActivated { get; set; }
     }
 
@@ -106,9 +101,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             entity.District = dto.District;
             entity.Address = dto.Address;
             entity.Email = dto.Email;
-            entity.Avatar = dto.Avatar;
-            entity.Salt = dto.Salt;
-            entity.ConfirmGuid = dto.ConfirmGuid;
+            entity.Avatar = dto.Avatar;            
             entity.IsActivated = dto.IsActivated;
         }
     }

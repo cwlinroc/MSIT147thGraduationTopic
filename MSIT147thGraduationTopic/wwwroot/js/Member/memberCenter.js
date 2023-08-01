@@ -26,7 +26,6 @@ function displayMember() {
         $('#district').val(e.district)
         $('#address').val(e.address)
     })
-
 }
 
 function checkPasswordMatch() {
@@ -85,6 +84,52 @@ selCity.addEventListener('change', () => {
     LoadDistricts();
 });
 
+$('#nickNameEditedChk').click(function () {
+    if ($('#nickNameEditedChk').is(':checked')) {
+        $('#nickName').prop('disabled', false);
+    } else {
+        $('#nickName').prop('disabled', true);
+    }
+});
+
+$('#passwordEditedChk').click(function () {
+    if ($('#passwordEditedChk').is(':checked')) {
+        $('#password').prop('disabled', false);
+        $('#confirmPassword').prop('disabled', false);
+    } else {
+        $('#password').prop('disabled', true);
+        $('#confirmPassword').prop('disabled', true);
+    }
+});
+
+$('#emailEditedChk').click(function () {
+    if ($('#emailEditedChk').is(':checked')) {
+        $('#email').prop('disabled', false);
+    } else {
+        $('#email').prop('disabled', true);
+    }
+});
+
+$('#phoneEditedChk').click(function () {
+    if ($('#phoneEditedChk').is(':checked')) {
+        $('#phone').prop('disabled', false);
+    } else {
+        $('#phone').prop('disabled', true);
+    }
+});
+
+$('#addressEditedChk').click(function () {
+    if ($('#addressEditedChk').is(':checked')) {
+        $('#city').prop('disabled', false);
+        $('#district').prop('disabled', false);
+        $('#address').prop('disabled', false);
+    } else {
+        $('#city').prop('disabled', true);
+        $('#district').prop('disabled', true);
+        $('#address').prop('disabled', true);
+    }
+});
+
 const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
 function editValidator() {
@@ -92,21 +137,14 @@ function editValidator() {
         const password = document.querySelector('#password')
         const confirmPassword = document.querySelector('#confirmPassword')
         const phone = document.querySelector('#phone')
-
+        const email = document.querySelector('#email')
 
         let passwordValid = false
         const passwordHasValue = !!password.value
         const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
         const confirmPasswordValid = confirmPassword.value === password.value
-        //if ($('#').attr('checked')) {
-        //    password.setValidate(() => passwordHasValue, '請輸入密碼')
-        //        .setValidate(() => passwordPatternValid, '密碼格式錯誤')
-        //        .setValidate(() => confirmPasswordValid, '與密碼不符')
-        //}
-        //else {
-        //    password.setValidate(() => true)
-        //}
-        if (false) {
+
+        if ($('#passwordEditedChk').attr('checked')) {
             password.setValidate(() => passwordHasValue, '請輸入密碼')
                 .setValidate(() => passwordPatternValid, '密碼格式錯誤')
                 .setValidate(() => confirmPasswordValid, '與密碼不符')
@@ -117,19 +155,30 @@ function editValidator() {
             passwordValid = true
         }
 
-        const phoneValid = !!phone.value
+        const phoneHasValue = !!phone.value
         const phonePatternValid = /^09\d{8}$/.test(phone.value)
-        phone.setValidate(() => phoneValid, '請輸入手機號碼')
-            .setValidate(() => phonePatternValid, '手機號碼格式錯誤')
 
-        const email = document.querySelector('#email')
-        const emailValid = !!email.value
+        if ($('#phoneEditedChk').attr('checked')) {
+            phone.setValidate(() => phoneHasValue, '請輸入手機號碼')
+                .setValidate(() => phonePatternValid, '手機號碼格式錯誤')
+        } else {
+            phone.setValidate(() => true)
+            phonePatternValid = true
+        }        
+
+        const emailHasValue = !!email.value
         const emailPatternValid = /^\w+@\w+/.test(email.value)
-        email.setValidate(() => emailValid, '請輸入Email')
-            .setValidate(() => emailPatternValid, 'Email格式錯誤')
 
-        return phoneValid && passwordValid
-            && phonePatternValid && emailValid && emailPatternValid
+        if ($('#emailEditedChk').attr('checked')) {
+            email.setValidate(() => emailHasValue, '請輸入Email')
+                .setValidate(() => emailPatternValid, 'Email格式錯誤')
+        } else {
+            email.setValidate(() => true)
+            emailPatternValid = true
+        }        
+
+        return passwordValid && phoneHasValue && phonePatternValid
+            && emailHasValue && emailPatternValid
     })
     return myValid.startValidate()
 }
@@ -161,8 +210,7 @@ Array.from(forms).forEach(form => {
                 title: '修改失敗!',
                 text: '資料有錯誤,請修改',
                 allowOutsideClick: false,
-            })
-            form.classList.add('was-validated')
+            })            
             return
         }
 

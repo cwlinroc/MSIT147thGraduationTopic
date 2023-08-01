@@ -87,6 +87,26 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public string? Avatar { get; set; }
     }
 
+    public class MemberCenterEditVM
+    {        
+        [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? NickName { get; set; }
+        public string? Password { get; set; }
+
+        [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
+
+        [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? Address { get; set; }
+
+        [EmailAddress]
+        [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? Email { get; set; }
+        public string? Avatar { get; set; }
+    }
+
     public class MemberSearchVM
     {
         [Display(Name = "編號")]
@@ -253,6 +273,36 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Address = dto.Address,
                 Email = dto.Email,
                 Avatar = dto.Avatar,
+            };
+        }
+
+        public static MemberCenterEditVM ToCenterEditVM(this MemberEditDto dto)
+        {
+            return new MemberCenterEditVM
+            {                
+                NickName = dto.NickName,
+                Password = dto.Password,
+                Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
+                Address = dto.Address,
+                Email = dto.Email,
+                Avatar = dto.Avatar,
+            };
+        }
+
+        public static MemberEditDto CenterEditToDto(this MemberCenterEditVM vm)
+        {
+            return new MemberEditDto
+            {   
+                NickName = vm.NickName,
+                Password = vm.Password,
+                Phone = vm.Phone,
+                City = vm.City,
+                District = vm.District,
+                Address = vm.Address,
+                Email = vm.Email,
+                Avatar=vm.Avatar,
             };
         }
     }

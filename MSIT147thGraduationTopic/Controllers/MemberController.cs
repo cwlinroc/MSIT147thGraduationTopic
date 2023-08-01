@@ -48,9 +48,17 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             return View();
         }
+       
+        public IActionResult NoLogin()
+        {            
+            return Content("尚未登入");
+        }
+        
+        public IActionResult NoRole()
+        {           
+            return Content("沒有權限");
+        }
 
-        
-        
         public IActionResult Cities()
         {
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
