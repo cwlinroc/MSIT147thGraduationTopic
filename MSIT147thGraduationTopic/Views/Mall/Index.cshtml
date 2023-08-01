@@ -127,11 +127,13 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
+
                     <li class="page-item"><a class="page-link" href="#">1</a></li>
                     <li class="page-item"><a class="page-link" href="#">2</a></li>
                     <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item"><a class="page-link" href="#">4</a></li>
                     <li class="page-item"><a class="page-link" href="#">5</a></li>
+
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
@@ -182,17 +184,16 @@
         async function SearchProducts() {
                                         // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數
             const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&\
-                                                        searchCondition=${searchCondition}&displayorder=${displayorder}&\
-                                                        pageSize=${pageSize}&PageIndex=${pageindex}`);
+                    searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}`);
             const returnJsonBag = await response.text();
             const searchResult = JSON.parse(returnJsonBag);
+            console.log(searchResult);
             
             //產生商品櫥窗
             const pageContent = document.querySelector("#showThisPageMerchandise");
             var windows = searchResult.map(window => {
                 const { fullName, price } = window;
                 const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-
                 return (                
                 `<div class="col">\
                     <div class="card my-3 mx-2 text-center border-light ">\
@@ -201,11 +202,14 @@
                             <h6 class="card-title ">${fullName}</h6>\
                             <h5 class="card-text ">${price} 元</h5>\
                             <a href="#" class="btn btn-outline-secondary">加入購物車</a>\
-                        </div></div></div>`)// todo 連結至購物車
+                        </div>\
+                    </div>\
+                </div>`)// todo 連結至購物車
             })
             pageContent.innerHTML = windows.join("");
 
             // todo 用AJAX生成對應分頁數量
+            const totalpage = Math.ceil(searchResult.length / pageSize);
         }
 
     </script>
