@@ -61,8 +61,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return memberId;
         }
 
-
-
         [HttpPut("{id}")]
         public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
