@@ -40,5 +40,10 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             return _repo.DeleteCoupon(couponId);
         }
+
+        public CouponDto GetCouponById(int couponId)
+        {
+            return _repo.GetCouponById(couponId);
+        }
     }
 }

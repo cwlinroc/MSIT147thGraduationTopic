@@ -47,10 +47,14 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<int> UpdateCoupon([FromForm] CouponEditDto cEDto, int id)
+        public ActionResult<CouponVM> GetCouponById(int id) 
         {
-            var couponId = _service.EditCoupon(cEDto, id);
-            return couponId;
+            var couponData = _service.GetCouponById(id);
+            if (couponData == null)
+            {
+                return NotFound();
+            }
+            return couponData.ToVM();
         }
 
         [HttpDelete("{id}")]

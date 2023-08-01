@@ -9,7 +9,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public int CouponId { get; set; }
         public int? CouponTagId { get; set; }
         public string CouponName { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CouponStartDate { get; set; }
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CouponEndDate { get; set; }
         public int CouponDiscountTypeId { get; set; }
         public decimal? CouponCondition { get; set; }

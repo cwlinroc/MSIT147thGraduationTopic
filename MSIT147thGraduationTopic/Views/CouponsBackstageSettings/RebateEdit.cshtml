@@ -32,14 +32,17 @@
                         </div>
                         <div class="col-8 mb-3">
                             適用對象<select name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
-                                <option></option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
                             </select>
                         </div>
                         <div class="col-8 mb-3">
-                            開始日期<input name="CouponStartDate" value="@Model.CouponStartDate" type="date" class="form-control" placeholder="請輸入使用期限">
+                            開始日期<input name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
                         <div class="col-8 mb-3">
-                            結束日期<input name="CouponEndDate" value="@Model.CouponEndDate" type="date" class="form-control" placeholder="請輸入使用期限">
+                            結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
                         <div class="col-8 mb-3">
                             折扣門檻<input name="CouponCondition" value="@Model.CouponCondition" type="number" class="form-control" placeholder="請輸入折扣門檻">
@@ -123,12 +126,6 @@
                 }
             })
         })
-
-        $(document).ready(function () {
-            // 將margin-right屬性設置為20px
-            $('#btnDiscount').css('margin-right', '20px');
-            $('#btnCreate').css('margin-right', '20px');
-        });
     </script>
 
 }

@@ -26,22 +26,28 @@
                     <p class="lead fw-normal text-muted mb-0"></p>
                 </div>
                 <div class="container px-5 my-5">
-                    <div>
-                        <form id="edit" name="edit" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
+                    <div class="row justify-content-center">
+                        <form id="edit" name="edit" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation" novalidate>
                         </form>
+                        <div class="col-8 mb-3">
+                            優惠券序號<input type="hidden" name="CouponId" value="@Model.CouponId" class="form-control">
+                        </div>
                         <div class="col-8 mb-3">
                             優惠券名稱<input type="text" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
                         </div>
                         <div class="col-8 mb-3">
                             適用對象<select name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
-                                <option></option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
                             </select>
                         </div>
                         <div class="col-8 mb-3">
-                            開始日期<input name="CouponStartDate" value="@Model.CouponStartDate" type="date" class="form-control" placeholder="請輸入使用期限">
+                            開始日期<input name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
                         <div class="col-8 mb-3">
-                            結束日期<input name="CouponEndDate" value="@Model.CouponEndDate" type="date" class="form-control" placeholder="請輸入使用期限">
+                            結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
                         <div class="col-8 mb-3">
                             折扣百分比<input name="CouponDiscount" value="@Model.CouponDiscount" type="number" class="form-control" placeholder="請輸入折扣百分比">
@@ -82,57 +88,34 @@
 
 @section Scripts{
     <script>
-        $(document).ready(function () {
-            const couponId = '@Model.CouponId';
-            $.ajax({
-                url: `~/api/apicoupon`
-                                type: 'POST',
-                dataType: 'json'
-                                function(data) {
-                    $('input[name="CouponName"]').val(data.CouponName);
-                    $('input[name="CouponTagId"]').val(data.CouponTagId);
-                    $('input[name="CouponStartDate"]').val(data.CouponStartDate);
-                    $('input[name="CouponEndDate"]').val(data.CouponEndDate);
-                    $('input[name="CouponDiscount"]').val(data.CouponDiscount);
-                }
-            })
-        })
-        //$(document).ready(function () {
-        //    // tab點擊事件
-        //    $('.nav-link').on('click', function () {
-        //        // 從 'data-bs-target' 屬性獲取目標選項卡的 id
-        //        const targettabid = $(this).attr('data-bs-target');
+        const couponId = '@Model.CouponId';
 
-        //        //屏蔽其他標籤
-        //        $('.tab-pane').removeclass('show active');
-
-        //        // 將“show active”顯示到選擇的標籤頁面
-        //        $(targettabid).addclass('show active');
+        //$('#btnEdit').click(async function () {
+    
+        //    const formData = $('#edit').serialize();
+        //        const editUrl = `@Url.Content("~/ApiCoupon/DiscountEdit/")${couponId}`
+        //    console.log(editUrl);
+        //        console.log(formData)
+        //    $.ajax({
+        //        url: editUrl,
+        //        type: 'PUT',
+        //        data: formData,
+        //        success: function (formData) {
+        //            Swal.fire({
+        //                icon: 'success',
+        //                title: '成功',
+        //                text: '優惠券更新成功',
+        //            });
+        //        },
+        //        error: function (xhr) {
+        //            Swal.fire({
+        //                icon: 'error',
+        //                title: '失敗',
+        //                text: '優惠券更新失敗，請檢查資料及格式是否正確',
+        //            });
+        //        }
         //    });
         //});
-
-        $('#btnEdit').click(function () {
-            const formData = $('#edit').serialize();
-            $.ajax({
-                url: `~/api/apicoupon`
-                                type: 'PUT',
-                data: formData,
-                success: function (data) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '成功',
-                        text: '優惠券更新成功',
-                    })
-                }
-                                error: function (xhr.status.error){
-                Swal.fire({
-                    icon: 'error',
-                    title: '失敗',
-                    text: '優惠券更新失敗，請檢查資料及格式是否正確',
-                })
-            }
-        })
-                        })
 
         $('#btnBack').on('click', function () {
             Swal.fire({
@@ -160,12 +143,6 @@
                 }
             })
         })
-
-        $(document).ready(function () {
-            // 將margin-right屬性設置為20px
-            $('#btnDiscount').css('margin-right', '20px');
-            $('#btnCreate').css('margin-right', '20px');
-        });
     </script>
 
 }

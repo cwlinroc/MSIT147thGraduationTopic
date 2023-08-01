@@ -59,6 +59,19 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return couponId;
         }
 
+        public CouponDto GetCouponById(int id)
+        {
+            // 通過id搜尋單筆資料
+            var coupon = _context.Coupons.FirstOrDefault(c => c.CouponId == id);
+            if (coupon == null)
+            {
+                // 位搜尋到id時的處理
+                return null;
+            }
+
+            return coupon.ToDto(); //將coupon實體轉換為couponDto
+        }
+
         //public int DetectionName(string name)
         //{
         //    var coupon = _context.Coupons.FirstOrDefault(c=>c.CouponName == name);
