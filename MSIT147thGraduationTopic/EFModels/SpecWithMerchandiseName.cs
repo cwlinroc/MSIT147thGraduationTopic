@@ -15,6 +15,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public int Amount { get; set; }
         public int DiscountPercentage { get; set; }
         public int DisplayOrder { get; set; }
+        public double Popularity { get; set; }
         public bool OnShelf { get; set; }
     }
 }

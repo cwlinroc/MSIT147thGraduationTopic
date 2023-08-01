@@ -55,7 +55,7 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
             specvm.MerchandiseId = merchandiseIdCarrier;
-            specvm.Popularity = 0;//todo 檢視表新增熱門度相關欄位
+            specvm.Popularity = 0;
             return View(specvm);
         }
 
@@ -65,7 +65,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
+            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +103,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, 
-            [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,OnShelf,DiscountPercentage,photo,deleteImageIndicater")] SpecVM specvm)
+            [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo,deleteImageIndicater")] SpecVM specvm)
         {
             if (id != specvm.SpecId) return NotFound();
 

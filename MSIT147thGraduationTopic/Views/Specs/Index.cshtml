@@ -75,6 +75,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.DisplayOrder)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Popularity)
+                    </th>
                     <th style="text-align:center">
                         @Html.DisplayNameFor(model => model.OnShelf)
                     </th>
@@ -112,6 +115,9 @@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.DisplayOrder)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Popularity)
                             </td>
                             <td style="text-align:center">
                                 @Html.DisplayFor(modelItem => item.OnShelf)
