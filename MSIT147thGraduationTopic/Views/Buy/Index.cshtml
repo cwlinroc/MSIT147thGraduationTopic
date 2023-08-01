@@ -252,35 +252,40 @@
 
                 <h2>訂單</h2>
 
-                <table class="table text-center">
-                    <thead>
-                        <tr>
-                            <!-- <th>商品</th>
-                            <th>價格</th> -->
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+                <div id="orderlist-table">
+                    <table class="table text-center ">
+                        <thead>
                             <tr>
-                                <td>@item.CartItemName x<span>@item.Quantity</span></td>
-                                <td>
-                                    <div class="text-secondary" style="font-size:5px;">
-                                        <del>$<span>@(item.CartItemPrice * item.Quantity)</span></del>
-                                    </div>
-                                    <div class="text-danger">
-                                        $<span class="price-sum">@(item.CartItemPrice * item.DiscountPercentage / 100 * item.Quantity)</span>
-                                    </div>
-
-                                </td>
+                                <!-- <th>商品</th>
+                                <th>價格</th> -->
                             </tr>
-                        }
+                        </thead>
 
-                    </tbody>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.CartItemName x<span>@item.Quantity</span></td>
+                                    <td>
+                                        <div class="text-secondary" style="font-size:5px;">
+                                            <del>$<span>@(item.CartItemPrice * item.Quantity)</span></del>
+                                        </div>
+                                        <div class="text-danger">
+                                            $<span class="price-sum">@(item.CartItemPrice * item.DiscountPercentage / 100 * item.Quantity)</span>
+                                        </div>
 
-                </table>
+                                    </td>
+                                </tr>
+                            }
 
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                
+                
                 <div class="mt-5">
                     <hr>
                     <div class="d-flex">
@@ -605,6 +610,11 @@
 
         .order-page-button {
             width: 150px;
+        }
+
+        #orderlist-table {
+            max-height: 595px;
+            overflow: auto;
         }
 
     </style>

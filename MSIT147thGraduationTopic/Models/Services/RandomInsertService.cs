@@ -100,7 +100,7 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             foreach (var memberId in memberIds)
             {
-                int cartItemAmount = _generator.RandomIntBetween(3, 10);
+                int cartItemAmount = _generator.RandomIntBetween(5, 10);
 
                 var chosedSpecIds = _generator.RandomCollectionFrom(specIds, cartItemAmount);
 

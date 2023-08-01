@@ -21,7 +21,7 @@ $(document).ready(function () {
 $('#btnLogOut').click(LogOut)
 
 async function LogOut() {
-    
+
     const response = await fetch(ROOT + '/api/apimember/logout')
 
     if (response.ok) {
@@ -63,5 +63,37 @@ async function confirmWithPassword() {
     }
 
     const result = await response.json()
+
+    if (!result) {
+        await Swal.fire(
+            '錯誤!',
+            '輸入密碼錯誤!',
+            'error')
+    }
     return result
 }
+
+//權限(角色)驗證
+async function validateRole(role) {
+    const roles = ['員工', '經理', '管理員']
+    const requiredPermission = roles.indexOf(role)
+    const accessPermission = roles.indexOf(ROLE)
+    const isValid = accessPermission >= requiredPermission
+    if (!isValid) {
+        Swal.fire(
+            '權限不足!',
+            '您無權訪問此頁面',
+            'error')
+    }
+    return isValid
+}
+
+//讀取動畫
+const loadingBox = document.querySelector('.loading-box')
+const showLoadingBox = () => loadingBox.style.display = "block";
+const hideLoadingBox = () => loadingBox.style.display = "none"
+
+
+$('#linkEmployeeList').click(async event => {
+    if (!await validateRole('經理')) event.preventDefault();
+})

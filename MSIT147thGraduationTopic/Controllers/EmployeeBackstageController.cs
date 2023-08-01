@@ -30,6 +30,8 @@ namespace MSIT147thGraduationTopic.Controllers
             _employeeRoles = options.Value.EmployeeRoles!;
             _service = new EmployeeService(context, environment, _employeeRoles);
         }
+
+        [Authorize(Roles = "管理員,經理")]
         public IActionResult Index()
         {
             return View(_employeeRoles);
@@ -40,6 +42,7 @@ namespace MSIT147thGraduationTopic.Controllers
             return View();
         }
 
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Welcome()
         {
             string userName = HttpContext.User.FindFirstValue("UserName");
