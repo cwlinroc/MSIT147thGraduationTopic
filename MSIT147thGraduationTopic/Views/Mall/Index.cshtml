@@ -106,34 +106,22 @@
         <!-- 中間商品欄 -->
         <div class="col-12 col-md-10">
             <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3" id="showThisPageMerchandise">
-                <!-- 單一商品資料格 -->
-                <div class="col">
-                    <div class="card my-3 mx-2 text-center border-light ">
-                        <img src="圖片/貓罐頭1.webp" class="w-100 img-thumbnail hover-overlay">
-                        <div class="card-body ">
-                            <h6 class="card-title ">商品介紹</h6>
-                            <h5 class="card-text ">商品價格</h5>
-                            <a href="#" class="btn btn-outline-secondary">加入購物車</a>
-                        </div>
-                    </div>
-                </div>
+                <!-- 透過Ajax產生商品櫥窗 -->
             </div>
 
             <!-- 分頁 -->
             <nav aria-label="Page navigation example ">
-                <ul class="pagination justify-content-center mt-4 ">
+                <ul class="pagination justify-content-center mt-4 " id="pagingContainer">
                     <li class="page-item border-light">
                         <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-
                     <li class="page-item"><a class="page-link" href="#">1</a></li>
                     <li class="page-item"><a class="page-link" href="#">2</a></li>
                     <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item"><a class="page-link" href="#">4</a></li>
                     <li class="page-item"><a class="page-link" href="#">5</a></li>
-
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
@@ -166,6 +154,7 @@
         })
         $("#keywordsearch").on("submit", (e) => {
             e.preventDefault();
+            console.log(txtKeyword + " + 搜尋條件:" + searchCondition);
             SearchProducts();
         })
 
@@ -179,7 +168,6 @@
             displayorder = $("#displayorder").val();
             SearchProducts();
         })
-        //todo 分頁點選+點選後改變格式
 
         async function SearchProducts() {
                                         // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數
@@ -187,7 +175,6 @@
                     searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}`);
             const returnJsonBag = await response.text();
             const searchResult = JSON.parse(returnJsonBag);
-            console.log(searchResult);
             
             //產生商品櫥窗
             const pageContent = document.querySelector("#showThisPageMerchandise");
@@ -208,8 +195,69 @@
             })
             pageContent.innerHTML = windows.join("");
 
-            // todo 用AJAX生成對應分頁數量
-            const totalpage = Math.ceil(searchResult.length / pageSize);
+            //產生分頁標籤
+            const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&\
+                            searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}`);
+            const returnLengthBag = await responseforlength.text();
+            const resultLength = JSON.parse(returnLengthBag);
+            console.log(resultLength);
+            const totalpage = Math.ceil(resultLength / pageSize);
+            const pagingContainer = document.querySelector("#pagingContainer");
+
+            var indexRow = `<li class="page-item border-light">\
+                                <a class="page-link" href="#" aria-label="Previous">\
+                                    <span aria-hidden="true">&laquo;</span>\
+                                </a>\
+                            </li>`;
+
+            var indexArray = "";
+            var start, end;
+            if (pageindex <= 3 && totalpage <= 5) {
+                start = 1; end = totalpage;
+                for (var i = start; i <= end; i++) {
+                    indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                }
+            }
+            if (pageindex <= 3 && totalpage > 5) {
+                start = 1; end = 5;
+                for (var i = start; i <= end; i++) {
+                    indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                }
+                indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
+            }
+            if (pageindex > 3 && pageindex + 3 <= totalpage && totalpage > 5) {
+                start = pageindex - 2; end = pageindex + 2
+                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
+                               <li class="page-item"><a class="page-link" >...</a></li>`
+                for (var i = start; i <= end; i++) {
+                    indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                }
+                indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
+            }
+            if (pageindex > 3 && pageindex + 3 > totalpage && totalpage > 5) {
+                start = pageindex - 2; end = totalpage
+                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
+                               <li class="page-item"><a class="page-link" >...</a></li>`
+                for (var i = start; i <= end; i++) {
+                    indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                }
+            }
+            indexRow += indexArray + 
+                            `<li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>`;
+
+            pagingContainer.innerHTML = indexRow;
+
+            //分頁點選+點選後改變格式
+            $(".showIndex").on("click", (e) => {
+                //todo 變更樣式
+                pageindex = $(e.currentTarget).attr("val-index");
+                SearchProducts();
+            })
+            //todo 前後頁按鈕
         }
 
     </script>

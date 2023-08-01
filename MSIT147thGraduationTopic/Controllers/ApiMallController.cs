@@ -43,8 +43,41 @@ namespace MSIT147thGraduationTopic.Controllers
             };
 
             var contentofThisPage = datas.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToList();
-            
+
             return Json(contentofThisPage);
+        }
+
+        [HttpGet]
+        public IActionResult GetSearchResultLength(
+            string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex
+            ) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice, int? sideCategoryId 用AJAX生成
+        {
+            IEnumerable<MallDisplay> datas = _context.MallDisplays
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+
+            if (!string.IsNullOrEmpty(txtKeyword))
+            {
+                datas = searchCondition switch
+                {
+                    1 => datas.Where(md => md.FullName.Contains(txtKeyword)),
+                    2 => datas.Where(md => md.BrandName.Contains(txtKeyword)),
+                    3 => datas.Where(md => md.CategoryName.Contains(txtKeyword)),
+                    _ => datas
+                };
+            }
+
+            datas = displayorder switch
+            {
+                0 => datas.OrderByDescending(md => md.SpecId),
+                1 => datas.OrderBy(md => md.SpecId),
+                2 => datas.OrderBy(md => md.Price),
+                3 => datas.OrderByDescending(md => md.Price),
+                _ => datas.OrderByDescending(md => md.SpecId)
+            };
+
+            var resultLength = datas.Count();
+
+            return Json(resultLength);
         }
     }
 }
