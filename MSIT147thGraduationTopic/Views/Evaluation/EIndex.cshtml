@@ -1,7 +1,13 @@
 ﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM>
 @{
     ViewData["Title"] = "Index";
+
 }
+<!-- 引入 SweetAlert2 的样式文件 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
+
+<!-- 引入 SweetAlert2 的 JavaScript 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.all.min.js"></script>
 
 
 
@@ -55,21 +61,19 @@
                     }
                     <div>
                         <button id="send" type="submit" class="btn btn-primary float-end mt-2 mx-1">送出</button>
-                        <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
+                        @*<button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>*@
                     </div>
                 </form>
 
             }
             else
             {
-                @*<h2>@(ViewBag.ErrorMessage)</h2>*@
-                @*<script>
-            alert(@Html.Raw(Html.UrlEncoder.Encode(ViewBag.ErrorMessage)))
-            </script>*@
+                <text>
+                    <script>
+                        Swal.fire('此筆訂單目前查無資料');
+                    </script>
+                </text>
             }
-
-
-
         </div>
 
         <div class="col-2"></div>
@@ -132,16 +136,6 @@
 
 
 
-    </script>
-
-    <script>
-        //const scoreValue = parseFloat(score.value);
-
-        //if (scoreValue == 0) {
-        //    btnedit.style.display = 'block';
-        //} else {
-        //    btnedit.style.display = 'none';
-        //}
     </script>
 }
 

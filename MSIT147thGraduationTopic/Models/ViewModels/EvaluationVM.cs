@@ -21,6 +21,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [DisplayName("星星評分")]
         public int Score { get; set; }
         public List<Comments> comments { get; set; }
+        public string Keyword { get; set; }
 
         public class Comments //要回傳的資料
         {

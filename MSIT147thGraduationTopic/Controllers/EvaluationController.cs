@@ -20,17 +20,33 @@ namespace MSIT147thGraduationTopic.Controllers
 
         //以OrderId撈訂單資料
         public IActionResult EIndex(int id)
-        {        
-            var model = (from x in _context.EvaluationInputs
-                        where x.OrderId == id
-                         select new EvaluationVM
-                        {
-                            OrderId = x.OrderId,                            
-                            MerchandiseId = x.MerchandiseId,
-                            MerchandiseName = x.MerchandiseName,
-                            SpecId = x.SpecId,
-                            SpecName = x.SpecName
-                        }).ToList();
+        {   
+            var or
+            //var model = (from x in _context.EvaluationInputs   
+            //             where x.OrderId == id
+            //             select new EvaluationVM
+            //            {
+            //                OrderId = x.OrderId,                            
+            //                MerchandiseId = x.MerchandiseId,
+            //                MerchandiseName = x.MerchandiseName,
+            //                SpecId = x.SpecId,
+            //                SpecName= x.SpecName,                                                     
+            //            }).ToList();
+
+            var model = (from x in _context.Evaluations
+                          join s in _context.Specs on x.MerchandiseId equals s.MerchandiseId
+                          where x.OrderId == id
+                          select new EvaluationVM
+                          {
+                              OrderId = x.OrderId,
+                              MerchandiseId = x.MerchandiseId,
+                              MerchandiseName = x.Merchandise.MerchandiseName,
+                              SpecId = s.SpecId,
+                              SpecName = s.SpecName,
+                          })
+                        .Distinct()
+                        .ToList();
+
 
             if (model.Count == 0)
             {

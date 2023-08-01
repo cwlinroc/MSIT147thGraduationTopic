@@ -11,13 +11,15 @@
         <div class="col-1"></div>
         <div class="col-10">
             <div>
+                <form method="post" id="SearchForm">
                 <div class="row g-3 align-items-center ">
-                    <div class="col-auto ms-auto float-end d-flex align-items-center">
-                        <input type="text" class="form-control-sm d-flex mx-2 " id="keywoud" style="height: 38px;">
-                        <img src="~/images/search.jpg" class="rounded-3 d-flex" />
+                    <div class="col-auto ms-auto float-end d-flex align-items-center"> 
+                        <input name="keyword" id="txtkeyword" type="text" class="form-control-sm d-flex mx-2 " style="height: 38px;" placeholder="請輸入關鍵字">
+                        <img src="~/images/search.jpg" class="rounded-3 d-flex" id="btnKeywordImage" onclick="submitSearchForm();" style="cursor: pointer;" />
                     </div>
 
                 </div>
+                </form>
             </div>
             <table class="table bg-white mt-3 rounded-3">
                 <thead>
@@ -67,9 +69,7 @@
                             </td>
                             <td>
                                 <button type="submit" id="btnDelete" class="btn btn-primary btnDelete" data-id="@item.EvaluationId">刪除</button>
-                                @*<a asp-action="Delete" asp-route-id="@item.EvaluationId">Delete</a>*@
-                            </td>
-                            
+                            </td>                            
                         </tr>
                     }
                 </tbody>
@@ -109,5 +109,10 @@
                 window.location.reload(); //重載畫面
             });
         });
+        
+        function submitSearchForm() {
+            document.getElementById("SearchForm").submit();
+        }
+
     </script>
 }

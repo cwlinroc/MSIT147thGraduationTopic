@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Data;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
     public class EvaluationBackstageController : Controller
     {
         private readonly GraduationTopicContext _context;
-
+        
         public EvaluationBackstageController(GraduationTopicContext context)
         {
             _context = context;
@@ -42,15 +44,20 @@ namespace MSIT147thGraduationTopic.Controllers
             
             return RedirectToAction("EBIndex");            
         }
-
-        public IActionResult Search()
+        [HttpPost]
+        public IActionResult Search(string keyword)
         {
-            
-            return RedirectToAction("EBIndex");
+            var model = _context.Evaluations
+                        .Where(x => string.IsNullOrEmpty(keyword) || x.Merchandise.MerchandiseName.Contains(keyword))
+                        .Select(x => new EvaluationVM
+                        {
+                            OrderId = x.OrderId,
+                            MerchandiseId = x.MerchandiseId,
+                            Score = x.Score,
+                            Comment = x.Comment,
+                        }).ToList();
+            return View("EBIndex", model);
         }
-
-
-
     }
 
 }
