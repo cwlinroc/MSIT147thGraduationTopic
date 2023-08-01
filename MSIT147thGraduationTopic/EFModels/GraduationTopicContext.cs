@@ -146,12 +146,6 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Evaluation>(entity =>
             {
-                entity.HasOne(d => d.Member)
-                    .WithMany(p => p.Evaluations)
-                    .HasForeignKey(d => d.MemberId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Evaluations_Members");
-
                 entity.HasOne(d => d.Merchandise)
                     .WithMany(p => p.Evaluations)
                     .HasForeignKey(d => d.MerchandiseId)

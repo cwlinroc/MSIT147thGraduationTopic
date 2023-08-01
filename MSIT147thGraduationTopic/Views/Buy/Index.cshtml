@@ -8,7 +8,7 @@
     <div class="row">
 
         <!-- 購買主頁 -->
-        <div class="col-xl-9 col-md-6">
+        <div class="col-xl-9 col-lg-6">
             <!-- 進度條 -->
             <div class="progress-box d-flex position-relative justify-content-between align-items-center">
 
@@ -22,7 +22,7 @@
             </div>
             <!-- 進度條end -->
             <div class=" p-4 bg-white rounded shadow my-4 mx-3">
-                <form name="orderForm" method="post" enctype="application/x-www-form-urlencoded">
+                <form name="orderForm" method="post" enctype="application/x-www-form-urlencoded" class="needs-validation">
                     <div class="order-page-container">
                         <div class="order-page">
 
@@ -35,6 +35,8 @@
                                         <div class="col-lg-9">
                                             <input type="text" class="form-control" id="inputName" name="Name"
                                                    value="@ViewBag.MemberName">
+                                            <div class="valid-feedback"></div>
+                                            <div class="invalid-feedback">請輸入姓名</div>
                                         </div>
                                     </div>
 
@@ -44,6 +46,8 @@
                                         <div class="col-lg-9">
                                             <input type="text" class="form-control" id="inputPhone" name="Phone"
                                                    value="@ViewBag.MemberPhone">
+                                            <div class="valid-feedback"></div>
+                                            <div class="invalid-feedback">請輸入連絡電話</div>
                                         </div>
                                     </div>
 
@@ -53,6 +57,8 @@
                                         <div class="col-lg-9">
                                             <input type="text" class="form-control" id="inputEmail" name="Email"
                                                    value="@ViewBag.MemberEmail">
+                                            <div class="valid-feedback"></div>
+                                            <div class="invalid-feedback">請輸入Email</div>
                                         </div>
                                     </div>
                                     <div class="mt-auto row">
@@ -82,6 +88,8 @@
                                         <div class="col-lg-9">
                                             <input type="text" class="form-control" id="inputAddress" name="Address"
                                                    value="@ViewBag.MemberAddress">
+                                            <div class="valid-feedback"></div>
+                                            <div class="invalid-feedback">請輸入地址</div>
                                         </div>
                                     </div>
 
@@ -112,22 +120,24 @@
                                         <label for="inputCoupons"
                                                class="col-form-label col-lg-2 text-center">使用優惠卷</label>
                                         <div class="col-lg-9">
-                                            <input type="text" class="form-control mb-2" name="CouponId" value="無" disabled />
+                                            <input type="text" class="form-control mb-2" name="CouponId" value="無" id="inputCoupons" disabled />
                                             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
                                                     data-bs-target="#couponModal">
                                                 選擇優惠卷
                                             </button>
+                                            <div class="valid-feedback"></div>
+                                            <div class="invalid-feedback"></div>
                                         </div>
                                     </div>
 
                                     <div class="form-group row mb-3">
 
-                                        <label for="inputCoupons"
+                                        <label for="divPayment"
                                                class="col-form-label col-lg-2 text-center">付款方式</label>
-                                        <div class="col-sm-8 d-flex  align-items-center">
+                                        <div class="col-sm-8" id="divPayment">
                                             <div class="form-check me-4">
                                                 <input class="form-check-input" type="radio" name="Payment"
-                                                       id="radioPayment1" value="1" checked>
+                                                       id="radioPayment1" value="1">
                                                 <label class="form-check-label" for="radioPayment1">
                                                     信用卡
                                                 </label>
@@ -145,6 +155,8 @@
                                                 <label class="form-check-label" for="radioPayment3">
                                                     銀行匯款
                                                 </label>
+                                                <div class="valid-feedback"></div>
+                                                <div class="invalid-feedback">請選擇付款方式</div>
                                             </div>
                                         </div>
                                     </div>
@@ -171,47 +183,41 @@
                             <div class="order-page-single p-3" id="page4">
 
                                 <div class="d-flex flex-column h-100">
-                                    <h2 class="mb-5">確認訂單</h2>
+                                    <h2 class="mb-4">確認訂單資訊</h2>
 
-
-
-                                    <table class="table text-center">
-                                        <thead>
-                                            <tr>
-                                                <th>商品</th>
-                                                <th>單價</th>
-                                                <th>數量</th>
-                                                <th>總計</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-
-                                            @foreach (var item in Model)
-                                            {
-                                                int sum = item.CartItemPrice * item.Quantity;
-                                                <tr>
-                                                    <td>@item.CartItemName</td>
-                                                    <td>$<span>@item.CartItemPrice</span></td>
-                                                    <td>@item.Quantity</td>
-                                                    <td>$<span>@sum</span></td>
-                                                </tr>
-                                            }
-
-                                        </tbody>
-
-                                    </table>
-
-                                    <div class="mt-1">
-                                        <hr>
-                                        <div class="d-flex">
-                                            <div class="ms-auto me-3">
-                                                <span>金額總計:</span>
-                                                <span class="mx-3">0</span>
+                                    <div class="row">
+                                        <div class="col-auto col-md-1"></div>
+                                        <div class="col-md-10">
+                                            <div class="mt-3 fs-4">
+                                                <p>姓名：<span id="outputName">xxxxx</span></p>
+                                            </div>
+                                            <div class="mt-3 fs-4">
+                                                <p>電話：<span id="outputPhone">xxxxx</span></p>
+                                            </div>
+                                            <div class="mt-3 fs-4">
+                                                <p>Email：<span id="outputEmail">xxxxx</span></p>
+                                            </div>
+                                            <div class="mt-3 fs-4">
+                                                <p>取貨方式：<span id="outputPickupMethod">xxxxx</span></p>
+                                            </div>
+                                            <div class="mt-3 fs-4">
+                                                <p>取貨地點：<span id="outputAddress">xxxxx</span></p>
+                                            </div>
+                                            <div class="mt-3 fs-4">
+                                                <p>使用優惠卷：<span id="outputCoupon">xxxxx</span></p>
+                                            </div>
+                                            <div class="mt-3 fs-4">
+                                                <p>付款方式：<span id="outputPayment">xxxxx</span></p>
+                                            </div>
+                                            <div class="mt-3 fs-4">
+                                                <p>付款總額：<span class="price-total">0</span></p>
+                                            </div>
+                                            <div class="form-group mb-5">
+                                                <label for="inputRemark" class="form-label fs-4">備註：</label>
+                                                <textarea class="form-control" id="inputRemark" name="Remark" style="height:100px;"></textarea>
                                             </div>
                                         </div>
                                     </div>
-
 
                                     <div class="mt-auto row">
                                         <div class="col-auto col-lg-3"></div>
@@ -240,55 +246,60 @@
 
 
 
-        <diV class="col-xl-3 col-md-6">
-            <!-- 訂單列表 -->
-            <div class="container p-3 bg-light rounded shadow">
+        <diV class="col-xl-3 col-lg-6">
+            <!-- 右側訂單列表 -->
+            <div class="container p-3 bg-white rounded shadow">
 
                 <h2>訂單</h2>
 
-                <table class="table text-center">
-                    <thead>
-                        <tr>
-                            <!-- <th>商品</th>
-                            <th>價格</th> -->
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            int sum = item.CartItemPrice * item.Quantity;
+                <div id="orderlist-table">
+                    <table class="table text-center ">
+                        <thead>
                             <tr>
-                                <td>@item.CartItemName</td>
-                                <td>
-                                    <div class="text-secondary" style="font-size:5px;">
-                                        <del>$<span>@sum</span></del>
-                                    </div>
-                                    <div>
-                                        $<span>@(sum * item.DiscountPercentage / 100)</span>
-                                    </div>
-
-                                </td>
+                                <!-- <th>商品</th>
+                                <th>價格</th> -->
                             </tr>
-                        }
+                        </thead>
 
-                    </tbody>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.CartItemName x<span>@item.Quantity</span></td>
+                                    <td>
+                                        <div class="text-secondary" style="font-size:5px;">
+                                            <del>$<span>@(item.CartItemPrice * item.Quantity)</span></del>
+                                        </div>
+                                        <div class="text-danger">
+                                            $<span class="price-sum">@(item.CartItemPrice * item.DiscountPercentage / 100 * item.Quantity)</span>
+                                        </div>
 
-                </table>
+                                    </td>
+                                </tr>
+                            }
 
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                
+                
                 <div class="mt-5">
                     <hr>
                     <div class="d-flex">
                         <div class="ms-auto me-3">
                             <span>金額總計:</span>
-                            <span class="mx-3">0</span>
+                            <span class="mx-3 price-total text-danger">0</span>
                         </div>
                     </div>
                 </div>
 
+
             </div>
 
-            <!-- 訂單列表end -->
+            <!-- 右側訂單列表end -->
         </diV>
     </div>
 </div>
@@ -359,7 +370,43 @@
 
 @section Scripts{
     <script src="~/js/customAnimate.js"></script>
+    <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
+        const orderForm = document.orderForm
+        const inputName = document.querySelector('#inputName')
+        const inputPhone = document.querySelector('#inputPhone')
+        const inputEmail = document.querySelector('#inputEmail')
+        const inputAddress = document.querySelector('#inputAddress')
+        const inputCoupons = document.querySelector('#inputCoupons')
+        const divPayment = document.querySelector('#divPayment')
+
+        calculateTotalPrice()
+
+        //自動更改確認訂單資訊
+        $('#outputName').text(inputName.value)
+        inputName.addEventListener('change', e => $('#outputName').text(e.currentTarget.value))
+
+        $('#outputPhone').text(inputPhone.value)
+        inputPhone.addEventListener('change', e => $('#outputPhone').text(e.currentTarget.value))
+
+        $('#outputEmail').text(inputEmail.value)
+        inputEmail.addEventListener('change', e => $('#outputEmail').text(e.currentTarget.value))
+
+        $('#outputAddress').text(inputAddress.value)
+        inputAddress.addEventListener('change', e => $('#outputAddress').text(e.currentTarget.value))
+
+        $('#outputCoupon').text(inputCoupons.value)
+        inputCoupons.addEventListener('change', e => $('#outputCoupon').text(e.currentTarget.value))
+
+        const paymentRadios = [...document.orderForm.Payment]
+        paymentRadios.forEach(value =>
+            value.addEventListener('change', () =>
+                $('#outputPayment').text(divPayment.querySelector(':checked').nextElementSibling.innerText.trim())
+            )
+        )
+
+
+
         //優惠卷單選
         $('#couponModal').find('input[type=checkbox]').click(e => {
             $(e.currentTarget).closest('table').find('input[type=checkbox]').prop('checked', false)
@@ -368,12 +415,14 @@
 
         //上一頁按鈕
         $('#prevPage1').click(e => {
+            page1validator.endtValidate()
             $('.progress-bar').css('width', '0%')
             $('#circle2').addClass('border-white').removeClass('border-danger')
             $('.order-page').css('left', '0%')
             document.querySelector('#page1').customAnimate('backInLeft')
         })
         $('#prevPage2').click(e => {
+            page2validator.endtValidate()
             $('.progress-bar').css('width', '33%')
             $('#circle3').addClass('border-white').removeClass('border-danger')
             $('.order-page').css('left', '-100%')
@@ -381,6 +430,7 @@
 
         })
         $('#prevPage3').click(e => {
+            page3validator.endtValidate()
             $('.progress-bar').css('width', '66%')
             $('#circle4').addClass('border-white').removeClass('border-danger')
             $('.order-page').css('left', '-200%')
@@ -388,28 +438,135 @@
         })
 
         //下一頁按鈕
-        $('#nextPage2').click(e => {
+        $('#nextPage2').click(async e => {
+            page1validator.endtValidate()
+            if (!await page1validator.startValidate()) return
+
             $('.progress-bar').css('width', '33%')
             $('#circle2').addClass('border-danger').removeClass('border-white')
             $('.order-page').css('left', '-100%')
             document.querySelector('#page2').customAnimate('backInRight')
         })
-        $('#nextPage3').click(e => {
+        $('#nextPage3').click(async e => {
+            page2validator.endtValidate()
+            if (!await page2validator.startValidate()) return
+
             $('.progress-bar').css('width', '66%')
             $('#circle3').addClass('border-danger').removeClass('border-white')
             $('.order-page').css('left', '-200%')
             document.querySelector('#page3').customAnimate('backInRight')
 
         })
-        $('#nextPage4').click(e => {
+        $('#nextPage4').click(async e => {
+            page3validator.endtValidate()
+            if (!await page3validator.startValidate()) return
+
             $('.progress-bar').css('width', '100%')
             $('#circle4').addClass('border-danger').removeClass('border-white')
             $('.order-page').css('left', '-300%')
             document.querySelector('#page4').customAnimate('backInRight')
         })
 
+        //送出按鈕
+        $('#submitOrder').click(async event => {
+            const result = await Swal.fire({
+                title: '訂單提交',
+                text: "確定將送出該筆訂單?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '送出',
+                cancelButtonText: '取消'
+            })
+            if (!result.isConfirmed) return
+
+            orderForm.submit()
+        })
+
+        /***functions***/
+
+        //價格計算
+        function calculateTotalPrice() {
+            const total = ([...document.querySelectorAll('.price-sum')])
+                .map(o => +o.textContent)
+                .reduce((accum, current) => accum + current, 0)
+            const outputTotal = [...document.querySelectorAll('.price-total')]
+            outputTotal.forEach(e => e.textContent = total)
+        }
+
+        //第一頁驗證
+
+        const page1validator = new MyBootsrapValidator(orderForm)
+        page1validator.validateFunction(async () => {
+            const nameHasValue = !!inputName.value
+            inputName.setValidate(() => nameHasValue)
+            await new Promise(resolve => setTimeout(resolve, 300))
+
+            const phoneHasValue = !!inputPhone.value
+            inputPhone.setValidate(() => phoneHasValue)
+            await new Promise(resolve => setTimeout(resolve, 300))
+
+            const emailHasValue = !!inputEmail.value
+            const emailPatternValid = /^\w+@@\w+/.test(inputEmail.value)
+            inputEmail.setValidate(() => emailHasValue, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
+            await new Promise(resolve => setTimeout(resolve, 500))
+
+            return nameHasValue && phoneHasValue && emailHasValue && emailPatternValid
+        })
+
+        page1validator.keyupValidateFunction(() => {
+            const nameHasValue = !!inputName.value
+            inputName.setValidate(() => nameHasValue)
+
+            const phoneHasValue = !!inputPhone.value
+            inputPhone.setValidate(() => phoneHasValue)
+
+            const emailHasValue = !!inputEmail.value
+            const emailPatternValid = /^\w+@@\w+/.test(inputEmail.value)
+            inputEmail.setValidate(() => emailHasValue, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
+        })
+
+        //第二頁驗證
+
+        const page2validator = new MyBootsrapValidator(orderForm)
+        page2validator.validateFunction(async () => {
+            const addressHasValue = !!inputAddress.value
+            inputAddress.setValidate(() => addressHasValue)
+            await new Promise(resolve => setTimeout(resolve, 500))
+
+            return addressHasValue
+        })
+
+        page2validator.keyupValidateFunction(() => {
+            const addressHasValue = !!inputAddress.value
+            inputAddress.setValidate(() => addressHasValue)
+        })
 
 
+        //第三頁驗證
+
+        const page3validator = new MyBootsrapValidator(orderForm)
+        page3validator.validateFunction(async () => {
+            inputCoupons.setValidate(() => true)
+            await new Promise(resolve => setTimeout(resolve, 300))
+
+            const paymentChecked = !!divPayment.querySelector('input[name="Payment"]:checked')
+            console.log(divPayment.querySelector('input[name="Payment"]:checked'))
+            document.querySelector('#radioPayment1').setValidate(() => paymentChecked)
+            document.querySelector('#radioPayment2').setValidate(() => paymentChecked)
+            document.querySelector('#radioPayment3').setValidate(() => paymentChecked)
+            await new Promise(resolve => setTimeout(resolve, 500))
+
+            return paymentChecked
+        })
+
+        page3validator.keyupValidateFunction(() => {
+            const paymentChecked = !!divPayment.querySelector('input[name="Payment"]:checked')
+            document.querySelector('#radioPayment1').setValidate(() => paymentChecked)
+            document.querySelector('#radioPayment2').setValidate(() => paymentChecked)
+            document.querySelector('#radioPayment3').setValidate(() => paymentChecked)
+        })
 
     </script>
     }
@@ -432,7 +589,7 @@
 
         .order-page-container {
             position: relative;
-            height: 500px;
+            min-height: 650px;
             overflow: hidden;
         }
 
@@ -448,10 +605,16 @@
         .order-page-single {
             width: 25%;
             height: 100%;
+            overflow: auto;
         }
 
         .order-page-button {
             width: 150px;
+        }
+
+        #orderlist-table {
+            max-height: 595px;
+            overflow: auto;
         }
 
     </style>

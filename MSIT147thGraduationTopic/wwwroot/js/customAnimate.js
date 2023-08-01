@@ -1,5 +1,4 @@
 HTMLElement.prototype.customAnimate = function (animation) {
-    console.log('test custom')
     const prefix = 'animate__'
     const node = this
     const animationName = `${prefix}${animation}`

@@ -41,6 +41,7 @@
                     <div class="form-group">
                         <label asp-for="Description" class="control-label"></label>
                         <textarea name="Description" class="form-control" id="descriptionarea"></textarea>
+                        <div>※商品描述限制500字，目前字數：<span id="countdiscription">0</span></div>
                         <span asp-validation-for="Description" class="text-danger foralert" id="alertspanfordescription"></span>
                     </div>
                     <div class="form-group">
@@ -171,12 +172,17 @@
                 imageClear.style.display = "none";
                 DisplayImage();
             }
-            if (!checkName && $("#inputbrandid").val() && $("#inputcategoryid").val() &&
-                    $("#descriptionarea").val().length <= 500 && !checkFile) {
+            if ($("#inputname").val() && !checkName && $("#inputbrandid").val() &&
+                $("#inputcategoryid").val() && $("#descriptionarea").val().length <= 500 && !checkFile) {
                 const forminput = document.querySelector("#forminput");
                 HTMLFormElement.prototype.submit.call(forminput);
-                console.log("按下送出");
             }
+        })
+    </script>
+    @*計算商品描述字數*@
+    <script>
+        $("#descriptionarea").on("keyup", () => {
+            $("#countdiscription").text($("#descriptionarea").val().length);
         })
     </script>
 }
