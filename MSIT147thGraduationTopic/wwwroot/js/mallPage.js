@@ -27,40 +27,16 @@ $(window).scroll(e => {
 //Buttons
 $('#btnLogIn').click(LogIn)
 $('#btnLogOut').click(LogOut)
-$('#demoMember').click(() => {
-    $('#loginAccount').val('demoMember99');
-    DemoLogin('demoMember99');
-});
-$('#demoEmployee').click(() => {
-    $('#loginAccount').val('demoEmployee99');
-    DemoLogin('demoEmployee99');
-});
 
-$('#demoManager').click(() => {
-    $('#loginAccount').val('demoManager99');
-    DemoLogin('demoManager99');
-});
-
-$('#demoAdmin').click(() => {
-    $('#loginAccount').val('demoAdmin99');
-    DemoLogin('demoAdmin99');
-});
+$('#demoMember88').click(() => DemoLogin('demoMember88'));
+$('#demoMember99').click(() => DemoLogin('demoMember99'));
+$('#demoEmployee').click(() => DemoLogin('demoEmployee99'));
+$('#demoManager').click(() => DemoLogin('demoManager99'));
+$('#demoAdmin').click(() => DemoLogin('demoAdmin99'));
 
 function DemoLogin(demoAccount) {
-    switch (demoAccount) {
-        case 'demoMember99':
-            $('#loginPassword').val('demoMember99');
-            break;
-        case 'demoEmployee99':
-            $('#loginPassword').val('demoEmployee99');
-            break;
-        case 'demoManager99':
-            $('#loginPassword').val('demoManager99');
-            break;
-        case 'demoAdmin99':
-            $('#loginPassword').val('demoAdmin99');
-            break;
-    }
+    $('#loginAccount').val(demoAccount);
+    $('#loginPassword').val(demoAccount);
 }
 
 //記住我
@@ -77,7 +53,7 @@ $(function () {
 
     $('#chkRemember').click(function () {
 
-        if ($('#chkRemember').is(':checked')) {            
+        if ($('#chkRemember').is(':checked')) {
             localStorage.loginAccount = $('#loginAccount').val();
             localStorage.loginPassword = $('#loginPassword').val();
             localStorage.chkRemember = $('#chkRemember').val();
@@ -102,12 +78,12 @@ async function LogIn() {
         headers: { 'Content-Type': 'application/json', },
     })
 
-    if (!response.ok) {        
+    if (!response.ok) {
         console.log('request failed')
         return
     }
 
-    const url = await response.text()   
+    const url = await response.text()
 
     if (!url) {
         Swal.fire({
@@ -130,10 +106,10 @@ async function LogIn() {
         else {
             window.location.href = url
         }
-       
+
     })
 
-    
+
 
 }
 
@@ -151,7 +127,7 @@ async function LogOut() {
                 allowOutsideClick: false
             }).then(result => {
                 if (result.isConfirmed) {
-                    window.location.reload()
+                    window.location.href = ROOT + '/home/index'
                 }
             })
         }

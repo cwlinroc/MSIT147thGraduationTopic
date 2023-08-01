@@ -27,7 +27,10 @@ async function LogOut() {
     if (response.ok) {
         const url = await response.text()
         if (url) {
-            alert('成功登出')
+            await Swal.fire(
+                '成功登出!',
+                '將導入商城首頁',
+                'success')
             window.location.href = url
         }
     }
