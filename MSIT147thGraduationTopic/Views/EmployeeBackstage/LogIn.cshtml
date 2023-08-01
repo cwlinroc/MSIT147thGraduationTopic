@@ -58,6 +58,7 @@
         async function changeAccount() {
             const formData = new FormData(document.logForm)
 
+            showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apiemployee/login")`, {
                 body: formData,
                 method: 'POST'
@@ -65,13 +66,21 @@
 
             if (response.ok) {
                 const loginSucceed = await response.json()
-                console.log(loginSucceed)
+                hideLoadingBox()
                 if (loginSucceed) {
-                    alert('登入成功')
+                    await Swal.fire(
+                        '成功登入!',
+                        '登入後台管理系統',
+                        'success'
+                    )
                     window.location.href = '@Url.Content("~/employeebackstage/welcome")'
                 }
                 else {
-                    alert('帳號密碼輸入錯誤')
+                    await Swal.fire(
+                        '登入失敗!',
+                        '帳號密碼輸入錯誤',
+                        'error'
+                    )
                 }
             }
         }

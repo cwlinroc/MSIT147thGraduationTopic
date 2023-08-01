@@ -53,6 +53,18 @@ namespace MSIT147thGraduationTopic.Controllers
             return View(_userInfoService.GetUserInfo());
         }
 
+
+        ////未登入時會自動移轉到此網址。
+        public IActionResult NoLogin()
+        {
+            return View();
+        }
+        ////未授權角色時會自動移轉到此網址。
+        public IActionResult NoRole()
+        {
+            return View();
+        }
+
         //AddressVM.Record _addressdata = new AddressVM.Record();
 
         //public AddressVM.Record GetDataFromJsonFile()

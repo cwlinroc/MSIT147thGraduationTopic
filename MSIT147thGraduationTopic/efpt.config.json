@@ -80,6 +80,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[MallDisplay]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[MerchandiseSearch]",
          "ObjectType": 3
       },
