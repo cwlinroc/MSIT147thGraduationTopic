@@ -17,7 +17,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet]
         public IActionResult DisplaySearchResult(
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex
-            ) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice, int? sideCategoryId 用AJAX生成
+            ) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice, int sideCategoryId 用AJAX生成
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays   //僅顯示上架商品
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
@@ -79,5 +79,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return Json(resultLength);
         }
+
+
     }
 }

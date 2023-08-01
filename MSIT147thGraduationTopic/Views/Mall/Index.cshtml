@@ -69,10 +69,10 @@
                     <!-- 小視窗時摺疊區域 -->
                     <div class="navbar-collapse collapse">
                         <ul class="navbar-nav flex-column" id="sublist">
-                            <!-- 摺疊選單1 -->
+                            <!-- 摺疊選單 for 商品類別 -->
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="#sublist1" data-bs-toggle="collapse" aria-expanded="false">商品類別</a>
-                                <ul id="sublist1" class="list-unstyled collapse mx-4">
+                                <ul id="categoryOptions" class="list-unstyled collapse mx-4">
                                     <li class="my-1 ">
                                         <a href="#">類別1</a>
                                     </li>
@@ -84,7 +84,16 @@
                                     </li>
                                 </ul>
                             </li>
-                            <!-- 摺疊選單2 -->
+                            <!-- 摺疊選單 for Tag -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="#sublist2" data-bs-toggle="collapse" aria-expanded="false">價格區間</a>
+                                <ul id="sublist2" class="list-unstyled collapse mx-4">
+                                    <li class="my-1">
+                                        <a href="#">改成價格上下限+送出鈕</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- 摺疊選單 for 價格區間 -->
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="#sublist2" data-bs-toggle="collapse" aria-expanded="false">價格區間</a>
                                 <ul id="sublist2" class="list-unstyled collapse mx-4">
@@ -112,21 +121,7 @@
             <!-- 分頁 -->
             <nav aria-label="Page navigation example ">
                 <ul class="pagination justify-content-center mt-4 " id="pagingContainer">
-                    <li class="page-item border-light">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
+                    <!-- 透過Ajax產生分頁標籤 -->
                 </ul>
             </nav>
 
@@ -142,8 +137,22 @@
         let pageSize = 20;
         let displayorder = 0;
         let pageindex = 1;
+        let sideCategoryId = 0;
         //呈現初始頁面
         SearchProducts();
+        //呈現側邊商品類別選項
+        $(async () => {
+            const CategoryOptions = document.querySelector("#categoryOptions")
+            const response = await fetch(`@Url.Content("~/ApiMerchandise/GenerateCategoryOptions")`);
+            const returnJsonBag = await response.text();
+            const searchResult = JSON.parse(returnJsonBag);
+
+
+            $(".類別選項").on("click", (e) => {
+                pageindex = $(e.currentTarget).attr("val-index");
+                SearchProducts();
+            })//顯示符合商品數?
+        })
 
         //關鍵字搜尋
         $("#search-input").on("keyup", () => {
@@ -154,7 +163,6 @@
         })
         $("#keywordsearch").on("submit", (e) => {
             e.preventDefault();
-            console.log(txtKeyword + " + 搜尋條件:" + searchCondition);
             SearchProducts();
         })
 
@@ -169,35 +177,34 @@
             SearchProducts();
         })
 
-        async function SearchProducts() {
-                                        // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數
-            const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&\
-                    searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}`);
+        async function SearchProducts() {// ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※別換行，會出莫名其妙的問題)
+            const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}`);
             const returnJsonBag = await response.text();
             const searchResult = JSON.parse(returnJsonBag);
-            
+
             //產生商品櫥窗
             const pageContent = document.querySelector("#showThisPageMerchandise");
             var windows = searchResult.map(window => {
-                const { fullName, price } = window;
+                const { price } = window;
+                const showName = (window.fullName.length > 13) ? window.fullName.substring(0, 13) + "  ..." : window.fullName;
                 const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-                return (                
-                `<div class="col">\
-                    <div class="card my-3 mx-2 text-center border-light ">\
-                        <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" class="w-100 img-thumbnail hover-overlay">\
-                        <div class="card-body ">\
-                            <h6 class="card-title ">${fullName}</h6>\
-                            <h5 class="card-text ">${price} 元</h5>\
-                            <a href="#" class="btn btn-outline-secondary">加入購物車</a>\
-                        </div>\
-                    </div>\
-                </div>`)// todo 連結至購物車
+                return (
+                    `<div class="col">\
+                            <div class="card my-3 mx-2 text-center border-light ">\
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" class="w-100 img-thumbnail hover-overlay">\
+                                <div class="card-body ">\
+                                            <h6 class="card-title ">${showName}</h6>\
+                                    <h5 class="card-text ">${price} 元</h5>\
+                                    <a href="#" class="btn btn-outline-secondary">加入購物車</a>\
+                                </div>\
+                            </div>\
+                        </div>`)// todo 連結至購物車
             })
             pageContent.innerHTML = windows.join("");
 
             //產生分頁標籤
             const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&\
-                            searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}`);
+                                    searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}`);
             const returnLengthBag = await responseforlength.text();
             const resultLength = JSON.parse(returnLengthBag);
             console.log(resultLength);
@@ -205,61 +212,78 @@
             const pagingContainer = document.querySelector("#pagingContainer");
 
             var indexRow = `<li class="page-item border-light">\
-                                <a class="page-link" href="#" aria-label="Previous">\
-                                    <span aria-hidden="true">&laquo;</span>\
-                                </a>\
-                            </li>`;
+                                        <a class="page-link toPrevious" href="#" aria-label="Previous">\
+                                            <span aria-hidden="true">&laquo;</span>\
+                                        </a>\
+                                    </li>`;
 
             var indexArray = "";
             var start, end;
-            if (pageindex <= 3 && totalpage <= 5) {
+            if (totalpage <= 5) {
                 start = 1; end = totalpage;
                 for (var i = start; i <= end; i++) {
                     indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
                 }
             }
-            if (pageindex <= 3 && totalpage > 5) {
-                start = 1; end = 5;
-                for (var i = start; i <= end; i++) {
-                    indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+            if (totalpage > 5) {
+                if (pageindex < 4) {
+                    start = 1; end = 5;
+                    for (var i = start; i <= end; i++) {
+                        indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                    }
+                    indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                 }
-                indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
-            }
-            if (pageindex > 3 && pageindex + 3 <= totalpage && totalpage > 5) {
-                start = pageindex - 2; end = pageindex + 2
-                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
-                               <li class="page-item"><a class="page-link" >...</a></li>`
-                for (var i = start; i <= end; i++) {
-                    indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                if (pageindex == 4) {
+                    start = 2; end = 6;
+                    for (var i = start; i <= end; i++) {
+                        indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                    }
+                    indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                 }
-                indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
-            }
-            if (pageindex > 3 && pageindex + 3 > totalpage && totalpage > 5) {
-                start = pageindex - 2; end = totalpage
-                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
-                               <li class="page-item"><a class="page-link" >...</a></li>`
-                for (var i = start; i <= end; i++) {
-                    indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                if (pageindex > 4) {
+                    if (pageindex + 3 <= totalpage) {
+                        start = pageindex - 2; end = pageindex + 2
+                        indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
+                                               <li class="page-item"><a class="page-link" >...</a></li>`
+                        for (var i = start; i <= end; i++) {
+                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                        }
+                        indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
+                    }
+                    if (pageindex + 3 > totalpage) {
+                        start = pageindex - 2; end = totalpage
+                        indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
+                                               <li class="page-item"><a class="page-link" >...</a></li>`
+                        for (var i = start; i <= end; i++) {
+                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                        }
+                    }
                 }
             }
-            indexRow += indexArray + 
-                            `<li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>`;
+
+            indexRow += indexArray + `<li class="page-item">
+                                                <a class="page-link toNext" href="#" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                              </li>`;
 
             pagingContainer.innerHTML = indexRow;
 
             //分頁點選+點選後改變格式
             $(".showIndex").on("click", (e) => {
-                //todo 變更樣式
                 pageindex = $(e.currentTarget).attr("val-index");
                 SearchProducts();
             })
-            //todo 前後頁按鈕
+            //前後頁按鈕
+            $(".toPrevious").on("click", () => {
+                if (pageindex > 1) pageindex--;
+                SearchProducts();
+            })
+            $(".toNext").on("click", () => {
+                if (pageindex < totalpage) pageindex++;
+                SearchProducts();
+            })
         }
-
     </script>
 }
 

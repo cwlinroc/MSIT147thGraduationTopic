@@ -55,6 +55,7 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
             specvm.MerchandiseId = merchandiseIdCarrier;
+            specvm.Popularity = 0;//todo 檢視表新增熱門度相關欄位
             return View(specvm);
         }
 
