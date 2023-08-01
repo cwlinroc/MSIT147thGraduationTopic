@@ -29,8 +29,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\uploads\merchandisePicture\" />
-    <Folder Include="wwwroot\uploads\Avatar\" />
-    <Folder Include="wwwroot\uploads\Avatar\" />
   </ItemGroup>
 
 </Project>

@@ -57,13 +57,11 @@
                 <label for="name" class="form-label fw-bold">地址</label>
                 <div class="input-group">
                     <label class="input-group-text" for="city">縣市</label>
-                    <select class="form-select" id="city" disabled>
-                    </select>
-                    <input type="hidden" id="cityHidden" name="City" value="" />
+                    <select class="form-select" id="city" name="City" disabled>
+                    </select>                    
                     <label class="input-group-text" for="district">區域</label>
-                    <select class="form-select" id="district" disabled>                       
-                    </select>
-                    <input type="hidden" id="districtHidden" name="District" value="" />
+                    <select class="form-select" id="district" name="District" disabled>
+                    </select>                    
                     <input class="form-control" id="address" name="Address" type="text" readonly />
                 </div>
             </div>
@@ -71,8 +69,7 @@
             <div class="form mb-5">
                 <label class="form-label fw-bold">頭像</label>
                 <div class="input-group">
-                    <input type="file" id="avatar"  class="form-control" disabled />
-                    <input type="hidden" id="avatarHidden" name="Avatar" value="" />
+                    <input type="file" id="avatar" name="Avatar" class="form-control" disabled />                    
                 </div>
             </div>
             <!-- Submit Button-->

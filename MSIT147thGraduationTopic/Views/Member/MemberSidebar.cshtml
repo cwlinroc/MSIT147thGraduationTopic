@@ -1,22 +1,25 @@
-﻿@{
-    Layout = null;
-    string? memberAvatar = null;
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var user = HttpContextAccessor?.HttpContext?.User;
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;
+    string? userName = string.Empty;
+    string? avatarName = string.Empty;
+    string? roleName = string.Empty;
+
+    if (isAuthorized ?? false)
+    {
+        userName = user.FindFirstValue("UserName");
+        avatarName = user.FindFirstValue("AvatarName");
+        roleName = user.FindFirstValue(ClaimTypes.Role);
+        if (string.IsNullOrEmpty(avatarName)) avatarName = "memberDefault.png";
+    }
 }
 
 <div class="text-center mb-3">
-    @{
-        if (memberAvatar == null)
-        {
-            <img class="img-fluid rounded-circle mb-4"
-                 src="@Url.Content("~/images/avatar_icon.png")" />
-        }
-        else
-        {
-            <img class="img-fluid rounded-circle mb-4"
-                 src="@Url.Content("")" />
-        }
-    }
-
+    <img class="img-fluid rounded-circle mb-4"
+         src="@Url.Content($"~/uploads/Avatar/{avatarName}")" />
     <br>
     <div class="input-group">
         @*<input type="file" id="avatar" class="form-control" aria-label="Select Avatar">*@

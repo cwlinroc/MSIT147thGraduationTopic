@@ -118,6 +118,7 @@ $('#phoneEditedChk').click(function () {
     }
 });
 
+//todo 增加隱藏input
 $('#addressEditedChk').click(function () {
     if ($('#addressEditedChk').is(':checked')) {
         $('#city').prop('disabled', false);
@@ -140,15 +141,9 @@ $('#addressEditedChk').click(function () {
 
 $('#avatarEditedChk').click(function () {
     if ($('#avatarEditedChk').is(':checked')) {
-        console.log('chk')
-        $('#memberCenterForm input[name=Avatar]').attr("disabled", true);
-        $('#avatar').attr('disabled', false).attr('name', 'Avatar');
-        
+        $('#avatar').prop('disabled', false);        
     } else {
-        console.log('unchk')
-        $('#avatar').attr('disabled', true).removeattr('name', 'Avatar');
-        $('#memberCenterForm input[name=Avatar]').attr("disabled", false);
-       
+        $('#avatar').prop('disabled', true);
     }
 });
 

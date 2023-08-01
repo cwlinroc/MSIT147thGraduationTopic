@@ -93,8 +93,7 @@ $(function () {
 async function LogIn() {
     //驗證
     const account = $('#loginAccount').val()
-    const password = $('#loginPassword').val()
-    //const chkRemember = $('#chkRemember').prop('checked')
+    const password = $('#loginPassword').val()    
 
     const response = await fetch(ROOT + '/api/apimember/login', {
         body: JSON.stringify({ 'Account': account, 'Password': password }),

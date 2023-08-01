@@ -32,23 +32,32 @@ namespace MSIT147thGraduationTopic.Controllers
         public IActionResult LogIn()
         {
             return View();
-        }
+        }        
 
 
-        //[HttpPost]
-        //[Authorize(Roles = "會員")]
+        [Authorize(Roles = "會員")]
         public IActionResult MemberCenter()
         {
             return View();
         }
 
-        //[HttpPost]
-        //[Authorize(Roles = "會員")]
+      
+        [Authorize(Roles = "會員")]
         public IActionResult ShoppingHistory()
         {
             return View();
-        }      
-        
+        }
+
+        //未登入時會自動移轉到此網址。
+        public IActionResult NoLogin()
+        {
+            return View();
+        }
+        //未授權角色時會自動移轉到此網址。
+        public IActionResult NoRole()
+        {
+            return View();
+        }
 
         public IActionResult Cities()
         {
@@ -64,21 +73,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 return Json(cities.Select(x => x.ToObject<string>()));
             }
         }
-
-        ////未登入時會自動移轉到此網址。
-        public IActionResult NoLogin()
-        {
-            return View();
-        }
-        ////未授權角色時會自動移轉到此網址。
-        public IActionResult NoRole()
-        {
-            return View();
-        }
-
-        //AddressVM.Record _addressdata = new AddressVM.Record();
-
-        
+                
         public IActionResult Districts(string? city)
         { 
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
