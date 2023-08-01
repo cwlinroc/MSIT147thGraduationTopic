@@ -95,13 +95,13 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         static public void ChangeByEditDto(this Member entity, MemberEditDto dto)
         {
             entity.NickName = dto.NickName;
-            entity.Password = dto.Password;
-            entity.Phone = dto.Phone;
-            entity.City = dto.City;
-            entity.District = dto.District;
-            entity.Address = dto.Address;
-            entity.Email = dto.Email;
-            entity.Avatar = dto.Avatar;            
+            if (dto.Password != null) entity.Password = dto.Password;
+            if (dto.Phone != null) entity.Phone = dto.Phone;
+            if (dto.City != null) entity.City = dto.City;
+            if (dto.District != null) entity.District = dto.District;
+            if (dto.Address != null) entity.Address = dto.Address;
+            if (dto.Email != null) entity.Email = dto.Email;
+            entity.Avatar = dto.Avatar;
             entity.IsActivated = dto.IsActivated;
         }
     }

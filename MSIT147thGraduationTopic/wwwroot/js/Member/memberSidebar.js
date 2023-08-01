@@ -1,4 +1,4 @@
-﻿$('#changeAvatar').click(() => { console.log('123') })
+﻿//$('#changeAvatar').click(change)
 
 //async function change() {
 //    const reader = new FileReader()
@@ -9,15 +9,23 @@
 //        inputAttributes: {
 //            'accept': 'image/*',
 //        },
-//        imageUrl: file.target.result
+//        imageUrl: null,
 //    })
 
-//    if (file) {        
-//        reader.onload = () => {
-//            Swal.fire({
-//                title: 'Your uploaded picture'                
-//            })
-//        }
+//    if (file) {
 //        reader.readAsDataURL(file)
+//        reader.onload = (e) => {
+//             = e.target.result;
+//        }
+//        await Swal.fire({
+//            icon: 'success',
+//            title: '上傳成功',
+//            allowOutsideClick: false
+//        })
 //    }
+
 //}
+
+
+
+

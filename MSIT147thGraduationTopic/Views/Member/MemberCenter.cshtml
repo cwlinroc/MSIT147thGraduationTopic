@@ -19,54 +19,62 @@
             <!-- NickName input-->
             <div class="form mb-3">
                 <label for="nickname" class="form-label fw-bold">暱稱</label>
-                <input class="form-control" id="nickName" name="NickName" type="text" disabled/>
+                <input class="form-control" id="nickName" name="NickName" type="text" readonly/>
             </div>            
             <!-- Password input-->
             <div class="form mb-3">
                 <label for="password" class="form-label fw-bold">
                     密碼:需要6~32位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>
-                <input class="form-control" id="password" name="Password" type="password" disabled />
+                <input class="form-control" id="password" name="Password" type="password" readonly />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
                 <label for="confirmPassword" class="form-label fw-bold">確認密碼</label>
-                <input class="form-control" id="confirmPassword" type="password" disabled />
+                <input class="form-control" id="confirmPassword" type="password" readonly />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
             </div>
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">Email</label>
-                <input class="form-control" id="email" name="Email" type="email" required disabled />
+                <input class="form-control" id="email" name="Email" type="email" required readonly />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
-                <input class="form-control" id="phone" name="Phone" type="tel" required disabled />
+                <input class="form-control" id="phone" name="Phone" type="tel" required readonly />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
                 
             </div>
             <!-- Address input-->
-            <div class="form mb-5">
+            <div class="form mb-3">
                 <label for="name" class="form-label fw-bold">地址</label>
                 <div class="input-group">
                     <label class="input-group-text" for="city">縣市</label>
-                    <select class="form-select" id="city" name="City" disabled>
-
-                    </select>  
-                    <label class="input-group-text" for="district">區域</label>
-                    <select class="form-select" id="district" name="District" disabled>
-                       
+                    <select class="form-select" id="city" disabled>
                     </select>
-                    <input class="form-control" id="address" name="Address" type="text" disabled />
+                    <input type="hidden" id="cityHidden" name="City" value="" />
+                    <label class="input-group-text" for="district">區域</label>
+                    <select class="form-select" id="district" disabled>                       
+                    </select>
+                    <input type="hidden" id="districtHidden" name="District" value="" />
+                    <input class="form-control" id="address" name="Address" type="text" readonly />
                 </div>
-            </div>            
+            </div>
+            <!-- Avatar input-->
+            <div class="form mb-5">
+                <label class="form-label fw-bold">頭像</label>
+                <div class="input-group">
+                    <input type="file" id="avatar"  class="form-control" disabled />
+                    <input type="hidden" id="avatarHidden" name="Avatar" value="" />
+                </div>
+            </div>
             <!-- Submit Button-->
             <div class="d-grid col-lg-8 offset-2 my-3">
                 <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
@@ -102,19 +110,24 @@
         </div>
         <br />
         <br />
-        <div class="form-check mt-3">
+        <div class="form-check mt-2">
             <input class="form-check-input mx-auto" id="addressEditedChk" type="checkbox" />
+        </div>
+        <br />
+        <br />
+        <div class="form-check mt-3">
+            <input class="form-check-input mx-auto" id="avatarEditedChk" type="checkbox" />
         </div>
     </div>
 </div>
 
 @section Styles{
     <style>
-        #selectCity {
+        #city {
             max-width: 200px
         }
 
-        #selectDistrict {
+        #district {
             max-width: 200px
         }
 

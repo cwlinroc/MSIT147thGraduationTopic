@@ -47,17 +47,8 @@ namespace MSIT147thGraduationTopic.Controllers
         public IActionResult ShoppingHistory()
         {
             return View();
-        }
-       
-        public IActionResult NoLogin()
-        {            
-            return Content("尚未登入");
-        }
+        }      
         
-        public IActionResult NoRole()
-        {           
-            return Content("沒有權限");
-        }
 
         public IActionResult Cities()
         {

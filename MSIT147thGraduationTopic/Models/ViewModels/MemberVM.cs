@@ -88,7 +88,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
     }
 
     public class MemberCenterEditVM
-    {        
+    {
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? NickName { get; set; }
         public string? Password { get; set; }
@@ -279,7 +279,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public static MemberCenterEditVM ToCenterEditVM(this MemberEditDto dto)
         {
             return new MemberCenterEditVM
-            {                
+            {
                 NickName = dto.NickName,
                 Password = dto.Password,
                 Phone = dto.Phone,
@@ -294,15 +294,14 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public static MemberEditDto CenterEditToDto(this MemberCenterEditVM vm)
         {
             return new MemberEditDto
-            {   
+            {
                 NickName = vm.NickName,
-                Password = vm.Password,
                 Phone = vm.Phone,
                 City = vm.City,
                 District = vm.District,
                 Address = vm.Address,
                 Email = vm.Email,
-                Avatar=vm.Avatar,
+                Avatar = vm.Avatar,
             };
         }
     }

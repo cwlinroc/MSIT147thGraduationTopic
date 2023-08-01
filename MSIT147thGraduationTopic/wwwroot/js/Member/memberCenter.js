@@ -86,47 +86,69 @@ selCity.addEventListener('change', () => {
 
 $('#nickNameEditedChk').click(function () {
     if ($('#nickNameEditedChk').is(':checked')) {
-        $('#nickName').prop('disabled', false);
+        $('#nickName').prop('readonly', false);
     } else {
-        $('#nickName').prop('disabled', true);
+        $('#nickName').prop('readonly', true);
     }
 });
 
 $('#passwordEditedChk').click(function () {
     if ($('#passwordEditedChk').is(':checked')) {
-        $('#password').prop('disabled', false);
-        $('#confirmPassword').prop('disabled', false);
+        $('#password').prop('readonly', false);
+        $('#confirmPassword').prop('readonly', false);
     } else {
-        $('#password').prop('disabled', true);
-        $('#confirmPassword').prop('disabled', true);
+        $('#password').prop('readonly', true);
+        $('#confirmPassword').prop('readonly', true);
     }
 });
 
 $('#emailEditedChk').click(function () {
     if ($('#emailEditedChk').is(':checked')) {
-        $('#email').prop('disabled', false);
+        $('#email').prop('readonly', false);
     } else {
-        $('#email').prop('disabled', true);
+        $('#email').prop('readonly', true);
     }
 });
 
 $('#phoneEditedChk').click(function () {
     if ($('#phoneEditedChk').is(':checked')) {
-        $('#phone').prop('disabled', false);
+        $('#phone').prop('readonly', false);
     } else {
-        $('#phone').prop('disabled', true);
+        $('#phone').prop('readonly', true);
     }
 });
 
 $('#addressEditedChk').click(function () {
     if ($('#addressEditedChk').is(':checked')) {
         $('#city').prop('disabled', false);
+        $('#cityHidden').prop('disabled', true);
+       
         $('#district').prop('disabled', false);
-        $('#address').prop('disabled', false);
+        $('#districtHidden').prop('disabled', true);
+        
+        $('#address').prop('readonly', false);
     } else {
         $('#city').prop('disabled', true);
+        $('#cityHidden').prop('disabled', false);
+        
         $('#district').prop('disabled', true);
-        $('#address').prop('disabled', true);
+        $('#districtHidden').prop('disabled', false);
+        
+        $('#address').prop('readonly', true);
+    }
+});
+
+$('#avatarEditedChk').click(function () {
+    if ($('#avatarEditedChk').is(':checked')) {
+        console.log('chk')
+        $('#memberCenterForm input[name=Avatar]').attr("disabled", true);
+        $('#avatar').attr('disabled', false).attr('name', 'Avatar');
+        
+    } else {
+        console.log('unchk')
+        $('#avatar').attr('disabled', true).removeattr('name', 'Avatar');
+        $('#memberCenterForm input[name=Avatar]').attr("disabled", false);
+       
     }
 });
 
@@ -156,7 +178,7 @@ function editValidator() {
         }
 
         const phoneHasValue = !!phone.value
-        const phonePatternValid = /^09\d{8}$/.test(phone.value)
+        let phonePatternValid = /^09\d{8}$/.test(phone.value)
 
         if ($('#phoneEditedChk').attr('checked')) {
             phone.setValidate(() => phoneHasValue, '請輸入手機號碼')
@@ -167,7 +189,7 @@ function editValidator() {
         }        
 
         const emailHasValue = !!email.value
-        const emailPatternValid = /^\w+@\w+/.test(email.value)
+        let emailPatternValid = /^\w+@\w+/.test(email.value)
 
         if ($('#emailEditedChk').attr('checked')) {
             email.setValidate(() => emailHasValue, '請輸入Email')
