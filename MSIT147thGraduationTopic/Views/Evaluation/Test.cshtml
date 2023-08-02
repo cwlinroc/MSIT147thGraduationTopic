@@ -1,0 +1,25 @@
+﻿@model List<int>
+@{
+    ViewData["Title"] = "Test";
+}
+
+<div class="container m-5 p-5">
+    @foreach(int orderId in Model){
+        <div class="p-3">
+            <button class="pick-order btn btn-primary" data-orderId="@orderId">訂單編號:@orderId</button>
+        </div>        
+    }
+</div>
+
+
+
+@section Scripts{
+    <script>
+        $('.pick-order').click(e=>{
+            const orderId = $(e.currentTarget).attr('data-orderId')
+            window.location.href = `@Url.Content("~/evaluation/eindex/")${orderId}`
+        })
+
+    </script>
+}
+

@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Security.Claims;
 using System.Xml.Linq;
 using static MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM;
 
@@ -9,7 +10,7 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class EvaluationController : Controller
     {
-        
+
         private readonly GraduationTopicContext _context;
 
         public EvaluationController(GraduationTopicContext context)
@@ -59,7 +60,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 var data = new Evaluation();
                 data.OrderId = id;
                 data.MerchandiseId = item.MerchandiseId;
-                data.Comment= item.Comment;
+                data.Comment = item.Comment;
                 data.Score = item.Score;
 
                 datalist.Add(data);              
@@ -115,6 +116,20 @@ namespace MSIT147thGraduationTopic.Controllers
         //}
 
 
+
+        //測試用會員購買紀錄
+        public IActionResult Test()
+        {
+            int memberId;
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out memberId))
+            {
+                memberId = 1;
+            }
+            var orderIds = _context.Orders.Where(o => o.MemberId == memberId).Select(o=>o.OrderId).ToList();
+
+            return View(orderIds);
+        }
+        //測試用會員購買紀錄
     }
 }
 //for (int i = 0; i < comments.Count; i++)
