@@ -42,7 +42,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 _context.SaveChanges();
             }
             
-            return RedirectToAction("EBIndex");            
+            return RedirectToAction("EBIndex");          
         }
         [HttpPost]
         public IActionResult Search(string keyword)
