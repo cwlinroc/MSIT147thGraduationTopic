@@ -32,15 +32,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return obj.CouponId;
         }
 
-        public int EditCoupon(CouponEditDto cEDto,int couponId)
+        public int EditCoupon(CouponDto cDto, int couponId)
         {
-            var coupon = _context.Coupons.FirstOrDefault(c=>c.CouponId == couponId);
+            var coupon = _context.Coupons.FirstOrDefault(c => c.CouponId == couponId);
             if (coupon == null)
             {
                 return -1;
             }
-            coupon.UpdateByEditDto(cEDto);
-            
+            coupon.UpdateByDto(cDto);
+
             _context.SaveChanges();
             return couponId;
         }

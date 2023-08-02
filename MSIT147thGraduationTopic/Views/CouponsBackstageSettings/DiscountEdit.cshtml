@@ -28,6 +28,7 @@
                 <div class="container px-5 my-5">
                     <div class="row justify-content-center">
                         <form id="edit" name="edit" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation" novalidate>
+                            @Html.AntiForgeryToken()
                         </form>
                         <div class="col-8 mb-3">
                             優惠券序號<input type="hidden" name="CouponId" value="@Model.CouponId" class="form-control">
@@ -50,7 +51,7 @@
                             結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
                         <div class="col-8 mb-3">
-                            折扣百分比<input name="CouponDiscount" value="@Model.CouponDiscount" type="number" class="form-control" placeholder="請輸入折扣百分比">
+                            折扣百分比<input name="CouponDiscount" value="@Model.CouponDiscount" type="number" class="form-control" placeholder="請輸入折扣百分比" min="0" max="100">
                         </div>
                     </div>
 
@@ -88,34 +89,49 @@
 
 @section Scripts{
     <script>
-        const couponId = '@Model.CouponId';
+        //const couponId = '@Model.CouponId';
 
-        //$('#btnEdit').click(async function () {
-    
-        //    const formData = $('#edit').serialize();
-        //        const editUrl = `@Url.Content("~/ApiCoupon/DiscountEdit/")${couponId}`
-        //    console.log(editUrl);
-        //        console.log(formData)
-        //    $.ajax({
-        //        url: editUrl,
-        //        type: 'PUT',
-        //        data: formData,
-        //        success: function (formData) {
-        //            Swal.fire({
-        //                icon: 'success',
-        //                title: '成功',
-        //                text: '優惠券更新成功',
-        //            });
-        //        },
-        //        error: function (xhr) {
-        //            Swal.fire({
-        //                icon: 'error',
-        //                title: '失敗',
-        //                text: '優惠券更新失敗，請檢查資料及格式是否正確',
-        //            });
-        //        }
-        //    });
-        //});
+        $('#btnEdit').click(async function(){
+            const discountInput = $('input[name="CouponDiscount"]');
+            const discountValue = parseFloat(discountInput.val());
+
+            if(isNaN(discountValue)||discountValue<0||discountValue>100){
+                discountInput[0].setCustomValidity('折扣必須介於0到100');
+            }
+            else{
+                discountInput[0].setCustomValidity('');
+            }
+
+            const form = document.getElementById('edit');
+            if(form.checkValidity()){
+                const formData = $(form).serialize();
+                const editUrl = `@Url.Action("EditCoupon","ApiCoupon",new{id=Model.CouponId})`;
+                console.log(editUrl);
+                console.log(formData);
+                $.ajax({
+                    url:editUrl,
+                    type:'PUT',
+                    data:formData,
+                    success:function(data){
+                        Swal.fire({
+                            icon:'success',
+                            title:'成功',
+                            text:'優惠券更新成功'
+                        });
+                    },
+                    error:function(xhr){
+                        Swal.fire({
+                            icon:'error',
+                            title:'失敗',
+                            text: '優惠券更新失敗，請檢查資料及格式是否正確' + xhr.responseText,,
+                        });
+                    }
+                });
+            }
+            else{
+                form.reportValidity();
+            }
+        });
 
         $('#btnBack').on('click', function () {
             Swal.fire({
@@ -130,6 +146,7 @@
                 }
             })
         })
+
         $('#hrefHomePage').on('click', function () {
             Swal.fire({
                 title: '確定要返回主頁面?',
@@ -144,5 +161,4 @@
             })
         })
     </script>
-
 }

@@ -46,7 +46,7 @@ namespace MSIT147thGraduationTopic.Controllers
             return couponId;
         }
 
-        [HttpPut("{id}")]
+        [HttpGet("{id}")]
         public ActionResult<CouponVM> GetCouponById(int id) 
         {
             var couponData = _service.GetCouponById(id);
@@ -55,6 +55,13 @@ namespace MSIT147thGraduationTopic.Controllers
                 return NotFound();
             }
             return couponData.ToVM();
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<int> UpdateCoupon(int id, [FromForm] CouponCreateVM vm)
+        {
+            var couponId = _service.EditCoupon(vm.ToDto(), id);
+            return couponId;
         }
 
         [HttpDelete("{id}")]
