@@ -13,16 +13,16 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Create">
+                <form asp-action="Create" method="Post" name="forminput" id="forminput">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="CategoryName" class="control-label"></label>
-                        <input asp-for="CategoryName" class="form-control" />
-                        <span asp-validation-for="CategoryName" class="text-danger"></span>
+                        <input asp-for="CategoryName" class="form-control" id="input" />
+                        <span asp-validation-for="CategoryName" class="text-danger" id="alertspan"></span>
                     </div>
                     <hr />
                     <div class="form-group">
-                        <input type="submit" value="新增" class="btn btn-primary" />
+                        <input type="submit" value="新增" class="btn btn-primary" id="submit" />
                         @Html.ActionLink("取消", "Index", "Categories", null, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
@@ -32,7 +32,53 @@
 </div>
 
 @section Scripts {
+    <script>
+        const alertspan = document.querySelector("#alertspan");
 
+        const submit = document.querySelector("#submit");
+        submit.addEventListener("click", (event) => {
+            event.preventDefault();
+            var formdata = new FormData(document.forminput);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/ApiCategory/CheckCategoryforCreate");
+            xhr.send(formdata);
+
+            let condition;
+            xhr.addEventListener("load", () => {
+                const data = JSON.parse(xhr.responseText);
+
+                if (data) {
+                    alertspan.innerHTML = "此類別已存在，請重新命名";
+                }
+                else {
+                    alertspan.innerHTML = "";
+                    const forminput = document.querySelector("#forminput");
+                    HTMLFormElement.prototype.submit.call(forminput);
+                }
+            })
+        })
+
+        const input = document.querySelector("#input");
+        input.addEventListener("keyup", () => {
+            var formdata = new FormData(document.forminput);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/ApiCategory/CheckCategoryforCreate");
+            xhr.send(formdata);
+
+            xhr.addEventListener("load", () => {
+                const data = JSON.parse(xhr.responseText);
+
+                if (data) {
+                    alertspan.innerHTML = "此類別已存在，請重新命名";
+                }
+                else {
+                    alertspan.innerHTML = "";
+                }
+            })
+        })
+    </script>
 }
 
 @section Styles{

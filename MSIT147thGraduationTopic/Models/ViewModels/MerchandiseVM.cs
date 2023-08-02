@@ -1,11 +1,12 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.ViewModels
 {
     public class MerchandiseVM
     {
-        private Merchandise _merchandise = null;
+        private Merchandise _merchandise;
         public Merchandise merchandise
         {
             get { return _merchandise; }
@@ -41,23 +42,24 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _merchandise.CategoryId = value; }
         }
         [DisplayName("商品描述")]
-        public string Description
+        public string? Description
         {
             get { return _merchandise.Description; }
             set { _merchandise.Description = value; }
         }
         [DisplayName("商品圖片")]
-        public string ImageUrl
+        public string? ImageUrl
         {
             get { return _merchandise.ImageUrl; }
             set { _merchandise.ImageUrl = value; }
         }
-        [DisplayName("展示商品")]
+        [DisplayName("於商城展示商品")]
         public bool Display
         {
             get { return _merchandise.Display; }
             set { _merchandise.Display = value; }
         }
-        public IFormFile photo { get; set; }
+        public IFormFile? photo { get; set; }
+        public bool? deleteImageIndicater { get; set; }
     }
 }

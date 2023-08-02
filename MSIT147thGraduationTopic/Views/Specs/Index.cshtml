@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Spec>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.SpecVM>
 
 @{
     Layout = "_BackstagePage";
@@ -9,8 +9,43 @@
     <h1 class="title">商品規格檢視</h1>
 
     <div class="bg-light rounded shadow p-5">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        商品名稱
+                    </th>
+                    <th>
+                        品牌
+                    </th>
+                    <th>
+                        商品類別
+                    </th>
+                    <th>
+                        商品說明
+                    </th>
+                    <th>
+                        商品圖片
+                    </th>
+                    <th style="display:none">
+                        商品ID
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="mName"></td>
+                    <td id="mBrand"></td>
+                    <td id="mCategory"></td>
+                    <td id="mDescription"></td>
+                    <td><img id="mImage" class="imgtumbnail" /></td>
+                    <td id="getMerchandiseId" style="display:none">@Html.DisplayFor(modelItem => Model.First().merchandiseIdCarrier)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <p>
-            @Html.ActionLink("新增商品規格", "Create", "Specs", null, new { @class = "btn btn-primary" })
+            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseidcarrier = Model.First().merchandiseIdCarrier}, new { @class = "btn btn-primary" })
         </p>
         <hr />
         <table class="table table-hover">
@@ -18,6 +53,9 @@
                 <tr>
                     <th>
                         檢視序號
+                    </th>
+                    <th style="display:none">
+                        @Html.DisplayNameFor(model => model.MerchandiseId)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.SpecName)
@@ -29,12 +67,15 @@
                         @Html.DisplayNameFor(model => model.Amount)
                     </th>
                     <th>
+                        @Html.DisplayNameFor(model => model.ImageUrl)
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.DiscountPercentage)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.DisplayOrder)
                     </th>
-                    <th>
+                    <th style="text-align:center">
                         @Html.DisplayNameFor(model => model.OnShelf)
                     </th>
                     <th></th>
@@ -50,6 +91,9 @@
                             <td>
                                 @count
                             </td>
+                            <td style="display:none">
+                                @Html.DisplayFor(modelItem => item.MerchandiseId)
+                            </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.SpecName)
                             </td>
@@ -60,18 +104,22 @@
                                 @Html.DisplayFor(modelItem => item.Amount)
                             </td>
                             <td>
+                                @{ string imageurl = string.IsNullOrEmpty(item.ImageUrl) ? "default.png" : item.ImageUrl; }
+                                <img src="@Url.Content("~/uploads/specPicture/" + imageurl)" class="imgtumbnail" />
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.DiscountPercentage)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.DisplayOrder)
                             </td>
-                            <td>
+                            <td style="text-align:center">
                                 @Html.DisplayFor(modelItem => item.OnShelf)
                             </td>
                             <td>
                                 @Html.ActionLink("修改", "Edit", "Specs", new { id=item.SpecId }, new { @class = "btn btn-warning" }) |
                                 @Html.ActionLink("刪除", "Delete", "Specs", new { id=item.SpecId }
-                                                    , new { onclick = "return confirm('確定刪除商品規格嗎？')", @class = "btn btn-danger" })
+                                                , new { onclick = "return confirm('確定刪除商品規格嗎？')", @class = "btn btn-danger" })
                             </td>
                         </tr>
                     }
@@ -85,7 +133,33 @@
 </div>
 
 @section Scripts {
+    @*產生商品資料*@
+    <script>
+        const mName = document.querySelector("#mName");
+        const mBrand = document.querySelector("#mBrand");
+        const mCategory = document.querySelector("#mCategory");
+        const mDescription = document.querySelector("#mDescription");
+        const mImage = document.querySelector("#mImage");
 
+        $(() => {
+            const merchandiseid = $("#getMerchandiseId").text();
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
+            xhr.send();
+
+            xhr.addEventListener("load", () => {
+                const datas = JSON.parse(xhr.responseText);
+                const merchandise = datas[0];
+                mName.innerHTML = merchandise.merchandiseName;
+                mBrand.innerHTML = merchandise.brandName;
+                mCategory.innerHTML = merchandise.categoryName;
+                mDescription.innerHTML = merchandise.description;
+                mImage.src = (merchandise.imageUrl != null)
+                        ? "@Url.Content("~/uploads/merchandisePicture/")" + merchandise.imageUrl
+                        : "@Url.Content("~/uploads/merchandisePicture/default.png")";
+            })
+        })
+    </script>
 }
 
 @section Styles{
@@ -93,6 +167,11 @@
         .title {
             margin-top: 30px;
             margin-bottom: 10px;
+        }
+
+        .imgtumbnail {
+            max-width: 70px;
+            min-width: 70px;
         }
     </style>
 }

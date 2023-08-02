@@ -35,6 +35,20 @@
             return dt;
         }
 
+        public DateTime RandomDateBetweenDays(int minDay = -150, int maxDay = -3)
+        {
+            if (minDay > maxDay)
+            {
+                throw new ArgumentOutOfRangeException("前項時間不可大於後項");
+            }
+            // 3600 * 24 
+
+            DateTime dt = DateTime.Now.AddDays(minDay);
+            dt = dt.AddDays(_rand.Next(maxDay - minDay)).AddSeconds(_rand.Next(86400));
+            return dt;
+        }
+
+
         public string RandomEnString(int min = 5, int max = 15)
         {
             int length = _rand.Next(min, max);
@@ -51,7 +65,7 @@
         {
             int length = _rand.Next(min, max);
             string str = string.Empty;
-            for (int i = 0; i < length ; i++)
+            for (int i = 0; i < length; i++)
             {
                 str += (char)('!' + _rand.Next(94));
             }
@@ -176,31 +190,36 @@
         }
 
         private readonly string[] _MerchandiseTitle0 = { "美國進口", "英國進口", "台灣品牌", "日本原裝進口", "芬蘭進口", "紐西蘭特產", "法國原裝", "德國引進", "花蓮進口" };
-        private readonly string[] _MerchandiseTitle1 = { "PETIZOO", "CARFIELD", "ArfArf", "PEHOM", "波斯米", "mao&kou", "Pinkoi", "Pidan", "Pets Zakka", "多格曼", "GuluPet", "Bayer", "Herchy" };
         private readonly string[] _MerchandiseTitle2 = { "精裝版", "特仕版", "豪華", "經典款", "經濟版" };
-        private readonly string[] _MerchandiseTitle3 = { "(特大)", "(大)", "(中)", "(小)" };
+
         private readonly string[][] _MerchandiseItem = {
-            new string[] { "貓罐頭","狗罐頭","保健食品","寵物零食","潔牙骨"},
-            new string[] { "貓砂","尿布墊","寵物貓專用沐浴乳","寵物犬專用沐浴乳"},
-            new string[] { "毛梳","牽繩","貓抓板","指甲剪"},
-            new string[] { "骨頭玩具","鈴鐺小球"},
-            new string[] { "貓砂盆","貓窩","狗窩籃子","貓用外出背包","寵物箱" },
-            new string[] { "葵花子","提摩西草","磨牙飼料","兔子飼料" },
-            new string[] { "木屑","鼠砂" },
-            new string[] { "餵水器","滾輪" },
-            new string[] { "蘿蔔娃娃" },
-            new string[] { "兔子用便盆","砂浴盆","壓克力鼠籠" },
+            new string[] { "貓罐頭", "狗罐頭", "寵物零食", "牧草", "綜合瓜子"}, //寵物食品
+            new string[] { "魚油", "維他命", "潔牙骨" }, //營養保健
+            new string[] { "木屑", "貓砂", "尿布墊", "鼠砂"}, //墊料耗材
+            new string[] { "寵物貓專用沐浴乳", "寵物犬專用沐浴乳", "寵物用濕紙巾"}, //寵物清潔
+            new string[] { "毛梳", "指甲剪", "餵水器" }, //器材工具
+            new string[] { "貓抓板", "骨頭玩具", "蘿蔔娃娃", "滾輪"}, //寵物玩具
+            new string[] {"狗狗衣服", "貓咪頭套", "兔子領結" }, //飾品服裝
+            new string[] { "貓窩", "狗窩籃子", "鼠籠", "兔籠" },//家居小窩
+            new string[] {"牽繩", "貓用外出背包", "寵物箱" }, //外出用品
         };
-        private string GetMerchandiseName(int categoryIndex)
+
+
+        public string GetMerchandiseName(int categoryIndex)
         {
-            string name = ((RandomChance(60)) ? _MerchandiseTitle0[_rand.Next(_MerchandiseTitle0.Length)] : "")
-                + _MerchandiseTitle1[_rand.Next(_MerchandiseTitle1.Length)]
-                + ((RandomChance(50)) ? _MerchandiseTitle2[_rand.Next(_MerchandiseTitle2.Length)] : "")
-                + _MerchandiseItem[categoryIndex][_rand.Next(_MerchandiseItem[categoryIndex].Length)]
-                + ((RandomChance(60)) ? _MerchandiseTitle3[_rand.Next(_MerchandiseTitle3.Length)] : "");
+            string name = ((RandomChance(80)) ? _MerchandiseTitle0[_rand.Next(_MerchandiseTitle0.Length)] : "")
+                + ((RandomChance(90)) ? _MerchandiseTitle2[_rand.Next(_MerchandiseTitle2.Length)] : "")
+                + _MerchandiseItem[categoryIndex][_rand.Next(_MerchandiseItem[categoryIndex].Length)];
 
             return name;
         }
+
+        private readonly string[] _Specs = { "(特大)", "(大)", "(中)", "(小)", "(一百份裝)", "(十二份裝)", "(單份)", "(五份裝)", "(紅色)", "(綠色)", "(彩虹色)" };
+        public string[] GetSpecName(int count)
+        {
+            return RandomCollectionFrom(_Specs, count).ToArray();
+        }
+
 
 
         private readonly string[] _nouns = { "bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog" };

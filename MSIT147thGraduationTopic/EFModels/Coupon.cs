@@ -8,7 +8,8 @@ namespace MSIT147thGraduationTopic.EFModels
     public partial class Coupon
     {
         public int CouponId { get; set; }
-        public int CouponTagId { get; set; }
+        public string CouponName { get; set; }
+        public int? CouponTagId { get; set; }
         public DateTime CouponStartDate { get; set; }
         public DateTime CouponEndDate { get; set; }
         public int CouponDiscountTypeId { get; set; }

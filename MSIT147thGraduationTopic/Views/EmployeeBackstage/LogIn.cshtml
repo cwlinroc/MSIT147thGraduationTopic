@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewData["Title"] = "LogIn";
+    Layout = "_BackstagePage";
+}
+
+<div class="container px-5">
+    <div class="row">
+        <div class="col-1 col-md-2 col-lg-3 col-xxl-4"> </div>
+        <div class="col-10 col-md-8 col-lg-6 col-xxl-4 py-5">
+            <form name="logForm">
+                <div class="mb-3">
+                    <label for="inputText" class="form-label">帳號</label>
+                    <input type="text" class="form-control" id="inputAccount" name="account">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">密碼</label>
+                    <input type="password" class="form-control" id="inputPassword" name="password">
+                </div>
+                <button type="button" class="btn btn-primary" id="btnChangeAccount">變更帳號並登入</button>
+            </form>
+
+
+            <div class="my-4">
+                <button type="button" id="demo0">demo admin</button>
+                <button type="button" id="demo1">demo manager</button>
+                <button type="button" id="demo2">demo employee</button>
+            </div>
+
+
+        </div>
+        <div class="col-1 col-md-2 col-lg-3 col-xxl-4"> </div>
+    </div>
+
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+
+        $('#demo0').click(() => {
+            $('#inputAccount').val('admin')
+            $('#inputPassword').val('admin')
+        })
+        $('#demo1').click(() => {
+            $('#inputAccount').val('manager')
+            $('#inputPassword').val('manager')
+        })
+        $('#demo2').click(() => {
+            $('#inputAccount').val('employee')
+            $('#inputPassword').val('employee')
+        })
+
+        $('#btnChangeAccount').click(changeAccount)
+
+        async function changeAccount() {
+            const formData = new FormData(document.logForm)
+
+            showLoadingBox()
+            const response = await fetch(`@Url.Content("~/api/apiemployee/login")`, {
+                body: formData,
+                method: 'POST'
+            })
+
+            if (response.ok) {
+                const loginSucceed = await response.json()
+                hideLoadingBox()
+                if (loginSucceed) {
+                    await Swal.fire(
+                        '成功登入!',
+                        '登入後台管理系統',
+                        'success'
+                    )
+                    window.location.href = '@Url.Content("~/employeebackstage/welcome")'
+                }
+                else {
+                    await Swal.fire(
+                        '登入失敗!',
+                        '帳號密碼輸入錯誤',
+                        'error'
+                    )
+                }
+            }
+        }
+
+        
+
+    </script>
+}
+
+@section Styles{
+    <style>
+
+    </style>
+}
+
+

@@ -18,6 +18,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public int MerchandiseId { get; set; }
         public int Price { get; set; }
         public int Amount { get; set; }
+        public string ImageUrl { get; set; }
         public int DiscountPercentage { get; set; }
         public int DisplayOrder { get; set; }
         public bool OnShelf { get; set; }

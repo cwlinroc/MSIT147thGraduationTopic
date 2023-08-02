@@ -1,4 +1,5 @@
-﻿@{
+﻿@model string[]
+@{
     ViewData["Title"] = "Index";
     Layout = "_BackstagePage";
 }
@@ -22,13 +23,11 @@
 
                 <div class="p-4">
                     <h2>員工檢視</h2>
-                    <div class="d-flex justify-content-between">
-                        <form>
-                            <input type="text">
-                            <button type="submit">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                        </form>
+                    <div class="d-flex">
+                        <input type="text" id="query" name="query">
+                        <button type="button" id="queryButton">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -36,12 +35,14 @@
                     <table class="table table-light table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>頭像</th>
+                                <th class="ps-5" style="width:10rem">頭像</th>
                                 <th>姓名</th>
                                 <th>帳號名稱</th>
                                 <th>權限</th>
-                                <th>修改</th>
-                                <th>刪除</th>
+                                <th style="width:5rem" class="text-center">修改</th>
+                                <th style="width:5rem" class="text-center">權限調整</th>
+                                <th style="width:5rem" class="text-center">刪除</th>
+                                <th style="width:3rem" class="text-center"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,50 +61,49 @@
 
             <div class=" bg-light rounded shadow p-2 mb-4">
 
-                <h2 class="mt-4 ms-3">員工:大中天</h2>
+                <h2 class="mt-4 ms-3">員工:<span id="displayTileName"></span></h2>
                 <figure class="p-4">
-                    <img src="">
+                    <img src="" id="displayImage">
                 </figure>
 
             </div>
 
-            <div class=" bg-light rounded shadow p-2" id="data">
+            <div class=" bg-light rounded shadow p-2 mb-5" id="data">
                 <table class="table">
                     <thead>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="text-nowrap">姓名</td>
-                            <td>大中天</td>
+                            <td id="displayName"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">帳號名稱</td>
-                            <td>Big Middle Sky</td>
+                            <td id="displayAccount"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">電話</td>
-                            <td>0933000000</td>
+                            <td id="displayPhone"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">Email</td>
-                            <td>bms9487564651132131@yahoo.com.tw</td>
+                            <td id="displayEmail"></td>
                         </tr>
                         <tr>
                             <td class="text-nowrap">權限</td>
-                            <td>工讀生</td>
+                            <td id="displayPermission"></td>
                         </tr>
                     </tbody>
                 </table>
 
             </div>
 
-
         </div>
 
     </div>
 </div>
 
-<!-- Modal -->
+<!-- MainModal -->
 <div class="modal fade" id="edditModal" tabindex="-1" aria-labelledby="edditModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -112,26 +112,36 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="createAndEdit" name="createAndEdit" data-index="-1">
+                <form id="createAndEdit" name="createAndEdit" data-index="-1" class="needs-validation" novalidate>
                     <div class="mb-3">
                         <label for="name" class="col-form-label">姓名:</label>
-                        <input type="text" class="form-control" id="name" name="EmployeeName">
+                        <input type="text" class="form-control" id="name" name="EmployeeName" required>
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入姓名</div>
                     </div>
                     <div class="mb-3">
                         <label for="account" class="col-form-label">帳號名稱:</label>
                         <input type="text" class="form-control" id="account" name="EmployeeAccount">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入帳號</div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="col-form-label">密碼:</label>
                         <input type="text" class="form-control" id="password" name="EmployeePassword">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入密碼</div>
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="col-form-label">電話:</label>
                         <input type="text" class="form-control" id="phone" name="EmployeePhone">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入電話</div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="col-form-label">Email:</label>
                         <input type="text" class="form-control" id="email" name="EmployeeEmail">
+                        <div class="valid-feedback"></div>
+                        <div class="invalid-feedback">請輸入Email</div>
                     </div>
                     <div class="mb-3">
                         <label for="photo" class="col-form-label">頭像:</label>
@@ -156,19 +166,48 @@
     </div>
 </div>
 
+<!-- PermissionModal -->
+<div class="modal fade " id="permissionModal" tabindex="-1" aria-labelledby="permissionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="permissionModalLabel">修改權限為</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-5">
+                <select class="form-select" id="selectPermission">
+                    <option selected disabled hidden>--選擇--</option>
+                    @foreach (var permission in Model)
+                    {
+                        <option value="@permission">@permission</option>
+                    }
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-primary" id="btnChangePermission">確認</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 
 
 @section Scripts{
+    <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
 
         //get Modal
-        const myModal = new bootstrap.Modal(document.querySelector('.modal'))
-        //會員資料
+        const mainModal = new bootstrap.Modal(document.querySelector('#edditModal'))
+        const permissionModal = new bootstrap.Modal(document.querySelector('#permissionModal'))
+        //員工資料
         let employeeData
-        //抓取會員資料
+        //抓取員工資料
         getEmployees()
-        //新增會員按鈕
+        //新增員工按鈕
         $('#btnAdd').click(changeToInsertForm)
         //上傳圖片預覽
         const inputAvatar = document.querySelector('#avatar')
@@ -178,6 +217,11 @@
             inputAvatar.value = null
             showOrHideImagePreview()
         })
+        //搜尋按鈕
+        $('#queryButton').click(e => getEmployees($('#query').val()))
+        //修改權限按鈕
+        $('#btnChangePermission').click(submitChangePermission)
+
 
         /**functions**/
 
@@ -197,26 +241,32 @@
             else {
                 $('#imagePreviewDiv').css('display', 'none')
                 $('#deleteFile').css('display', 'none')
-                $('#avatar').addClass('rounded-end')
+                $('#avatar').addClass('rounded-end')//?? rounded-end只有右邊有圓角
             }
         }
 
-        //Ajax 抓取所有員工資料
-        async function getEmployees() {
-            const response = await fetch('@Url.Content("~/api/apiemployee")')
+        //Ajax 得到員工資料
+        async function getEmployees(query) {
+            showLoadingBox()
+            let str = ''
+            if (query) str = '/' + query
+            const response = await fetch('@Url.Content("~/api/apiemployee")' + str)
 
             if (!response.ok) return
             const data = await response.json()
 
             employeeData = data
-            console.log(data)
             displayEmployees()
+            hideLoadingBox()
         }
 
         //Ajax 新增員工
         async function submitAdd() {
+            if (!createValidator()) return;
+
             const formData = new FormData(document.createAndEdit)
 
+            showLoadingBox()
             const response = await fetch('@Url.Content("~/api/apiemployee")', {
                 body: formData,
                 method: 'POST'
@@ -229,9 +279,14 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('輸入成功')
-                myModal.hide()
+                await Swal.fire(
+                    '輸入成功!',
+                    '員工資料已新增!',
+                    'success'
+                )
+                mainModal.hide()
             }
+            hideLoadingBox()
         }
 
         //Ajax 修改員工
@@ -240,6 +295,7 @@
             const index = $('#createAndEdit').attr('data-index')
             const id = employeeData[index].employeeId
 
+            showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, {
                 body: formData,
                 method: 'PUT'
@@ -253,19 +309,67 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('修改成功')
-                myModal.hide()
+                //alert('修改成功')
+                await Swal.fire(
+                    '修改成功!',
+                    '員工資料已修改!',
+                    'success'
+                )
+                mainModal.hide()
             }
+            hideLoadingBox()
         }
 
+        //Ajax 修改員工權限
+        async function submitChangePermission() {
+
+            permissionModal.hide()
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
+
+            const permission = $('#selectPermission').val()
+            const id = $('#selectPermission').attr('data-employeeId')
+
+            showLoadingBox()
+            const response = await fetch(`@Url.Content("~/api/apiemployee/permission")/${id}`, {
+                body: JSON.stringify({ 'permission': permission }),
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', },
+            })
+
+            if (response.status == 400) {
+                console.log("輸入格式錯誤")
+            }
+
+            if (response.ok) {
+                const data = await response.json()
+                console.log(data)
+                getEmployees()
+                //alert('修改成功')
+                await Swal.fire(
+                    '修改成功!',
+                    '員工權限已修改!',
+                    'success'
+                )
+            }
+            hideLoadingBox()
+        }
+
+
+        //TODO 不可刪管理員
         //Ajax 刪除員工
         async function deleteEmployee(event) {
-            if (!confirm('是否確認刪除該員工')) return
-            //TODO 輸入密碼確認  不可刪管理員
+
+            if (!await validateRole('管理員')) return;
+
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
+
             const formData = new FormData(document.createAndEdit)
             const index = event.currentTarget.closest('tr').dataset.index
             const id = employeeData[index].employeeId
 
+            showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
 
             if (response.status == 400) {
@@ -276,9 +380,15 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('刪除成功')
-                myModal.hide()
+                //alert('刪除成功')
+                await Swal.fire(
+                    '刪除成功!',
+                    '該員工已刪除!',
+                    'success'
+                )
+                mainModal.hide()
             }
+            hideLoadingBox()
         }
 
         //列出員工
@@ -286,49 +396,152 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                    <td><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                    <td>${element.employeeName}</td>
-                    <td>${element.employeeAccount}</td>
-                    <td>${element.permission}</td>
-                    <td><button class="btn btn-primary edit-btn">修改</button></td>
-                    <td><button class="btn btn-danger delete-btn">刪除</button></td>
-                    </tr>`
+                                            <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                                            <td>${element.employeeName}</td>
+                                            <td>${element.employeeAccount}</td>
+                                            <td>${element.permission}</td>
+                                            <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                            <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+                                            <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+                                            <td></td>
+                                            </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
             $('.tablebox').find('.delete-btn').click(deleteEmployee)
+            $('.tablebox').find('.permission-btn').click(showEditPermissionModal)
+            $('.tablebox').find('tbody').find('tr').click(displayEmployeeDataInRow)
+            displayEmployeeData(0)
         }
 
         //調整為新增表單
-        function changeToInsertForm() {
+        async function changeToInsertForm() {
+            if (!await validateRole('經理')) return;
+
             const addForm = document.querySelector('#createAndEdit')
             addForm.reset()
             $('#account,#password').parent().css('display', 'block')
             $('#edditModalLabel').text('新增員工')
             showOrHideImagePreview()
+            clearAllValidFeedBack()
             $('#createAndEdit').attr('data-index', '-1')
-            myModal.show()
+            mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitAdd)
         }
 
         //調整為修改表單
-        function changeToEditForm(event) {
+        async function changeToEditForm(event) {
+            if (!await validateRole('經理')) return;
+
             const editForm = document.querySelector('#createAndEdit')
             editForm.reset()
             $('#account,#password').parent().css('display', 'none')
             $('#edditModalLabel').text('修改員工資料')
             showOrHideImagePreview()
+            clearAllValidFeedBack()
             const index = event.currentTarget.closest('tr').dataset.index
             $('#createAndEdit').attr('data-index', index)
             $('#name').val(employeeData[index].employeeName)
             $('#email').val(employeeData[index].employeeEmail)
             $('#phone').val(employeeData[index].employeePhone)
 
-            myModal.show()
+            mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitEdit)
         }
+
+        //顯示點選tr的員工資料
+        function displayEmployeeDataInRow(event) {
+            const index = +event.currentTarget.dataset.index
+            displayEmployeeData(index)
+        }
+
+        //顯示第n筆員工資料
+        function displayEmployeeData(index) {
+            if (!employeeData.length) return
+            const imgName = (employeeData[index].avatarName) ? employeeData[index].avatarName : '_employeeDefault.jpg'
+
+            $('#displayName').text(employeeData[index].employeeName)
+            $('#displayAccount').text(employeeData[index].employeeAccount)
+            $('#displayPhone').text(employeeData[index].employeePhone)
+            $('#displayEmail').text(employeeData[index].employeeEmail)
+            $('#displayPermission').text(employeeData[index].permission)
+            $('#displayTileName').text(employeeData[index].employeeName)
+            $('#displayImage').attr('src', '@Url.Content("~/uploads/employeeAvatar/")' + imgName)
+        }
+
+        //彈出修改權限modal
+        async function showEditPermissionModal(event) {
+            if (!await validateRole('管理員')) return;
+
+            const index = +$(event.currentTarget).closest('tr').attr('data-index')
+            $('#selectPermission').val(employeeData[index].permission)
+                .attr('data-employeeId', employeeData[index].employeeId)
+            permissionModal.show()
+        }
+
+
+        //// MyBootsrapValidator
+        //// 0. section最上面要引用  script src="~/js/MyBootstrapValidator.js"
+        //// 1. const myValid = new MyBootsrapValidator(表單element)
+        const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
+
+        //新增員工表單驗證
+        function createValidator() {
+            //// 2. myValid.validateFunction( 回傳bool的函式 ) //自訂判斷整個表單是否格式正確，正確回傳true
+            myValid.validateFunction(() => {
+                const name = document.querySelector('#name')
+                const nameValid = Boolean(name.value)
+                //// 3. input元素.setValidate( 回傳bool的函式 , [錯誤訊息字串] )  //自訂判斷這個input是否格式正確，如果有輸入錯誤字串會更改顯示的錯誤訊息
+                //// ps:也可以使用 input元素.setValidate(...).setValidate(...).setValidate(...) 串接多個條件判斷  只要其中有錯誤就會顯示第一個錯的錯誤，包含錯誤信息
+                name.setValidate(() => nameValid)
+
+                const account = document.querySelector('#account')
+                const accountValid = !!account.value
+                account.setValidate(() => accountValid)
+
+                const password = document.querySelector('#password')
+                const passwordValid = !!password.value
+                const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
+                password.setValidate(() => passwordValid, '請輸入密碼').setValidate(() => passwordPatternValid, '密碼不符合格式(必須包含英文大小寫及數字)')
+
+                const phone = document.querySelector('#phone')
+                const phoneValid = !!phone.value
+                const phonePatternValid = /^09\d{8}$/.test(phone.value)
+                phone.setValidate(() => phoneValid)
+
+                const email = document.querySelector('#email')
+                const emailValid = !!email.value
+                const emailPatternValid = /^\w+@@\w+/.test(email.value)
+                email.setValidate(() => emailValid, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
+                //// 要全部都正確，才能送回true確認表單正確
+                return nameValid && phoneValid && emailValid && passwordValid
+                    && accountValid && passwordPatternValid && emailPatternValid
+            })
+            //// 4. myValid.startValidate() //開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
+            return myValid.startValidate()
+        }
+
+        //修改員工表單驗證
+        function editValidator() {
+            myValid.validateFunction(() => {
+                const nameValid = !!$('#name').val()
+                document.querySelector('#name').setValidate(() => nameValid)
+                const phoneValid = !!$('#phone').val()
+                document.querySelector('#phone').setValidate(() => phoneValid)
+                const emailValid = !!$('#email').val()
+                document.querySelector('#email').setValidate(() => emailValid)
+                return nameValid && phoneValid && emailValid
+            })
+            return myValid.startValidate()
+        }
+
+        function clearAllValidFeedBack() {
+            //// 5. myValid.endtValidate() //結束驗證，順便清除顯示錯誤(如果送出表單後頁面會跳走，這個函式就用不到了)
+            myValid.endtValidate()
+        }
+
 
     </script>
 }

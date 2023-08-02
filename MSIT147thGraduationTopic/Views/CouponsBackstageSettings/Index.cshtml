@@ -1,95 +1,112 @@
-﻿@{
+﻿@using MSIT147thGraduationTopic.Models.Dtos
+@model (IEnumerable<CouponDto>,IEnumerable<CouponDto>)
+@{
     Layout = "_BackstagePage";
     ViewData["Title"] = "優惠券管理系統";
+    var listA = Model.Item1;
+    var listB = Model.Item2;
 }
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Modern Business - Start Bootstrap Template</title>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Bootstrap icons-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="css/styles.css" rel="stylesheet" />
-</head>
+
 <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container px-5">
-                <a class="navbar-brand" href="index.html">Start Bootstrap</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="pricing.html">Pricing</a></li>
-                        <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                                <li><a class="dropdown-item" href="blog-home.html">Blog Home</a></li>
-                                <li><a class="dropdown-item" href="blog-post.html">Blog Post</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Portfolio</a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                                <li><a class="dropdown-item" href="portfolio-overview.html">Portfolio Overview</a></li>
-                                <li><a class="dropdown-item" href="portfolio-item.html">Portfolio Item</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
         <!-- Page Content-->
         <section class="py-5">
+            <div class="text-center mb-5">
+                <h1 class="fw-bolder">優惠券管理系統</h1>
+                <p class="lead fw-normal text-muted mb-0"></p>
+            </div>
             <div class="container px-5 my-5">
-                <div class="text-center mb-5">
-                    <h1 class="fw-bolder">優惠券管理系統</h1>
-                    <p class="lead fw-normal text-muted mb-0"></p>
-                </div>
-                <div class="container px-5 my-5">
-                    <div class="row justify-content-center">
-                        <div class="col-8">
-                            面額<input type="text" class="form-control" placeholder="請輸入面額">
-                        </div>
-                        <div class="col-8">
-                            適用對象<select class="form-select form-control" placeholder="請選擇適用對象">
-                                <option></option>
-                            </select>
-                        </div>
-                        <br>
-                        <div class="col-8">
-                            開始日期<input type="date" class="form-control" placeholder="請輸入使用期限">
-                        </div>
-                        <div class="col-8">
-                            結束日期<input type="date" class="form-control" placeholder="請輸入使用期限">
-                        </div>
-                    </div>
-                    <div class="row justify-content-center px-5 my-5">
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-primary">新增</button>
-
-                            <button type="button" class="btn btn-primary">刪除</button>
-
-                            <button type="button" class="btn btn-primary">修改</button>
-
-                            <button type="button" class="btn btn-primary">查詢</button>
-                        </div>
-                    </div>
-                </div>
+                <h2 class="text-center">折價優惠券</h2>
+                <table class="table table-dark table-hover" id="tabDiscount">
+                    <thead>
+                        <tr>
+                            <th scope="col">序號</th>
+                            <th scope="col">優惠券名稱</th>
+                            <th scope="col">適用對象</th>
+                            <th scope="col">活動開始日期</th>
+                            <th scope="col">活動結束日期</th>
+                            <th scope="col">打折優惠</th>
+                            <th scope="col">修改</th>
+                            <th scope="col">刪除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (CouponDto c in listA)
+                            {
+                                <tr>
+                                    <td scope="col">@c.CouponId</td>
+                                    <td scope="col">@c.CouponName</td>
+                                    <td scope="col">@c.CouponTagId</td>
+                                    <td scope="col">@c.CouponStartDate</td>
+                                    <td scope="col">@c.CouponEndDate</td>
+                                    <td scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
+                                    <td scope="col">
+                                        <button id="btnEditDiscont" class="btn btn-success">
+                                            修改
+                                        </button>
+                                    </td>
+                                    <td scope="col">
+                                        <button id="btnDelete" class="btn btn-danger">
+                                            刪除
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="container px-5 my-5">
+                <h2 class="text-center">滿額送優惠券</h2>
+                <table class="table table-dark table-hover" id="tabRebate">
+                    <thead>
+                        <tr>
+                            <th scope="col">序號</th>
+                            <th scope="col">優惠券名稱</th>
+                            <th scope="col">適用對象</th>
+                            <th scope="col">活動開始日期</th>
+                            <th scope="col">活動結束日期</th>
+                            <th scope="col">額度門檻</th>
+                            <th scope="col">折扣金額</th>
+                            <th scope="col">修改</th>
+                            <th scope="col">刪除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (CouponDto c in listB)
+                            {
+                                <tr>
+                                    <td scope="col">@c.CouponId</td>
+                                    <td scope="col">@c.CouponName</td>
+                                    <td scope="col">@c.CouponTagId</td>
+                                    <td scope="col">@c.CouponStartDate</td>
+                                    <td scope="col">@c.CouponEndDate</td>
+                                    <td scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
+                                    <td scope="col">@c.CouponDiscount.ToString("#.##")</td>
+                                    <td scope="col">
+                                        <button id="btnEditRebate" class="btn btn-success">
+                                            修改
+                                        </button>
+                                    </td>
+                                    <td scope="col">
+                                        <button id="btnDelete" class="btn btn-danger">
+                                            刪除
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="container px-5 my-5 text-center">
+                <button class="btn btn-primary" id="btnCreate">新增</button>
             </div>
         </section>
         <section class="py-5 bg-light">
-            <div class="container px-5 my-5">
-                <!--資料表-->
-            </div>
+            
         </section>
         <section class="py-5 bg-light">
             <div class="container px-5 my-5">
@@ -123,8 +140,35 @@
 }
 
 @section Scripts{
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+    <script>
+        $(document).ready(function () {
+            // tab點擊事件
+            $('.nav-link').on('click', function () {
+                // 從 'data-bs-target' 屬性獲取目標選項卡的 id
+                const targettabid = $(this).attr('data-bs-target');
+
+                //屏蔽其他標籤
+                $('.tab-pane').removeclass('show active');
+
+                // 將“show active”顯示到選擇的標籤頁面
+                $(targettabid).addclass('show active');
+            });
+        });
+
+        $(document).ready(function () {
+            // 將margin-right屬性設置為20px
+            $('#Discount').css('margin-right', '20px');
+        });
+
+        $('#btnEditDiscont').on('click',function(){
+            location.href = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit")`;
+        })
+        $('#btnEditRebate').on('click', function () {
+            location.href = `@Url.Content("~/CouponsBackstageSettings/RebateEdit")`;
+        })
+
+        $('#btnCreate').on('click', function () {
+            location.href = `@Url.Content("~/CouponsBackstageSettings/Create")`;
+        })
+    </script>
 }

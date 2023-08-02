@@ -21,11 +21,13 @@ namespace MSIT147thGraduationTopic.EFModels
         public string Password { get; set; }
         public string Salt { get; set; }
         public string Phone { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
         public bool IsActivated { get; set; }
-        public string ConfirmGuild { get; set; }
+        public string ConfirmGuid { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
     }

@@ -1,4 +1,4 @@
-﻿@model MSIT147thGraduationTopic.EFModels.Spec
+﻿@model MSIT147thGraduationTopic.Models.ViewModels.SpecVM
 
 @{
     Layout = "_BackstagePage";
@@ -13,37 +13,51 @@
         <hr />
         <div class="row">
             <div class="col-md-4">
-                <form asp-action="Create">
+                <form asp-action="Create" method="Post" name="forminput" id="forminput" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="SpecName" class="control-label"></label>
-                        <input asp-for="SpecName" class="form-control" />
-                        <span asp-validation-for="SpecName" class="text-danger"></span>
+                        <label class="control-label">商品名稱</label>
+                        <input class="form-control" id="merchandisename" readonly />
                     </div>
                     <div class="form-group">
+                        <label asp-for="SpecName" class="control-label"></label>
+                        <input asp-for="SpecName" class="form-control" id="inputspecname" />
+                        <span asp-validation-for="SpecName" class="text-danger foralert" id="alertspanforname"></span>
+                    </div>
+                    <div class="form-group" style="display:none">
                         <label asp-for="MerchandiseId" class="control-label"></label>
-                        <select asp-for="MerchandiseId" class="form-control" id="merchandisename" asp-items="ViewBag.MerchandiseId"></select>
-                        @*<input asp-for="MerchandiseId" class="form-control" id="merchandisename" readonly />*@
+                        <input asp-for="MerchandiseId" class="form-control" id="showmerchandiseid" />
                     </div>
                     <div class="form-group">
                         <label asp-for="Price" class="control-label"></label>
-                        <input asp-for="Price" class="form-control" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
+                        <input asp-for="Price" class="form-control" min="1" value="1" id="inputprice" />
+                        <span asp-validation-for="Price" class="text-danger foralert" id="alertspanforprice"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Amount" class="control-label"></label>
-                        <input asp-for="Amount" class="form-control" />
-                        <span asp-validation-for="Amount" class="text-danger"></span>
+                        <input asp-for="Amount" class="form-control" min="0" value="0" id="inputamount" />
+                        <span asp-validation-for="Amount" class="text-danger foralert" id="alertspanforamount"></span>
+                    </div>
+                    <div class="form-group">
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <label class="col-form-label">選擇圖片</label>
+                        <input class="form-control" type="file" id="selectfile" name="photo">
+                        <span class="text-danger foralert" id="alertspanforimage"></span>
+
+                        <div class="alert alert-secondary mt-2" id="containdisplay">
+                            <img id="display" />
+                            <button id="imageClear" class="btn btn-warning">取消圖片</button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label asp-for="DiscountPercentage" class="control-label"></label>
-                        <input asp-for="DiscountPercentage" class="form-control" />
-                        <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+                        <input asp-for="DiscountPercentage" class="form-control" min="1" max="100" value="100" id="inputdiscount" />
+                        <span asp-validation-for="DiscountPercentage" class="text-danger foralert" id="alertspanfordiscount"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="DisplayOrder" class="control-label"></label>
-                        <input asp-for="DisplayOrder" class="form-control" />
-                        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                        <input asp-for="DisplayOrder" class="form-control" min="1" value="1" id="inputorder" />
+                        <span asp-validation-for="DisplayOrder" class="text-danger foralert" id="alertspanfororder"></span>
                     </div>
                     <div class="form-group form-check">
                         <label class="form-check-label">
@@ -52,8 +66,8 @@
                     </div>
                     <hr />
                     <div class="form-group">
-                        <input type="submit" value="新增" class="btn btn-primary" />
-                        @Html.ActionLink("取消", "Index", "Specs", null, new { @class = "btn btn-secondary" })
+                        <input type="submit" value="新增" class="btn btn-primary" id="submit" />
+                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId}, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>
@@ -62,23 +76,103 @@
 </div>
 
 @section Scripts {
+    @*產生商品名稱*@
     <script>
-        const merchandise = document.querySelector("#merchandisename");
+        const merchandiseid = $("#showmerchandiseid").val();
 
-        merchandise.addEventListener("load", () => {
+        $(() => {
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/ApiMerchandise/Merchandises");
+            xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
             xhr.send();
 
             xhr.addEventListener("load", () => {
                 const datas = JSON.parse(xhr.responseText);
-                var merchandises = datas.map(b => {
-                    return (`<option value="${b.MerchandiseId}">${b.MerchandiseName}</option>`)
-                })
-                merchandise.innerHTML = merchandises.join("");
+                var merchandise = datas[0].merchandiseName;
+                console.log(merchandise);
+                $("#merchandisename").val(merchandise);
             })
+        });
+    </script>
+    @*產生圖片路徑、預覽*@
+    <script>
+        const display = document.querySelector("#display");
+        const imageClear = document.querySelector("#imageClear");
+        const selectfile = document.querySelector("#selectfile");
+
+        DisplayImage();
+
+        imageClear.addEventListener("click", (e) => {
+            e.preventDefault();
+            selectfile.files = null;
+            selectfile.outerHTML = selectfile.outerHTML;
+            display.src = "";
+            imageClear.style.display = "none";
+            DisplayImage();
+        })
+
+        function DisplayImage() {
+            const selectfile = document.querySelector("#selectfile");
+            selectfile.addEventListener("change", () => {
+                $("#alertspanforimage").html("");
+                const [file] = selectfile.files;
+                if (file) {
+                    display.src = URL.createObjectURL(file);
+                    imageClear.style.display = "inline";
+                } else {
+                    display.src = "";
+                    imageClear.style.display = "none";
+                }
+            })
+        }
+    </script>
+    @*錯誤提示訊息*@
+    <script>
+        const alertName = document.querySelector("#alertspanforname");
+        const alertPrice = document.querySelector("#alertspanforprice");
+        const alertAmount = document.querySelector("#alertspanforamount");
+        const alertImage = document.querySelector("#alertspanforimage");
+        const alertDiscount = document.querySelector("#alertspanfordiscount");
+        const alertDisplayOrder = document.querySelector("#alertspanfororder");
+
+        const submit = document.querySelector("#submit");
+        submit.addEventListener("click", async (event) => {
+            event.preventDefault();
+            $(".foralert").html("");
+
+            var formdata = new FormData(document.forminput);
+            const response = await fetch(`@Url.Content("~/ApiSpec/CheckforCreateSpec")`, {
+                body: formdata,
+                method: "POST"
+            });
+            const returnJsonBag = await response.text()
+            const checkResult = JSON.parse(returnJsonBag)
+            const checkName = checkResult[0]
+            const checkFile = checkResult[1]
+
+            if (!$("#inputspecname").val()) alertName.innerHTML = "請輸入規格名稱";
+            if (checkName) alertName.innerHTML = "已有同名規格，請重新命名";
+            if ($("#inputprice").val() < 1) alertPrice.innerHTML = "價格須為正整數";
+            if ($("#inputamount").val() < 0) alertAmount.innerHTML = "庫存數量應至少為0";
+            if ($("#inputdiscount").val() <= 0 || $("#inputdiscount").val() > 100) alertDiscount.innerHTML = "請輸入介於1-100的數字";
+            if ($("#inputorder").val() < 1) alertDisplayOrder.innerHTML = "排序順序須為正整數";
+            if (checkFile) {
+                alertImage.innerHTML = "檔案格式不合，請重新上傳";
+                selectfile.files = null;
+                selectfile.outerHTML = selectfile.outerHTML;
+                display.src = "";
+                imageClear.style.display = "none";
+                DisplayImage();
+            }
+            if ($("#inputspecname").val() && !checkName && $("#inputprice").val() > 0 && $("#inputamount").val() >= 0 &&
+                $("#inputdiscount").val() > 0 && $("#inputdiscount").val() <= 100 &&
+                $("#inputorder").val() > 0 && !checkFile) {
+                const forminput = document.querySelector("#forminput");
+                HTMLFormElement.prototype.submit.call(forminput);
+                console.log("按下送出");
+            }
         })
     </script>
+
 }
 
 @section Styles{
@@ -86,6 +180,20 @@
         .title {
             margin-top: 30px;
             margin-bottom: 10px;
+        }
+
+        #containdisplay {
+            height: 200px;
+        }
+
+        #display {
+            max-height: 170px;
+            margin: 10px, 0;
+        }
+
+        #imageClear {
+            display: none;
+            float: right;
         }
     </style>
 }

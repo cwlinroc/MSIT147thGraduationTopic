@@ -1,4 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var user = HttpContextAccessor?.HttpContext?.User;
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;
+    string? userName = string.Empty;
+    string? roleName = string.Empty;
+
+    if (isAuthorized ?? false)
+    {
+        userName = user?.Claims.FirstOrDefault(o => o.Type == "UserName")?.Value;
+        roleName = user?.FindFirstValue(ClaimTypes.Role);
+    }
+}
+<!DOCTYPE html>
 <html lang="zh-Hant-TW">
 
 <head>
@@ -9,15 +24,21 @@
     <meta name="author" content="" />
     <title>@ViewBag.Title - 福祿獸購物商城</title>
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="@Url.Content("~/images/blackcat.ico")" />
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- font-awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/css/styles.css" rel="stylesheet" />
+    <!-- sweetalert2 -->
+    <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
+    <!-- Animate.css-->
+    <link href="~/css/animate.min.css" rel="stylesheet" />
+
     <link href="~/css/mallPage.css" rel="stylesheet" />
     @RenderSection("Styles",false)
 
@@ -36,8 +57,6 @@
                     Furry Store 福祿獸
                 </a>
 
-
-
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarHeaderContent" aria-controls="navbarHeaderContent" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -54,16 +73,38 @@
                     </div>
 
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        @{
+                            if (isAuthorized ?? false)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="#" id="btnLogOut">登出</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="@Url.Action("MemberCenter","Member")">會員中心</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="@Url.Action("ShoppingHistory","Member")">購物紀錄</a>
+                                </li>
+                                //<li class="nav-item">
+                                //    <a class="nav-link text-nowrap" href="@Url.Action("","")">優惠券列表</a>
+                                //</li>
+                                <li class="nav-item">                                
+                                    <a class="nav-link" href="@Url.Content("~/cart")">
+                                        <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>購物車
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="@Url.Action("CreateMember","Member")">註冊</a>
+                                </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-nowrap" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">登入</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link text-nowrap" href="登入.html">註冊</a></li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="登入.html">
-                                <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>購物車
-                            </a>
-                        </li>
+                            }
+                        }
                     </ul>
                 </div>
 
@@ -75,7 +116,7 @@
             <div class="modal-dialog  modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-4 " id="loginModalLabel">會員登入</h1>
+                        <h1 class="modal-title fs-4 " id="loginModalLabel">登入</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -83,33 +124,41 @@
                             <div class="row">
                                 <div class="col-10 mx-auto">
 
-                                    @using (Html.BeginForm("LogIn", "Home"))
-                                    {
+                                    <form name="LoginForm">
                                         @Html.AntiForgeryToken()
                                         <!-- Account input-->
                                         <div class="form-label mb-3">
-                                            <label for="account" class="fw-bold">帳號</label>
-                                            <input class="form-control" id="account" type="text" name="Account" />
+                                            <label for="loginAccount" class="fw-bold">帳號</label>
+                                            <input class="form-control" id="loginAccount" type="text" />
                                         </div>
                                         <!-- Password input-->
                                         <div class="form-label mb-3">
-                                            <label for="password" class="fw-bold">密碼</label>
-                                            <input class="form-control" id="password" type="text" name="Password" />
+                                            <label for="loginPassword" class="fw-bold">密碼</label>
+                                            <input class="form-control" id="loginPassword" type="password" />
                                         </div>
+                                        <div class="form-check form-check-inline mb-3">
+                                            <input class="form-check-input" type="checkbox" id="chkRemember">
+                                            <label class="form-check-label" for="chkRemember">
+                                                記住我
+                                            </label>
+                                        </div>
+                                        <span class="offset-6">@Html.ActionLink("忘記密碼", "ForgetPwd", "Member")</span>
+
                                         <div>
-                                            <a href="">忘記密碼</a>
+                                            <button type="button" class="btn btn-primary me-2" id="btnLogIn">登入</button>
+                                            <button type="button" class="btn btn-secondary" id="btnCancel" data-bs-dismiss="modal">取消</button>
                                         </div>
-                                        <div>
-                                            <button type="submit" class="btn btn-primary">登入</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                                        </div>
-                                    }
+                                    </form>
 
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" id="demoEmployee">demoEmployee</button>
+                        <button type="button" id="demoAdmin">demoAdmin</button>                       
+                        <button type="button" id="demoManager">demoManager</button>
+                        <button type="button" id="demoMember">demoMember</button>
                     </div>
                 </div>
             </div>
@@ -164,9 +213,17 @@
     </footer>
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- jQuery -->
     <script src="~/lib/jquery/dist/jquery.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/js/sweetalert2.min.js"></script>
+    <!-- wow.js -->
+    <script src="~/js/wow.min.js"></script>
+
+    <script>const ROOT = '@Url.Content("~")'</script>
+    <script>const ROLE = '@roleName'</script>
     <script src="~/js/mallPage.js"></script>
+
     @RenderSection("Scripts",false)
 
 </body>

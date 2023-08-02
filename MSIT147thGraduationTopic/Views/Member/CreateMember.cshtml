@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "會員註冊";
+}
+
+<div class="text-center mb-4">
+    <h1 class="fw-bold mt-4">會員註冊</h1>
+</div>
+<div class="row" style="--bs-gutter-x:0;">
+    <div class="col-lg-8 offset-2">
+        <form id="memberRegisterForm" class="needs-validation"
+              action="/ApiMember/CreateMember" method="Post" enctype="multipart/form-data" 
+              novalidate>
+            <!-- MemberName input-->
+            <div class="form mb-3">
+                <label for="memberName" class="form-label fw-bold">姓名</label>
+                <input class="form-control" id="memberName" name="MemberName" type="text" required />
+                <div class="invalid-feedback">請輸入姓名</div>
+            </div>
+            <!-- Gender input-->
+            <div class="form mb-3">
+                <label for="gender" class="form-label fw-bold">性別</label>
+                <br>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="genderMale" name="Gender" value="male" required>
+                    <label class="form-check-label">男性</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="genderFemale" name="Gender" value="female" required>
+                    <label class="form-check-label">女性</label>
+                </div>
+                @*<div class="invalid-feedback">
+                    請選擇性別！
+                </div>*@
+            </div>
+            <!-- NickName input-->
+            <div class="form mb-3">
+                <label for="nickname" class="form-label fw-bold">暱稱</label>
+                <input class="form-control" id="nickName" name="NickName" type="text" />
+            </div>
+            <!-- Account input-->
+            <div class="form mb-3">
+                <label for="account" class="form-label fw-bold">帳號</label>
+                <input class="form-control" id="account" name="Account" type="text" required />
+                <div class="invalid-feedback">請輸入帳號</div>
+            </div>
+            <!-- Password input-->
+            <div class="form mb-3">
+                <label for="password" class="form-label fw-bold">
+                    密碼:需要6~32位英文字母及數字組合，包含至少一個大寫字母及小寫字母
+                </label>                
+                <input class="form-control" id="password" name="Password" type="password"
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32}" required /> 
+                <div class="invalid-feedback">請輸入密碼</div>
+            </div>
+            <!-- Password confirm input-->
+            <div class="form mb-3">
+                <label for="confirmPassword" class="form-label fw-bold">確認密碼</label>                
+                <input class="form-control" id="confirmPassword"
+                       type="password" required>
+                <div class="invalid-feedback">與密碼不符！</div>
+            </div>
+            <!-- Email address input-->
+            <div class="form mb-3">
+                <label for="email" class="form-label fw-bold">電子信箱</label>
+                <input class="form-control" id="email" name="Email" type="email" required
+                       pattern="^\w+[-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$" />
+                <div class="invalid-feedback">請輸入電子信箱</div>
+                @*<div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>*@
+            </div>
+            <!-- Phone number input-->
+            <div class="form mb-3">
+                <label for="phone" class="form-label fw-bold">手機號碼</label>
+                <input class="form-control" id="phone" name="Phone" type="tel"
+                       pattern="09\d{8}" required />
+                <div class="invalid-feedback">請輸入手機號碼</div>
+            </div>
+            <!-- Address input-->
+            <div class="form-label mb-3">
+                <label for="address" class="form-label fw-bold">地址</label>
+                <div class="input-group">
+                    <label class="input-group-text" for="selectCity">縣市</label>
+                    <select class="form-select" id="selectCity" name="selectCity">                        
+                        
+                    </select>
+                    <label class="input-group-text" for="selectDistrict">區域</label>
+                    <select class="form-select" id="selectDistrict" name="selectDistrict">                       
+                        
+                    </select>
+                    <input class="form-control" id="address" name="Address" type="text"/>
+                </div>
+            </div>
+            <!-- Date of birth input-->
+            <div class="form mb-3">
+                <label class="form-label fw-bold">出生年月日</label>
+                <div class="input-group">
+                    <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-control" 
+                           required />
+                    <div class="invalid-feedback">請輸入生日</div>
+                </div>
+            </div>            
+            <!-- Avatar input-->
+            <div class="form mb-5">
+                <label class="form-label fw-bold">頭像</label>
+                <div class="input-group">
+                    <input type="file" id="Avatar" name="Avatar" class="form-control" />                   
+                </div>
+            </div>
+            <!-- Submit Button-->
+            <div class="d-grid col-lg-8 offset-2 mt-3 mb-5">
+                <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
+                    註冊
+                </button>
+                <button type="button" id="demoMemberRegister">demoMember</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles{
+    <style>
+        #selectCity {
+            max-width: 200px
+        }
+
+        #selectDistrict {
+            max-width: 200px
+        }
+        
+    </style>
+}
+
+@section Scripts{
+    <script src="~/js/MyBootstrapValidator.js"></script>
+    <script src="~/js/Member/createMember.js"></script>
+    
+}

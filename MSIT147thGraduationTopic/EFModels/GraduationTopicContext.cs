@@ -26,6 +26,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
+        public virtual DbSet<MallDisplay> MallDisplays { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
@@ -78,6 +79,10 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.CouponEndDate).HasColumnType("date");
 
+                entity.Property(e => e.CouponName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.CouponStartDate).HasColumnType("date");
             });
 
@@ -129,6 +134,11 @@ namespace MSIT147thGraduationTopic.EFModels
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Evaluation>(entity =>
@@ -163,6 +173,31 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<MallDisplay>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("MallDisplay");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasMaxLength(81);
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(150)
+                    .HasColumnName("ImageURL");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+            });
+
             modelBuilder.Entity<Member>(entity =>
             {
                 entity.Property(e => e.Account)
@@ -174,11 +209,15 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.Avatar).HasMaxLength(100);
 
-                entity.Property(e => e.ConfirmGuild)
-                    .HasMaxLength(20)
+                entity.Property(e => e.City).HasMaxLength(50);
+
+                entity.Property(e => e.ConfirmGuid)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DateOfBirth).HasColumnType("date");
+
+                entity.Property(e => e.District).HasMaxLength(50);
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -218,7 +257,7 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(50)
+                    .HasMaxLength(150)
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseName)
@@ -255,7 +294,7 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(50)
+                    .HasMaxLength(150)
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
@@ -336,6 +375,10 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Spec>(entity =>
             {
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(150)
+                    .HasColumnName("ImageURL");
+
                 entity.Property(e => e.SpecName)
                     .IsRequired()
                     .HasMaxLength(50);

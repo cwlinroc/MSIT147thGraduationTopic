@@ -42,4 +42,20 @@
 }
 
 
+img#navbarAvatar {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+}
+
+/*Åª¨ú°Êµe*/
+.loading-box {
+    z-index: 999;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+
 
