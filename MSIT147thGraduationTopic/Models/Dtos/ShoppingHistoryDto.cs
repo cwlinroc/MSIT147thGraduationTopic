@@ -1,4 +1,5 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Models.Dtos
@@ -11,11 +12,17 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string PaymentMethodName { get; set; }
         public DateTime PurchaseTime { get; set; }
         public int? PaymentAmount { get; set; }
-        public string Remark { get; set; }
+        public List<MerchandisesInOrder>? listofMerchandises { get; set; }
+
+    }
+
+    public class MerchandisesInOrder
+    {
         public int Quantity { get; set; }
         public int Price { get; set; }
-        public string MerchandiseName { get; set; }
-        public int MerchandiseId { get; set; }
+        public int Discount { get; set; }
+
+        //商品名 
     }
 
     public static class ShoppingHistoryTransfer
@@ -29,11 +36,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 PaymentMethodName = entity.PaymentMethodName,
                 PurchaseTime = entity.PurchaseTime,
                 PaymentAmount = entity.PaymentAmount,
-                Remark = entity.Remark,
-                Quantity = entity.Quantity,
-                Price = entity.Price,
-                MerchandiseName = entity.MerchandiseName,
-                MerchandiseId = entity.MerchandiseId,
+
             };
 
         }

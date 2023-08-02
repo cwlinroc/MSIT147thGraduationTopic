@@ -13,10 +13,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public DateTime PurchaseTime { get; set; }
         public int? PaymentAmount { get; set; }
         public string Remark { get; set; }
-        public int Quantity { get; set; }
-        public int Price { get; set; }
-        public string MerchandiseName { get; set; }
-        public int MerchandiseId { get; set; }
         public string PaymentMethodName { get; set; }
     }
 }

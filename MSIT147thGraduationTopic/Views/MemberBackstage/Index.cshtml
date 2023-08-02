@@ -11,8 +11,8 @@
         </div>
         <div class="container">
             <div class="row">
-                <div class="col-lg-1"></div><!--左空白區域-->
-                <div class="col-lg-2">
+                
+                <div class="col-lg-2 offset-2">
                     <label>ID</label>
                     <input type="text" class="form-control" placeholder="請輸入ID">
                 </div>
@@ -25,16 +25,16 @@
                     <button type="button" class="btn btn-primary">搜尋</button>
                     <button type="button" class="btn btn-primary">重置</button>
                 </div>
-                <div class="col-lg-1"></div><!--右空白區域-->
+               
             </div>
         </div>
     </div>
 </section>
-<section class="py-5 bg-light">
+<div class="col-lg-8 offset-2">
     @{
         await Html.RenderPartialAsync("MemberList");
     }
-</section>
+</div>
 
 @section Styles{
 

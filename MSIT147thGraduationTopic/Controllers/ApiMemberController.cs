@@ -27,13 +27,12 @@ namespace MSIT147thGraduationTopic.Controllers
         private readonly string[] _employeeRoles;
 
         public ApiMemberController(GraduationTopicContext context
-            , IWebHostEnvironment environment, IOptions<OptionSettings> options
-            , ShoppingHistoryRepository shrepo)
+            , IWebHostEnvironment environment, IOptions<OptionSettings> options)
         {
             _context = context;
             _environment = environment;
             _service = new MemberService(context, environment);
-            _shrepo = shrepo;
+            //_shrepo = shrepo;
 
             _employeeRoles = options.Value.EmployeeRoles!;
         }
@@ -56,11 +55,11 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetMemberById(id).ToList();
         }
 
-        [HttpGet("ShoppingHistory")]
-        public ActionResult<List<ShoppingHistoryDto>> GetOrderByMemberId(int memberId)
-        {
-            return (ActionResult)_shrepo.GetOrderByMemberId(memberId);
-        }
+        //[HttpGet("ShoppingHistory")]
+        //public ActionResult<List<ShoppingHistoryDto>> GetOrderByMemberId(int memberId)
+        //{
+        //    return;
+        //}
 
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)

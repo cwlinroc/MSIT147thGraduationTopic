@@ -1,90 +1,53 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Member>
-
-
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MemberName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NickName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Account)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.District)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActivated)
-            </th>
-           
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+﻿<div class=" bg-light rounded shadow p-2 mb-5" id="data">
+    <table class="table">
+        <thead>
+        </thead>
+        <tbody>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MemberName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NickName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateOfBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gender)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Account)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Phone)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.District)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsActivated)
-                </td>               
-
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.MemberId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.MemberId">Details</a>
+                <td class="text-nowrap">頭像</td>
+                <td id="displayAvatar">
+                    <figure class="p-4">
+                        <img src="" id="displayImage">
+                    </figure>
                 </td>
             </tr>
-        }
-    </tbody>
-</table>
+            <tr>
+                <td class="text-nowrap">姓名</td>
+                <td id="displayName"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">帳號名稱</td>
+                <td id="displayAccount"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">性別</td>
+                <td id="displayGender"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">縣市</td>
+                <td id="displayCity"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">區域</td>
+                <td id="displayDistrict"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">地址</td>
+                <td id="displayAddress"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">電話</td>
+                <td id="displayPhone"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">Email</td>
+                <td id="displayEmail"></td>
+            </tr>
+            <tr>
+                <td class="text-nowrap">權限</td>
+                <td id="displayPermission"></td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

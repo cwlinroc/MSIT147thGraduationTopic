@@ -46,7 +46,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
             }
         }
 
@@ -373,12 +373,6 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.HasNoKey();
 
                 entity.ToView("OrderWithMember");
-
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.MerchandiseName)
-                    .IsRequired()
-                    .HasMaxLength(30);
 
                 entity.Property(e => e.PaymentMethodName)
                     .IsRequired()
