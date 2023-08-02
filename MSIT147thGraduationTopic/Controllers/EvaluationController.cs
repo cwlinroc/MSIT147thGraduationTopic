@@ -20,11 +20,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
         //以OrderId撈訂單資料
+        //Evaluations >判斷>有-修改/無-新增
         public IActionResult EIndex(int id)
         {
             var model = (from x in _context.EvaluationInputs
                          join y in _context.Specs on x.MerchandiseId equals y.MerchandiseId
                          join z in _context.OrderLists on x.OrderId equals z.OrderId
+
                          where x.OrderId == id
                          select new EvaluationVM
                          { 
@@ -33,13 +35,13 @@ namespace MSIT147thGraduationTopic.Controllers
                              MerchandiseName = x.MerchandiseName,
                              SpecId = y.SpecId,
                              SpecName = y.SpecName,
-                             //Comment = x.Comment,
-                             //Score = x.Score,
+                             Comment = "",
+                             Score = 0,
                          })
 
                          //.GroupBy(e => new { e.Comment,e.Score })  //按此條件分組
                          //.Select(a => a.First())   //選許所有組別的第一個
-                         .Distinct()
+                         //.Distinct()
                          .ToList();
            
             if (model.Count == 0)
