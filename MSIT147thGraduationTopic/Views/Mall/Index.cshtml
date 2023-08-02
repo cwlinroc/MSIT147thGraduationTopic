@@ -101,9 +101,10 @@
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="#sublist3" data-bs-toggle="collapse" aria-expanded="false">價格區間</a>
                                 <ul id="sublist3" class="list-unstyled collapse mx-4">
-                                    <li class="my-1">
-                                        <a href="#">改成價格上下限+送出鈕</a>
-                                    </li>
+
+                                    <input type="number" min="0" id="minPrice" placeholder="最低價" style="width:75px; height:32px" /> -
+                                    <input type="number" min="0" id="maxPrice" placeholder="最高價" style="width:75px; height:32px" /><br />
+                                    <button type="button" id="sendPriceRange" class="btn btn-secondary">查詢</button>
                                 </ul>
                             </li>
 
@@ -142,8 +143,17 @@
         let displayorder = 0;
         let pageindex = 1;
         let sideCategoryId = 0;
+        let minPrice;
+        let maxPrice;
         //呈現初始頁面
         SearchProducts();
+
+        //價格區間
+        $("#sendPriceRange").on("click", () => {
+            minPrice = $("#minPrice").val();
+            maxPrice = $("#maxPrice").val();
+            SearchProducts();
+        })
 
         //關鍵字搜尋
         $("#search-input").on("keyup", () => {
@@ -168,35 +178,37 @@
             SearchProducts();
         })
 
-        async function SearchProducts() {// ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※別換行，會出莫名其妙的問題)
-            const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}`);
-            const returnJsonBag = await response.text();
-            const searchResult = JSON.parse(returnJsonBag);
+        async function SearchProducts() {
+            //產生商品櫥窗        //todo 無結果時顯示字樣(需要:把個別方法拆開，共用商品結果數，設條件生成字樣or商品欄)
+            $(async () => {                 // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※別換行，會出莫名其妙的問題)
+                const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+                const returnJsonBag = await response.text();
+                const searchResult = JSON.parse(returnJsonBag);
 
-            //產生商品櫥窗
-            const pageContent = document.querySelector("#showThisPageMerchandise");
-            var windows = searchResult.map(window => {
-                const { price } = window;
-                const showName = (window.fullName.length > 13) ? window.fullName.substring(0, 13) + "  ..." : window.fullName;
-                const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-                return (
-                    `<div class="col">\
-                                    <div class="card my-3 mx-2 text-center border-light ">\
-                                        <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" class="w-100 img-thumbnail hover-overlay">\
-                                        <div class="card-body ">\
-                                                    <h6 class="card-title ">${showName}</h6>\
-                                            <h5 class="card-text ">${price} 元</h5>\
-                                            <a href="#" class="btn btn-outline-secondary">加入購物車</a>\
-                                        </div>\
-                                    </div>\
-                                </div>`)// todo 連結至購物車
+                const pageContent = document.querySelector("#showThisPageMerchandise");
+                var windows = searchResult.map(window => {
+                    const { price } = window;
+                    const showName = (window.fullName.length > 13) ? window.fullName.substring(0, 13) + "  ..." : window.fullName;
+                    const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
+                    return (
+                        `<div class="col">\
+                                            <div class="card my-3 mx-2 text-center border-light ">\
+                                                <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" class="w-100 img-thumbnail hover-overlay">\
+                                                <div class="card-body ">\
+                                                            <h6 class="card-title ">${showName}</h6>\
+                                                    <h5 class="card-text ">${price} 元</h5>\
+                                                    <a href="#" class="btn btn-outline-secondary">加入購物車</a>\
+                                                </div>\
+                                            </div>\
+                                        </div>`)// todo 連結至購物車
+                })
+                pageContent.innerHTML = windows.join("");
             })
-            pageContent.innerHTML = windows.join("");
 
             //產生分頁標籤
             $(async () => {
                 const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&\
-                                                    searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}`);
+                                                    searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
                 const returnLengthBag = await responseforlength.text();
                 const resultLength = JSON.parse(returnLengthBag);
                 const totalpage = Math.ceil(resultLength / pageSize);
@@ -277,7 +289,7 @@
             //呈現側邊商品類別選項
             $(async () => {
                 const CategoryOptions = document.querySelector("#categoryOptions")
-                const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}`);
+                const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
                 const returnCategoryBag = await responseforCategory.text();
                 const CategoryResult = JSON.parse(returnCategoryBag);
 

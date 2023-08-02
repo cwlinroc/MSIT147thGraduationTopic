@@ -18,7 +18,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet]
         public IActionResult DisplaySearchResult(
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
-            int sideCategoryId) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice 用AJAX生成
+            int sideCategoryId, int? minPrice, int? maxPrice)
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays   //僅顯示上架商品
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
@@ -35,6 +35,8 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
+            datas = (minPrice.HasValue) ? datas.Where(sp => sp.Price >= minPrice) : datas;
+            datas = (maxPrice.HasValue) ? datas.Where(sp => sp.Price <= maxPrice) : datas;
 
             datas = displayorder switch
             {
@@ -54,7 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet]
         public IActionResult GetSearchResultLength(
             string txtKeyword, int searchCondition, int pageSize, int PageIndex,
-            int sideCategoryId) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice 用AJAX生成
+            int sideCategoryId, int? minPrice, int? maxPrice)
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
@@ -71,6 +73,8 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
+            datas = (minPrice.HasValue)?datas.Where(sp => sp.Price >= minPrice):datas;
+            datas = (maxPrice.HasValue)?datas.Where(sp => sp.Price <= maxPrice):datas;
 
             var resultLength = datas.Count();
 
@@ -79,13 +83,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpGet]
         public IActionResult GenerateSideCategoryOptions(
-            string txtKeyword, int searchCondition
-            ) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice 用AJAX生成
+            string txtKeyword, int searchCondition, int? minPrice, int? maxPrice)
         {
             var categoriesFromEF = _context.Categories.OrderBy(c => c.CategoryId);
 
             IEnumerable<MallDisplay> selectedProducts = _context.MallDisplays
-                                            .Where(md => md.Display == true).Where(md => md.OnShelf == true); ;
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+
             if (!string.IsNullOrEmpty(txtKeyword))
             {
                 selectedProducts = searchCondition switch
@@ -96,8 +100,8 @@ namespace MSIT147thGraduationTopic.Controllers
                     _ => selectedProducts
                 };
             }
-            //if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
-            //if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
+            if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
+            if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
 
             List<CategoryVM> datas = new List<CategoryVM>();
             CategoryVM data_0 = new CategoryVM()
