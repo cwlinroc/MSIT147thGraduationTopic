@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "LogIn";
     Layout = "_BackstagePage";
 }
@@ -23,8 +22,9 @@
 
             <div class="my-4">
                 <button type="button" id="demo0">demo admin</button>
-                <button type="button" id="demo1">demo manager</button>
-                <button type="button" id="demo2">demo employee</button>
+                <button type="button" id="demo1">demo demoAdmin99</button>
+                <button type="button" id="demo2">demo demoManager99</button>
+                <button type="button" id="demo3">demo demoEmployee99</button>
             </div>
 
 
@@ -40,19 +40,19 @@
 @section Scripts{
     <script>
 
-        $('#demo0').click(() => {
-            $('#inputAccount').val('admin')
-            $('#inputPassword').val('admin')
-        })
-        $('#demo1').click(() => {
-            $('#inputAccount').val('manager')
-            $('#inputPassword').val('manager')
-        })
-        $('#demo2').click(() => {
-            $('#inputAccount').val('employee')
-            $('#inputPassword').val('employee')
-        })
+        //demo
+        $('#demo0').click(() => demoInput('admin'))
+        $('#demo1').click(() => demoInput('demoAdmin99'))
+        $('#demo2').click(() => demoInput('demoManager99'))
+        $('#demo3').click(() => demoInput('demoEmployee99'))
 
+        function demoInput(account) {
+            $('#inputAccount').val(account)
+            $('#inputPassword').val(account)
+        }
+
+
+        //切換帳號
         $('#btnChangeAccount').click(changeAccount)
 
         async function changeAccount() {
@@ -85,7 +85,7 @@
             }
         }
 
-        
+
 
     </script>
 }

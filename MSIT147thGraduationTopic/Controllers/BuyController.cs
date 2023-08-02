@@ -21,13 +21,12 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(params int[] ids)
+        public async Task<IActionResult> Index(params int[] ids)
         {
             string? json = HttpContext.Session.GetString("cartItemIds");
             if (!string.IsNullOrEmpty(json)) ids = JsonSerializer.Deserialize<int[]>(json)!;
 
-            //TODO-cw 刪掉
-            if (!ids.Any()) ids = new int[] { 160, 161, 162 };
+            if (!ids.Any()) return RedirectToAction("Index", "Cart");
 
             var member = _service.GetMemberAddressAndPhone(ids[0]);
             if (member == null) return BadRequest();
@@ -39,8 +38,16 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.MemberName = member.MemberName;
             ViewBag.MemberEmail = member.Email;
 
-            var items = _service.GetCartItems(ids);
-            return View(items);
+            //var cartItemsTask = _service.GetCartItems(ids);
+            //var couponsTask = _service.GetAllCouponsAvalible(member.MemberId);
+            //await Task.WhenAll(cartItemsTask, couponsTask);
+            //ViewBag.Coupons = couponsTask.Result;
+            //return View(cartItemsTask.Result);
+
+            var cartItems = await _service.GetCartItems(ids);
+            var coupons = await _service.GetAllCouponsAvalible(member.MemberId);
+            ViewBag.Coupons = coupons;
+            return View(cartItems);
         }
 
 
