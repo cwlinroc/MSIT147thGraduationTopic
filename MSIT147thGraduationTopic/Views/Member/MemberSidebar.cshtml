@@ -3,16 +3,13 @@
 @inject IHttpContextAccessor HttpContextAccessor;
 @{
     var user = HttpContextAccessor?.HttpContext?.User;
-    bool? isAuthorized = user?.Identity?.IsAuthenticated;
-    string? userName = string.Empty;
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;    
     string? avatarName = string.Empty;
-    string? roleName = string.Empty;
+    
 
     if (isAuthorized ?? false)
-    {
-        userName = user.FindFirstValue("UserName");
-        avatarName = user.FindFirstValue("AvatarName");
-        roleName = user.FindFirstValue(ClaimTypes.Role);
+    {       
+        avatarName = user.FindFirstValue("AvatarName");       
         if (string.IsNullOrEmpty(avatarName)) avatarName = "memberDefault.png";
     }
 }

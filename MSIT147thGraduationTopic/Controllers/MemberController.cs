@@ -11,14 +11,14 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class MemberController : Controller
     {
-        private readonly GraduationTopicContext _context;        
+        private readonly GraduationTopicContext _context;
         private readonly MemberService _service;
         private readonly IWebHostEnvironment _environment;
 
 
         public MemberController(GraduationTopicContext context
                 , IWebHostEnvironment environment)
-        {            
+        {
             _context = context;
             _environment = environment;
             _service = new MemberService(context, environment);
@@ -32,7 +32,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public IActionResult LogIn()
         {
             return View();
-        }        
+        }
 
 
         [Authorize(Roles = "會員")]
@@ -41,10 +41,10 @@ namespace MSIT147thGraduationTopic.Controllers
             return View();
         }
 
-      
+
         [Authorize(Roles = "會員")]
         public IActionResult ShoppingHistory()
-        {
+        {            
             return View();
         }
 
@@ -73,9 +73,9 @@ namespace MSIT147thGraduationTopic.Controllers
                 return Json(cities.Select(x => x.ToObject<string>()));
             }
         }
-                
+
         public IActionResult Districts(string? city)
-        { 
+        {
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
             var fileInfo = fileProvider.GetFileInfo("datas/CityCountyData.json");
             using (var stream = fileInfo.CreateReadStream())
@@ -85,7 +85,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 var json = (JArray)JToken.ReadFrom(jsonReader);
                 var areas = json
                     .FirstOrDefault(x => x["CityName"].ToObject<string>() == city)["AreaList"]
-                    .Select(x => x["AreaName"]);                
+                    .Select(x => x["AreaName"]);
                 return Json(areas.Select(x => x.ToObject<string>()));
             }
         }

@@ -13,13 +13,13 @@ namespace MSIT147thGraduationTopic.Models.Services
     public class MemberService
     {
         private readonly GraduationTopicContext _context;
-        private readonly MemberRepository _repo;
+        private readonly MemberRepository _repo;        
         private readonly IWebHostEnvironment _environment;
 
         public MemberService(GraduationTopicContext context, IWebHostEnvironment environment)
         {
             _context = context;
-            _environment = environment;
+            _environment = environment;           
             _repo = new MemberRepository(context);
         }
 
@@ -52,6 +52,7 @@ namespace MSIT147thGraduationTopic.Models.Services
                 return dto.ToVM();
             });
         }
+        
 
         public int CreateMember(MemberDto dto, IFormFile file)
         {

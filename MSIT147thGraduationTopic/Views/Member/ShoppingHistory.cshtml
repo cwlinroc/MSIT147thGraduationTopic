@@ -17,19 +17,18 @@
             <label class="mb-1">訂單時間</label>
             <div class="input-group mb-3">
                 <span class="input-group-text">自</span>
-                <input type="date" class="form-control">
+                <input type="date" id="queryStartDate" class="form-control">
                 <span class="input-group-text">至</span>
-                <input type="date" class="form-control">
+                <input type="date" id="queryEndDate" class="form-control">
             </div>
             <label class="mb-1">購買商品</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="請輸入商品名稱"
-                       aria-describedby="button-addon2">
-                <button class="btn btn-primary" type="button" id="button-addon2">查詢</button>
+                <input type="text" class="form-control">                
             </div>
+            <button class="btn btn-primary" type="button" id="btnQuery">查詢</button>
         </div>
         <div>
-            <p class="mb-1">您的查詢區間為 <span>yyyy/MM/dd</span> 至 <span>yyyy/MM/dd</span></p>
+            <p class="mb-1">您的查詢區間為 <span id="startDate">yyyy/MM/dd</span> 至 <span id="endDate">yyyy/MM/dd</span></p>
             <table class="table table-bordered px-4 py-2 mb-1">
                 <thead>
                     <tr>
@@ -41,10 +40,10 @@
                 </thead>
                 <tbody class="table-group-divider">
                     <tr>                       
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td id="purchaseTime"></td>
+                        <td id="orderId"></td>
+                        <td id="paymentAmount"></td>
+                        <td id="paymentMethodName"></td>
                     </tr>
                 </tbody>
             </table>
@@ -56,7 +55,23 @@
         </p>
         <div class="collapse" id="orderdetail1">
             <div class="card card-body">
-                Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">商品名稱</th>
+                            <th scope="col">數量</th>
+                            <th scope="col">價格</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr>
+                            <td id="merchandiseName"></td>
+                            <td id="quantity"></td>
+                            <td id="price"></td>                           
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <table class="table table-bordered px-4 py-2 mb-1">
@@ -101,4 +116,7 @@
 
 @section Scripts{    
     <script src="~/js/Member/memberSidebar.js"></script>
+    <script src="~/js/Member/shoppingHistory.js"></script>
+
+    
 }

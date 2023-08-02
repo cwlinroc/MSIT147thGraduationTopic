@@ -12,7 +12,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         public IActionResult MemberList()
         {
-            return PartialView("GetAllMembers","ApiMember");
+            return PartialView();
         }
     }
 }
