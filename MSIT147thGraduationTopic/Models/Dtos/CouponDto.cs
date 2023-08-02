@@ -98,5 +98,4 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             coupon.CouponDiscount = couponEditDto.CouponDiscount;
         }
     }
-
 }

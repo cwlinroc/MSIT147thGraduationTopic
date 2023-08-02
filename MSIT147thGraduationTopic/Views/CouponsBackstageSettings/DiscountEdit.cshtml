@@ -104,26 +104,39 @@
 
             const form = document.getElementById('edit');
             if(form.checkValidity()){
-                const formData = $(form).serialize();
+                const formData = $(form).serializeArray();
                 const editUrl = `@Url.Action("EditCoupon","ApiCoupon",new{id=Model.CouponId})`;
                 console.log(editUrl);
                 console.log(formData);
+
+                const jsonData = {};
+                formData.forEach(field=>{
+                    jsonData[field.name] = field.value;
+                });
+
+                const token = $('input[name="__RequestVerificationToken"]').val();
+                const headers = {
+                    "RequestVerificationToken": token,
+                    "Content-Type": "application/json"
+                };
+
                 $.ajax({
                     url:editUrl,
                     type:'PUT',
-                    data:formData,
+                    data:JSON.stringify(jsonData),
+                    headers:headers,
                     success:function(data){
                         Swal.fire({
                             icon:'success',
                             title:'成功',
-                            text:'優惠券更新成功'
+                            text:'優惠券更新成功',
                         });
                     },
                     error:function(xhr){
                         Swal.fire({
                             icon:'error',
                             title:'失敗',
-                            text: '優惠券更新失敗，請檢查資料及格式是否正確' + xhr.responseText,,
+                            text: '優惠券更新失敗，請檢查資料及格式是否正確',
                         });
                     }
                 });

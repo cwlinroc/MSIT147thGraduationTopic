@@ -58,10 +58,29 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<int> UpdateCoupon(int id, [FromForm] CouponCreateVM vm)
+        [ValidateAntiForgeryToken]
+        public ActionResult<int> EditCoupon(int id, [FromBody] CouponEditDto cEDto)
         {
-            var couponId = _service.EditCoupon(vm.ToDto(), id);
-            return couponId;
+            if(cEDto == null)
+            {
+                return BadRequest("查無資料");
+            }
+            if(id!=cEDto.CouponId)
+            {
+                return BadRequest("id序號不相符");
+            }
+            var couponData = _service.GetCouponById(id);
+            if(couponData == null)
+            {
+                return NotFound("查無資料");
+            }
+            int updatedCouponId = _service.EditCoupon(cEDto);
+            if(updatedCouponId == -1)
+            {
+                return NotFound("查無資料");
+            }
+            var updatedCoupon = _service.GetCouponById(updatedCouponId);
+            return Ok(updatedCoupon);
         }
 
         [HttpDelete("{id}")]
