@@ -18,7 +18,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet]
         public IActionResult DisplaySearchResult(
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
-            int sideCategoryId, int? minPrice, int? maxPrice)
+            int sideCategoryId, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays   //僅顯示上架商品
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
@@ -56,7 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet]
         public IActionResult GetSearchResultLength(
             string txtKeyword, int searchCondition, int pageSize, int PageIndex,
-            int sideCategoryId, int? minPrice, int? maxPrice)
+            int sideCategoryId, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
@@ -83,7 +83,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpGet]
         public IActionResult GenerateSideCategoryOptions(
-            string txtKeyword, int searchCondition, int? minPrice, int? maxPrice)
+            string txtKeyword, int searchCondition, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
         {
             var categoriesFromEF = _context.Categories.OrderBy(c => c.CategoryId);
 

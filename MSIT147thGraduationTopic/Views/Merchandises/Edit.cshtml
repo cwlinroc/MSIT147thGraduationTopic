@@ -105,7 +105,7 @@
     </script>
     @*產生圖片路徑、預覽*@
     <script>
-        const originalImageUrl = ($("#origimageurl").val());
+        const originalImageUrl = $("#origimageurl").val();
         const originalImagePath = originalImageUrl
             ? "@Url.Content("~/uploads/merchandisePicture/")" + originalImageUrl
             : "@Url.Content("~/uploads/merchandisePicture/default.png")";

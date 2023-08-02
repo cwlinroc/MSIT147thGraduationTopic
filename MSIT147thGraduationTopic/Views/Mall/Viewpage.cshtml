@@ -119,8 +119,6 @@
 
         <!-- 中間商品欄 -->
         <div class="col-12 col-md-10">
-            <!-- ////////////////////////////////////////todo 用超連結重製搜尋條件(所有商品) -->
-
             <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3" id="showThisPageMerchandise">
                 <!-- 透過Ajax產生商品櫥窗 -->
             </div>
@@ -161,29 +159,29 @@
         })
 
         //關鍵字搜尋
+        $("#search-input").on("keyup", () => {
+            txtKeyword = $("#search-input").val();
+        })
         $(".conditionname").on("change", (e) => {
             searchCondition = $(".conditionname").val();
         })
         $("#keywordsearch").on("submit", (e) => {
-            txtKeyword = $("#search-input").val();
             e.preventDefault();
-            SearchProducts();
+            SearchProducts();//改成傳參數到Index
         })
 
         //每頁顯示筆數
         $(".pageSize").on("click", (e) => {
             pageSize = $(e.currentTarget).val();
             pageindex = 1;
-            SearchProducts();
         })
         //選擇排序方式
         $("#displayorder").on("change", (e) => {
             displayorder = $("#displayorder").val();
-            SearchProducts();
         })
 
         async function SearchProducts() {
-            //產生商品櫥窗        //todo 無結果時顯示字樣(待做 => 把個別方法拆開，共用商品結果數，設條件生成字樣or商品欄)
+            //產生商品櫥窗
             $(async () => {                 // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※別換行，會出莫名其妙的問題)
                 const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
                 const returnJsonBag = await response.text();
@@ -209,108 +207,11 @@
                 pageContent.innerHTML = windows.join("");
             })
 
-            //產生分頁標籤
-            $(async () => {
-                const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&\
-                                                            searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
-                const returnLengthBag = await responseforlength.text();
-                const resultLength = JSON.parse(returnLengthBag);
-                const totalpage = Math.ceil(resultLength / pageSize);
-                const pagingContainer = document.querySelector("#pagingContainer");
-
-                var indexRow = `<li class="page-item border-light">\
-                                                                <a class="page-link toPrevious" href="#" aria-label="Previous">\
-                                                                    <span aria-hidden="true">&laquo;</span>\
-                                                                </a>\
-                                                            </li>`;
-                var indexArray = "";
-                var start, end;
-                if (totalpage <= 5) {
-                    start = 1; end = totalpage;
-                    for (var i = start; i <= end; i++) {
-                        indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
-                    }
-                }
-                if (totalpage > 5) {
-                    if (pageindex < 4) {
-                        start = 1; end = 5;
-                        for (var i = start; i <= end; i++) {
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
-                        }
-                        indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
-                    }
-                    if (pageindex == 4) {
-                        start = 2; end = 6;
-                        for (var i = start; i <= end; i++) {
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
-                        }
-                        indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
-                    }
-                    if (pageindex > 4) {
-                        if (pageindex + 3 <= totalpage) {
-                            start = pageindex - 2; end = pageindex + 2
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
-                                                                       <li class="page-item"><a class="page-link" >...</a></li>`
-                            for (var i = start; i <= end; i++) {
-                                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
-                            }
-                            indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
-                        }
-                        if (pageindex + 3 > totalpage) {
-                            start = pageindex - 2; end = totalpage
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
-                                                                       <li class="page-item"><a class="page-link" >...</a></li>`
-                            for (var i = start; i <= end; i++) {
-                                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
-                            }
-                        }
-                    }
-                }
-
-                indexRow += indexArray + `<li class="page-item">
-                                                                        <a class="page-link toNext" href="#" aria-label="Next">
-                                                                            <span aria-hidden="true">&raquo;</span>
-                                                                        </a>
-                                                                      </li>`;
-                pagingContainer.innerHTML = indexRow;
-
-                //按鈕變色 => 改變屬性
-                //$(".showIndex").find(`[val-index='${pageindex}']`).attr("class", "showIndex");   // todo 改變屬性
-
-                //分頁點選+點選後改變格式
-                $(".showIndex").on("click", (e) => {
-                    pageindex = $(e.currentTarget).attr("val-index");
-                    SearchProducts();
-                })
-                //前後頁按鈕
-                $(".toPrevious").on("click", () => {
-                    if (pageindex > 1) pageindex--;
-                    SearchProducts();
-                })
-                $(".toNext").on("click", () => {
-                    if (pageindex < totalpage) pageindex++;
-                    SearchProducts();
-                })
-            })
-
-            //呈現側邊商品類別選項
-            $(async () => {
-                const CategoryOptions = document.querySelector("#categoryOptions")
-                const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
-                const returnCategoryBag = await responseforCategory.text();
-                const CategoryResult = JSON.parse(returnCategoryBag);
-
-                var categoryList = CategoryResult.map(category => {
-                    const { categoryId, categoryName, matchedMerchandiseNumber } = category;
-                    return (`<li class="my-1 "><a href="#" class="selectCategory" val-category="${categoryId}">${categoryName} (${matchedMerchandiseNumber})</a></li>`)
-                })
-                CategoryOptions.innerHTML = categoryList.join("");
-
-                $(".selectCategory").on("click", (e) => {
-                    sideCategoryId = $(e.currentTarget).attr("val-category");
-                    SearchProducts();
-                })
-            })
+            //呈現頂端商品類別選項 => 所有商品/該類別
+            $(async () => { })
+            
+            
+            
             console.log("執行一次SearchProducts()");
         }
     </script>

@@ -75,6 +75,10 @@ namespace MSIT147thGraduationTopic.Controllers
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
 
+                //todo 後台新增Tag編輯的View (做成彈出式，參考_MallPage, bootstrap的Modal) 直接輸入新TAG名稱+顯示既有TAG 用AJAX+API新增資料
+                //SpecTag st = new SpecTag();
+
+
                 _context.Add(specvm.spec);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
