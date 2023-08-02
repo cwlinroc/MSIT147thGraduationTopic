@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.ViewModels;
 using NuGet.Versioning;
 using System.Linq;
 
@@ -16,8 +17,8 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpGet]
         public IActionResult DisplaySearchResult(
-            string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex
-            ) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice, int sideCategoryId 用AJAX生成
+            string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
+            int sideCategoryId) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice 用AJAX生成
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays   //僅顯示上架商品
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
@@ -33,12 +34,15 @@ namespace MSIT147thGraduationTopic.Controllers
                 };
             }
 
+            datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
+
             datas = displayorder switch
             {
-                0 => datas.OrderByDescending(md => md.SpecId),  //最新商品
-                1 => datas.OrderBy(md => md.SpecId),            //由舊到新
-                2 => datas.OrderBy(md => md.Price),             //價格由低至高
-                3 => datas.OrderByDescending(md => md.Price),   //價格由高至低
+                0 => datas.OrderByDescending(md => md.SpecId),      //最新商品
+                1 => datas.OrderBy(md => md.SpecId),                //由舊到新熱門商品
+                2 => datas.OrderByDescending(md => md.Popularity),  //熱門商品
+                3 => datas.OrderBy(md => md.Price),                 //價格由低至高
+                4 => datas.OrderByDescending(md => md.Price),       //價格由高至低
                 _ => datas.OrderByDescending(md => md.SpecId)
             };
 
@@ -49,8 +53,8 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpGet]
         public IActionResult GetSearchResultLength(
-            string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex
-            ) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice, int? sideCategoryId 用AJAX生成
+            string txtKeyword, int searchCondition, int pageSize, int PageIndex,
+            int sideCategoryId) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice 用AJAX生成
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
@@ -66,20 +70,56 @@ namespace MSIT147thGraduationTopic.Controllers
                 };
             }
 
-            datas = displayorder switch
-            {
-                0 => datas.OrderByDescending(md => md.SpecId),
-                1 => datas.OrderBy(md => md.SpecId),
-                2 => datas.OrderBy(md => md.Price),
-                3 => datas.OrderByDescending(md => md.Price),
-                _ => datas.OrderByDescending(md => md.SpecId)
-            };
+            datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
 
             var resultLength = datas.Count();
 
             return Json(resultLength);
         }
 
+        [HttpGet]
+        public IActionResult GenerateSideCategoryOptions(
+            string txtKeyword, int searchCondition
+            ) //todo 串接側邊選單類別搜尋 , int? minPrice, int? maxPrice 用AJAX生成
+        {
+            var categoriesFromEF = _context.Categories.OrderBy(c => c.CategoryId);
+
+            IEnumerable<MallDisplay> selectedProducts = _context.MallDisplays
+                                            .Where(md => md.Display == true).Where(md => md.OnShelf == true); ;
+            if (!string.IsNullOrEmpty(txtKeyword))
+            {
+                selectedProducts = searchCondition switch
+                {
+                    1 => selectedProducts.Where(sp => sp.FullName.Contains(txtKeyword)),
+                    2 => selectedProducts.Where(sp => sp.BrandName.Contains(txtKeyword)),
+                    3 => selectedProducts.Where(sp => sp.CategoryName.Contains(txtKeyword)),
+                    _ => selectedProducts
+                };
+            }
+            //if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
+            //if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
+
+            List<CategoryVM> datas = new List<CategoryVM>();
+            CategoryVM data_0 = new CategoryVM()
+            {
+                CategoryId = 0,
+                CategoryName = "不限類別",
+                matchedMerchandiseNumber = selectedProducts.Count()
+            };
+            datas.Add(data_0);
+
+            foreach (var cFEF in categoriesFromEF)
+            {
+                CategoryVM data = new CategoryVM();
+                data.category = cFEF;
+
+                data.matchedMerchandiseNumber = selectedProducts
+                    .Where(rC => rC.CategoryName == cFEF.CategoryName).Count();
+                datas.Add(data);
+            }
+
+            return Json(datas);
+        }
 
     }
 }

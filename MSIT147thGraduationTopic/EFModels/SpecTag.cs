@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace MSIT147thGraduationTopic.EFModels
 {
-    public partial class MerchandiseTag
+    public partial class SpecTag
     {
-        public int MerchandiseId { get; set; }
+        public int SpecId { get; set; }
         public int TagId { get; set; }
 
-        public virtual Merchandise Merchandise { get; set; }
+        public virtual Spec Spec { get; set; }
         public virtual Tag Tag { get; set; }
     }
 }
