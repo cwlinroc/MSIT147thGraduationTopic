@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,8 @@ using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Services;
+using MSIT147thGraduationTopic.Models.ViewModels;
+using NuGet.Packaging.Signing;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -26,14 +29,23 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
 
-        public async Task<IEnumerable<CouponDto>> GetAllCouponsAvalible(int id)
+        public async Task<IEnumerable<BuyPageCouponVM>> GetAllCouponsAvalible(int id)
         {
-            var item = _service.GetAllCouponsAvalible(id);
+            var item = (await _service.GetAllCouponsAvalible(id));
 
             return item;
         }
 
-        
+
+        [HttpGet("cartitems/{couponId}")]
+        public async Task<BuyPageCartItemsListVM?> GetCalculatedCartItems(int couponId)
+        {
+            string? json = HttpContext.Session.GetString("cartItemIds");
+            int[] ids = JsonSerializer.Deserialize<int[]>(json ?? "[]")!;
+
+            return await _service.GetCartItemsWithCoupons(ids, couponId);
+        }
+
 
         #region --Default參考--
         //// GET: api/ApiBuy
