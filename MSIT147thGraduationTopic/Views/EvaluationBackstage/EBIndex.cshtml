@@ -14,17 +14,17 @@
                 <form method="post" id="SearchForm">
                 <div class="row g-3 align-items-center ">
                     <div class="col-auto ms-auto float-end d-flex align-items-center"> 
-                        <input name="keyword" id="txtkeyword" type="text" class="form-control-sm d-flex mx-2 " style="height: 38px;" placeholder="請輸入關鍵字">
-                        <img src="~/images/search.jpg" class="rounded-3 d-flex" id="btnKeywordImage" onclick="submitSearchForm();" style="cursor: pointer;" />
+                        <input name="Keyword" id="txtkeyword" type="text" class="form-control-sm d-flex mx-2 " style="height: 38px;" placeholder="請輸入關鍵字">
+                        <img src="~/images/search.jpg" class="rounded-3 d-flex" id="btnKeywordImage" style="cursor: pointer;" />
                     </div>
 
                 </div>
                 </form>
             </div>
-            <table class="table bg-white mt-3 rounded-3">
+            <table class="table bg-white mt-3 rounded-3 ">
                 <thead>
                     <tr>
-                        <th>
+                        <th style="text-align:center">
                             勾選
                             @*@Html.DisplayNameFor(model => model.Comment)*@
                         </th>
@@ -49,33 +49,37 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @if(Model != null)
                     {
-                        <tr>
-                            <td>
-                                <input class="form-check-input" type="checkbox" id="gridCheck">
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.OrderId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.MerchandiseName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Score)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Comment)
-                            </td>
-                            <td>
-                                <button type="submit" id="btnDelete" class="btn btn-primary btnDelete" data-id="@item.EvaluationId">刪除</button>
-                            </td>                            
-                        </tr>
-                    }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="text-align:center">
+                                    <input class="form-check-input" type="checkbox" id="gridCheck" name="checitem " data-id="@item.EvaluationId">
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MerchandiseName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Score)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Comment)
+                                </td>
+                                <td>
+                                    <button type="submit" id="btnDelete" class="btn btn-primary btnDelete" data-id="@item.EvaluationId">刪除</button>
+                                </td>
+                            </tr>
+                        }
+                    }                  
                 </tbody>
             </table>
-
+            
             <nav aria-label="Page navigation example">
+                <button id="btnChecitem" class="btn btn-primary ">刪除所有勾選</button>
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Previous">
@@ -92,6 +96,13 @@
                     </li>
                 </ul>
             </nav>
+            @*<!-- 顯示分頁控制元件 -->
+            <div class="pagination">
+                @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
+                {
+                    <a href="@Url.Action("Index", new { pageNo = i })">@i</a>
+                }
+            </div>*@
         </div>
         <div class="col-1"></div>
     </div>
@@ -109,10 +120,26 @@
                 window.location.reload(); //重載畫面
             });
         });
+
+        $('#btnChecitem').click(function () {
+
+            var Checitems = $(this).attr('data-id').List();
+
+            console.log(this);
+
+            $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
+                window.location.reload(); //重載畫面
+            });
+        });
+
+
+        $("#btnKeywordImage").click(function(){
+            var keywordValue = $("#txtkeyword").val();
+            console.log(keywordValue);
+            $("#SearchForm").submit();
+        })
         
-        function submitSearchForm() {
-            document.getElementById("SearchForm").submit();
-        }
 
     </script>
+
 }

@@ -71,6 +71,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=index}/{id?}");
+    pattern: "{controller=EvaluationBackstage}/{action=EBIndex}/{id?}");
 
 app.Run();
