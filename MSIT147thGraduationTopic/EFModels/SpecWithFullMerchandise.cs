@@ -20,5 +20,6 @@ namespace MSIT147thGraduationTopic.EFModels
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public double Popularity { get; set; }
     }
 }

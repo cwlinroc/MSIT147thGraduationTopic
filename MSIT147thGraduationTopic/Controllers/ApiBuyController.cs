@@ -36,9 +36,9 @@ namespace MSIT147thGraduationTopic.Controllers
             return item;
         }
 
-
+        [HttpGet("cartitems")]
         [HttpGet("cartitems/{couponId}")]
-        public async Task<BuyPageCartItemsListVM?> GetCalculatedCartItems(int couponId)
+        public async Task<BuyPageCartItemsListVM?> GetCalculatedCartItems(int? couponId)
         {
             string? json = HttpContext.Session.GetString("cartItemIds");
             int[] ids = JsonSerializer.Deserialize<int[]>(json ?? "[]")!;

@@ -89,8 +89,10 @@
                                 //    <a class="nav-link text-nowrap" href="@Url.Action("","")">優惠券列表</a>
                                 //</li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="@Url.Content("~/cart")">
-                                        <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>購物車
+                                    <a class="nav-link position-relative" href="@Url.Content("~/cart")">
+                                        <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>
+                                        <div class="badge bg-danger bg-gradient rounded-circle" id="cartCount">3</div>
+                                        購物車
                                     </a>
                                 </li>
                             }
