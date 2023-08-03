@@ -31,7 +31,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         //}
 
 
-        public async Task<BuyPageCartItemsListVM?> GetCartItemsWithCoupons(int[] cartItemIds, int couponId)
+        public async Task<BuyPageCartItemsListVM?> GetCartItemsWithCoupons(int[] cartItemIds, int? couponId)
         {
             if (cartItemIds.IsNullOrEmpty()) return null;
             //var carItemsTask = _repo.GetCartItems(cartItemIds);

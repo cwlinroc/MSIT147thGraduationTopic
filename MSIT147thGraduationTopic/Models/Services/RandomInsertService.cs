@@ -164,6 +164,15 @@ namespace MSIT147thGraduationTopic.Models.Services
         }
 
 
-
+        public void AddSpecTags()
+        {
+            var specIds = _repo.GetAllSpecID();
+            var tagIds = _repo.GetAllTagID();
+            foreach (var specId in specIds)
+            {
+                int tagId = _generator.RandomFrom(tagIds);
+                _repo.AddSpecTags(specId, tagId);
+            }
+        }
     }
 }

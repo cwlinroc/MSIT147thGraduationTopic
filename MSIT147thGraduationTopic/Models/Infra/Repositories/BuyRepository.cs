@@ -18,8 +18,8 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             var result = await (from cartItem in _context.CartItems
                                 join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
                                 join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
-                                join merchandiseTag in _context.MerchandiseTags on merchandise.MerchandiseId equals merchandiseTag.MerchandiseId into tags
-                                from merchandiseTag in tags.DefaultIfEmpty()
+                                join specTags in _context.SpecTags on spec.SpecId equals specTags.SpecId into tags
+                                from specTags in tags.DefaultIfEmpty()
                                 where cartItemIds.Contains(cartItem.CartItemId)
                                 select new
                                 {
@@ -32,7 +32,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                                     cartItem.CartItemId,
                                     spec.SpecId,
                                     cartItem.Quantity,
-                                    TagId = (int?)merchandiseTag.TagId,
+                                    TagId = (int?)specTags.TagId,
                                 }).ToListAsync();
             return result.GroupBy(o => o.CartItemId).Select(o => new CartItemDisplayDto
             {
@@ -65,8 +65,9 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return coupons.Select(o => (o.CouponId, o.CouponName));
         }
 
-        public async Task<CouponDto?> GetCouponById(int couponId)
+        public async Task<CouponDto?> GetCouponById(int? couponId)
         {
+            if (couponId == null) return null;
             return (await _context.Coupons.FindAsync(couponId))?.ToDto();
         }
 

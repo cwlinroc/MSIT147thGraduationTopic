@@ -30,13 +30,13 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
-        public virtual DbSet<MerchandiseTag> MerchandiseTags { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderList> OrderLists { get; set; }
         public virtual DbSet<OrderWithMember> OrderWithMembers { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Spec> Specs { get; set; }
         public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
+        public virtual DbSet<SpecTag> SpecTags { get; set; }
         public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
         public virtual DbSet<SpecWithMerchandiseName> SpecWithMerchandiseNames { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
@@ -187,6 +187,8 @@ namespace MSIT147thGraduationTopic.EFModels
                     .IsRequired()
                     .HasMaxLength(50);
 
+                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+
                 entity.Property(e => e.CategoryName)
                     .IsRequired()
                     .HasMaxLength(30);
@@ -308,23 +310,6 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasMaxLength(30);
             });
 
-            modelBuilder.Entity<MerchandiseTag>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.HasOne(d => d.Merchandise)
-                    .WithMany()
-                    .HasForeignKey(d => d.MerchandiseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MerchandiseTags_Merchandises");
-
-                entity.HasOne(d => d.Tag)
-                    .WithMany()
-                    .HasForeignKey(d => d.TagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_MerchandiseTags_Tags");
-            });
-
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.Property(e => e.ContactPhoneNumber)
@@ -424,6 +409,23 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.FullName)
                     .IsRequired()
                     .HasMaxLength(81);
+            });
+
+            modelBuilder.Entity<SpecTag>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.HasOne(d => d.Spec)
+                    .WithMany()
+                    .HasForeignKey(d => d.SpecId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecTags_Specs");
+
+                entity.HasOne(d => d.Tag)
+                    .WithMany()
+                    .HasForeignKey(d => d.TagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SpecTags_Tags");
             });
 
             modelBuilder.Entity<SpecWithFullMerchandise>(entity =>

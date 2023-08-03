@@ -265,18 +265,21 @@
                         <tbody id="listBody">
                             @foreach (var item in Model)
                             {
-                                <tr>
+                                @*<tr>
                                     <td>@item.CartItemName x<span>@item.Quantity</span></td>
                                     <td>
-                                        <div class="text-secondary" style="font-size:5px;">
-                                            <del>$<span>@(item.CartItemPrice * item.Quantity)</span></del>
-                                        </div>
+                                        @if (item.DiscountPercentage < 100)
+                                        {
+                                            <div class="text-secondary" style="font-size:5px;">
+                                                <del>$<span>@(item.CartItemPrice * item.Quantity)</span></del>
+                                            </div>
+                                        }
                                         <div class="text-danger">
                                             $<span class="price-sum">@(item.CartItemPrice * item.DiscountPercentage / 100 * item.Quantity)</span>
                                         </div>
 
                                     </td>
-                                </tr>
+                                </tr>*@
                             }
 
                         </tbody>
@@ -546,39 +549,48 @@
 
         //優惠卷刷新訂單列表價格
 
-        refreshPriceByCoupon(3)
+        refreshPriceByCoupon()
         async function refreshPriceByCoupon(couponId) {
+            if (!couponId) couponId = ''
             const response = await fetch('@Url.Content("~/api/apibuy/cartItems/")' + couponId)
             const data = await response.json()
-            console.log(data)
+
             displayItemsPrice(data)
+            calculateTotalPrice()
         }
 
         function displayItemsPrice(data) {
             const items = data.cartItems
             console.log(items)
             const itemHtmls = items.map(item => {
-                const originPrice = item.cartItemPrice * item.discountPercentage / 100 * item.quantity
-                const finalPrice = !!item.couponDiscount ? originPrice * item.couponDiscount / 100 : originPrice
+                const originPrice = Math.floor(item.cartItemPrice * item.discountPercentage / 100) * item.quantity
+                const finalPrice = !!item.couponDiscount ? Math.floor(originPrice * item.couponDiscount / 100) : originPrice
+                const discountStr = item.discountPercentage != 100 ? `<div class="text-secondary" style = "font-size:5px;" >
+                        <del>$ <span> ${item.cartItemPrice * item.quantity}</span></del>
+                        </div>` : ''
                 const couponDiscountStr = !!item.couponDiscount ? `<div class="text-secondary" style = "font-size:5px;" >
-                                <del>$ <span> (${originPrice})</span></del>
-                                </div>`:''
+                        <del>$ <span> ${originPrice}</span></del>
+                        </div>`: ''
                 return ` <tr>
-                    <td>${item.cartItemName}x<span>${item.quantity}</span></td>
-                    <td>
-                    <div class="text-secondary" style = "font-size:5px;" >
-                    <del>$ <span> (${item.cartItemPrice * item.quantity})</span></del>
-                    </div>
-                    ${couponDiscountStr}
-                    < div class="text-danger" >
-                    $ < span class="price-sum" >(${finalPrice})</span>
-                    < /div>
-                    < /td>
-                    < /tr>`
+                        <td>${item.cartItemName}x<span>${item.quantity}</span></td>
+                        <td>
+                        ${discountStr}
+                        ${couponDiscountStr}
+                        <div class="text-danger text-nowrap">
+                        $ <span class="price-sum">${finalPrice}</span>
+                        </div>
+                        </td>
+                        </tr>`
             })
-            console.log(itemHtmls)
-            $('#listBody').html(itemHtmls.join(''))
-            
+            const fixedAmountDiscount = !!data.couponDiscountAmount ? ` <tr>
+                            <td>優惠卷折抵</td>
+                            <td>
+                            <div class="text-danger text-nowrap">
+                                    $ <span class="price-sum">-${data.couponDiscountAmount}</span>
+                            </div>
+                            </td>
+                            </tr>` : ''
+            $('#listBody').html(itemHtmls.join('') + fixedAmountDiscount)
         }
 
     </script>

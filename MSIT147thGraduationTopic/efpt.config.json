@@ -52,10 +52,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[MerchandiseTags]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[OrderLists]",
          "ObjectType": 0
       },
@@ -69,6 +65,10 @@
       },
       {
          "Name": "[dbo].[Specs]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SpecTags]",
          "ObjectType": 0
       },
       {
@@ -104,7 +104,7 @@
          "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-43t56sd.GraduationTopic.dbo",
+   "UiHint": "desktop-pp2g83m.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
