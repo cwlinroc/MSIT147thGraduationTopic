@@ -25,10 +25,10 @@
 }
 
 #cartCount {
-    height: 15px;
-    width: 15px;
-    left: -15px;
-    top:-13px;
+    height: 20px;
+    width: 20px;
+    left: -20px;
+    top:-15px;
     text-align: center;
     font-size:5px;
     background-color:red;
@@ -38,5 +38,5 @@
     #cartCount div {
         left: 50%;
         top: 50%;
-        transform: translate(-55%, -55%);
+        transform: translate(-50%, -50%);
     }
