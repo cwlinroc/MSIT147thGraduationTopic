@@ -14,20 +14,18 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index()//todo 關鍵字、條件、類別、Tag改成參數，頁數、排序保持AJAX
         {
-            // todo 用超連結重製搜尋條件(所有商品)
-            // todo 改變當前分頁按鈕屬性
             // todo 無結果時顯示字樣
             // todo 連結至購物車
             // todo 寵物類別TAG查詢
             return View();
         }
 
-        public IActionResult Viewpage(int SpecId)
+        public IActionResult Viewpage(int MerchandiseId)
         {
             IEnumerable<Spec> datas = _context.Specs
-                .Where(s => s.SpecId == SpecId).Where(s => s.OnShelf == true);
+                .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true);
 
             return View(datas);
         }

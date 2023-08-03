@@ -102,12 +102,12 @@
                             <!-- 摺疊選單 for 價格區間 -->
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="#sublist3" data-bs-toggle="collapse" aria-expanded="false">價格區間</a>
-                                <ul id="sublist3" class="list-unstyled collapse mx-4">
+                                <div id="sublist3" class="list-unstyled collapse mx-4">
                                     <input type="number" min="0" id="minPrice" placeholder="最低價" style="width:75px; height:32px" /> -
                                     <input type="number" min="0" id="maxPrice" placeholder="最高價" style="width:75px; height:32px" />
                                     <br />
                                     <button type="button" id="sendPriceRange" class="btn btn-secondary">查詢</button>
-                                </ul>
+                                </div>
                             </li>
 
                         </ul>
@@ -119,7 +119,12 @@
 
         <!-- 中間商品欄 -->
         <div class="col-12 col-md-10">
-            <!-- ////////////////////////////////////////todo 用超連結重製搜尋條件(所有商品) -->
+            <!-- 搜尋所有商品(重置搜尋條件) -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item" id="defaultSearch"><a href="#">商品總覽</a></li>
+                </ol>
+            </nav>
 
             <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3" id="showThisPageMerchandise">
                 <!-- 透過Ajax產生商品櫥窗 -->
@@ -191,13 +196,13 @@
 
                 const pageContent = document.querySelector("#showThisPageMerchandise");
                 var windows = searchResult.map(window => {
-                    const { price, specId } = window;
-                    const showName = (window.fullName.length > 13) ? window.fullName.substring(0, 13) + "  ..." : window.fullName;
+                    const { price, merchandiseId } = window;
+                    const showName = (window.fullName.length > 12) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
                     const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
                     return (
                         `<div class="col">\
                                                     <div class="card my-3 mx-2 text-center border-light ">\
-                                                        <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" href="@Url.Content("~/Mall/Viewpage/")SpecId=${specId}" class="w-100 img-thumbnail hover-overlay">\
+                                                                <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" val-merchandisid="${merchandiseId}" class="w-100 img-thumbnail hover-overlay gotoViewpage">\
                                                         <div class="card-body ">\
                                                                     <h6 class="card-title ">${showName}</h6>\
                                                             <h5 class="card-text ">${price} 元</h5>\
@@ -207,6 +212,12 @@
                                                 </div>`)// todo 連結至購物車
                 })
                 pageContent.innerHTML = windows.join("");
+
+                //todo 圖片連結至商品頁
+                $(".gotoViewpage").on("click", (e) => {
+                    const targetmerchandisid = $(e.currentTarget).attr("val-merchandisid");
+                    window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetmerchandisid}`;
+                })
             })
 
             //產生分頁標籤
@@ -218,66 +229,65 @@
                 const totalpage = Math.ceil(resultLength / pageSize);
                 const pagingContainer = document.querySelector("#pagingContainer");
 
-                var indexRow = `<li class="page-item border-light">\
-                                                                <a class="page-link toPrevious" href="#" aria-label="Previous">\
-                                                                    <span aria-hidden="true">&laquo;</span>\
-                                                                </a>\
-                                                            </li>`;
+                var indexRow = `<li class="page-item border-light toPrevious">\
+                                    <a class="page-link" href="#" aria-label="Previous">\
+                                        <span aria-hidden="true">&laquo;</span>\
+                                    </a>\
+                                </li>`;
                 var indexArray = "";
                 var start, end;
                 if (totalpage <= 5) {
                     start = 1; end = totalpage;
                     for (var i = start; i <= end; i++) {
-                        indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                        indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                     }
                 }
                 if (totalpage > 5) {
                     if (pageindex < 4) {
                         start = 1; end = 5;
                         for (var i = start; i <= end; i++) {
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                            indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                         }
                         indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                     }
                     if (pageindex == 4) {
                         start = 2; end = 6;
                         for (var i = start; i <= end; i++) {
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                            indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                         }
                         indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                     }
                     if (pageindex > 4) {
                         if (pageindex + 3 <= totalpage) {
                             start = pageindex - 2; end = pageindex + 2
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
+                            indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>\
                                                                        <li class="page-item"><a class="page-link" >...</a></li>`
                             for (var i = start; i <= end; i++) {
-                                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                                indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                             }
                             indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                         }
                         if (pageindex + 3 > totalpage) {
                             start = pageindex - 2; end = totalpage
-                            indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="1" href="#">1</a></li>\
+                            indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>\
                                                                        <li class="page-item"><a class="page-link" >...</a></li>`
                             for (var i = start; i <= end; i++) {
-                                indexArray += `<li class="page-item"><a class="page-link showIndex" val-index="${i}" href="#">${i}</a></li>`;
+                                indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                             }
                         }
                     }
                 }
 
-                indexRow += indexArray + `<li class="page-item">
-                                                                        <a class="page-link toNext" href="#" aria-label="Next">
+                indexRow += indexArray + `<li class="page-item toNext">
+                                                                        <a class="page-link" href="#" aria-label="Next">
                                                                             <span aria-hidden="true">&raquo;</span>
                                                                         </a>
                                                                       </li>`;
                 pagingContainer.innerHTML = indexRow;
 
-                //按鈕變色 => 改變屬性
-                //$(".showIndex").find(`[val-index='${pageindex}']`).attr("class", "showIndex");   // todo 改變屬性
-
-                //分頁點選+點選後改變格式
+                //改變當前頁籤格式
+                $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
+                //分頁點選+點選後
                 $(".showIndex").on("click", (e) => {
                     pageindex = $(e.currentTarget).attr("val-index");
                     SearchProducts();
@@ -312,6 +322,11 @@
                 })
             })
             console.log("執行一次SearchProducts()");
+
+            //搜尋所有商品(重置搜尋條件)
+            $("#defaultSearch").on("click", () => {
+                window.location.href = `/Mall/Index`;
+            });
         }
     </script>
 }

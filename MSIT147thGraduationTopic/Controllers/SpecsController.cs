@@ -167,9 +167,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
             if (!string.IsNullOrEmpty(spec.ImageUrl))
                 deleteSpecImageFromUploads(spec.ImageUrl);
+
+            var merchandiseid = _context.Specs
+                .Where(s => s.SpecId ==id).Select(s => s.MerchandiseId).FirstOrDefault();
+
             _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { merchandiseid = merchandiseid });
         }
 
         private bool SpecExists(int id)
