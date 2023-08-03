@@ -134,6 +134,30 @@ async function LogOut() {
     }
 }
 
+//導覽列購物車數量
+if (ROLE === '會員') refreshNavbarCart()
+async function refreshNavbarCart() {
+    const response = await fetch('/api/apicart/cartcount')
+    const cartItemNumber = await response.json()
+    const numberBadge = document.querySelector('#cartCount')
+    if (!+cartItemNumber) {
+        numberBadge.style.display = 'none'
+    }
+    else {
+        numberBadge.style.display = 'block'
+        numberBadge.querySelector('div').textContent = cartItemNumber
+        numberBadge.closest('a').customAnimate('bounce')
+    }
+
+}
+
+
+
+
+
+
+
+
 
 
 
