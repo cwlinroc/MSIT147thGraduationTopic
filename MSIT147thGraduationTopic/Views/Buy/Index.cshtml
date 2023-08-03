@@ -1,6 +1,7 @@
-﻿@model List<MSIT147thGraduationTopic.Models.Dtos.CartItemDisplayDto>;
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.Dtos.CartItemDisplayDto>;
 @{
     ViewData["Title"] = "Index";
+    var coupons = ViewBag.Coupons as IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.BuyPageCouponVM>;
 }
 
 
@@ -261,21 +262,24 @@
                             </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody id="listBody">
                             @foreach (var item in Model)
                             {
-                                <tr>
+                                @*<tr>
                                     <td>@item.CartItemName x<span>@item.Quantity</span></td>
                                     <td>
-                                        <div class="text-secondary" style="font-size:5px;">
-                                            <del>$<span>@(item.CartItemPrice * item.Quantity)</span></del>
-                                        </div>
+                                        @if (item.DiscountPercentage < 100)
+                                        {
+                                            <div class="text-secondary" style="font-size:5px;">
+                                                <del>$<span>@(item.CartItemPrice * item.Quantity)</span></del>
+                                            </div>
+                                        }
                                         <div class="text-danger">
                                             $<span class="price-sum">@(item.CartItemPrice * item.DiscountPercentage / 100 * item.Quantity)</span>
                                         </div>
 
                                     </td>
-                                </tr>
+                                </tr>*@
                             }
 
                         </tbody>
@@ -284,8 +288,8 @@
 
                 </div>
 
-                
-                
+
+
                 <div class="mt-5">
                     <hr>
                     <div class="d-flex">
@@ -314,52 +318,27 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">選擇優惠卷</h5>
+                <h5 class="modal-title" id="exampleModalLabel">可使用優惠卷</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
 
-                <div class="d-flex py-2">
-                    <div class="px-3">
-                        <label>折價種類</label>
-                        <select>
-                            <option>所有</option>
-                            <option>test</option>
-                            <option>test</option>
-                        </select>
-                    </div>
-                    <div class="px-3">
-                        <label>折價方式</label>
-                        <select>
-                            <option>所有</option>
-                            <option>test</option>
-                            <option>test</option>
-                        </select>
-                    </div>
-                </div>
-
-
                 <table class="table">
                     <tbody>
-
-                        @{
-                            for (int i = 0; i < 30; i++)
-                            {
-                                <tr>
-                                    <td> <input type="checkbox" class="form-check-input"> </td>
-                                    <td>XXX優惠卷</td>
-                                    <td>滿千送百</td>
-                                </tr>
-                            }
+                        @foreach (var coupon in coupons)
+                        {
+                            <tr data-couponId="@coupon.CouponId">
+                                <td> <input type="checkbox" class="form-check-input"> </td>
+                                <td>@coupon.CouponName</td>
+                            </tr>
                         }
-
                     </tbody>
                 </table>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">選擇優惠卷</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">離開</button>
             </div>
         </div>
     </div>
@@ -567,6 +546,52 @@
             document.querySelector('#radioPayment2').setValidate(() => paymentChecked)
             document.querySelector('#radioPayment3').setValidate(() => paymentChecked)
         })
+
+        //優惠卷刷新訂單列表價格
+
+        refreshPriceByCoupon()
+        async function refreshPriceByCoupon(couponId) {
+            if (!couponId) couponId = ''
+            const response = await fetch('@Url.Content("~/api/apibuy/cartItems/")' + couponId)
+            const data = await response.json()
+
+            displayItemsPrice(data)
+            calculateTotalPrice()
+        }
+
+        function displayItemsPrice(data) {
+            const items = data.cartItems
+            console.log(items)
+            const itemHtmls = items.map(item => {
+                const originPrice = Math.floor(item.cartItemPrice * item.discountPercentage / 100) * item.quantity
+                const finalPrice = !!item.couponDiscount ? Math.floor(originPrice * item.couponDiscount / 100) : originPrice
+                const discountStr = item.discountPercentage != 100 ? `<div class="text-secondary" style = "font-size:5px;" >
+                        <del>$ <span> ${item.cartItemPrice * item.quantity}</span></del>
+                        </div>` : ''
+                const couponDiscountStr = !!item.couponDiscount ? `<div class="text-secondary" style = "font-size:5px;" >
+                        <del>$ <span> ${originPrice}</span></del>
+                        </div>`: ''
+                return ` <tr>
+                        <td>${item.cartItemName}x<span>${item.quantity}</span></td>
+                        <td>
+                        ${discountStr}
+                        ${couponDiscountStr}
+                        <div class="text-danger text-nowrap">
+                        $ <span class="price-sum">${finalPrice}</span>
+                        </div>
+                        </td>
+                        </tr>`
+            })
+            const fixedAmountDiscount = !!data.couponDiscountAmount ? ` <tr>
+                            <td>優惠卷折抵</td>
+                            <td>
+                            <div class="text-danger text-nowrap">
+                                    $ <span class="price-sum">-${data.couponDiscountAmount}</span>
+                            </div>
+                            </td>
+                            </tr>` : ''
+            $('#listBody').html(itemHtmls.join('') + fixedAmountDiscount)
+        }
 
     </script>
     }

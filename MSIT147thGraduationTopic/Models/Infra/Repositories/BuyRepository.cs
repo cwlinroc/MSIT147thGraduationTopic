@@ -13,25 +13,40 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context = context;
         }
 
-        public IEnumerable<CartItemDisplayDto> GetCartItems(int[] cartItemIds)
+        public async Task<IEnumerable<CartItemDisplayDto>> GetCartItems(int[] cartItemIds)
         {
-            return (from cartItem in _context.CartItems
-                    join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
-                    join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
-                    where cartItemIds.Contains(cartItem.CartItemId)
-                    select new CartItemDisplayDto
-                    {
-                        MemberId = cartItem.MemberId,
-                        CartItemName = merchandise.MerchandiseName + spec.SpecName,
-                        CartItemPrice = spec.Price,
-                        DiscountPercentage = spec.DiscountPercentage,
-                        MerchandiseImageName = merchandise.ImageUrl,
-                        CartItemId = cartItem.CartItemId,
-                        SpecId = cartItem.SpecId,
-                        Quantity = cartItem.Quantity,
-                    }).ToList();
+            var result = await (from cartItem in _context.CartItems
+                                join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
+                                join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
+                                join specTags in _context.SpecTags on spec.SpecId equals specTags.SpecId into tags
+                                from specTags in tags.DefaultIfEmpty()
+                                where cartItemIds.Contains(cartItem.CartItemId)
+                                select new
+                                {
+                                    cartItem.MemberId,
+                                    merchandise.MerchandiseName,
+                                    spec.SpecName,
+                                    spec.Price,
+                                    spec.DiscountPercentage,
+                                    merchandise.ImageUrl,
+                                    cartItem.CartItemId,
+                                    spec.SpecId,
+                                    cartItem.Quantity,
+                                    TagId = (int?)specTags.TagId,
+                                }).ToListAsync();
+            return result.GroupBy(o => o.CartItemId).Select(o => new CartItemDisplayDto
+            {
+                MemberId = o.First().MemberId,
+                CartItemName = o.First().MerchandiseName + o.First().SpecName,
+                CartItemPrice = o.First().Price,
+                DiscountPercentage = o.First().DiscountPercentage,
+                MerchandiseImageName = o.First().ImageUrl,
+                CartItemId = o.First().CartItemId,
+                SpecId = o.First().SpecId,
+                Quantity = o.First().Quantity,
+                Tags = o.Where(t => t.TagId != null).Select(t => t.TagId.Value).ToArray(),
+            });
         }
-
 
         public MemberDto? GetMemberAddressAndPhone(int memberId)
         {
@@ -39,16 +54,23 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return member?.ToDto();
         }
 
-        public IEnumerable<CouponDto> GetAllCouponsAvalible(int memberId)
+        public async Task<IEnumerable<(int CouponId, string CouponName)>> GetAllCouponsAvalible(int memberId)
         {
-            var coupons = from owner in _context.CouponOwners
-                          join coupon in _context.Coupons on owner.CouponId equals coupon.CouponId
-                          where owner.MemberId == memberId
-                          && coupon.CouponEndDate < DateTime.Now
-                          && coupon.CouponStartDate > DateTime.Now
-                          select coupon;
-            return coupons.Select(o => o.ToDto()).ToList();
+            var coupons = await (from owner in _context.CouponOwners
+                                 join coupon in _context.Coupons on owner.CouponId equals coupon.CouponId
+                                 where owner.MemberId == memberId
+                                 && coupon.CouponEndDate > DateTime.Now
+                                 && coupon.CouponStartDate < DateTime.Now
+                                 select new { coupon.CouponId, coupon.CouponName }).ToListAsync();
+            return coupons.Select(o => (o.CouponId, o.CouponName));
         }
+
+        public async Task<CouponDto?> GetCouponById(int? couponId)
+        {
+            if (couponId == null) return null;
+            return (await _context.Coupons.FindAsync(couponId))?.ToDto();
+        }
+
 
         public int GetMemberIdByCartItemId(int cartItemId)
         {

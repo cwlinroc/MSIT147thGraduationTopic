@@ -156,6 +156,12 @@
 
                 </form>
             </div>
+            <!-- demo buttons -->
+            <div class="px-2">
+                <button id="demoAddManager">demo新增經理</button>
+                <button id="demoAddEmployee">demo新增員工</button>
+                <button id="demoEditEmployee">demo修改員工</button>
+            </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -241,7 +247,7 @@
             else {
                 $('#imagePreviewDiv').css('display', 'none')
                 $('#deleteFile').css('display', 'none')
-                $('#avatar').addClass('rounded-end')//?? rounded-end只有右邊有圓角
+                $('#avatar').addClass('rounded-end')
             }
         }
 
@@ -396,15 +402,15 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                                            <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                                            <td>${element.employeeName}</td>
-                                            <td>${element.employeeAccount}</td>
-                                            <td>${element.permission}</td>
-                                            <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                                            <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
-                                            <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-                                            <td></td>
-                                            </tr>`
+            <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+            <td>${element.employeeName}</td>
+            <td>${element.employeeAccount}</td>
+            <td>${element.permission}</td>
+            <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+            <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+            <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+            <td></td>
+            </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
@@ -425,6 +431,7 @@
             showOrHideImagePreview()
             clearAllValidFeedBack()
             $('#createAndEdit').attr('data-index', '-1')
+            showAddDemoButtons()
             mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitAdd)
@@ -445,7 +452,7 @@
             $('#name').val(employeeData[index].employeeName)
             $('#email').val(employeeData[index].employeeEmail)
             $('#phone').val(employeeData[index].employeePhone)
-
+            showEditDemoButtons()
             mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitEdit)
@@ -481,6 +488,40 @@
             permissionModal.show()
         }
 
+
+        //demos
+        $('#demoAddManager').click(e=>{
+            $('#name').val('學姐')
+            $('#account').val('demoManager99')
+            $('#password').val('demoManager99')
+            $('#phone').val('0933123456')
+            $('#email').val('Manager@@whatever.com')
+        })
+
+        $('#demoAddEmployee').click(e => {
+            $('#name').val('新來的學弟')
+            $('#account').val('demoEmployee99')
+            $('#password').val('demoEmployee99')
+            $('#phone').val('0933123456')
+            $('#email').val('Manager@@yahoo.com.tw')
+        })
+
+        $('#demoEditEmployee').click(e => {
+            $('#name').val('來了一陣子的學弟')
+            $('#phone').val('0933123456')
+            $('#email').val('Manager@@gmail.com')
+        })
+
+        function showAddDemoButtons(){
+            $('#demoAddManager').css('display', 'inline')
+            $('#demoAddEmployee').css('display', 'inline')
+            $('#demoEditEmployee').css('display', 'none')
+        }
+        function showEditDemoButtons() {
+            $('#demoAddManager').css('display', 'none')
+            $('#demoAddEmployee').css('display', 'none')
+            $('#demoEditEmployee').css('display', 'inline')
+        }
 
         //// MyBootsrapValidator
         //// 0. section最上面要引用  script src="~/js/MyBootstrapValidator.js"
