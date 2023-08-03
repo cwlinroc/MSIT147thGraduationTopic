@@ -1,12 +1,12 @@
 ﻿let orderData = null;
-GetOrderByMemberId();
+getOrdersByMemberId();
 
 //Ajax 得到訂單資料
-async function GetOrderByMemberId(id) {
+async function getOrdersByMemberId(id) {
     let str = ''
     if (id) str = '/' + id
 
-    const response = await fetch(`${ROOT}/api/apiMember${str}`);
+    const response = await fetch(`${ROOT}/api/apiMember/ShoppingHistory${str}`);
 
     if (!response.ok) return;
     const data = await response.json();
@@ -19,13 +19,14 @@ async function GetOrderByMemberId(id) {
 //列出訂單資料
 function displayOrder() {
     orderData.map((e) => {
-        $('#purchaseTime').val(e.purchaseTime)
-        $('#orderId').val(e.orderId)
-        $('#paymentAmount').val(e.paymentAmount)
-        $('#paymentMethodName').val(e.paymentMethodName)
-        $('#merchandiseName').val(e.merchandiseName)
-        $('#quantity').val(e.quantity)
-        $('#price').val(e.price)
+        $('#purchaseTime').html(e.purchaseTime)
+        $('#orderId').html(e.orderId)
+        $('#paymentAmount').html(e.paymentAmount)
+        $('#paymentMethodName').html(e.paymentMethodName)
+        $('#merchandiseName').html(e.merchandiseName)
+        $('#quantity').html(e.quantity)
+        $('#discount').html(e.discount)
+        $('#price').html(e.price)
     })
 }
 

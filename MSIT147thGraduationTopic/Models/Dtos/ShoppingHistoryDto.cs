@@ -12,22 +12,21 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string PaymentMethodName { get; set; }
         public DateTime PurchaseTime { get; set; }
         public int? PaymentAmount { get; set; }
-        public List<MerchandisesInOrder>? listofMerchandises { get; set; }
+        public List<SpecInOrder>? ListOfSpecs { get; set; }
 
     }
 
-    public class MerchandisesInOrder
+    public class SpecInOrder
     {
+        public string MerchandiseName { get; set; }
         public int Quantity { get; set; }
         public int Price { get; set; }
         public int Discount { get; set; }
-
-        //商品名 
     }
 
     public static class ShoppingHistoryTransfer
     {
-        public static ShoppingHistoryDto ToDto(this OrderWithMember entity)
+        public static ShoppingHistoryDto ToShDto(this OrderWithMember entity)
         {
             return new ShoppingHistoryDto
             {
@@ -36,9 +35,18 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 PaymentMethodName = entity.PaymentMethodName,
                 PurchaseTime = entity.PurchaseTime,
                 PaymentAmount = entity.PaymentAmount,
-
             };
-
         }
+
+        //public static MerchandisesInOrder ToMerchDto(this OrderList orderListEntity, Merchandise merchandiseEntity)
+        //{
+        //    return new MerchandisesInOrder
+        //    {
+        //        MerchandiseName = merchandiseEntity.MerchandiseName,
+        //        Quantity = orderListEntity.Quantity,
+        //        Price = orderListEntity.Price,
+        //        Discount = orderListEntity.Discount,
+        //    };
+        //}
     }
 }

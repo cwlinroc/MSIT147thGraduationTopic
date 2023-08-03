@@ -12,7 +12,7 @@
             await Html.RenderPartialAsync("MemberSidebar");
         }
     </div>
-    <div class="col-lg-6 offset-2 fs-4">
+    <div class="col-lg-5 offset-1 fs-4">
         <div class="border px-4 py-2 mb-3">
             <label class="mb-1">訂單時間</label>
             <div class="input-group mb-3">
@@ -60,6 +60,7 @@
                         <tr>
                             <th scope="col">商品名稱</th>
                             <th scope="col">數量</th>
+                            <th scope="col">折扣</th>
                             <th scope="col">價格</th>
                             
                         </tr>
@@ -68,6 +69,7 @@
                         <tr>
                             <td id="merchandiseName"></td>
                             <td id="quantity"></td>
+                            <td id="discount"></td>
                             <td id="price"></td>                           
                         </tr>
                     </tbody>
@@ -114,9 +116,16 @@
     </div>
 </div>
 
+@section Styles{
+    <style>
+        #sidelist {
+            list-style: none;
+        }
+    </style>
+}
+
 @section Scripts{    
     <script src="~/js/Member/memberSidebar.js"></script>
     <script src="~/js/Member/shoppingHistory.js"></script>
-
     
 }

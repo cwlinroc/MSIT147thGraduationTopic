@@ -22,7 +22,7 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         private readonly GraduationTopicContext _context;
         private readonly MemberService _service;
-        private readonly ShoppingHistoryRepository _shrepo;
+        private readonly ShoppingHistoryService _shService;
         private readonly IWebHostEnvironment _environment;
         private readonly string[] _employeeRoles;
 
@@ -32,7 +32,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
             _environment = environment;
             _service = new MemberService(context, environment);
-            //_shrepo = shrepo;
+            _shService = new ShoppingHistoryService(context, environment);            
 
             _employeeRoles = options.Value.EmployeeRoles!;
         }
@@ -55,11 +55,11 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetMemberById(id).ToList();
         }
 
-        //[HttpGet("ShoppingHistory")]
-        //public ActionResult<List<ShoppingHistoryDto>> GetOrderByMemberId(int memberId)
-        //{
-        //    return;
-        //}
+        [HttpGet("ShoppingHistory")]
+        public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId(int memberId)
+        {
+            return _shService.GetOrdersByMemberId(memberId).ToList();
+        }
 
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)

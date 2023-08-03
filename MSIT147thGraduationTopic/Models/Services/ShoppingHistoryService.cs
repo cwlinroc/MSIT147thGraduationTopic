@@ -1,23 +1,36 @@
-﻿namespace MSIT147thGraduationTopic.Models.Services
+﻿using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
+
+namespace MSIT147thGraduationTopic.Models.Services
 {
     public class ShoppingHistoryService
     {
-        public void whatever()
+        private readonly GraduationTopicContext _context;
+        private readonly ShoppingHistoryRepository _shrepo;
+        private readonly IWebHostEnvironment _environment;
+
+        public ShoppingHistoryService(GraduationTopicContext context, IWebHostEnvironment environment)
         {
-            //抓所有該會原有的order
-            //var orders
+            _context = context;
+            _environment = environment;
+            _shrepo = new ShoppingHistoryRepository(context);
+        }
 
-            //抓訂單裡面的商品內容
+        public IEnumerable<ShoppingHistoryDto> GetOrdersByMemberId(int memberId)
+        {
+            //抓該會員所有order
+            var orders = _shrepo.GetOrdersByMemberId(memberId);
 
-            //foreach(var order in orders){
-            //  order id
-            //  var orderlists = _repo.GetOrderlistByOrderId(order.orderid)
-            //
-            //  order.listofMerchandises = orderlists
-            //}
+            //抓訂單裡的商品內容
+            foreach (var order in orders)
+            {
+                var orderlists = _shrepo.GetSpecsByOrderId(order.OrderId);
 
+                order.ListOfSpecs = (List<SpecInOrder>?)orderlists;
+            };
 
-            //return orders ///List<ShoppingHistoryDto>
+            return orders.ToList();
         }
     }
 }

@@ -12,11 +12,18 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context = context;
         }
 
-        public IEnumerable<ShoppingHistoryDto> GetOrderByMemberId(int memberId)
+        public IEnumerable<ShoppingHistoryDto> GetOrdersByMemberId(int memberId)
         {
             var order = _context.OrderWithMembers
                 .Where(o => o.MemberId == memberId);
-            return order.Select(o => o.ToDto());
+            return order.Select(o => o.ToShDto());
+        }
+
+        public IEnumerable<SpecInOrder> GetSpecsByOrderId(int orderId)
+        {
+            var list = _context.OrderWithMembers
+                .Where(o => o.OrderId == orderId);
+            return (IEnumerable<SpecInOrder>)list.Select(o => o.ToShDto());
         }
     }
 }
