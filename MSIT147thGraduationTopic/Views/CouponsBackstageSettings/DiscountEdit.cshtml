@@ -104,27 +104,14 @@
 
             const form = document.getElementById('edit');
             if(form.checkValidity()){
-                const formData = $(form).serializeArray();
+                const formData = new FormData(form);
                 const editUrl = `@Url.Action("EditCoupon","ApiCoupon",new{id=Model.CouponId})`;
-                console.log(editUrl);
-                console.log(formData);
-
-                const jsonData = {};
-                formData.forEach(field=>{
-                    jsonData[field.name] = field.value;
-                });
-
-                const token = $('input[name="__RequestVerificationToken"]').val();
-                const headers = {
-                    "RequestVerificationToken": token,
-                    "Content-Type": "application/json"
-                };
+                console.log(formData)
 
                 $.ajax({
                     url:editUrl,
                     type:'PUT',
-                    data:JSON.stringify(jsonData),
-                    headers:headers,
+                    data:formData,
                     success:function(data){
                         Swal.fire({
                             icon:'success',
