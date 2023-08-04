@@ -40,7 +40,7 @@
                         <span asp-validation-for="Amount" class="text-danger foralert" id="alertspanforamount"></span>
                     </div>
                     <div class="form-group">
-                        @*<label asp-for="ImageUrl" class="control-label"></label>*@
+                        <input asp-for="Popularity" class="form-check-input" style="display:none" />
                         <input asp-for="deleteImageIndicater" class="form-check-input" style="display:none" id="deleteImageIndicater" />
                         <input asp-for="ImageUrl" class="form-control" style="display:none" id="origimageurl" />
 
@@ -197,9 +197,17 @@
             if ($("#inputspecname").val() && !checkName && $("#inputprice").val() > 0 && $("#inputamount").val() >= 0 &&
                 $("#inputdiscount").val() > 0 && $("#inputdiscount").val() <= 100 &&
                 $("#inputorder").val() > 0 && !checkFile) {
-                const forminput = document.querySelector("#forminput");
-                HTMLFormElement.prototype.submit.call(forminput);
-                console.log("按下送出");
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: '規格資料修改成功！',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    allowOutsideClick: false
+                }).then(() => {
+                    const forminput = document.querySelector("#forminput");
+                    HTMLFormElement.prototype.submit.call(forminput);
+                })
             }
         })
     </script>
