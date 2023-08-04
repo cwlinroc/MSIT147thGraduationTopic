@@ -39,6 +39,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<SpecTag> SpecTags { get; set; }
         public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
         public virtual DbSet<SpecWithMerchandiseName> SpecWithMerchandiseNames { get; set; }
+        public virtual DbSet<SpecsInOrder> SpecsInOrders { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -464,6 +465,23 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.HasNoKey();
 
                 entity.ToView("SpecWithMerchandiseName");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+
+                entity.Property(e => e.MerchandiseName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.SpecName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<SpecsInOrder>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("SpecsInOrder");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
 

@@ -20,17 +20,17 @@ namespace MSIT147thGraduationTopic.Models.Services
         public IEnumerable<ShoppingHistoryDto> GetOrdersByMemberId(int memberId)
         {
             //抓該會員所有order
-            var orders = _shrepo.GetOrdersByMemberId(memberId);
+            var orders = _shrepo.GetOrdersByMemberId(memberId).ToList();
 
             //抓訂單裡的商品內容
             foreach (var order in orders)
             {
                 var orderlists = _shrepo.GetSpecsByOrderId(order.OrderId);
 
-                order.ListOfSpecs = (List<SpecInOrder>?)orderlists;
+                order.ListOfSpecs = orderlists.ToList();
             };
 
-            return orders.ToList();
+            return orders;
         }
     }
 }

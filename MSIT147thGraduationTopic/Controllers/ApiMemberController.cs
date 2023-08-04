@@ -56,9 +56,15 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpGet("ShoppingHistory")]
-        public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId(int memberId)
+        public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId()
         {
-            return _shService.GetOrdersByMemberId(memberId).ToList();
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest("找不到對應會員ID");
+            }
+
+            var list = _shService.GetOrdersByMemberId(memberId).ToList();
+            return list;
         }
 
         [HttpPost]

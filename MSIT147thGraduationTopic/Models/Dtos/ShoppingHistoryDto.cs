@@ -12,12 +12,13 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string PaymentMethodName { get; set; }
         public DateTime PurchaseTime { get; set; }
         public int? PaymentAmount { get; set; }
-        public List<SpecInOrder>? ListOfSpecs { get; set; }
+        public List<SpecsInOrderDto>? ListOfSpecs { get; set; }
 
     }
 
-    public class SpecInOrder
+    public class SpecsInOrderDto
     {
+        public int MerchandiseId { get; set; }
         public string MerchandiseName { get; set; }
         public int Quantity { get; set; }
         public int Price { get; set; }
@@ -38,15 +39,16 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             };
         }
 
-        //public static MerchandisesInOrder ToMerchDto(this OrderList orderListEntity, Merchandise merchandiseEntity)
-        //{
-        //    return new MerchandisesInOrder
-        //    {
-        //        MerchandiseName = merchandiseEntity.MerchandiseName,
-        //        Quantity = orderListEntity.Quantity,
-        //        Price = orderListEntity.Price,
-        //        Discount = orderListEntity.Discount,
-        //    };
-        //}
+        public static SpecsInOrderDto ToSpecsInOrderDto(this SpecsInOrder entity)
+        {
+            return new SpecsInOrderDto
+            {
+                MerchandiseId = entity.MerchandiseId,
+                MerchandiseName = entity.MerchandiseName + entity.SpecName,
+                Quantity = entity.Quantity,
+                Price = entity.Price,
+                Discount = entity.Discount,
+            };
+        }
     }
 }

@@ -96,6 +96,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[SpecsInOrder]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[SpecWithFullMerchandise]",
          "ObjectType": 3
       },
@@ -104,7 +108,7 @@
          "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-pp2g83m.GraduationTopic.dbo",
+   "UiHint": "desktop-43t56sd.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
