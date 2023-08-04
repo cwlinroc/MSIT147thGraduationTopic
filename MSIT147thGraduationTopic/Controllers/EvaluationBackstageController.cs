@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.Data;
+using System.Drawing.Printing;
 using System.Linq;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
@@ -28,11 +29,12 @@ namespace MSIT147thGraduationTopic.Controllers
               
             
             // 獲取總記錄數
-            var totalCount = _context.Evaluations.Count(p => p.EvaluationId > 10);
+            var totalCount = _context.Evaluations.Count(/*p => p.EvaluationId > 10*/);
             // 傳遞查詢結果和總記錄數到View中
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = totalCount;
+            //ViewBag.TotalCount = totalCount;
+            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
             
 
             return View(query.Select(e => new EvaluationVM
@@ -115,7 +117,7 @@ namespace MSIT147thGraduationTopic.Controllers
                         )
                         SELECT TotalCount = COUNT(1) OVER (), T.*
                         FROM T
-                        ORDER BY EvaluationId
+                        ORDER BY EvaluationId DESC
                         OFFSET(@pageNo - 1) * @pageSize ROWS
                         FETCH NEXT @pageSize ROWS ONLY;";
 

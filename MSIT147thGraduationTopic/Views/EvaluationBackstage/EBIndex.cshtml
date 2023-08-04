@@ -87,9 +87,9 @@
                         </a>
                     </li>
                     <div class="pagination ">
-                       @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
+                        @for (int i = 1; i <= ViewBag.TotalPage; i++)
                         {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("EBIndex", new { pageNo = i })">@i</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("EBIndex", new { pageNo = i })">@i</a></li>
                         }
                     </div>
                     <li class="page-item">
