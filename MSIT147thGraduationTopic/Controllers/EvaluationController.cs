@@ -89,6 +89,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult Edit(int id)
         {
+            id = 249;
             var model = (from e in _context.Evaluations
                          join s in _context.Specs on e.SpecId equals s.SpecId
                          join m in _context.Merchandises on new { s.MerchandiseId } equals new { m.MerchandiseId }
