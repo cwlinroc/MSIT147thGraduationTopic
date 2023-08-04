@@ -20,7 +20,7 @@ namespace MSIT147thGraduationTopic.Controllers
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
             int sideCategoryId, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
         {
-            IEnumerable<MallDisplay> datas = _context.MallDisplays   //僅顯示上架商品
+            IEnumerable<MallDisplay> datas = _context.MallDisplays   //todo 分成後端查詢、前端排列
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true);
 
             if (!string.IsNullOrEmpty(txtKeyword))
@@ -116,7 +116,6 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 CategoryVM data = new CategoryVM();
                 data.category = cFEF;
-
                 data.matchedMerchandiseNumber = selectedProducts
                     .Where(rC => rC.CategoryName == cFEF.CategoryName).Count();
                 datas.Add(data);

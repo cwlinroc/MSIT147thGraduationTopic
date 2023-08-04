@@ -144,7 +144,7 @@
                                 <li class="breadcrumb-item" id="showCategoryName">類別名稱</li>
                             </ol>
                         </nav>
-                        <h2 id="showMerchandiseName">商品名稱</h2><div id="merchandiseIdContainer" val-id="@Model.FirstOrDefault().MerchandiseId" style="display:none"></div>
+                        <h2 id="showMerchandiseName">商品名稱</h2><div id="merchandiseIdContainer" val-id="@Model.First().MerchandiseId" style="display:none"></div>
                         <br>
                         <h5>價格：<span id="showPrice"></span></h5>
                         <h5>庫存數量：<span id="showAmount"></span></h5>
@@ -154,7 +154,7 @@
                             @{
                                 foreach (var item in Model)
                                 {
-                                    <button type="button" class="btn btn-outline-secondary mx-1 showSpec" val-price="@item.Price">@item.SpecName</button>
+                                    <button type="button" val-price="@item.Price" val-amount="@item.Amount" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
                                 }
                             }
                         </div>
@@ -171,8 +171,6 @@
                         <br>
                         <div class="text-end">共計：<span id="totalPrice"></span></div>
                         @*
-                        $("#showPrice").innerHtMl = 價格 + " 元"(根據點選變動)
-                        $("#showAmount").innerHtMl庫存(根據點選變動)
                         $(".showSpec")規格按鈕
                         $(".specImage")各規格照片
                         $("#buyAmount").attr("max", "庫存數")購買數
@@ -196,46 +194,9 @@
 @section Scripts{
     @*搜尋功能待改(回傳參數)*@
     <script>
-        //let txtKeyword = "";
-        //let searchCondition = 1;
-        //let pageSize = 20;
-        //let displayorder = 0;
-        //let pageindex = 1;
-        //let sideCategoryId = 0;
-        //let minPrice;
-        //let maxPrice;
-        ////呈現初始頁面
-        //SearchProducts();
 
-        //價格區間
-        //$("#sendPriceRange").on("click", () => {
-        //    minPrice = $("#minPrice").val();
-        //    maxPrice = $("#maxPrice").val();
-        //    SearchProducts();
-        //})
-
-        //關鍵字搜尋(未完成)
-        //$("#search-input").on("keyup", () => {
-        //    txtKeyword = $("#search-input").val();
-        //})
-        //$(".conditionname").on("change", (e) => {
-        //    searchCondition = $(".conditionname").val();
-        //})
-        //$("#keywordsearch").on("submit", (e) => {
-        //    e.preventDefault();
-        //    SearchProducts();//改成傳參數到Index
-        //})
-
-        ////每頁顯示筆數
-        //$(".pageSize").on("click", (e) => {
-        //    pageSize = $(e.currentTarget).val();
-        //    pageindex = 1;
-        //})
-        ////選擇排序方式
-        //$("#displayorder").on("change", (e) => {
-        //    displayorder = $("#displayorder").val();
-        //})
         $(async () => {
+            //產生商品資料
             const CategoryName = document.querySelector("#showCategoryName")
             const MerchandiseName = document.querySelector("#showDescription")
             const Description = document.querySelector("#showDescription")
@@ -252,31 +213,22 @@
             console.log(searchResult.categoryName);
             MerchandiseName.innerHTML = searchResult.merchandiseName;
             Description.innerHTML = searchResult.description;
-            $("#mainPicture").src(`@Url.Content("~/uploads/merchandisePicture/")${searchResult.imageUrl}`);
+            $("#mainPicture").attr("src", `@Url.Content("~/uploads/merchandisePicture/")${searchResult.imageUrl}`);
 
+            $(".showSpec").first().click();
         })
 
-        async function SearchProducts() {
-            //產生商品資料
-
-
-            //const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
-            //const returnJsonBag = await response.text();
-            //const searchResult = JSON.parse(returnJsonBag);
-
-            //const pageContent = document.querySelector("#showThisPageMerchandise");
-            //var windows = searchResult.map(window => {
-            //    const { price, merchandiseId } = window;
-            //    const showName = (window.fullName.length > 13) ? window.fullName.substring(0, 13) + "  ..." : window.fullName;
-            //    const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-            //    return (
-            //        ``)// todo 頁面呈現
-            //})
-            //pageContent.innerHTML = windows.join("");
-        }
-
-
-        console.log("執行一次SearchProducts()");
+        //設定規格按鈕
+        $(".showSpec").on("click", (e) => {
+            console.log("FUNCTION click");
+            $(".showSpec").attr("class", "btn btn-outline-secondary mx-1 my-1 showSpec");
+            $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
+            const price = $(e.currentTarget).attr("val-price");
+            const amount = $(e.currentTarget).attr("val-amount");
+            $("#showPrice").text(price + " 元");
+            $("#showAmount").text(amount);
+            $("#buyAmount").attr("max", amount)
+        });
 
         //回到所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {

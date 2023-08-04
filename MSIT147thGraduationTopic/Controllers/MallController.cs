@@ -14,9 +14,24 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Index()//todo 關鍵字、條件、類別、Tag改成參數，頁數、排序保持AJAX
+        public IActionResult Index(/*string txtKeyword = "", int searchCondition = 1, int sideCategoryId = 0*/)
         {
-            // todo 無結果時顯示字樣
+            //IEnumerable<MallDisplay> datas = _context.MallDisplays
+            //    .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+
+            //if (!string.IsNullOrEmpty(txtKeyword))
+            //{
+            //    datas = searchCondition switch
+            //    {
+            //        1 => datas.Where(md => md.FullName.Contains(txtKeyword)),
+            //        2 => datas.Where(md => md.BrandName.Contains(txtKeyword)),
+            //        3 => datas.Where(md => md.CategoryName.Contains(txtKeyword)),
+            //        _ => datas
+            //    };
+            //}
+
+            //datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
+
             // todo 連結至購物車
             // todo 寵物類別TAG查詢
             return View();

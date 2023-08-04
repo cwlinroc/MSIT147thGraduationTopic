@@ -197,6 +197,7 @@
                                                         + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
                 const returnLengthBag = await responseforlength.text();
                 const resultLength = JSON.parse(returnLengthBag);
+                console.log("結果數：" + resultLength);
                 const totalpage = Math.ceil(resultLength / pageSize);
                 const pagingContainer = document.querySelector("#pagingContainer");
 
@@ -277,6 +278,7 @@
                 const pageContent = document.querySelector("#showThisPageMerchandise");
                 pageContent.innerHTML = "<h4>找不到符合的商品</h4>";
                 if (resultLength > 0) {
+                    console.log("HAS THING");
                     //產生商品櫥窗               // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※別換行，會出莫名其妙的問題)
                     const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&`
                                                     + `searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&`
@@ -329,6 +331,7 @@
                     SearchProducts();
                 })
             })
+            console.log("執行一次SearchProducts()");
 
             //搜尋所有商品(重置搜尋條件)
             $("#defaultSearch").on("click", () => {
