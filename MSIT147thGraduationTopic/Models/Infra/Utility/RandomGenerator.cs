@@ -35,6 +35,11 @@
             return dt;
         }
 
+        public double RandomDouble(int times = 1)
+        {
+            return _rand.NextDouble() * times;
+        }
+
         public DateTime RandomDateBetweenDays(int minDay = -150, int maxDay = -3)
         {
             if (minDay > maxDay)

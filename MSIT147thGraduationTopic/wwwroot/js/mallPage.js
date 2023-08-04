@@ -4,12 +4,6 @@
 //}
 
 
-
-$(".custom-merchandise").hover(
-    e => $(e.currentTarget).addClass("shadow-lg"),
-    e => $(e.currentTarget).removeClass("shadow-lg")
-)
-
 $("#backToTop").hide()
 
 $("#backToTop").click(e => $(window).scrollTop(0))
@@ -146,7 +140,7 @@ async function refreshNavbarCart() {
     else {
         numberBadge.style.display = 'block'
         numberBadge.querySelector('div').textContent = cartItemNumber
-        numberBadge.closest('a').customAnimate('bounce')
+        numberBadge.closest('a').customAnimate('fadeIn')
     }
 
 }

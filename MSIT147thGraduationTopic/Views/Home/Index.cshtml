@@ -1,5 +1,10 @@
-﻿@{
+﻿@using MSIT147thGraduationTopic.Models.Dtos;
+@model (IEnumerable<RecommandSpecDisplayDto>,IEnumerable<RecommandSpecDisplayDto>,IEnumerable<RecommandSpecDisplayDto>)
+@{
     ViewBag.Title = "Index";
+    var popularSpecs = Model.Item1.ToArray();
+    var favorableSpecs = Model.Item2.ToArray();
+    var newSpecs = Model.Item3.ToArray();
 }
 
 
@@ -120,7 +125,7 @@
 
         <div class="row position-relative">
             <div class="position-absolute">
-                <div class="custom-title my-5 shadow-lg bg-dark" data-aos="flip-left" data-aos-anchor-placement="top-bottom">
+                <div class="custom-title my-5 shadow-lg bg-dark" data-aos="flip-left    " data-aos-anchor-placement="top-bottom">
                     <div class="custom-title2">
                         <div class="custom-title3 d-flex  align-items-center">
                             <p class="text-light">熱銷商品</p>
@@ -132,44 +137,60 @@
             <div class="col-lg-4">
             </div>
 
-
             <div class="col-lg-8">
                 <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center">
 
-                    @for (int i = 0; i < 8; i++)
+                    @for (int i = 0; i < popularSpecs.Length; i++)
                     {
+                        var spec = popularSpecs[i];
                         int duration = 400 + 300 * (i % 4);
+                        string imageUrl = "/merchandisePicture/default.png";
+                        if (!string.IsNullOrEmpty(spec.MerchandiseImageName)) imageUrl = "/merchandisePicture/" + spec.MerchandiseImageName;
+                        if (!string.IsNullOrEmpty(spec.SpecImageName)) imageUrl = "/specPicture/" + spec.SpecImageName;
+
                         <div class="px-1">
                             <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-up"
                                  data-aos-anchor-placement="center-bottom" data-aos-duration="@duration">
                                 <div class="card p-2 custom-merchandise bg-light rounded-0">
                                     <figure class="rounded p-1 bg-warning">
-                                        <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top"
+                                        <img src="@(Url.Content("~/uploads")+imageUrl)" class="card-img-top"
                                              alt="...">
                                     </figure>
 
                                     <div class="card-body">
-                                        <a class="stretched-link" href="商城.html"></a>
-                                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
-                                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
-                                        </p>
-                                        <div class="badge bg-dark bg-gradient mb-1">飼料</div>
-                                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                                        <a class="stretched-link" href="#"></a>
+
+                                        <div class="mb-3" style="height:55px;overflow:hidden">
+                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
+                                                @spec.MerchandiseName
+                                            </p>
+                                        </div>
+
+                                        @if (spec.Tags != null) foreach (var tag in spec.Tags)
+                                            {
+                                                <div class="badge bg-dark bg-gradient mb-1">@tag</div>
+                                            }
+                                        @if (spec.DiscountPercentage != 100)
+                                        {
+                                            <div class="badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
+                                        }
                                         <div class="d-flex justify-content-between mt-3 ">
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
-                                                <del class="text-secondary fs-6">$1740</del>
-                                                $870
+                                                @if (spec.DiscountPercentage != 100)
+                                                {
+                                                    <del class="text-secondary fs-6">$@(spec.Price)</del>
+                                                }
+                                                $@(spec.Price * spec.DiscountPercentage / 100)
                                             </p>
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
-                                                <i class="fa-solid fa-star text-warning me-1"></i>4.5
+                                                <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
                                             </p>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
-
                         </div>
-
                     }
 
 
@@ -208,40 +229,57 @@
                 <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center">
 
 
-                    @for (int i = 0; i < 8; i++)
+                    @for (int i = 0; i < favorableSpecs.Length; i++)
                     {
-                        int duration = 1300 - 300 * (i % 4);
+                        var spec = favorableSpecs[i];
+                        int duration = 400 + 300 * (i % 4);
+                        string imageUrl = "/merchandisePicture/default.png";
+                        if (!string.IsNullOrEmpty(spec.MerchandiseImageName)) imageUrl = "/merchandisePicture/" + spec.MerchandiseImageName;
+                        if (!string.IsNullOrEmpty(spec.SpecImageName)) imageUrl = "/specPicture/" + spec.SpecImageName;
+
                         <div class="px-1">
-                            <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-right"
+                            <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-up"
                                  data-aos-anchor-placement="center-bottom" data-aos-duration="@duration">
                                 <div class="card p-2 custom-merchandise bg-light rounded-0">
                                     <figure class="rounded p-1 bg-warning">
-                                        <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top"
+                                        <img src="@(Url.Content("~/uploads")+imageUrl)" class="card-img-top"
                                              alt="...">
                                     </figure>
 
                                     <div class="card-body">
-                                        <a class="stretched-link" href="商城.html"></a>
-                                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
-                                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
-                                        </p>
-                                        <div class="badge bg-dark bg-gradient mb-1">飼料</div>
-                                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                                        <a class="stretched-link" href="#"></a>
+
+                                        <div class="mb-3" style="height:55px;overflow:hidden">
+                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
+                                                @spec.MerchandiseName
+                                            </p>
+                                        </div>
+
+                                        @if (spec.Tags != null) foreach (var tag in spec.Tags)
+                                            {
+                                                <div class="badge bg-dark bg-gradient mb-1">@tag</div>
+                                            }
+                                        @if (spec.DiscountPercentage != 100)
+                                        {
+                                            <div class="badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
+                                        }
                                         <div class="d-flex justify-content-between mt-3 ">
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
-                                                <del class="text-secondary fs-6">$1740</del>
-                                                $870
+                                                @if (spec.DiscountPercentage != 100)
+                                                {
+                                                    <del class="text-secondary fs-6">$@(spec.Price)</del>
+                                                }
+                                                $@(spec.Price * spec.DiscountPercentage / 100)
                                             </p>
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
-                                                <i class="fa-solid fa-star text-warning me-1"></i>4.5
+                                                <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
                                             </p>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
-
                         </div>
-
                     }
 
 
@@ -281,41 +319,59 @@
                 <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center ">
 
 
-                    @for (int i = 0; i < 8; i++)
+                    @for (int i = 0; i < newSpecs.Length; i++)
                     {
+                        var spec = newSpecs[i];
                         int duration = 400 + 300 * (i % 4);
+                        string imageUrl = "/merchandisePicture/default.png";
+                        if (!string.IsNullOrEmpty(spec.MerchandiseImageName)) imageUrl = "/merchandisePicture/" + spec.MerchandiseImageName;
+                        if (!string.IsNullOrEmpty(spec.SpecImageName)) imageUrl = "/specPicture/" + spec.SpecImageName;
+
                         <div class="px-1">
-                            <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-left"
+                            <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-up"
                                  data-aos-anchor-placement="center-bottom" data-aos-duration="@duration">
                                 <div class="card p-2 custom-merchandise bg-light rounded-0">
                                     <figure class="rounded p-1 bg-warning">
-                                        <img src="https://dummyimage.com/300x300/343a40/6c757d" class="card-img-top"
+                                        <img src="@(Url.Content("~/uploads")+imageUrl)" class="card-img-top"
                                              alt="...">
                                     </figure>
 
                                     <div class="card-body">
-                                        <a class="stretched-link" href="商城.html"></a>
-                                        <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
-                                            K9 鮮草牛肚 貓狗凍乾生食餐 (佐餐|冷凍乾燥)
-                                        </p>
-                                        <div class="badge bg-dark bg-gradient mb-1">飼料</div>
-                                        <div class="badge bg-danger bg-gradient rounded-pill mb-1">50%OFF</div>
+                                        <a class="stretched-link" href="#"></a>
+
+                                        <div class="mb-3" style="height:55px;overflow:hidden">
+                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
+                                                @spec.MerchandiseName
+                                            </p>
+                                        </div>
+
+                                        @if (spec.Tags != null) foreach (var tag in spec.Tags)
+                                            {
+                                                <div class="badge bg-dark bg-gradient mb-1">@tag</div>
+                                            }
+                                        @if (spec.DiscountPercentage != 100)
+                                        {
+                                            <div class="badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
+                                        }
                                         <div class="d-flex justify-content-between mt-3 ">
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
-                                                <del class="text-secondary fs-6">$1740</del>
-                                                $870
+                                                @if (spec.DiscountPercentage != 100)
+                                                {
+                                                    <del class="text-secondary fs-6">$@(spec.Price)</del>
+                                                }
+                                                $@(spec.Price * spec.DiscountPercentage / 100)
                                             </p>
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
-                                                <i class="fa-solid fa-star text-warning me-1"></i>4.5
+                                                <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
                                             </p>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
-
                         </div>
-
                     }
+
 
 
 
@@ -342,7 +398,12 @@
 
 @section Scripts{
     <script>
-
+        $(".custom-merchandise").parent().hover(
+            e => $(e.currentTarget).addClass("shadow-lg bg-danger").removeClass("bg-dark"),
+            e => $(e.currentTarget).removeClass("shadow-lg bg-danger").addClass("bg-dark")
+        )
+        $(".custom-merchandise").parent().mouseover(e => e.currentTarget.customAnimate('pulse', 'animate__faster'))
+        
     </script>
 }
 

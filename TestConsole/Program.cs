@@ -12,7 +12,11 @@ var service = new RandomInsertService(null);
 
 //service.AddRandomCart();
 //service.AddRandomOrders();
-service.AddSpecTags();
+//service.AddSpecTags();
+//service.AddSpecPopularity();
+service.AddRandomEvaluations();
+
+
 
 Console.WriteLine("success");
 

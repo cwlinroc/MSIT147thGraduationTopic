@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\js\homepage\" />
     <Folder Include="wwwroot\uploads\merchandisePicture\" />
     <Folder Include="wwwroot\uploads\Avatar\" />
     <Folder Include="wwwroot\uploads\Avatar\" />
