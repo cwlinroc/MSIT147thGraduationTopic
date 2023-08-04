@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace MSIT147thGraduationTopic.EFModels
 {
-    [Keyless]
     public partial class SpecTag
     {
         public int SpecId { get; set; }
