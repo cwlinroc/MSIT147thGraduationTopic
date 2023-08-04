@@ -32,6 +32,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderList> OrderLists { get; set; }
+        public virtual DbSet<OrderWithMember> OrderWithMembers { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Spec> Specs { get; set; }
         public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
@@ -45,7 +46,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
             }
         }
 
@@ -350,6 +351,19 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.SpecId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderLists_Specs");
+            });
+
+            modelBuilder.Entity<OrderWithMember>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("OrderWithMember");
+
+                entity.Property(e => e.PaymentMethodName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<PaymentMethod>(entity =>

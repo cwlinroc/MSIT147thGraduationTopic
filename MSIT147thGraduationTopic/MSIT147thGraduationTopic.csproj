@@ -13,6 +13,10 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.143" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -27,8 +31,6 @@
   <ItemGroup>
     <Folder Include="wwwroot\js\homepage\" />
     <Folder Include="wwwroot\uploads\merchandisePicture\" />
-    <Folder Include="wwwroot\uploads\Avatar\" />
-    <Folder Include="wwwroot\uploads\Avatar\" />
   </ItemGroup>
 
 </Project>

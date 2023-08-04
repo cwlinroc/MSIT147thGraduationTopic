@@ -11,14 +11,14 @@ namespace MSIT147thGraduationTopic.Controllers
 {
     public class MemberController : Controller
     {
-        private readonly GraduationTopicContext _context;        
+        private readonly GraduationTopicContext _context;
         private readonly MemberService _service;
         private readonly IWebHostEnvironment _environment;
 
 
         public MemberController(GraduationTopicContext context
                 , IWebHostEnvironment environment)
-        {            
+        {
             _context = context;
             _environment = environment;
             _service = new MemberService(context, environment);
@@ -35,22 +35,30 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
 
-        //[HttpPost]
-        //[Authorize(Roles = "會員")]
+        [Authorize(Roles = "會員")]
         public IActionResult MemberCenter()
         {
             return View();
         }
 
-        //[HttpPost]
-        //[Authorize(Roles = "會員")]
+
+        [Authorize(Roles = "會員")]
         public IActionResult ShoppingHistory()
+        {            
+            return View();
+        }
+
+        //未登入時會自動移轉到此網址。
+        public IActionResult NoLogin()
+        {
+            return View();
+        }
+        //未授權角色時會自動移轉到此網址。
+        public IActionResult NoRole()
         {
             return View();
         }
 
-        
-        
         public IActionResult Cities()
         {
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
@@ -66,22 +74,8 @@ namespace MSIT147thGraduationTopic.Controllers
             }
         }
 
-        ////未登入時會自動移轉到此網址。
-        public IActionResult NoLogin()
-        {
-            return View();
-        }
-        ////未授權角色時會自動移轉到此網址。
-        public IActionResult NoRole()
-        {
-            return View();
-        }
-
-        //AddressVM.Record _addressdata = new AddressVM.Record();
-
-        
         public IActionResult Districts(string? city)
-        { 
+        {
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
             var fileInfo = fileProvider.GetFileInfo("datas/CityCountyData.json");
             using (var stream = fileInfo.CreateReadStream())
@@ -91,7 +85,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 var json = (JArray)JToken.ReadFrom(jsonReader);
                 var areas = json
                     .FirstOrDefault(x => x["CityName"].ToObject<string>() == city)["AreaList"]
-                    .Select(x => x["AreaName"]);                
+                    .Select(x => x["AreaName"]);
                 return Json(areas.Select(x => x.ToObject<string>()));
             }
         }

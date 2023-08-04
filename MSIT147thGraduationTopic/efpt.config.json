@@ -88,6 +88,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[OrderWithMember]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[SpecDisplayforOrder]",
          "ObjectType": 3
       },

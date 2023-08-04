@@ -27,10 +27,7 @@
                 <div class="form-check form-check-inline">
                     <input type="radio" class="form-check-input" id="genderFemale" name="Gender" value="female" required>
                     <label class="form-check-label">女性</label>
-                </div>
-                @*<div class="invalid-feedback">
-                    請選擇性別！
-                </div>*@
+                </div>                
             </div>
             <!-- NickName input-->
             <div class="form mb-3">
@@ -61,11 +58,10 @@
             </div>
             <!-- Email address input-->
             <div class="form mb-3">
-                <label for="email" class="form-label fw-bold">電子信箱</label>
-                <input class="form-control" id="email" name="Email" type="email" required
-                       pattern="^\w+[-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$" />
-                <div class="invalid-feedback">請輸入電子信箱</div>
-                @*<div class="invalid-feedback visually-hidden">電子信箱格式錯誤</div>*@
+                <label for="email" class="form-label fw-bold">Email</label>
+                <input class="form-control" id="email" name="Email" type="email" required />
+                <div class="invalid-feedback">請輸入Email</div>
+                @*<div class="invalid-feedback visually-hidden">Email格式錯誤</div>*@
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
@@ -78,12 +74,12 @@
             <div class="form-label mb-3">
                 <label for="address" class="form-label fw-bold">地址</label>
                 <div class="input-group">
-                    <label class="input-group-text" for="selectCity">縣市</label>
-                    <select class="form-select" id="selectCity" name="selectCity">                        
+                    <label class="input-group-text" for="city">縣市</label>
+                    <select class="form-select" id="city" name="City">        
                         
                     </select>
-                    <label class="input-group-text" for="selectDistrict">區域</label>
-                    <select class="form-select" id="selectDistrict" name="selectDistrict">                       
+                    <label class="input-group-text" for="district">區域</label>
+                    <select class="form-select" id="district" name="District">                       
                         
                     </select>
                     <input class="form-control" id="address" name="Address" type="text"/>
@@ -118,11 +114,11 @@
 
 @section Styles{
     <style>
-        #selectCity {
+        #city {
             max-width: 200px
         }
 
-        #selectDistrict {
+        #district {
             max-width: 200px
         }
         
