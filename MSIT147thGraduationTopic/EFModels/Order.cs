@@ -20,6 +20,8 @@ namespace MSIT147thGraduationTopic.EFModels
         public DateTime PurchaseTime { get; set; }
         public int? UsedCouponId { get; set; }
         public int? PaymentAmount { get; set; }
+        public string DeliveryCity { get; set; }
+        public string DeliveryDistrict { get; set; }
         public string DeliveryAddress { get; set; }
         public string ContactPhoneNumber { get; set; }
         public string Remark { get; set; }

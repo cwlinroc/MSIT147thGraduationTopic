@@ -20,12 +20,15 @@ namespace MSIT147thGraduationTopic.Models.Services
 
         public void AddRandomMembers(int amount = 1)
         {
+            var cities = _repo.GetCitiesAndDistricts();
             var members = new List<Member>();
             for (int i = 0; i < amount; i++)
             {
                 string salt = _generator.RandomSalt();
                 string account = _generator.RandomEnString();
                 string password = account.GetSaltedSha256(salt);
+                var city = _generator.RandomFrom(cities);
+                var district = _generator.RandomFrom(city.Districts);
                 members.Add(new Member
                 {
                     MemberName = _generator.RandomName(),
@@ -35,7 +38,9 @@ namespace MSIT147thGraduationTopic.Models.Services
                     Account = account,
                     Password = password,
                     Phone = _generator.RandomPhone(),
-                    Address = _generator.RandomAddress(),
+                    City = city.CityName,
+                    District = district.DistrictName,
+                    Address = _generator.RandomAddressWitoutCity(),
                     Email = _generator.RandomEmail(),
                     IsActivated = true,
                     Salt = salt
@@ -133,6 +138,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                         PaymentMethodId = _generator.RandomIntBetween(1, 3),
                         Payed = true,
                         PurchaseTime = _generator.RandomDateBetweenDays(-100, -3),
+                        DeliveryCity = String.IsNullOrEmpty(member.City) ? "臺北市" : member.City,
+                        DeliveryDistrict = String.IsNullOrEmpty(member.District) ? "大安區" : member.District,
                         DeliveryAddress = member.Address,
                         ContactPhoneNumber = member.Phone
                     };

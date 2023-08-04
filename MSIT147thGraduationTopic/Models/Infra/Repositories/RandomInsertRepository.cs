@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
@@ -101,5 +102,19 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context.SaveChanges();
             return evaluation.EvaluationId;
         }
+
+        public List<CityStructDto> GetCitiesAndDistricts()
+        {
+            var cities = _context.Cities.Select(o => o.ToDto()).ToList();
+            foreach (var city in cities)
+            {
+                city.Districts = _context.Districts.Where(o => o.CityId == city.CityId)
+                    .Select(o => o.ToDto()).ToList();
+            }
+            return cities;
+        }
+
+
+
     }
 }

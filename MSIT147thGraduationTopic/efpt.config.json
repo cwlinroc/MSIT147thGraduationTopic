@@ -28,11 +28,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Cities]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[CouponOwners]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Coupons]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Districts]",
          "ObjectType": 0
       },
       {
@@ -93,6 +101,10 @@
       },
       {
          "Name": "[dbo].[SpecDisplayforOrder]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[SpecsInOrder]",
          "ObjectType": 3
       },
       {
