@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "LogIn";
     Layout = "_BackstagePage";
 }
@@ -23,8 +22,9 @@
 
             <div class="my-4">
                 <button type="button" id="demo0">demo admin</button>
-                <button type="button" id="demo1">demo 11</button>
-                <button type="button" id="demo2">demo 22</button>
+                <button type="button" id="demo1">demo demoAdmin99</button>
+                <button type="button" id="demo2">demo demoManager99</button>
+                <button type="button" id="demo3">demo demoEmployee99</button>
             </div>
 
 
@@ -40,43 +40,52 @@
 @section Scripts{
     <script>
 
-        $('#demo0').click(() => {
-            $('#inputAccount').val('admin')
-            $('#inputPassword').val('admin')
-        })
-        $('#demo1').click(() => {
-            $('#inputAccount').val('11')
-            $('#inputPassword').val('11')
-        })
-        $('#demo2').click(() => {
-            $('#inputAccount').val('22')
-            $('#inputPassword').val('22')
-        })
+        //demo
+        $('#demo0').click(() => demoInput('admin'))
+        $('#demo1').click(() => demoInput('demoAdmin99'))
+        $('#demo2').click(() => demoInput('demoManager99'))
+        $('#demo3').click(() => demoInput('demoEmployee99'))
 
+        function demoInput(account) {
+            $('#inputAccount').val(account)
+            $('#inputPassword').val(account)
+        }
+
+
+        //切換帳號
         $('#btnChangeAccount').click(changeAccount)
 
         async function changeAccount() {
             const formData = new FormData(document.logForm)
 
-            const response = await fetch(`@Url.Content("~/employeebackstage/welcome")`, {
+            showLoadingBox()
+            const response = await fetch(`@Url.Content("~/api/apiemployee/login")`, {
                 body: formData,
                 method: 'POST'
             })
 
             if (response.ok) {
                 const loginSucceed = await response.json()
-                console.log(loginSucceed)
+                hideLoadingBox()
                 if (loginSucceed) {
-                    alert('登入成功')
+                    await Swal.fire(
+                        '成功登入!',
+                        '登入後台管理系統',
+                        'success'
+                    )
                     window.location.href = '@Url.Content("~/employeebackstage/welcome")'
                 }
                 else {
-                    alert('帳號密碼輸入錯誤')                    
+                    await Swal.fire(
+                        '登入失敗!',
+                        '帳號密碼輸入錯誤',
+                        'error'
+                    )
                 }
             }
         }
 
-        
+
 
     </script>
 }

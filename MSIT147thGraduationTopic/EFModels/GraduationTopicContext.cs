@@ -26,6 +26,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
+        public virtual DbSet<MallDisplay> MallDisplays { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
@@ -145,12 +146,6 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Evaluation>(entity =>
             {
-                entity.HasOne(d => d.Member)
-                    .WithMany(p => p.Evaluations)
-                    .HasForeignKey(d => d.MemberId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Evaluations_Members");
-
                 entity.HasOne(d => d.Merchandise)
                     .WithMany(p => p.Evaluations)
                     .HasForeignKey(d => d.MerchandiseId)
@@ -181,6 +176,31 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<MallDisplay>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("MallDisplay");
+
+                entity.Property(e => e.BrandName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasMaxLength(81);
+
+                entity.Property(e => e.ImageUrl)
+                    .HasMaxLength(150)
+                    .HasColumnName("ImageURL");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+            });
+
             modelBuilder.Entity<Member>(entity =>
             {
                 entity.Property(e => e.Account)
@@ -192,11 +212,15 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.Avatar).HasMaxLength(100);
 
+                entity.Property(e => e.City).HasMaxLength(50);
+
                 entity.Property(e => e.ConfirmGuid)
-                    .HasMaxLength(20)
+                    .HasMaxLength(150)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DateOfBirth).HasColumnType("date");
+
+                entity.Property(e => e.District).HasMaxLength(50);
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -385,7 +409,7 @@ namespace MSIT147thGraduationTopic.EFModels
 
                 entity.Property(e => e.FullName)
                     .IsRequired()
-                    .HasMaxLength(80);
+                    .HasMaxLength(81);
             });
 
             modelBuilder.Entity<SpecWithFullMerchandise>(entity =>

@@ -23,9 +23,6 @@ builder.Services.AddDbContext<GraduationTopicContext>(
 //AspNetCore.Authentication 用戶驗証操作機制註冊 DI  (在 Controller 範圍外使用方式)
 builder.Services.AddHttpContextAccessor();
 
-//自訂用戶登入資訊操作註冊 DI
-builder.Services.AddScoped<UserInfoService>();
-
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -40,11 +37,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
         {
             //未登入時會自動移轉到此網址。
-            options.LoginPath = new PathString("/Member/NoLogin");
+            //options.LoginPath = new PathString("/Member/NoLogin");
             //未授權角色時會自動移轉到此網址。
-            options.AccessDeniedPath = new PathString("/Member/NoRole");
-            ///登入10分後會失效
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+            //options.AccessDeniedPath = new PathString("/Member/NoRole");
+            ///登入1小時後會失效
+            options.ExpireTimeSpan = TimeSpan.FromHours(1);
         });
 
 
@@ -74,6 +71,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=CouponsBackstageSettings}/{action=Index}/{id?}");
+    pattern: "{controller=home}/{action=index}/{id?}");
 
 app.Run();

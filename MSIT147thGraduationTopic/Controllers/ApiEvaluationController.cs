@@ -21,7 +21,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: ApiEvaluation
         public async Task<IActionResult> Index()
         {
-            var graduationTopicContext = _context.Evaluations.Include(e => e.Member).Include(e => e.Merchandise).Include(e => e.Order);
+            var graduationTopicContext = _context.Evaluations.Include(e => e.Merchandise).Include(e => e.Order);
             return View(await graduationTopicContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             var evaluation = await _context.Evaluations
-                .Include(e => e.Member)
+                
                 .Include(e => e.Merchandise)
                 .Include(e => e.Order)
                 .FirstOrDefaultAsync(m => m.EvaluationId == id);
@@ -68,7 +68,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "Account", evaluation.MemberId);
+            
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", evaluation.MerchandiseId);
             ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "ContactPhoneNumber", evaluation.OrderId);
             return View(evaluation);
@@ -87,7 +87,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 return NotFound();
             }
-            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "Account", evaluation.MemberId);
+            
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", evaluation.MerchandiseId);
             ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "ContactPhoneNumber", evaluation.OrderId);
             return View(evaluation);
@@ -125,7 +125,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Members, "MemberId", "Account", evaluation.MemberId);
+          
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", evaluation.MerchandiseId);
             ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "ContactPhoneNumber", evaluation.OrderId);
             return View(evaluation);
@@ -140,7 +140,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             var evaluation = await _context.Evaluations
-                .Include(e => e.Member)
+                
                 .Include(e => e.Merchandise)
                 .Include(e => e.Order)
                 .FirstOrDefaultAsync(m => m.EvaluationId == id);

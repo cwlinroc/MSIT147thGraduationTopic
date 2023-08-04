@@ -6,11 +6,13 @@
     bool? isAuthorized = user?.Identity?.IsAuthenticated;
     string? userName = string.Empty;
     string? avatarName = string.Empty;
+    string? roleName = string.Empty;
 
     if (isAuthorized ?? false)
     {
         userName = user.FindFirstValue("UserName");
         avatarName = user.FindFirstValue("AvatarName");
+        roleName = user.FindFirstValue(ClaimTypes.Role);
         if (string.IsNullOrEmpty(avatarName)) avatarName = "_employeeDefault.jpg";
     }
 }
@@ -25,7 +27,7 @@
     <meta name="google" value="notranslate">
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - 福祿獸購物商城後臺管理系統</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="@Url.Content("~/images/blackcat.ico")" />
     <!-- Bootstrap icons-->
@@ -34,10 +36,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- sweetalert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="~/css/styles.css" rel="stylesheet" />
+    <!-- sweetalert2 -->
+    <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
+    <!-- Animate.css -->
+    <link href="~/css/animate.min.css" rel="stylesheet" />
+    <!-- spinkit.css -->
+    <link href="~/css/SpinKit.css" rel="stylesheet" />
+
     <link href="~/css/backstage.css" rel="stylesheet" />
     @RenderSection("Styles",false)
 
@@ -53,7 +60,7 @@
 
             <button class="btn btn-dark fs-3" id="sidebarToggle" type="button"><i class="fa-solid fa-list"></i></button>
 
-            <a class="navbar-brand " href="#">後臺管理系統 </a>
+            <a class="navbar-brand " href="@Url.Content("~/employeebackstage/welcome")">後臺管理系統 </a>
 
             @{
                 if (isAuthorized ?? false)
@@ -152,13 +159,9 @@
                      data-bs-parent="#accordionExample">
 
                     <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">員工檢視</a>
+                        <a href="~/employeebackstage" class="stretched-link text-light" id="linkEmployeeList">員工檢視</a>
+                        
                     </div>
-
-                    <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">權限調整</a>
-                    </div>
-
 
                 </div>
             </div>
@@ -195,7 +198,13 @@
 
         </div>
 
-        <div class="mt-auto p-4">
+        <div class="mt-auto px-4 mb-3">
+            <a href="~/employeebackstage/login" class="text-light" id="btnReLogIn" btnLogOut">
+                <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>切換帳號登入
+            </a>
+        </div>
+
+        <div class="px-4 mb-3">
             <a href="#" class="text-light" id="btnLogOut" btnLogOut">
                 <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>登出並回到首頁
             </a>
@@ -203,11 +212,33 @@
         </div>
     </div>
     <!-- 選單列表end -->
+    <!-- 讀取圖示start -->
+    <div class="loading-box position-fixed">
+        <div class="sk-cube-grid">
+            <div class="sk-cube sk-cube1"></div>
+            <div class="sk-cube sk-cube2"></div>
+            <div class="sk-cube sk-cube3"></div>
+            <div class="sk-cube sk-cube4"></div>
+            <div class="sk-cube sk-cube5"></div>
+            <div class="sk-cube sk-cube6"></div>
+            <div class="sk-cube sk-cube7"></div>
+            <div class="sk-cube sk-cube8"></div>
+            <div class="sk-cube sk-cube9"></div>
+        </div>
+    </div>
+
+    <!-- 讀取圖示end -->
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- jQuery -->
     <script src="~/lib/jquery/dist/jquery.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="~/js/sweetalert2.min.js"></script>
+    <!-- wow.js -->
+    <script src="~/js/wow.min.js"></script>
+
     <script>const ROOT = '@Url.Content("~")'</script>
+    <script>const ROLE = '@roleName'</script>
     <script src="~/js/backstage.js"></script>
 
     @RenderSection("Scripts",false)

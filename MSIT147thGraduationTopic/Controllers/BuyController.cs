@@ -21,24 +21,33 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(params int[] ids)
+        public async Task<IActionResult> Index(params int[] ids)
         {
             string? json = HttpContext.Session.GetString("cartItemIds");
             if (!string.IsNullOrEmpty(json)) ids = JsonSerializer.Deserialize<int[]>(json)!;
 
-            //TODO-cw 刪掉
-            if (!ids.Any()) ids = new int[] { 2, 3, 4 };
+            if (!ids.Any()) return RedirectToAction("Index", "Cart");
 
-            (int id, string address, string phone) member = _service.GetMemberAddressAndPhone(ids[0]);
+            var member = _service.GetMemberAddressAndPhone(ids[0]);
+            if (member == null) return BadRequest();
 
-            ViewBag.MemberId = member.id;
-            ViewBag.MemberAddress = member.address;
-            ViewBag.MemberPhone = member.phone;
+            //TODO-cw id驗證
+            ViewBag.MemberId = member.MemberId;
+            ViewBag.MemberAddress = member.Address;
+            ViewBag.MemberPhone = member.Phone;
+            ViewBag.MemberName = member.MemberName;
+            ViewBag.MemberEmail = member.Email;
 
-            //id驗證
+            //var cartItemsTask = _service.GetCartItems(ids);
+            //var couponsTask = _service.GetAllCouponsAvalible(member.MemberId);
+            //await Task.WhenAll(cartItemsTask, couponsTask);
+            //ViewBag.Coupons = couponsTask.Result;
+            //return View(cartItemsTask.Result);
 
-            var items = _service.GetCartItems(ids);
-            return View(items);
+            var cartItems = await _service.GetCartItems(ids);
+            var coupons = await _service.GetAllCouponsAvalible(member.MemberId);
+            ViewBag.Coupons = coupons;
+            return View(cartItems);
         }
 
 
@@ -65,7 +74,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
             int result = _service.CreateOrder(cartItemIds, memberId, record);
-            if(result < 0) return BadRequest();
+            if (result < 0) return BadRequest();
 
 
             //??

@@ -156,6 +156,12 @@
 
                 </form>
             </div>
+            <!-- demo buttons -->
+            <div class="px-2">
+                <button id="demoAddManager">demo新增經理</button>
+                <button id="demoAddEmployee">demo新增員工</button>
+                <button id="demoEditEmployee">demo修改員工</button>
+            </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -203,11 +209,11 @@
         //get Modal
         const mainModal = new bootstrap.Modal(document.querySelector('#editModal'))
         const permissionModal = new bootstrap.Modal(document.querySelector('#permissionModal'))
-        //會員資料
+        //員工資料
         let employeeData
-        //抓取會員資料
+        //抓取員工資料
         getEmployees()
-        //新增會員按鈕
+        //新增員工按鈕
         $('#btnAdd').click(changeToInsertForm)
         //上傳圖片預覽
         const inputAvatar = document.querySelector('#avatar')
@@ -247,17 +253,17 @@
 
         //Ajax 得到員工資料
         async function getEmployees(query) {
+            showLoadingBox()
             let str = ''
             if (query) str = '/' + query
-
             const response = await fetch('@Url.Content("~/api/apiemployee")' + str)
 
             if (!response.ok) return
             const data = await response.json()
 
             employeeData = data
-            console.log(data)
             displayEmployees()
+            hideLoadingBox()
         }
 
         //Ajax 新增員工
@@ -266,6 +272,7 @@
 
             const formData = new FormData(document.createAndEdit)
 
+            showLoadingBox()
             const response = await fetch('@Url.Content("~/api/apiemployee")', {
                 body: formData,
                 method: 'POST'
@@ -278,9 +285,14 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('輸入成功')
+                await Swal.fire(
+                    '輸入成功!',
+                    '員工資料已新增!',
+                    'success'
+                )
                 mainModal.hide()
             }
+            hideLoadingBox()
         }
 
         //Ajax 修改員工
@@ -289,6 +301,7 @@
             const index = $('#createAndEdit').attr('data-index')
             const id = employeeData[index].employeeId
 
+            showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, {
                 body: formData,
                 method: 'PUT'
@@ -302,16 +315,28 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('修改成功')
+                //alert('修改成功')
+                await Swal.fire(
+                    '修改成功!',
+                    '員工資料已修改!',
+                    'success'
+                )
                 mainModal.hide()
             }
+            hideLoadingBox()
         }
 
         //Ajax 修改員工權限
         async function submitChangePermission() {
+
+            permissionModal.hide()
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
+
             const permission = $('#selectPermission').val()
             const id = $('#selectPermission').attr('data-employeeId')
 
+            showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apiemployee/permission")/${id}`, {
                 body: JSON.stringify({ 'permission': permission }),
                 method: 'PUT',
@@ -326,19 +351,31 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('修改成功')
-                permissionModal.hide()
+                //alert('修改成功')
+                await Swal.fire(
+                    '修改成功!',
+                    '員工權限已修改!',
+                    'success'
+                )
             }
+            hideLoadingBox()
         }
 
+
+        //TODO 不可刪管理員
         //Ajax 刪除員工
         async function deleteEmployee(event) {
-            if (!confirm('是否確認刪除該員工')) return
-            //TODO 輸入密碼確認  不可刪管理員
+
+            if (!await validateRole('管理員')) return;
+
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
+
             const formData = new FormData(document.createAndEdit)
             const index = event.currentTarget.closest('tr').dataset.index
             const id = employeeData[index].employeeId
 
+            showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
 
             if (response.status == 400) {
@@ -349,9 +386,15 @@
                 const data = await response.json()
                 console.log(data)
                 getEmployees()
-                alert('刪除成功')
+                //alert('刪除成功')
+                await Swal.fire(
+                    '刪除成功!',
+                    '該員工已刪除!',
+                    'success'
+                )
                 mainModal.hide()
             }
+            hideLoadingBox()
         }
 
         //列出員工
@@ -359,15 +402,15 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-                    <td>${element.employeeName}</td>
-                    <td>${element.employeeAccount}</td>
-                    <td>${element.permission}</td>
-                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
-                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-                    <td></td>
-                    </tr>`
+            <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+            <td>${element.employeeName}</td>
+            <td>${element.employeeAccount}</td>
+            <td>${element.permission}</td>
+            <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+            <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+            <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+            <td></td>
+            </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
@@ -378,7 +421,9 @@
         }
 
         //調整為新增表單
-        function changeToInsertForm() {
+        async function changeToInsertForm() {
+            if (!await validateRole('經理')) return;
+
             const addForm = document.querySelector('#createAndEdit')
             addForm.reset()
             $('#account,#password').parent().css('display', 'block')
@@ -386,13 +431,16 @@
             showOrHideImagePreview()
             clearAllValidFeedBack()
             $('#createAndEdit').attr('data-index', '-1')
+            showAddDemoButtons()
             mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitAdd)
         }
 
         //調整為修改表單
-        function changeToEditForm(event) {
+        async function changeToEditForm(event) {
+            if (!await validateRole('經理')) return;
+
             const editForm = document.querySelector('#createAndEdit')
             editForm.reset()
             $('#account,#password').parent().css('display', 'none')
@@ -404,19 +452,19 @@
             $('#name').val(employeeData[index].employeeName)
             $('#email').val(employeeData[index].employeeEmail)
             $('#phone').val(employeeData[index].employeePhone)
-
+            showEditDemoButtons()
             mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitEdit)
         }
 
-        //顯示點選tr的會員資料
+        //顯示點選tr的員工資料
         function displayEmployeeDataInRow(event) {
             const index = +event.currentTarget.dataset.index
             displayEmployeeData(index)
         }
 
-        //顯示第n筆會員資料
+        //顯示第n筆員工資料
         function displayEmployeeData(index) {
             if (!employeeData.length) return
             const imgName = (employeeData[index].avatarName) ? employeeData[index].avatarName : '_employeeDefault.jpg'
@@ -431,14 +479,49 @@
         }
 
         //彈出修改權限modal
-        function showEditPermissionModal(event) {
-            //TODO輸入密碼驗證
+        async function showEditPermissionModal(event) {
+            if (!await validateRole('管理員')) return;
+
             const index = +$(event.currentTarget).closest('tr').attr('data-index')
             $('#selectPermission').val(employeeData[index].permission)
                 .attr('data-employeeId', employeeData[index].employeeId)
             permissionModal.show()
         }
 
+
+        //demos
+        $('#demoAddManager').click(e=>{
+            $('#name').val('學姐')
+            $('#account').val('demoManager99')
+            $('#password').val('demoManager99')
+            $('#phone').val('0933123456')
+            $('#email').val('Manager@@whatever.com')
+        })
+
+        $('#demoAddEmployee').click(e => {
+            $('#name').val('新來的學弟')
+            $('#account').val('demoEmployee99')
+            $('#password').val('demoEmployee99')
+            $('#phone').val('0933123456')
+            $('#email').val('Manager@@yahoo.com.tw')
+        })
+
+        $('#demoEditEmployee').click(e => {
+            $('#name').val('來了一陣子的學弟')
+            $('#phone').val('0933123456')
+            $('#email').val('Manager@@gmail.com')
+        })
+
+        function showAddDemoButtons(){
+            $('#demoAddManager').css('display', 'inline')
+            $('#demoAddEmployee').css('display', 'inline')
+            $('#demoEditEmployee').css('display', 'none')
+        }
+        function showEditDemoButtons() {
+            $('#demoAddManager').css('display', 'none')
+            $('#demoAddEmployee').css('display', 'none')
+            $('#demoEditEmployee').css('display', 'inline')
+        }
 
         //// MyBootsrapValidator
         //// 0. section最上面要引用  script src="~/js/MyBootstrapValidator.js"
@@ -466,7 +549,7 @@
 
                 const phone = document.querySelector('#phone')
                 const phoneValid = !!phone.value
-                //const Phone
+                const phonePatternValid = /^09\d{8}$/.test(phone.value)
                 phone.setValidate(() => phoneValid)
 
                 const email = document.querySelector('#email')

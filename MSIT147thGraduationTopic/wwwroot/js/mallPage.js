@@ -1,4 +1,11 @@
-﻿$(".custom-merchandise").hover(
+﻿//權限錯誤跳轉
+//if (ROLE == '管理員' || ROLE == '經理' || ROLE == '員工') {
+//    window.location.href = ROOT + '/employeebackstage/welcome'
+//}
+
+
+
+$(".custom-merchandise").hover(
     e => $(e.currentTarget).addClass("shadow-lg"),
     e => $(e.currentTarget).removeClass("shadow-lg")
 )
@@ -21,16 +28,52 @@ $(window).scroll(e => {
 $('#btnLogIn').click(LogIn)
 $('#btnLogOut').click(LogOut)
 
+$('#demoMember88').click(() => DemoLogin('demoMember88'));
+$('#demoMember99').click(() => DemoLogin('demoMember99'));
+$('#demoEmployee').click(() => DemoLogin('demoEmployee99'));
+$('#demoManager').click(() => DemoLogin('demoManager99'));
+$('#demoAdmin').click(() => DemoLogin('demoAdmin99'));
+
+function DemoLogin(demoAccount) {
+    $('#loginAccount').val(demoAccount);
+    $('#loginPassword').val(demoAccount);
+}
+
+//記住我
+$(function () {
+    if (localStorage.chkRemember && localStorage.chkRemember != '') {
+        $('#chkRemember').attr('checked', 'checked');
+        $('#loginAccount').val(localStorage.loginAccount);
+        $('#loginPassword').val(localStorage.loginPassword);
+    } else {
+        $('#chkRemember').removeAttr('checked');
+        $('#loginAccount').val('');
+        $('#loginPassword').val('');
+    }
+
+    $('#chkRemember').click(function () {
+
+        if ($('#chkRemember').is(':checked')) {
+            localStorage.loginAccount = $('#loginAccount').val();
+            localStorage.loginPassword = $('#loginPassword').val();
+            localStorage.chkRemember = $('#chkRemember').val();
+        } else {
+            localStorage.loginAccount = '';
+            localStorage.loginPassword = '';
+            localStorage.chkRemember = '';
+        }
+    });
+});
+
 //Ajax 登入
 async function LogIn() {
     //驗證
-
     const account = $('#loginAccount').val()
     const password = $('#loginPassword').val()
-    const chkRemember = $('#chkRemember').prop('checked')
+    //const chkRemember = $('#chkRemember').prop('checked')
 
     const response = await fetch(ROOT + '/api/apimember/login', {
-        body: JSON.stringify({ 'Account': account, 'Password': password, 'chkRemember': chkRemember }),
+        body: JSON.stringify({ 'Account': account, 'Password': password }),
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
     })
@@ -46,29 +89,27 @@ async function LogIn() {
         Swal.fire({
             icon: 'error',
             title: '登入失敗',
-            text: '帳號或密碼錯誤'
-        }).then(result => {
-            if (result.isConfirmed) {
-                window.location.reload()
-            }
+            text: '帳號或密碼錯誤',
+            allowOutsideClick: false
         })
         return
     }
 
-    Swal.fire('登入成功!').then(result => {
-        if (result.isConfirmed) {
-            window.location.reload()
-        } else {
+    Swal.fire({
+        icon: 'success',
+        title: '登入成功!',
+        allowOutsideClick: false
+    }).then(result => {
+        if (url == 'reload') {
             window.location.reload()
         }
+        else {
+            window.location.href = url
+        }
+
     })
 
-    //if (url == 'reload') {
-    //    window.location.reload()
-    //}
-    //else {
-    //    window.location.href = url
-    //}
+
 
 }
 
@@ -80,11 +121,23 @@ async function LogOut() {
     if (response.ok) {
         const url = await response.text()
         if (url) {
-            Swal.fire('登出成功!').then(result => {
+            Swal.fire({
+                icon: 'success',
+                title: '登出成功!',
+                allowOutsideClick: false
+            }).then(result => {
                 if (result.isConfirmed) {
-                    window.location.href = url
+                    window.location.href = ROOT + '/home/index'
                 }
             })
         }
     }
 }
+
+
+
+
+
+
+
+

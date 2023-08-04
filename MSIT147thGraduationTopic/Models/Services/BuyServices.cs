@@ -1,6 +1,9 @@
-﻿using MSIT147thGraduationTopic.EFModels;
+﻿using Microsoft.IdentityModel.Tokens;
+using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Collections.Generic;
 using static MSIT147thGraduationTopic.Controllers.BuyController;
 
 namespace MSIT147thGraduationTopic.Models.Services
@@ -16,26 +19,73 @@ namespace MSIT147thGraduationTopic.Models.Services
             _repo = new BuyRepository(context);
         }
 
-        public IEnumerable<CartItemDisplayDto> GetCartItems(int[] cartItemIds)
+        public async Task<IEnumerable<CartItemDisplayDto>> GetCartItems(int[] cartItemIds)
         {
-            return _repo.GetCartItems(cartItemIds);
+            return await _repo.GetCartItems(cartItemIds);
         }
 
-        public (int, string, string) GetMemberAddressAndPhone(int cartItemId)
+        //public async Task<int> CalculatePaymentPrice(int[] cartItemIds, int couponId)
+        //{
+        //    var list = GetCartItemsWithCoupons(cartItemIds, couponId);
+
+        //}
+
+
+        public async Task<BuyPageCartItemsListVM?> GetCartItemsWithCoupons(int[] cartItemIds, int couponId)
+        {
+            if (cartItemIds.IsNullOrEmpty()) return null;
+            //var carItemsTask = _repo.GetCartItems(cartItemIds);
+            //var couponTask = _repo.GetCouponById(couponId);
+            //await Task.WhenAll(carItemsTask, couponTask);
+            //return CalculateCouponResult(couponTask.Result, carItemsTask.Result);
+            var carItems = await _repo.GetCartItems(cartItemIds);
+            var coupon = await _repo.GetCouponById(couponId);
+
+            return CalculateCouponResult(coupon, carItems.ToList());
+        }
+
+        private BuyPageCartItemsListVM CalculateCouponResult(CouponDto? coupon, List<CartItemDisplayDto> cartItems)
+        {
+            var cartItemsList = new BuyPageCartItemsListVM { CartItems = cartItems };
+            List<CartItemDisplayDto> filteredCartItems = cartItems;
+
+            if (coupon == null || coupon.CouponStartDate > DateTime.Now
+                || coupon.CouponEndDate < DateTime.Now)
+            {
+                return cartItemsList;
+            }
+            if (coupon.CouponDiscountTypeId == 0)
+            {
+                cartItemsList.CouponType = 0;
+                if (coupon.CouponTagId != null) filteredCartItems = cartItems
+                        .Where(o => !o.Tags.IsNullOrEmpty() && o.Tags!.Contains(coupon.CouponTagId.Value)).ToList();
+                foreach (var item in filteredCartItems) item.CouponDiscount = (int)coupon.CouponDiscount;
+            }
+            if (coupon.CouponDiscountTypeId == 1)
+            {
+                cartItemsList.CouponType = 1;
+                if (coupon.CouponTagId != null) filteredCartItems = cartItems
+                        .Where(o => !o.Tags.IsNullOrEmpty() && o.Tags!.Contains(coupon.CouponTagId.Value)).ToList();
+                int sum = filteredCartItems.Sum(o => (o.CartItemPrice * o.DiscountPercentage / 100) * o.Quantity);
+                if (sum >= coupon.CouponCondition) cartItemsList.CouponDiscountAmount = (int)coupon.CouponDiscount;
+            }
+            return cartItemsList;
+        }
+
+        public MemberDto? GetMemberAddressAndPhone(int cartItemId)
         {
             int memberId = _repo.GetMemberIdByCartItemId(cartItemId);
 
-            var result = _repo.GetMemberAddressAndPhone(memberId);
+            var member = _repo.GetMemberAddressAndPhone(memberId);
 
-            return (memberId, result.Item1.Trim(), result.Item2.Trim());
+            return member;
         }
 
-        public IEnumerable<CouponDto> GetAllCouponsAvalible(int memberId)
+        public async Task<IEnumerable<BuyPageCouponVM>> GetAllCouponsAvalible(int memberId)
         {
-            return _repo.GetAllCouponsAvalible(memberId);
+            return (await _repo.GetAllCouponsAvalible(memberId))
+                .Select(o => new BuyPageCouponVM { CouponId = o.CouponId, CouponName = o.CouponName });
         }
-
-
 
         public int CreateOrder(int[] cartItemIds, int memberId, OrderRecord record)
         {
