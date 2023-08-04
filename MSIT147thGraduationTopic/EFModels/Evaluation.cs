@@ -12,6 +12,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public int OrderId { get; set; }
         public string Comment { get; set; }
         public int Score { get; set; }
+        public int SpecId { get; set; }
 
         public virtual Merchandise Merchandise { get; set; }
         public virtual Order Order { get; set; }
