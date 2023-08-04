@@ -18,16 +18,40 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult EBIndex()
+        public IActionResult EBIndex(int pageSize = 5, int pageNo = 1)
         {
+            var query = PerformSqlQuery(pageSize, pageNo);
+
+
+            if (query == null)
+                return View(new List<EvaluationVM>());
+              
             
-            return View();
+            // 獲取總記錄數
+            var totalCount = _context.Evaluations.Count(p => p.EvaluationId > 10);
+            // 傳遞查詢結果和總記錄數到View中
+            ViewBag.PageNo = pageNo;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalCount = totalCount;
+            
+
+            return View(query.Select(e => new EvaluationVM
+            {
+                EvaluationId = e.EvaluationId,
+                OrderId = e.OrderId,
+                MerchandiseName = e.MerchandiseName,
+                Score = e.Score,
+                Comment = e.Comment,
+            }));
+            
 
         }
         
         [HttpPost]
         public IActionResult EBIndex(string keyword)
         {
+            var pageSize = 5; 
+            var pageNo = 1;
             var model = from e in _context.Evaluations
                         where e.OrderId.ToString().Contains(keyword) ||
                               e.Merchandise.MerchandiseName.Contains(keyword) ||
@@ -50,7 +74,18 @@ namespace MSIT147thGraduationTopic.Controllers
             //                Score = x.Score,
             //                Comment = x.Comment,
             //            }).ToList();
-            return View(model);
+            var totalCount = model.Count();
+
+            // 傳遞查詢結果和總記錄數到View中
+            ViewBag.PageNo = pageNo;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalCount = totalCount;
+
+            // 获取当前页的数据
+            var currentPageData = model.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+
+            return View(currentPageData);
+            //return View(model);
         }
 
         [HttpPost]
@@ -67,40 +102,29 @@ namespace MSIT147thGraduationTopic.Controllers
             return RedirectToAction("EBIndex");
         }
 
-        public ActionResult PageList(int pageSize = 25, int pageNo = 1)
+        private List<EvaluationInput> PerformSqlQuery(int pageSize, int pageNo)
         {
-            
-            using (var dbContext = new GraduationTopicContext())
-            {
-                var sql = @"
+            var sql = @"
                         DECLARE @pageSize INT, @pageNo INT;
                         SET @pageSize = @p0;
                         SET @pageNo = @p1;
                         ;WITH T
                         AS (
                             SELECT *
-                            FROM Evaluations.EvaluationsId                            
+                            FROM EvaluationInput                           
                         )
                         SELECT TotalCount = COUNT(1) OVER (), T.*
                         FROM T
-                        ORDER BY EvaluationsId
+                        ORDER BY EvaluationId
                         OFFSET(@pageNo - 1) * @pageSize ROWS
-                        FETCH NEXT @pageSize ROWS ONLY;
-        ";
+                        FETCH NEXT @pageSize ROWS ONLY;";
 
-                // 執行分頁查詢
-                var query = dbContext.Database.SqlQuery<Evaluations>(sql, pageSize, pageNo).ToList();
-
-                // 獲取總記錄數
-                var totalCount = dbContext.Evaluations.Count(p => p.EvaluationId > 10);
-
-                // 傳遞查詢結果和總記錄數到View中
-                ViewBag.PageNo = pageNo;
-                ViewBag.PageSize = pageSize;
-                ViewBag.TotalCount = totalCount;
-                return View(query);
-            }
+            //分頁查詢
+            return _context.EvaluationInputs.FromSqlRaw<EvaluationInput>(sql, pageSize, pageNo).ToList();
         }
+
+
+
 
     }
 
