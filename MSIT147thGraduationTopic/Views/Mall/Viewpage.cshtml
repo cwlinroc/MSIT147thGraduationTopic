@@ -127,6 +127,8 @@
                             <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" width="100%" class="pb-3">
                             <div class="image-container">
                                 <!-- ********************待設定規格(固定邊長、裁切方式)************************* -->
+                                @*//todo換成商品照*@
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage" width="20%">
                                 @{
                                     foreach (var item in Model)
                                     {
@@ -171,12 +173,7 @@
                         <br>
                         <div class="text-end">共計：<span id="totalPrice"></span></div>
                         @*
-                        $(".showSpec")規格按鈕
                         $(".specImage")各規格照片
-                        $("#buyAmount").attr("max", "庫存數")購買數
-
-                        total = Price*Amount
-                        $("#totalPrice").val(total)
                         *@
 
 
@@ -194,6 +191,9 @@
 @section Scripts{
     @*搜尋功能待改(回傳參數)*@
     <script>
+        let purchaseAmount = 1;
+        let currentPrice;
+        let maxAmount;
 
         $(async () => {
             //產生商品資料
@@ -213,7 +213,8 @@
             console.log(searchResult.categoryName);
             MerchandiseName.innerHTML = searchResult.merchandiseName;
             Description.innerHTML = searchResult.description;
-            $("#mainPicture").attr("src", `@Url.Content("~/uploads/merchandisePicture/")${searchResult.imageUrl}`);
+            const imgPath = (searchResult.imageUrl == null) ? "default.png" : searchResult.imageUrl;
+            $("#mainPicture").attr("src", `@Url.Content("~/uploads/merchandisePicture/")${imgPath}`);
 
             $(".showSpec").first().click();
         })
@@ -223,12 +224,34 @@
             console.log("FUNCTION click");
             $(".showSpec").attr("class", "btn btn-outline-secondary mx-1 my-1 showSpec");
             $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
-            const price = $(e.currentTarget).attr("val-price");
-            const amount = $(e.currentTarget).attr("val-amount");
-            $("#showPrice").text(price + " 元");
-            $("#showAmount").text(amount);
-            $("#buyAmount").attr("max", amount)
+            currentPrice = $(e.currentTarget).attr("val-price");
+            maxAmount = $(e.currentTarget).attr("val-amount");
+            $("#showPrice").text(currentPrice + " 元");
+            $("#showAmount").text(maxAmount);
+            $("#buyAmount").attr("max", maxAmount);
+            purchaseAmount = 1;
+            $("#buyAmount").val(purchaseAmount);
+            $("#buyAmount").change();
         });
+        //增減選擇數
+        $("#button_minus").on("click", () => {
+            if (purchaseAmount > 1) {
+                purchaseAmount--;
+                $("#buyAmount").val(purchaseAmount);
+                $("#buyAmount").change();
+            }
+        })
+        $("#button_plus").on("click", () => {
+            if (purchaseAmount < maxAmount) {
+                purchaseAmount++;
+                $("#buyAmount").val(purchaseAmount);
+                $("#buyAmount").change();
+            }
+        })
+        $("#buyAmount").on("change", () => {
+            $("#totalPrice").text((purchaseAmount * currentPrice) + " 元");
+        })
+
 
         //回到所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {

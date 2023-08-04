@@ -14,7 +14,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Index(/*string txtKeyword = "", int searchCondition = 1, int sideCategoryId = 0*/)
+        public IActionResult Index(/*string txtKeyword = "", int searchCondition = 1, int sideCategoryId = 0*/)//todo 頁籤顯示數量不正常
         {
             //IEnumerable<MallDisplay> datas = _context.MallDisplays
             //    .Where(md => md.Display == true).Where(md => md.OnShelf == true);

@@ -152,7 +152,7 @@
         let searchCondition = 1;
         let sideCategoryId = 0;
 
-        let pageSize = 1;
+        let pageSize = 20;
         let displayorder = 0;
         let pageindex = 1;
         let minPrice;
@@ -200,13 +200,13 @@
                 const totalpage = Math.ceil(resultLength / pageSize);
                 const pagingContainer = document.querySelector("#pagingContainer");
 
-                var indexRow = `<li class="page-item border-light toPrevious">\
+                let indexRow = `<li class="page-item border-light toPrevious">\
                                                     <a class="page-link" href="#" aria-label="Previous">\
                                                         <span aria-hidden="true">&laquo;</span>\
                                                     </a>\
                                                 </li>`;
-                var indexArray = "";
-                var start, end;
+                let indexArray = "";
+                let start, end;
                 if (totalpage <= 5) {
                     start = 1; end = totalpage;
                     for (var i = start; i <= end; i++) {
@@ -230,7 +230,7 @@
                     }
                     if (pageindex > 4) {
                         if (pageindex + 3 <= totalpage) {
-                            start = pageindex - 2; end = pageindex + 2
+                            //start = pageindex - 2; end = parseInt(pageindex) + 2;//未轉型會默認為字串串接
                             indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
                                                                         + `<li class="page-item"><a class="page-link" >...</a></li>`
                             for (var i = start; i <= end; i++) {
@@ -239,7 +239,7 @@
                             indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                         }
                         if (pageindex + 3 > totalpage) {
-                            start = pageindex - 2; end = totalpage
+                            start = pageindex - 2; end = totalpage;
                             indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
                                                                         +`<li class="page-item"><a class="page-link" >...</a></li>`
                             for (var i = start; i <= end; i++) {
@@ -250,10 +250,10 @@
                 }
 
                 indexRow += indexArray + `<li class="page-item toNext">
-                                                                                        <a class="page-link" href="#" aria-label="Next">
-                                                                                            <span aria-hidden="true">&raquo;</span>
-                                                                                        </a>
-                                                                                      </li>`;
+                                            <a class="page-link" href="#" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                          </li>`;
                 pagingContainer.innerHTML = indexRow;
 
                 //改變當前頁籤格式
@@ -277,7 +277,7 @@
                 const pageContent = document.querySelector("#showThisPageMerchandise");
                 pageContent.innerHTML = "<h4>找不到符合的商品</h4>";
                 if (resultLength > 0) {
-                    //產生商品櫥窗               // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※別換行，會出莫名其妙的問題)
+                    //產生商品櫥窗               // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※換行要用 "+"，不然容易出莫名其妙的問題)
                     const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&`
                                                     + `searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&`
                                                     + `PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
