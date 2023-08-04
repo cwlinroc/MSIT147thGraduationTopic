@@ -32,17 +32,17 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return obj.CouponId;
         }
 
-        public int EditCoupon(CouponEditDto cEDto,int couponId)
+        public int EditCoupon(CouponEditDto cEDto)
         {
-            var coupon = _context.Coupons.FirstOrDefault(c=>c.CouponId == couponId);
-            if (coupon == null)
+            var couponData = _context.Coupons.FirstOrDefault(c=>c.CouponId == cEDto.CouponId);
+
+            if(couponData == null)
             {
                 return -1;
             }
-            coupon.UpdateByEditDto(cEDto);
-            
+            _context.Coupons.Update(couponData);
             _context.SaveChanges();
-            return couponId;
+            return couponData.CouponId;
         }
 
         public int DeleteCoupon(int couponId)
@@ -58,5 +58,28 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context.SaveChanges();
             return couponId;
         }
+
+        public CouponDto GetCouponById(int id)
+        {
+            // 通過id搜尋單筆資料
+            var coupon = _context.Coupons.FirstOrDefault(c => c.CouponId == id);
+            if (coupon == null)
+            {
+                // 位搜尋到id時的處理
+                return null;
+            }
+
+            return coupon.ToDto(); //將coupon實體轉換為couponDto
+        }
+
+        //public int DetectionName(string name)
+        //{
+        //    var coupon = _context.Coupons.FirstOrDefault(c=>c.CouponName == name);
+
+        //    if(coupon != null)
+        //    {
+
+        //    }
+        //}
     }
 }
