@@ -20,12 +20,15 @@ namespace MSIT147thGraduationTopic.Models.Services
 
         public void AddRandomMembers(int amount = 1)
         {
+            var cities = _repo.GetCitiesAndDistricts();
             var members = new List<Member>();
             for (int i = 0; i < amount; i++)
             {
                 string salt = _generator.RandomSalt();
                 string account = _generator.RandomEnString();
                 string password = account.GetSaltedSha256(salt);
+                var city = _generator.RandomFrom(cities);
+                var district = _generator.RandomFrom(city.Districts);
                 members.Add(new Member
                 {
                     MemberName = _generator.RandomName(),
@@ -35,7 +38,9 @@ namespace MSIT147thGraduationTopic.Models.Services
                     Account = account,
                     Password = password,
                     Phone = _generator.RandomPhone(),
-                    Address = _generator.RandomAddress(),
+                    City = city.CityName,
+                    District = district.DistrictName,
+                    Address = _generator.RandomAddressWitoutCity(),
                     Email = _generator.RandomEmail(),
                     IsActivated = true,
                     Salt = salt
@@ -133,6 +138,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                         PaymentMethodId = _generator.RandomIntBetween(1, 3),
                         Payed = true,
                         PurchaseTime = _generator.RandomDateBetweenDays(-100, -3),
+                        DeliveryCity = String.IsNullOrEmpty(member.City) ? "臺北市" : member.City,
+                        DeliveryDistrict = String.IsNullOrEmpty(member.District) ? "大安區" : member.District,
                         DeliveryAddress = member.Address,
                         ContactPhoneNumber = member.Phone
                     };
@@ -173,6 +180,29 @@ namespace MSIT147thGraduationTopic.Models.Services
                 int tagId = _generator.RandomFrom(tagIds);
                 _repo.AddSpecTags(specId, tagId);
             }
+        }
+
+        public void AddSpecPopularity()
+        {
+            var specIds = _repo.GetAllSpecID();
+            foreach (var specId in specIds)
+            {
+                double popularity = _generator.RandomDouble();
+                _repo.UpdateSpecPopularity(specId, popularity);
+            }
+        }
+
+        public void AddRandomEvaluations()
+        {
+            var orders = _repo.GetAllOrdersWithMerchandiseId();
+
+            foreach (var order in orders) foreach (var merchandiseId in order.merchandiseId)
+                {
+                    if (_repo.CheckEvaluated(order.orderId, merchandiseId)) continue;
+                    if (_generator.RandomChance(60)) continue;
+                    int score = _generator.RandomIntByWeight(0, 1, 1, 2, 10, 10);
+                    _repo.AddEvaluation(order.orderId, merchandiseId, score);
+                }
         }
     }
 }

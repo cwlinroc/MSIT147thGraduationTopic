@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
@@ -49,17 +50,70 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
         public IEnumerable<int> GetAllTagID()
         {
-            var ids = _context.Tags.Select(o => o.TagId); 
+            var ids = _context.Tags.Select(o => o.TagId);
             return ids;
         }
 
-        
+
         public int AddSpecTags(int specId, int tagId)
         {
             using var conn = new SqlConnection(_context.Database.GetConnectionString());
             string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
             return conn.Execute(str, new { SpecId = specId, TagId = tagId });
         }
+
+        public int UpdateSpecPopularity(int specId, double popularity)
+        {
+            var spec = _context.Specs.FirstOrDefault(o => o.SpecId == specId);
+            if (spec == null) return -1;
+            spec.Popularity = popularity;
+            _context.SaveChanges();
+            return spec.SpecId;
+        }
+
+
+
+        public IEnumerable<(int orderId, int[] merchandiseId)> GetAllOrdersWithMerchandiseId()
+        {
+            var result = (from order in _context.Orders
+                          join orderlist in _context.OrderLists on order.OrderId equals orderlist.OrderId
+                          join spec in _context.Specs on orderlist.SpecId equals spec.SpecId
+                          select new { order.OrderId, spec.MerchandiseId }).Distinct().ToList();
+            return result.GroupBy(o => o.OrderId)
+                .Select(o => (o.First().OrderId, o.Select(x => x.MerchandiseId).ToArray()));
+        }
+
+        public bool CheckEvaluated(int orderId, int merchandiseId)
+        {
+            return _context.Evaluations
+                .Any(o => o.OrderId == orderId && o.MerchandiseId == merchandiseId);
+        }
+
+        public int AddEvaluation(int orderId, int merchandiseId, int score)
+        {
+            var evaluation = new Evaluation
+            {
+                MerchandiseId = merchandiseId,
+                Score = score,
+                OrderId = orderId
+            };
+
+            _context.Evaluations.Add(evaluation);
+            _context.SaveChanges();
+            return evaluation.EvaluationId;
+        }
+
+        public List<CityStructDto> GetCitiesAndDistricts()
+        {
+            var cities = _context.Cities.Select(o => o.ToDto()).ToList();
+            foreach (var city in cities)
+            {
+                city.Districts = _context.Districts.Where(o => o.CityId == city.CityId)
+                    .Select(o => o.ToDto()).ToList();
+            }
+            return cities;
+        }
+
 
 
     }

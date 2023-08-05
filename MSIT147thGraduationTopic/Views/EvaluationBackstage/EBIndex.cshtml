@@ -6,27 +6,25 @@
 }
 
 
-
-@*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
 <div class="container mt-5">
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
             <div>
+                <form method="post" id="SearchForm">
                 <div class="row g-3 align-items-center ">
-                    <div class="col-auto ms-auto float-end d-flex align-items-center">
-                        <input type="text" class="form-control-sm d-flex mx-2 " id="keywoud" style="height: 38px;">
-                        <img src="~/images/search.jpg" class="rounded-3 d-flex" />
+                    <div class="col-auto ms-auto float-end d-flex align-items-center"> 
+                        <input name="Keyword" id="txtkeyword" type="text" class="form-control-sm d-flex mx-2 " style="height: 38px;" placeholder="請輸入關鍵字">
+                        <img src="~/images/search.jpg" class="rounded-3 d-flex" id="btnKeywordImage" style="cursor: pointer;" />
                     </div>
 
                 </div>
+                </form>
             </div>
-            <table class="table bg-white mt-3 rounded-3">
+            <table class="table bg-white mt-3 rounded-3 ">
                 <thead>
                     <tr>
-                        <th>
+                        <th style="text-align:center">
                             勾選
                             @*@Html.DisplayNameFor(model => model.Comment)*@
                         </th>
@@ -35,7 +33,7 @@
                             @Html.DisplayNameFor(model => model.OrderId)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Merchandise.MerchandiseName)
+                            @Html.DisplayNameFor(model => model.MerchandiseName)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Score)
@@ -51,51 +49,56 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @if(Model != null)
                     {
-                        <tr>
-                            <td>
-                                <input class="form-check-input" type="checkbox" id="gridCheck">
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.OrderId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Merchandise.MerchandiseName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Score)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Comment)
-                            </td>
-                            <td>
-                                <button type="submit" id="btnDelete" class="btn btn-primary">刪除</button>
-                                <a asp-action="Delete" asp-route-id="@item.EvaluationId">Delete</a>
-                            </td>
-                            
-                        </tr>
-                    }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="text-align:center">
+                                    <input class="form-check-input" type="checkbox" id="gridCheck" name="checitem " data-id="@item.EvaluationId">
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OrderId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MerchandiseName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Score)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Comment)
+                                </td>
+                                <td>
+                                    <button type="submit" id="btnDelete" class="btn btn-primary btnDelete" data-id="@item.EvaluationId">刪除</button>
+                                </td>
+                            </tr>
+                        }
+                    }                  
                 </tbody>
             </table>
-
+            <!-- 顯示分頁控制元件 -->
             <nav aria-label="Page navigation example">
+                <button id="btnChecitem" class="btn btn-primary ">刪除所有勾選</button>
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <div class="pagination ">
+                       @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
+                        {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("EBIndex", new { pageNo = i })">@i</a></li>
+                        }
+                    </div>
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
                 </ul>
-            </nav>
+            </nav>          
         </div>
         <div class="col-1"></div>
     </div>
@@ -103,28 +106,36 @@
 
 @section Scripts{
     <script>
-        ////step1 先找到要控制的對象
-        //const btn = document.querySelector('#btnDelete');
-        ////step2 在甚麼的行為下
-        //btn.addEventListener('click', () => {
-        //    //step3 要做甚麼事 >>透過XMLHttpRequest物件對伺服器發出要求(Request)以及接收伺服器回應(Response)的資料
+        $('.btnDelete').click(function () {
 
-        //    //step1 建立Ajax物件
-        //    const xhr = new XMLHttpRequest();
+            var evaluationId = $(this).attr('data-id');
 
-        //    //step2 對伺服器發出要求
-        //    xhr.open('Get', '/EvaluationBackstage/Delete')   //得到EvaluationBackstageController中Delete回傳的值
-        //    xhr.send();
+            console.log(evaluationId);
 
-        //    //step3 接收伺服器回應(Response)的資料
-        //    //load事件表示伺服器已經回應資料了
-        //    xhr.addEventListener('load', () => {
-        //        //接收資料
-        //        const data = xhr.responseText;
-        //        //顯示資料
-              
-        //    })
+            $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
+                window.location.reload(); //重載畫面
+            });
+        });
 
-        //})
+        $('#btnChecitem').click(function () {
+
+            var Checitems = $(this).attr('data-id').List();
+
+            console.log(this);
+
+            $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
+                window.location.reload(); //重載畫面
+            });
+        });
+
+
+        $("#btnKeywordImage").click(function(){
+            var keywordValue = $("#txtkeyword").val();
+            console.log(keywordValue);
+            $("#SearchForm").submit();
+        })
+        
+
     </script>
+
 }

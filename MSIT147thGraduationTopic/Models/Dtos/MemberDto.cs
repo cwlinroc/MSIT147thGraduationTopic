@@ -11,6 +11,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string NickName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool Gender { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
         public string Account { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
@@ -28,20 +30,17 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string? Password { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
         public string? Address { get; set; }
         public string? Avatar { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        public string Salt { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        public string ConfirmGuid { get; set; }
-        [Required]
         public bool IsActivated { get; set; }
     }
 
     public class MemberSearchDto
     {
         public int? MemberID { get; set; }
-        public string MemberName { get; set; }
+        public string? MemberName { get; set; }
         public int? MaxQueryNumber { get; set; }
     }
 
@@ -59,6 +58,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 Account = dto.Account,
                 Password = dto.Password,
                 Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
                 Address = dto.Address,
                 Email = dto.Email,
                 Avatar = dto.Avatar,
@@ -77,6 +78,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 NickName = entity.NickName,
                 DateOfBirth = entity.DateOfBirth,
                 Gender = entity.Gender,
+                City = entity.City,
+                District = entity.District,
                 Account = entity.Account,
                 Password = entity.Password,
                 Phone = entity.Phone,
@@ -92,13 +95,13 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         static public void ChangeByEditDto(this Member entity, MemberEditDto dto)
         {
             entity.NickName = dto.NickName;
-            entity.Password = dto.Password;
-            entity.Phone = dto.Phone;
-            entity.Address = dto.Address;
-            entity.Email = dto.Email;
+            if (dto.Password != null) entity.Password = dto.Password;
+            if (dto.Phone != null) entity.Phone = dto.Phone;
+            if (dto.City != null) entity.City = dto.City;
+            if (dto.District != null) entity.District = dto.District;
+            if (dto.Address != null) entity.Address = dto.Address;
+            if (dto.Email != null) entity.Email = dto.Email;
             entity.Avatar = dto.Avatar;
-            entity.Salt = dto.Salt;
-            entity.ConfirmGuid = dto.ConfirmGuid;
             entity.IsActivated = dto.IsActivated;
         }
     }

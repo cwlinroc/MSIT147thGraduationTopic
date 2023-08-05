@@ -16,6 +16,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
     }
     public class CouponEditDto
     {
+        public int CouponId { get;set; }
         public int? CouponTagId { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "優惠券名稱為必填欄位")]
         public string CouponName { get; set; }
@@ -87,6 +88,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
 
         static public void UpdateByEditDto(this Coupon coupon, CouponEditDto couponEditDto)
         {
+            coupon.CouponId = couponEditDto.CouponId;
             coupon.CouponTagId = couponEditDto.CouponTagId;
             coupon.CouponName = couponEditDto.CouponName;
             coupon.CouponStartDate = couponEditDto.CouponStartDate;
@@ -96,5 +98,4 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             coupon.CouponDiscount = couponEditDto.CouponDiscount;
         }
     }
-
 }

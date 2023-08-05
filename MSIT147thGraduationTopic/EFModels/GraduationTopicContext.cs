@@ -21,8 +21,10 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CartItem> CartItems { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponOwner> CouponOwners { get; set; }
+        public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
@@ -32,12 +34,14 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderList> OrderLists { get; set; }
+        public virtual DbSet<OrderWithMember> OrderWithMembers { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<Spec> Specs { get; set; }
         public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
         public virtual DbSet<SpecTag> SpecTags { get; set; }
         public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
         public virtual DbSet<SpecWithMerchandiseName> SpecWithMerchandiseNames { get; set; }
+        public virtual DbSet<SpecsInOrder> SpecsInOrders { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -45,7 +49,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
             }
         }
 
@@ -72,6 +76,13 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.CategoryName)
                     .IsRequired()
                     .HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<City>(entity =>
+            {
+                entity.Property(e => e.CityName)
+                    .IsRequired()
+                    .HasMaxLength(10);
             });
 
             modelBuilder.Entity<Coupon>(entity =>
@@ -109,6 +120,13 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CouponOwners_Members");
+            });
+
+            modelBuilder.Entity<District>(entity =>
+            {
+                entity.Property(e => e.DistrictName)
+                    .IsRequired()
+                    .HasMaxLength(10);
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -320,6 +338,14 @@ namespace MSIT147thGraduationTopic.EFModels
                     .IsRequired()
                     .HasMaxLength(100);
 
+                entity.Property(e => e.DeliveryCity)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.DeliveryDistrict)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
                 entity.Property(e => e.PurchaseTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Remark).HasMaxLength(300);
@@ -350,6 +376,19 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.SpecId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderLists_Specs");
+            });
+
+            modelBuilder.Entity<OrderWithMember>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("OrderWithMember");
+
+                entity.Property(e => e.PaymentMethodName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PurchaseTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<PaymentMethod>(entity =>
@@ -450,6 +489,23 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.HasNoKey();
 
                 entity.ToView("SpecWithMerchandiseName");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+
+                entity.Property(e => e.MerchandiseName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.SpecName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<SpecsInOrder>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("SpecsInOrder");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
 
