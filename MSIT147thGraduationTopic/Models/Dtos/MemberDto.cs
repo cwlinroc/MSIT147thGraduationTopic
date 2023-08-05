@@ -14,6 +14,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string Account { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
@@ -59,6 +61,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 Account = dto.Account,
                 Password = dto.Password,
                 Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
                 Address = dto.Address,
                 Email = dto.Email,
                 Avatar = dto.Avatar,
@@ -80,6 +84,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 Account = entity.Account,
                 Password = entity.Password,
                 Phone = entity.Phone,
+                City = entity.City,
+                District = entity.District,
                 Address = entity.Address,
                 Email = entity.Email,
                 Avatar = entity.Avatar,

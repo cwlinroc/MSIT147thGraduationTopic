@@ -31,6 +31,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet("insertcitiesanddistricts")]
         public IActionResult InsertCitiesAndDistricts()
         {
+            return Content("dont do it");
             var fileProvider = new PhysicalFileProvider(_environment.WebRootPath);
             var fileInfo = fileProvider.GetFileInfo("datas/CityCountyData.json");
             using var stream = fileInfo.CreateReadStream();
@@ -60,7 +61,6 @@ namespace MSIT147thGraduationTopic.Controllers
                     conn.Execute(str, district);
                 }
             }
-
             return Content("success");
         }
 
