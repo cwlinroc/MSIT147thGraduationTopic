@@ -230,7 +230,7 @@
                     }
                     if (pageindex > 4) {
                         if (pageindex + 3 <= totalpage) {
-                            //start = pageindex - 2; end = parseInt(pageindex) + 2;//未轉型會默認為字串串接
+                            start = pageindex - 2; end = parseInt(pageindex) + 2;//未轉型會默認為字串串接
                             indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
                                 + `<li class="page-item"><a class="page-link" >...</a></li>`
                             for (var i = start; i <= end; i++) {
@@ -257,7 +257,6 @@
                 pagingContainer.innerHTML = indexRow;
 
                 //改變當前頁籤格式
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
                 //分頁點選+點選後
                 $(".showIndex").on("click", (e) => {
