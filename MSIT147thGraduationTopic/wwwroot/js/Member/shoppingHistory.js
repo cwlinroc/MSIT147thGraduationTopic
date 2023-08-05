@@ -168,6 +168,10 @@ function displayOrderBetweenDate() {
                     </table>
                 </div>
             </div>`;
+        } else {
+            $('.infotext').html('查無訂單');
+            $('.orderTables').html('');
+            return;
         }
     })
     $('.orderTables').html(oTable.join(''));
