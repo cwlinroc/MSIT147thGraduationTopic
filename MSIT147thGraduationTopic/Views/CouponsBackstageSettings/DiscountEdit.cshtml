@@ -91,44 +91,55 @@
     <script>
         //const couponId = '@Model.CouponId';
 
-        $('#btnEdit').click(async function(){
+        $('#btnEdit').click(async function () {
             const discountInput = $('input[name="CouponDiscount"]');
             const discountValue = parseFloat(discountInput.val());
 
-            if(isNaN(discountValue)||discountValue<0||discountValue>100){
+            if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
                 discountInput[0].setCustomValidity('折扣必須介於0到100');
             }
-            else{
+            else {
                 discountInput[0].setCustomValidity('');
             }
 
             const form = document.getElementById('edit');
-            if(form.checkValidity()){
+            if (form.checkValidity()) {
                 const formData = new FormData(form);
-                const editUrl = `@Url.Action("EditCoupon","ApiCoupon",new{id=Model.CouponId})`;
+                const couponId = $('#CouponId').val()
+                const editUrl = `@Url.Content($"~/api/apicoupon/")${couponId}`;
                 console.log(formData)
 
-                $.ajax({
-                    url:editUrl,
-                    type:'PUT',
-                    data:formData,
-                    success:function(data){
-                        Swal.fire({
-                            icon:'success',
-                            title:'成功',
-                            text:'優惠券更新成功',
-                        });
-                    },
-                    error:function(xhr){
-                        Swal.fire({
-                            icon:'error',
-                            title:'失敗',
-                            text: '優惠券更新失敗，請檢查資料及格式是否正確',
-                        });
-                    }
-                });
+                const response = await fetch(editUrl, {
+                    data: formData,
+                    method: 'PUT'
+                })
+
+                const result = await response.text();
+                console.log(result)
+
+
+
+                //$.ajax({
+                //    url:editUrl,
+                //    type:'PUT',
+                //    data:formData,
+                //    success:function(data){
+                //        Swal.fire({
+                //            icon:'success',
+                //            title:'成功',
+                //            text:'優惠券更新成功',
+                //        });
+                //    },
+                //    error:function(xhr){
+                //        Swal.fire({
+                //            icon:'error',
+                //            title:'失敗',
+                //            text: '優惠券更新失敗，請檢查資料及格式是否正確',
+                //        });
+                //    }
+                //});
             }
-            else{
+            else {
                 form.reportValidity();
             }
         });
