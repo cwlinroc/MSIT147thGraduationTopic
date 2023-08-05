@@ -23,7 +23,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises
-        public async Task<IActionResult> Index(string txtKeyword, int searchCondition)
+        public async Task<IActionResult> Index(string txtKeyword, int searchCondition)//todo 增加分頁功能(應該增加pageIndex即可)
         {
             IEnumerable<MerchandiseSearch> datas;
             datas = from m in _context.MerchandiseSearches

@@ -6,7 +6,7 @@
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
-@*←**********響應式功能未做****************@
+@*****************************************響應式功能未做*****************************************@
 <nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
         <!-- 關鍵字搜尋 -->
@@ -18,7 +18,8 @@
                     <option value="1">商品名稱</option>
                     <option value="2">品牌名稱</option>
                     <option value="3">類別名稱</option>
-                </select>@*←**********待解決會垂直排列的問題****************@
+                </select>
+                @*****************************************待解決會垂直排列的排版問題*****************************************@
                 <!-- 輸入關鍵字 -->
                 <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="off" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
                 <input type="submit" value="尋找商品" class="btn btn-secondary" />
@@ -61,8 +62,7 @@
         <div class="col-12 col-md-2 my-3">
             <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
                 <div class="container-fluid ">
-
-                    <!-- 小視窗用摺疊按鈕(未完成) -->
+                    <!-- ****************************************小視窗用摺疊按鈕(尚無法啟用)**************************************** -->
                     <button class="navbar-toggler" href="#sublist" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -137,12 +137,12 @@
 
                         <div class="col">
                             <div class="card my-3 mx-2 text-center border-light ">
-                                <img src="@Url.Content("~/uploads/merchandisePicture/")@imageUrl" val-merchandisid=@item.MerchandiseId class="w-100 img-thumbnail hover-overlay gotoViewpage">
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")@imageUrl" data-specid=@item.SpecId data-merchandisid=@item.MerchandiseId class="w-100 img-thumbnail hover-overlay gotoViewpage">
                                 <div class="card-body ">
                                     <h6 class="card-text ">《 @item.BrandName 》</h6>
                                     <h5 class="card-title ">@showName</h5>
                                     <h5 class="card-text ">@showPrice</h5>
-                                    <a href="#" class="btn btn-outline-secondary"> 加入購物車 </a>
+                                    <a href="#" class="btn btn-outline-secondary join_to_Cart" data-specid="@item.SpecId"> 加入購物車 </a>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
     </div>
 </div>
 <div>
-    <!-- 推薦商品(未實裝) -->
+    <!---------------------------------------------------------- 推薦商品(未實裝) ---------------------------------------------------------->
 </div>
 
 @section Scripts{
@@ -175,8 +175,8 @@
         let pageSize = @ViewBag.pageSize;
         let displayorder = @ViewBag.displayorder;
         let pageindex = @ViewBag.PageIndex;
-        let minPrice = @(ViewBag.minPrice??"null");
-        let maxPrice = @(ViewBag.maxPrice??"null");
+        let minPrice = @(ViewBag.minPrice ?? "null");
+        let maxPrice = @(ViewBag.maxPrice ?? "null");
 
         //搜尋
         function SearchProducts() {
@@ -184,6 +184,16 @@
                 + `searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&`
                 + `PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
         };
+        //搜尋所有商品(重置搜尋條件)
+        $("#defaultSearch").on("click", () => {
+            window.location.href = `/Mall/Index`;
+        });
+        //進入商品檢視頁
+        $(".gotoViewpage").on("click", (e) => {
+            const targetMerchandisid = $(e.currentTarget).attr("data-merchandisid");
+            const targetSpecid = $(e.currentTarget).attr("data-specid");
+            window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetMerchandisid}&SpecId=${targetSpecid}`;
+        });
 
         //搜尋條件
         $(".conditionname").on("change", (e) => {
@@ -217,16 +227,6 @@
             SearchProducts();
         });
 
-        //進入商品檢視頁
-        $(".gotoViewpage").on("click", (e) => {
-            const targetmerchandisid = $(e.currentTarget).attr("val-merchandisid");
-            window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetmerchandisid}`;
-        });
-        //搜尋所有商品(重置搜尋條件)
-        $("#defaultSearch").on("click", () => {
-            window.location.href = `/Mall/Index`;
-        });
-
         //產生分頁標籤
         $(async () => {
             const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&`
@@ -238,10 +238,10 @@
             const pagingContainer = document.querySelector("#pagingContainer");
 
             let indexRow = `<li class="page-item border-light toPrevious">\
-                                                                    <a class="page-link" href="#" aria-label="Previous">\
-                                                                        <span aria-hidden="true">&laquo;</span>\
-                                                                    </a>\
-                                                                </li>`;
+                                <a class="page-link" href="#" aria-label="Previous">\
+                                    <span aria-hidden="true">&laquo;</span>\
+                                </a>\
+                            </li>`;
             let indexArray = "";
             let start, end;
             if (totalpage <= 5) {
@@ -269,7 +269,7 @@
                     if (pageindex + 3 <= totalpage) {
                         start = pageindex - 2; end = parseInt(pageindex) + 2;//未轉型會默認為字串串接
                         indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
-                            + `<li class="page-item"><a class="page-link" >...</a></li>`
+                                                                    + `<li class="page-item"><a class="page-link" >...</a></li>`
                         for (var i = start; i <= end; i++) {
                             indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                         }
@@ -278,7 +278,7 @@
                     if (pageindex + 3 > totalpage) {
                         start = pageindex - 2; end = totalpage;
                         indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
-                            + `<li class="page-item"><a class="page-link" >...</a></li>`
+                                                                    + `<li class="page-item"><a class="page-link" >...</a></li>`
                         for (var i = start; i <= end; i++) {
                             indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                         }
@@ -287,10 +287,10 @@
             }
 
             indexRow += indexArray + `<li class="page-item toNext">
-                                                            <a class="page-link" href="#" aria-label="Next">
-                                                                <span aria-hidden="true">&raquo;</span>
-                                                            </a>
-                                                          </li>`;
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                     </li>`;
             pagingContainer.innerHTML = indexRow;
 
             //改變當前頁籤格式
@@ -320,7 +320,7 @@
         $(async () => {
             const CategoryOptions = document.querySelector("#categoryOptions")
             const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&`
-                + `searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+                                                        + `searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
             const returnCategoryBag = await responseforCategory.text();
             const CategoryResult = JSON.parse(returnCategoryBag);
 
@@ -334,6 +334,12 @@
                 sideCategoryId = $(e.currentTarget).attr("val-category");
                 SearchProducts();
             })
+        })
+
+        //加入購物車
+        $(".join_to_Cart").on("click", (e) => {
+            const specIdforCart = $(e.currentTarget).attr("data-specid");
+            //window.location.href = `/ApiMall/加入購物車/?SpecId=${specIdforCart}&Quantity=1`;
         })
     </script>
 }

@@ -62,10 +62,12 @@ namespace MSIT147thGraduationTopic.Controllers
             return View(datas);
         }
 
-        public IActionResult Viewpage(int MerchandiseId)
+        public IActionResult Viewpage(int MerchandiseId, int SpecId)
         {
             IEnumerable<Spec> datas = _context.Specs
                 .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true);
+
+            ViewBag.SpecId = SpecId;
 
             return View(datas);
         }
