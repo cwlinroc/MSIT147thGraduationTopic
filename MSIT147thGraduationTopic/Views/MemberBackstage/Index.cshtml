@@ -3,6 +3,16 @@
     ViewData["Title"] = "會員管理系統";
 }
 
+<header class="container px-5 mt-5">
+
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">會員管理</li>
+            <li class="breadcrumb-item active" aria-current="page">會員檢視</li>
+        </ol>
+    </nav>
+</header>
+
 <div class="container px-5">
     <div class="row gx-5">
         <div class="col-xl-9 col-lg-6">
@@ -82,8 +92,6 @@
     </div>
 </div>
 
-
-
 @section Scripts{
    <script>
         //會員資料
@@ -91,13 +99,13 @@
         //抓取會員資料
         getMembers()
         //搜尋按鈕
-        $('#queryButton').click(e => getEmployees($('#query').val()))
+        $('#btnQuery').click(e => getEmployees($('#query').val()))
         //修改權限按鈕
         $('#btnChangePermission').click(submitChangePermission)
 
         //Ajax 得到會員資料
         async function getMembers(query) {
-            showLoadingBox()
+            //showLoadingBox()
             let str = ''
             if (query) str = '/' + query
             const response = await fetch('@Url.Content("~/api/apimember")' + str)
@@ -107,7 +115,7 @@
 
             memberData = data
             displayMembers()
-            hideLoadingBox()
+            //hideLoadingBox()
         }
 
         //Ajax 修改會員權限
@@ -119,7 +127,7 @@
             const permission = $('#selectPermission').val()
             const id = $('#selectPermission').attr('data-memberId')
 
-            showLoadingBox()
+            //showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apimember/permission")/${id}`, {
                 body: JSON.stringify({ 'permission': permission }),
                 method: 'PUT',
@@ -140,7 +148,7 @@
                     'success'
                 )
             }
-            hideLoadingBox()
+            //hideLoadingBox()
         }
 
         //列出會員
@@ -156,7 +164,7 @@
                     </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
-            $('.tablebox').find('.permission-btn').click(showEditPermissionModal)
+            $('.tablebox').find('.permission-btn').click()
             $('.tablebox').find('tbody').find('tr').click(displayMemberDataInRow)
             displayMemberData(0)
         }
@@ -172,10 +180,36 @@
             if (!memberData.length) return           
 
             $('#displayName').text(memberData[index].memberName)
+            $('#displayGender').text(memberData[index].gender)
             $('#displayAccount').text(memberData[index].account)
             $('#displayPhone').text(memberData[index].phone)
             $('#displayEmail').text(memberData[index].email)
-            $('#displayPermission').text(memberData[index].permission)
+            $('#displayCity').text(memberData[index].city)
+            $('#displayDistrict').text(memberData[index].district)
+            $('#displayAddress').text(memberData[index].address)
+            $('#displayPermission').text(memberData[index].isActived)
         }
    </script>
+}
+
+@section Styles{
+    <style>
+        .contentbox {
+            height: 720px;
+            overflow: auto;
+        }
+
+        .tablebox {
+            height: 500px;
+            overflow: auto;
+        }
+
+            .tablebox td img {
+                height: 50px;
+            }
+
+            .tablebox td, th {
+                vertical-align: middle;
+            }
+    </style>
 }
