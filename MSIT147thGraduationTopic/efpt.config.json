@@ -28,11 +28,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Cities]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[CouponOwners]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Coupons]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Districts]",
          "ObjectType": 0
       },
       {
@@ -108,7 +116,7 @@
          "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-43t56sd.GraduationTopic.dbo",
+   "UiHint": "libicrystal-base-03.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

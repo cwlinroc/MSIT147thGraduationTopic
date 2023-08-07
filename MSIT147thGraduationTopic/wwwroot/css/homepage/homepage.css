@@ -1,0 +1,75 @@
+﻿
+
+.custom-merchandise .card-body {
+    padding: 0.3rem 0.3rem;
+}
+
+
+.custom-home-carousel-1 {
+    background-size: cover;
+    background-image: linear-gradient(to bottom, rgba(33, 37, 41, 1)5%, rgba(255, 245, 235, 0.7)95%), url("../../images/homepage/pexels-anastasia-shuraeva-5124967.jpg"); 
+    height: 650px;
+}
+
+.custom-home-carousel-2 {
+    background-size: cover;
+    background-image: linear-gradient(to bottom, rgba(33, 37, 41, 1)5%, rgba(255, 245, 235, 0.7)95%), url("../../images/homepage/pexels-helena-lopes-745045.jpg");
+    height: 650px;
+}
+
+.custom-home-carousel-3 {
+    background-size: cover;
+    background-image: linear-gradient(to bottom, rgba(33, 37, 41, 1)5%, rgba(255, 245, 235, 0.7)95%), url("../../images/homepage/pexels-oleksandr-canary-islands-1174081.jpg");
+    height: 650px;
+}
+
+div.custom-title {
+    width: 80%;
+    height: 500px;
+    padding: 20px 20px 20px 0px;
+    border-radius: 0 15px 15px 0;
+    border: 3px #2A2A2E double;
+    border-left: 0;
+}
+
+div.custom-title2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 0 15px 15px 0;
+    border: 5px #ffc107 double;
+    border-left: 0;
+    padding: 10% 5%;
+}
+
+
+div.custom-title-reverse {
+    width: 77%;
+    height: 500px;
+    padding: 20px 0 20px 20px;
+    border-radius: 15px 0 0 15px;
+    border: 3px #2A2A2E double;
+    border-right: 0;
+}
+
+div.custom-title2-reverse {
+    width: 100%;
+    height: 100%;
+    border-radius: 15px 0 0 15px;
+    border: 5px #ffc107 double;
+    border-right: 0;
+    padding: 10% 5%;
+}
+
+div.custom-title3 {
+    width: 100%;
+    height: 100%;
+    /* border: 5px #2A2A2E dashed; */
+    font-size: 75px;
+    user-select: none;
+}
+
+img.custom-carousel-image {
+    height: 450px;
+    width: 600px;
+    object-fit: cover;
+}

@@ -43,8 +43,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
 
         [DisplayName("價格")]
-        [Required(ErrorMessage = "此為必填欄位")]
-        [Range(1, int.MaxValue, ErrorMessage = "價格須為大於0的數字")]
         public int Price
         {
             get { return _specWm.Price; }
@@ -52,8 +50,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
 
         [DisplayName("庫存數量")]
-        [Required(ErrorMessage = "此為必填欄位")]
-        [Range(0, int.MaxValue, ErrorMessage = "庫存數量應至少為0")]
         public int Amount
         {
             get { return _specWm.Amount; }
@@ -66,12 +62,21 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _specWm.DiscountPercentage; }
             set { _specWm.DiscountPercentage = value; }
         }
+
         [DisplayName("顯示順序")]
         public int DisplayOrder
         {
             get { return _specWm.DisplayOrder; }
             set { _specWm.DisplayOrder = value; }
         }
+
+        [DisplayName("熱門度")]
+        public double Popularity
+        {
+            get { return _specWm.Popularity; }
+            set { _specWm.Popularity = value; }
+        }
+
         [DisplayName("上架此規格")]
         public bool OnShelf
         {

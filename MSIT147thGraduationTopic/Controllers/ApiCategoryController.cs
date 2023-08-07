@@ -32,7 +32,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
         public IActionResult CheckMerchandiseforDeleteCategory(int id)
         {
-            var exists = _context.Categories.Any(m => m.CategoryId == id);
+            var exists = _context.Merchandises.Any(m => m.CategoryId == id);
 
             return Json(exists);
         }

@@ -1,14 +1,14 @@
-HTMLElement.prototype.customAnimate = function (animation) {
+HTMLElement.prototype.customAnimate = function (animation, ...addition) {
     const prefix = 'animate__'
     const node = this
     const animationName = `${prefix}${animation}`
     return new Promise((resolve,reject)=>{
-        node.classList.add(`${prefix}animated`, animationName);
+        node.classList.add(`${prefix}animated`, animationName, ...addition);
 
         // When the animation ends, we clean the classes and resolve the Promise
         function handleAnimationEnd(event) {
             event.stopPropagation();
-            node.classList.remove(`${prefix}animated`, animationName);
+            node.classList.remove(`${prefix}animated`, animationName, ...addition);
             resolve('Animation ended');
         }
     

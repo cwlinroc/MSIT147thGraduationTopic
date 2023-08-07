@@ -7,9 +7,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
     {
         public int EvaluationId { get; set; }
         public int MerchandiseId { get; set; }
-        //public int MemberId { get; set; }
-        //public string Avatar { get; set; }
-        //public string NickName { get; set; }
         [DisplayName("訂單編號")]
         public int OrderId { get; set; }
         [DisplayName("商品名稱")]
@@ -20,7 +17,10 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public string Comment { get; set; }
         [DisplayName("星星評分")]
         public int Score { get; set; }
+        public string StarImageUrl { get; set; }
+        public string Keyword { get; set; }
         public List<Comments> comments { get; set; }
+        
 
         public class Comments //要回傳的資料
         {
@@ -32,6 +32,21 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             public int Score { get; set; }
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            Evaluation eother = (Evaluation)obj;
+            Spec sother= (Spec)obj;
+            return EvaluationId == eother.EvaluationId && MerchandiseId == eother.MerchandiseId && SpecId == sother.SpecId;
+        }
+        public override int GetHashCode()
+        {
+            return new { EvaluationId, MerchandiseId, SpecId }.GetHashCode();
+        }
+
+
 
         public virtual Member Member { get; set; }
         
@@ -39,23 +54,10 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
         public virtual Order Order { get; set; }
 
+       
+
     }
     
 
-    static public class EvaluationTransfer
-    {
-        //static public EvaluationVM ToVM(this Evaluation evaluation)
-        //{
-        //    return new EvaluationVM
-        //    {
-        //        Avatar = evaluation.Avatar,
-        //        NickName = evaluation.NickName,
-        //        OrderId = evaluation.OrderId,
-        //        MerchandiseName = evaluation.MerchandiseName,
-        //        SpecName = evaluation.SpecName,
-        //        Comment = evaluation.Comment,
-        //        Score = evaluation.Score,
-        //    };
-        //}
-    }
+    
 }

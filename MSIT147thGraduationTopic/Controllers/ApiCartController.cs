@@ -82,6 +82,7 @@ namespace MSIT147thGraduationTopic.Controllers
             return NoContent();
         }
 
+        [HttpGet("cartcount")]
         public async Task<ActionResult<int>> GetCartCount()
         {
             if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))

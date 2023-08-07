@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\js\homepage\" />
     <Folder Include="wwwroot\uploads\merchandisePicture\" />
   </ItemGroup>
 

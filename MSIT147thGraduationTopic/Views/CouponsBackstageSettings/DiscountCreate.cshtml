@@ -1,0 +1,201 @@
+﻿@{
+    Layout = "_BackstagePage";
+    ViewData["Title"] = "優惠券管理系統";
+
+}
+<header class="container px-5 mt-5">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a id="hrefHomePage">優惠券管理系統</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">新增折價優惠券</li>
+        </ol>
+    </nav>
+</header>
+<body class="d-flex flex-column h-100">
+    <main class="flex-shrink-0">
+        <!-- Page Content-->
+        <section class="py-5">
+            <div class="container px-5 my-5">
+                <div class="text-center mb-5">
+                    <h1 class="fw-bolder">新增折價優惠券</h1>
+                    <p class="lead fw-normal text-muted mb-0"></p>
+                </div>
+                <div class="container px-5 my-5">
+                    <div>
+                        <form id="create" name="create" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
+                            <div class="col-8 mb-3">
+                                優惠券名稱<input id="couponName" name="CouponName" type="text" class="form-control" placeholder="請輸入優惠券名稱" required>
+                            </div>
+                            <div class="col-8 mb-3">
+                                適用對象<select id="couponTag" name="CouponTagId" class="form-select form-control">
+                                    <option value="none" class="" selected disabled hidden>請選擇適用對象</option>
+                                    <option></option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="col-8 mb-3">
+                                開始日期<input id="startDate" name="CouponStartDate" type="date" class="form-control" placeholder="請輸入使用期限" required>
+                            </div>
+                            <div class="col-8 mb-3">
+                                結束日期<input id="endDate" name="CouponEndDate" type="date" class="form-control" placeholder="請輸入使用期限" required>
+                            </div>
+                            <div class="col-8 mb-3">
+                                <input id="discountType" name="CouponDiscountTypeId" type="hidden" class="form-control" placeholder="打折券" value="0" readonly />
+                            </div>
+                            @*<div class="col-8 mb-3" id="conditionSection">
+                            消費額度<input id="condition" name="CouponCondition" type="number" class="form-control" placeholder="請輸入消費額度">
+                            </div>*@
+                            <div class="col-8 mb-3" id="rebateSection">
+                                折扣<input id="discount" name="CouponDiscount" type="number" class="form-control" placeholder="請輸入折扣" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row justify-content-center px-5 my-5">
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary" id="btnCreate">新增</button>
+                            <button type="button" class="btn btn-primary" id="btnBack">返回</button>
+
+                        </div>
+                    </div>
+                    <div class="my-3">
+                        <button id="demo">demo</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; Your Website 2023</div></div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+@section Styles{
+    <style>
+
+    </style>
+}
+
+@section Scripts{
+    <script src="~/js/MyBootstrapValidator.js"></script>
+    <script>
+        $('#btnBack').on('click', function () {
+            Swal.fire({
+                title: '確定要返回主頁面?',
+                showDenyButton: true,
+                confirmButtonText: '取消',
+                denyButtonText: `返回主頁面`,
+                allowOutsideClick: false
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isDenied) {
+                    location.href = `@Url.Content("~/CouponsBackstageSettings/Index")`;
+                }
+            })
+        })
+
+        $('#hrefHomePage').on('click', function () {
+            Swal.fire({
+                title: '確定要返回主頁面?',
+                showDenyButton: true,
+                confirmButtonText: '取消',
+                denyButtonText: `返回主頁面`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isDenied) {
+                    location.href = `@Url.Content("~/CouponsBackstageSettings/Index")`;
+                }
+            })
+        })
+
+        $('#btnCreate').on('click', function () {
+            const formData = $("#create").serializeArray();
+            //datas = $("form").serializeArray()
+            $.ajax({
+                method: "POST",
+                url: "@Url.Content("~/api/ApiCoupon")",
+                data: formData,
+                async: true,
+            }).done(function (Data) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '成功',
+                    text: '優惠券新增成功',
+                });
+                document.getElementById("create").reset();
+            }).fail(function (xhr, textStatus, errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '優惠券新增失敗，請檢查資料及格式是否正確',
+                });
+            });
+            $('#create').reset();
+        })
+        //demo
+        $('#demo').click(e => {
+            $('#couponName').val('123');
+            $('#startDate').val('2023-08-25');
+            $('#endDate').val('2023-08-30');
+            $('#discount').val('95');
+            console.log('123');
+        })
+
+                ////ajax 得到優惠券資料
+                //async function getcoupon(query){
+                //let str = ''
+                //if(query) str = '/' + query
+                //const response = await fetch('@@url.content("~/api/apicoupon")'+str)
+                //if(!response.ok)return
+                //const data = await response.json()
+                //coupondata = data
+                //console.log(data)
+                //}
+                ////新增優惠券表單驗證
+                //// 0. section最上面要引用  script src="~/js/mybootstrapvalidator.js"
+                //// 1. const myvalid = new mybootsrapvalidator(表單element)
+                //const myvalid = new mybootstrapvalidator(document.queryselector('.needs-validation'))
+                //function createvalidator() {
+                //// 2. myvalid.validatefunction( 回傳bool的函式 ) //自訂判斷整個表單是否格式正確，正確回傳true
+                //myvalid.validatefunction(() => {
+                //const name = document.queryselector('#couponname')
+                //const namehasvalue = !!name.value
+                //// 3. input元素.setvalidate( 回傳bool的函式 , [錯誤訊息字串] )  //自訂判斷這個input是否格式正確，如果有輸入錯誤字串會更改顯示的錯誤訊息
+                //// ps:也可以使用 input元素.setvalidate(...).setvalidate(...).setvalidate(...) 串接多個條件判斷  只要其中有錯誤就會顯示第一個錯的錯誤，包含錯誤信息
+                //name.setvalidate(() => namehasvalue, '為必填欄位')
+                //const condition = document.queryselector('#condition')
+                //const conditionhasvalue = !!condition.value
+                //const conditionnotnegative = +condition.value > 0
+                //condition.setvalidate(() => conditionhasvalue, '為必填欄位')
+                //.setvalidate(() => conditionnotnegative, '數值不得為負數')
+
+                //const discount = document.queryselector('#discount')
+                //const discounthasvalue = !!discount.value
+                //const discountnotnegative = +condition.value > 0
+                //discount.setvalidate(() => discounthasvalue, '為必填欄位')
+                //.setvalidate(() => discountnotnegative, '數值不得為負數')
+
+                //discount.setvalidate(() => discountvalid)
+
+                ////全數正確回傳表單
+                //return namevalid && coupontagvalid && discounttypevalid && conditionvalid && discountvalid
+                //})
+                ////myvalid.startvalidate()
+                ////開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
+                //return myvalid.startvalidate()
+                //}
+    </script>
+}

@@ -83,7 +83,9 @@
                                 @Html.DisplayFor(modelItem => item.Description)
                             </td>
                             <td>
-                                @{ string imageurl = string.IsNullOrEmpty(item.ImageUrl) ? "default.png" : item.ImageUrl; }
+                                @{
+                                    string imageurl = string.IsNullOrEmpty(item.ImageUrl) ? "default.png" : item.ImageUrl;
+                                }
                                 <img src="@Url.Content("~/uploads/merchandisePicture/" + imageurl)" class="imgtumbnail" />
                             </td>
                             <td style="text-align:center">
@@ -101,7 +103,7 @@
             </tbody>
         </table>
         <div class="form-group">
-            @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" }) 
+            @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" })
             @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
         </div>
     </div>
@@ -110,21 +112,50 @@
 @section Scripts {
     <script>
         $(".fordelete").click((e) => {
-            if (!confirm('確定刪除商品嗎？')) return;
-            const currentmerchandiseid = $(e.currentTarget).attr("data-merchandiseid");
+            //if (!confirm('確定刪除商品嗎？')) return;
+            Swal.fire({
+                title: '確定刪除類別嗎？',
+                text: `刪除的資料無法復原！！建議修改商品展示設定即可！`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消！！',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const currentmerchandiseid = $(e.currentTarget).attr("data-merchandiseid");
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", `/ApiMerchandise/CheckSpecforDeleteMerchandise/${currentmerchandiseid}`);
-            xhr.send();
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("GET", `/ApiMerchandise/CheckSpecforDeleteMerchandise/${currentmerchandiseid}`);
+                    xhr.send();
 
-            xhr.addEventListener("load", () => {
-                const data = JSON.parse(xhr.responseText);
+                    xhr.addEventListener("load", () => {
+                        const data = JSON.parse(xhr.responseText);
 
-                if (data) {
-                    alert("商品中尚有規格資料，因此無法刪除");
-                }
-                else {
-                    window.location.href = `/Merchandises/Delete/${currentmerchandiseid}`;
+                        if (data) {
+                            //alert("商品中尚有規格資料，因此無法刪除");
+                            Swal.fire({
+                                icon: 'error',
+                                title: '刪除失敗',
+                                text: '商品中尚有規格資料！',
+                                allowOutsideClick: false
+                            })
+                        }
+                        else {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: '刪除成功！',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                allowOutsideClick: false
+                            }).then(() => {
+                                window.location.href = `/Merchandises/Delete/${currentmerchandiseid}`;
+                            })
+                        }
+                    })
                 }
             })
         })
@@ -143,7 +174,7 @@
             min-width: 120px;
         }
 
-        .imgtumbnail{
+        .imgtumbnail {
             max-width: 70px;
             min-width: 70px;
         }

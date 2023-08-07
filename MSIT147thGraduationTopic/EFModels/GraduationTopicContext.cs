@@ -21,8 +21,10 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CartItem> CartItems { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Coupon> Coupons { get; set; }
         public virtual DbSet<CouponOwner> CouponOwners { get; set; }
+        public virtual DbSet<District> Districts { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
@@ -47,7 +49,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
             }
         }
 
@@ -74,6 +76,13 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.CategoryName)
                     .IsRequired()
                     .HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<City>(entity =>
+            {
+                entity.Property(e => e.CityName)
+                    .IsRequired()
+                    .HasMaxLength(10);
             });
 
             modelBuilder.Entity<Coupon>(entity =>
@@ -111,6 +120,13 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.MemberId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CouponOwners_Members");
+            });
+
+            modelBuilder.Entity<District>(entity =>
+            {
+                entity.Property(e => e.DistrictName)
+                    .IsRequired()
+                    .HasMaxLength(10);
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -321,6 +337,14 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.DeliveryAddress)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.DeliveryCity)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.DeliveryDistrict)
+                    .IsRequired()
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.PurchaseTime).HasColumnType("datetime");
 

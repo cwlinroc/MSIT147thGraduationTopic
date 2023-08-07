@@ -21,19 +21,26 @@ namespace MSIT147thGraduationTopic.Controllers
             return View((couponlistA, couponlistB));
         }
 
-        public IActionResult Create()
+        public IActionResult DiscountCreate()
         {
             return View();
         }
 
-        public IActionResult DiscountEdit()
+        public IActionResult RebateCreate()
         {
             return View();
         }
 
-        public IActionResult RebateEdit()
+        public IActionResult DiscountEdit(int id)
         {
-            return View();
+            var couponData = _repo.GetCouponById(id);
+            return View(couponData);
+        }
+
+        public IActionResult RebateEdit(int id)
+        {
+            var couponData = _repo.GetCouponById(id);
+            return View(couponData);
         }
     }
 }

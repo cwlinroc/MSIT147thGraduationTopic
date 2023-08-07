@@ -35,6 +35,11 @@
             return dt;
         }
 
+        public double RandomDouble(int times = 1)
+        {
+            return _rand.NextDouble() * times;
+        }
+
         public DateTime RandomDateBetweenDays(int minDay = -150, int maxDay = -3)
         {
             if (minDay > maxDay)
@@ -99,6 +104,17 @@
                 + _zhNumber[_rand.Next(_zhNumber.Length)] + "段";
 
             if (RandomBool()) str += _rand.Next(1, 100) + "巷";
+
+            str += _rand.Next(1, 300) + "號";
+
+            return str;
+        }
+        public string RandomAddressWitoutCity()
+        {
+            string str = _street[_rand.Next(_street.Length)]
+                + _zhNumber[_rand.Next(_zhNumber.Length)] + "段";
+
+            if (RandomChance(60)) str += _rand.Next(1, 100) + "巷";
 
             str += _rand.Next(1, 300) + "號";
 
