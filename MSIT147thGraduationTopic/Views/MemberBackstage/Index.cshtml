@@ -124,8 +124,8 @@
             const confirm = await confirmWithPassword()
             if (!confirm) return
 
-            const permission = $('#selectPermission').val()
-            const id = $('#selectPermission').attr('data-memberId')
+            const permission = $('#').val()
+            const id = $('#').attr('data-memberId')
 
             //showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apimember/permission")/${id}`, {
@@ -169,13 +169,13 @@
             displayMemberData(0)
         }
 
-        //顯示點選tr的員工資料
+        //顯示點選tr的會員資料
         function displayMemberDataInRow(event) {
             const index = +event.currentTarget.dataset.index
             displayMemberData(index)
         }
 
-        //顯示第n筆員工資料
+        //顯示第n筆會員資料
         function displayMemberData(index) {
             if (!memberData.length) return           
 
@@ -188,6 +188,16 @@
             $('#displayDistrict').text(memberData[index].district)
             $('#displayAddress').text(memberData[index].address)
             $('#displayPermission').text(memberData[index].isActived)
+        }
+
+        //彈出修改權限
+        async function showEditPermissionModal(event) {
+            if (!await validateRole('管理員')) return;
+
+            const index = +$(event.currentTarget).closest('tr').attr('data-index')
+            $('#selectPermission').val(memberData[index].permission)
+                .attr('data-memberId', memberData[index].memberId)
+            
         }
    </script>
 }
