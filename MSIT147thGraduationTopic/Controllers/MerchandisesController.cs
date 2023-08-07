@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -23,8 +24,12 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises
-        public async Task<IActionResult> Index(string txtKeyword, int searchCondition)//todo 增加分頁功能(應該增加pageIndex即可)
+        public async Task<IActionResult> Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1)
         {
+            ViewBag.txtKeyword = txtKeyword;
+            ViewBag.searchCondition = searchCondition;
+            ViewBag.PageIndex = PageIndex;
+
             IEnumerable<MerchandiseSearch> datas;
             datas = from m in _context.MerchandiseSearches
                     select m;
@@ -52,6 +57,8 @@ namespace MSIT147thGraduationTopic.Controllers
                 if (searchCondition == 4)
                     datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
             }
+
+            datas = datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
 
             List<MerchandiseSearchVM> list = new List<MerchandiseSearchVM>();
             foreach (MerchandiseSearch ms in datas)

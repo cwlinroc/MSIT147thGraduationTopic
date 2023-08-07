@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using NuGet.Versioning;
+using System;
 using System.Linq;
+using System.Security.Claims;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -124,5 +126,60 @@ namespace MSIT147thGraduationTopic.Controllers
             return Json(datas);
         }
 
+        public IActionResult CheckLogInState()
+        {
+            //todo 讀取登入身分
+            bool logInState = false;
+
+            if (logInState) logInState = true;
+
+            return Json(logInState);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddtoCart(int SpecId, int Quantity = 1)
+        {
+            int memberId = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
+            bool isSuccess = false;
+
+            if (ModelState.IsValid)
+            {
+                //驗證購物車內是否已有規格
+                IEnumerable<CartItem> thisCartItem = _context.CartItems
+                            .Where(ci => ci.MemberId == memberId).Where(ci => ci.SpecId == SpecId);
+                //有 => 更新
+                if (thisCartItem.Any())
+                {
+                    int thisQuantity = thisCartItem.Select(ci => ci.Quantity).Sum();
+                    
+                    CartItem ci = new CartItem()
+                    {
+                        MemberId = memberId,
+                        SpecId = SpecId,
+                        Quantity = thisQuantity + Quantity
+                    };
+                    
+                    _context.Update(ci);
+                }
+
+                //無 => 新增
+                if (!thisCartItem.Any())
+                {
+                    CartItem ci = new CartItem()
+                    {
+                        MemberId = memberId,
+                        SpecId = SpecId,
+                        Quantity = Quantity
+                    };
+
+                    _context.Add(ci);
+                }
+
+                await _context.SaveChangesAsync();
+                isSuccess = true;
+                return Json(isSuccess);
+            }
+            return Json(isSuccess);
+        }
     }
 }

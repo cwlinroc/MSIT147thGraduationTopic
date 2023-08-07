@@ -21,7 +21,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index(string txtKeyword)
+        public IActionResult Index(string txtKeyword)
         {
             IEnumerable<Category> datas = null;
             datas = (string.IsNullOrEmpty(txtKeyword)) ? from c in _context.Categories select c

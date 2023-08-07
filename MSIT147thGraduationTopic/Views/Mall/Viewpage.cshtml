@@ -276,10 +276,45 @@
             $("#totalPrice").text((purchaseAmount * currentPrice) + " 元");
         })
 
-        //加入購物車 新建Action=>(購物車內已有同規格)?增加購買數量:建立新資料 至CartItems
-        $("#join_to_Cart").on("click", (e) => {
-            const specIdforCart = $(e.currentTarget).attr("data-specid");
-            //window.location.href = `/ApiMall/加入購物車/?SpecId=${specIdforCart}&Quantity=${purchaseAmount}`;
+        //叫出登入功能塊
+        const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'))
+
+        //加入購物車
+        $(".add_to_Cart").on("click", (e) => {
+            //驗證登入狀態
+            const responseLogIn = await fetch(`@Url.Content("~/ApiMall/CheckLogInState")`);
+            const returnLogInstate = await responseLogIn.text();
+            const isMember = JSON.parse(returnLogInstate);
+
+            if (!isMember) {
+                loginModal.show();
+            }
+            if (isMember) {  //傳送資料
+                const specIdforCart = $(e.currentTarget).attr("data-specid");
+                const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${specIdforCart}&Quantity=${purchaseAmount}`, {
+                    method: "POST"
+                });
+                const returnJsonBag = await responseCart.text();
+                const isSuccess = JSON.parse(returnJsonBag);
+
+                if (isSuccess) {
+                    Swal.fire({
+                        position: 'center',
+                        title: '成功加入購物車！',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        allowOutsideClick: false
+                    })
+                }
+                if (!isSuccess) {
+                    Swal.fire({
+                        position: 'center',
+                        title: '加入購物車失敗，請稍後再試！',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    })
+                }
+            }
         })
     </script>
 }

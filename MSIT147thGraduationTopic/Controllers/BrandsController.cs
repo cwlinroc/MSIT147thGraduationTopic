@@ -21,11 +21,15 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Brands
-        public async Task<IActionResult> Index(string txtKeyword)
+        public IActionResult Index(string txtKeyword, int PageIndex = 1)
         {
-            IEnumerable<Brand> datas = null;
-            datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b
+            ViewBag.txtKeyword = txtKeyword;
+            ViewBag.PageIndex = PageIndex;
+
+            IEnumerable<Brand> datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b
                 : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
+
+            datas=datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
 
             List<BrandVM> list = new List<BrandVM>();
             foreach (Brand b in datas)

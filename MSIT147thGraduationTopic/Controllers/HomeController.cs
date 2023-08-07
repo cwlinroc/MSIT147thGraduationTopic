@@ -26,9 +26,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return View((popularSpecs, favorableSpecs, newSpecs));
         }
 
-
-
-
         public IActionResult Privacy()
         {
             return View();

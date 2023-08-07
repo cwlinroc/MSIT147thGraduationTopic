@@ -103,7 +103,7 @@
     </div>
 </div>
 
-<!-- MainModal -->
+<!-- MainModal //todo id是不是寫錯了?-->
 <div class="modal fade" id="edditModal" tabindex="-1" aria-labelledby="edditModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -255,7 +255,7 @@
         async function getEmployees(query) {
             showLoadingBox()
             let str = ''
-            if (query) str = '/' + query
+            if (query) str = '/' + queryshow
             const response = await fetch('@Url.Content("~/api/apiemployee")' + str)
 
             if (!response.ok) return

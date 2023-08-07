@@ -16,7 +16,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult Index(string txtKeyword = "", int searchCondition = 1, int displayorder = 0, 
                                     int pageSize = 20, int PageIndex = 1, int sideCategoryId = 0, 
-                                    int? minPrice = null, int? maxPrice = null)
+                                    int? minPrice = null, int? maxPrice = null)// todo 寵物類別TAG查詢
         {
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
@@ -56,9 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
             };
 
             datas = datas.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToList();
-
-            // todo 連結至購物車
-            // todo 寵物類別TAG查詢
+            
             return View(datas);
         }
 
