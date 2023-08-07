@@ -40,6 +40,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             {
                 return -1;
             }
+            //couponData.ChangeByDto(ceDto)
+
+            couponData.CouponName = cEDto.CouponName;
+            couponData.CouponTagId = cEDto.CouponTagId;
+            couponData.CouponStartDate = cEDto.CouponStartDate;
+            couponData.CouponEndDate = cEDto.CouponEndDate;
+            couponData.CouponDiscount= cEDto.CouponDiscount;
+            couponData.CouponCondition= cEDto.CouponCondition;
+
             _context.Coupons.Update(couponData);
             _context.SaveChanges();
             return couponData.CouponId;
