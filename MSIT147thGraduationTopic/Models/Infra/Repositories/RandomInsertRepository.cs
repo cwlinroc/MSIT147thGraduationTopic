@@ -34,6 +34,20 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return ids;
         }
 
+        public IEnumerable<RandomInsertedSpecDto> GetAllSpecs()
+        {
+            return _context.Specs.Select(o => new RandomInsertedSpecDto
+            {
+                FullName = o.Merchandise.MerchandiseName + o.SpecName,
+                SpecId = o.SpecId,
+                SpecName = o.SpecName,
+                MerchandiseId = o.MerchandiseId,
+                Price = o.Price,
+                DiscountPercentage = o.DiscountPercentage,
+                OnShelf = o.OnShelf
+            });
+        }
+
         public void DeleteAllCartItems()
         {
             _context.CartItems.RemoveRange(_context.CartItems);
@@ -55,11 +69,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         }
 
 
-        public int AddSpecTags(int specId, int tagId)
+        public int AddSpecTags(int specId, params int[] tagIds)
         {
             using var conn = new SqlConnection(_context.Database.GetConnectionString());
-            string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
-            return conn.Execute(str, new { SpecId = specId, TagId = tagId });
+            foreach (var tagId in tagIds)
+            {
+                string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
+                conn.Execute(str, new { SpecId = specId, TagId = tagId });
+            }
+
         }
 
         public int UpdateSpecPopularity(int specId, double popularity)
@@ -73,14 +91,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
 
 
-        public IEnumerable<(int orderId, int[] merchandiseId)> GetAllOrdersWithMerchandiseId()
+        public IEnumerable<(int orderId, List<(int merchandiseId, string merchandiseName)> merchandise)> GetAllOrdersWithMerchandiseIdAndName()
         {
             var result = (from order in _context.Orders
                           join orderlist in _context.OrderLists on order.OrderId equals orderlist.OrderId
                           join spec in _context.Specs on orderlist.SpecId equals spec.SpecId
-                          select new { order.OrderId, spec.MerchandiseId }).Distinct().ToList();
+                          join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
+                          select new { order.OrderId, spec.MerchandiseId, merchandise.MerchandiseName }).Distinct().ToList();
             return result.GroupBy(o => o.OrderId)
-                .Select(o => (o.First().OrderId, o.Select(x => x.MerchandiseId).ToArray()));
+                .Select(o => (o.First().OrderId, o.Select(x => (x.MerchandiseId, x.MerchandiseName)).ToList()));
         }
 
         public bool CheckEvaluated(int orderId, int merchandiseId)

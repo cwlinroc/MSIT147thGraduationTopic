@@ -105,6 +105,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                 PurchaseTime = DateTime.Now,
                 UsedCouponId = (record.CouponId != null) ? int.Parse(record.CouponId) : null,
                 PaymentAmount = totalPayment,
+                DeliveryCity = record.City,
+                DeliveryDistrict = record.District,
                 DeliveryAddress = record.Address,
                 ContactPhoneNumber = record.Phone,
                 Remark = record.Remark

@@ -1,16 +1,20 @@
-﻿using MSIT147thGraduationTopic.EFModels;
+﻿using Microsoft.IdentityModel.Tokens;
+using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {
-    public class RandomInsertService
+    public class SimulationDataInsertService
     {
+
+
         private GraduationTopicContext _context;
         private RandomInsertRepository _repo;
         private RandomGenerator _generator;
-        public RandomInsertService(GraduationTopicContext context)
+        public SimulationDataInsertService(GraduationTopicContext context)
         {
             if (context == null) context = new GraduationTopicContext();
             _context = context;
@@ -27,6 +31,7 @@ namespace MSIT147thGraduationTopic.Models.Services
                 string salt = _generator.RandomSalt();
                 string account = _generator.RandomEnString();
                 string password = account.GetSaltedSha256(salt);
+                // 照人口分配都市
                 var city = _generator.RandomFrom(cities);
                 var district = _generator.RandomFrom(city.Districts);
                 members.Add(new Member
@@ -121,23 +126,25 @@ namespace MSIT147thGraduationTopic.Models.Services
             }
         }
 
-        public void AddRandomOrders()
+        public void AddRandomOrders(int maxDaysBefore = 180, int minDaysBefore = 3)
         {
             var members = _context.Members.ToArray();
-            var specs = _context.Specs.ToArray();
+            //用隨機(?)tag取得spec
+            var specs = _repo.GetAllSpecs();
 
             foreach (var member in members)
             {
-                int orderAmount = _generator.RandomIntBetween(1, 10);
+                int orderAmount = (int)(_generator.RandomDouble().InvCSND(0.3) * 30);
+                int paymentMethod = member.MemberName.GetHashedInt() % 3 + 1;
 
                 for (int i = 0; i < orderAmount; i++)
                 {
                     var order = new Order
                     {
                         MemberId = member.MemberId,
-                        PaymentMethodId = _generator.RandomIntBetween(1, 3),
+                        PaymentMethodId = paymentMethod,
                         Payed = true,
-                        PurchaseTime = _generator.RandomDateBetweenDays(-100, -3),
+                        PurchaseTime = _generator.RandomDateBetweenDays(-maxDaysBefore, -minDaysBefore),
                         DeliveryCity = String.IsNullOrEmpty(member.City) ? "臺北市" : member.City,
                         DeliveryDistrict = String.IsNullOrEmpty(member.District) ? "大安區" : member.District,
                         DeliveryAddress = member.Address,
@@ -147,27 +154,48 @@ namespace MSIT147thGraduationTopic.Models.Services
                     _context.Orders.Add(order);
                     _context.SaveChanges();
 
-                    int itemAmount = _generator.RandomIntBetween(1, 10);
-                    var boughtSpecs = _generator.RandomCollectionFrom(specs, itemAmount);
+                    int maxItemAmount = (int)(_generator.RandomDouble().InvCSND(0.2, 0.2) * 20);
+                    maxItemAmount = Math.Max(maxItemAmount, 1);
+                    var boughtSpecs = GetBoughtSpecs(specs, maxItemAmount);
+
                     int totalPrice = 0;
 
                     foreach (var spec in boughtSpecs)
                     {
+                        int quantity = (int)((spec.FullName!.GetHashedInt() / 100 % 100 / 100.0).InvCSND(0.1, 0.2) * 20);
+                        quantity = Math.Max(quantity, 1);
+
                         var orderlist = new OrderList
                         {
                             OrderId = order.OrderId,
                             SpecId = spec.SpecId,
-                            Quantity = _generator.RandomIntBetween(1, 10),
+                            Quantity = quantity,
                             Price = spec.Price,
                             Discount = spec.DiscountPercentage
                         };
                         _context.OrderLists.Add(orderlist);
-                        totalPrice += spec.Price * spec.DiscountPercentage / 100;
+                        int sum = spec.Price * spec.DiscountPercentage / 100 * quantity;
+                        totalPrice += sum;
                     }
                     order.PaymentAmount = totalPrice;
                     _context.SaveChanges();
                 }
             }
+        }
+
+
+        private List<RandomInsertedSpecDto> GetBoughtSpecs(IEnumerable<RandomInsertedSpecDto> specs, int maxItemAmount)
+        {
+            var boughtSpecs = _generator.RandomCollectionFrom(specs, maxItemAmount).ToList();
+
+            foreach (var spec in boughtSpecs)
+            {
+                var buyChance = (spec.FullName!.GetHashedInt() % 100 / 100.0).InvCSND();
+                if (buyChance < _generator.RandomDouble()) boughtSpecs.Remove(spec);
+            }
+
+            if (boughtSpecs.IsNullOrEmpty()) boughtSpecs.Add(_generator.RandomFrom(specs));
+            return boughtSpecs;
         }
 
 
@@ -177,8 +205,8 @@ namespace MSIT147thGraduationTopic.Models.Services
             var tagIds = _repo.GetAllTagID();
             foreach (var specId in specIds)
             {
-                int tagId = _generator.RandomFrom(tagIds);
-                _repo.AddSpecTags(specId, tagId);
+                int[] tagIdsChoosed = _generator.RandomCollectionFrom(tagIds, _generator.RandomIntBetween(1, 3)).ToArray();
+                _repo.AddSpecTags(specId, tagIdsChoosed);
             }
         }
 
@@ -200,11 +228,18 @@ namespace MSIT147thGraduationTopic.Models.Services
                 {
                     if (_repo.CheckEvaluated(order.orderId, merchandise.merchandiseId)) continue;
                     if (_generator.RandomChance(60)) continue;
-                    int score = _generator.RandomIntByWeight(0, 1, 1, 2, 10, 10);
+                    //int favor = 
+                    int favor = merchandise.merchandiseName.GetHashedInt() % 100;
+
+                    int score = _generator.RandomIntByWeight(0,
+                        (500 - favor) / 4 + 1,
+                        (500 - favor) / 8 + 1,
+                        (500 - favor),
+                        favor * 4 / 3,
+                        favor * 5 / 4);
                     _repo.AddEvaluation(order.orderId, merchandise.merchandiseId, score);
                 }
         }
-
 
 
 
