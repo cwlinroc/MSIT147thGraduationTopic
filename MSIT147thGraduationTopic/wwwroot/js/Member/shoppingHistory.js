@@ -76,7 +76,7 @@ function displayOrders() {
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
-                            ${specs}
+                            ${specs.join('')}
                         </tbody>
                     </table>
                 </div>
@@ -163,7 +163,7 @@ function displayOrderBetweenDate() {
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
-                            ${specs}
+                            ${specs.join('') }
                         </tbody>
                     </table>
                 </div>

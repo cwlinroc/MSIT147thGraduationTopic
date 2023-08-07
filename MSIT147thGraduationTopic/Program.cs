@@ -72,6 +72,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=EmployeeBackstage}/{action=LogIn}/{id?}");
+    pattern: "{controller=home}/{action=index}/{id?}");
 
 app.Run();
