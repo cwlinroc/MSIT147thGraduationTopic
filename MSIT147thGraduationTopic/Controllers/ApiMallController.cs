@@ -28,7 +28,7 @@ namespace MSIT147thGraduationTopic.Controllers
             int sideCategoryId, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
 
             if (!string.IsNullOrEmpty(txtKeyword))
             {

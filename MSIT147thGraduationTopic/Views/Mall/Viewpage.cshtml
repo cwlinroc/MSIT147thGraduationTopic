@@ -282,7 +282,7 @@
         //加入購物車
         $("#add_to_Cart").on("click", async (e) => {
             if (ROLE != "會員") {
-                await Swal.fire('請先登入再使用購物車');
+                await Swal.fire('請登入以使用購物車');
                 loginModal.show();
             }
             if (ROLE == "會員") {  //傳送資料

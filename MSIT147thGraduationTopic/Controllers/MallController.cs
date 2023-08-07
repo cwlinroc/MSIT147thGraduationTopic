@@ -27,44 +27,12 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.sideCategoryId = sideCategoryId;
             ViewBag.minPrice = minPrice;
             ViewBag.maxPrice = maxPrice;
-            //todo 用ViewBag傳參數，再用AJAX(ApiMall/DisplaySearchResult/......)
-
-            IEnumerable<MallDisplay> datas = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
-
-            if (!string.IsNullOrEmpty(txtKeyword))
-            {
-                datas = searchCondition switch
-                {
-                    1 => datas.Where(md => md.FullName.Contains(txtKeyword)),
-                    2 => datas.Where(md => md.BrandName.Contains(txtKeyword)),
-                    3 => datas.Where(md => md.CategoryName.Contains(txtKeyword)),
-                    _ => datas
-                };
-            }
-
-            datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
-            datas = (minPrice.HasValue) ? datas.Where(sp => sp.Price >= minPrice) : datas;
-            datas = (maxPrice.HasValue) ? datas.Where(sp => sp.Price <= maxPrice) : datas;
-
-            datas = displayorder switch
-            {
-                0 => datas.OrderByDescending(md => md.SpecId),      //最新商品
-                1 => datas.OrderBy(md => md.SpecId),                //由舊到新熱門商品
-                2 => datas.OrderByDescending(md => md.Popularity),  //熱門商品
-                3 => datas.OrderBy(md => md.Price),                 //價格由低至高
-                4 => datas.OrderByDescending(md => md.Price),       //價格由高至低
-                _ => datas.OrderByDescending(md => md.SpecId)
-            };
-
-            datas = datas.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToList();
-            
-            return View(datas);
+                        
+            return View();
         }
 
         public IActionResult Viewpage(int MerchandiseId, int SpecId)
         {
-
             //紀錄最近三筆瀏覽商品
             int? last_2 = HttpContext.Session.GetInt32("Last_2");
             if (last_2.HasValue)

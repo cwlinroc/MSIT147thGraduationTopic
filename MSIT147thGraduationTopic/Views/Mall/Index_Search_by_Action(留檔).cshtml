@@ -127,7 +127,27 @@
             </nav>
 
             <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3" id="showThisPageMerchandise">
-                <!-- 透過Ajax產生商品櫥窗 -->
+                <!-- 商品櫥窗 -->
+                @{
+                    foreach (var item in Model)
+                    {
+                        string showName = (item.FullName.Length > 11) ? item.FullName.Substring(0, 10) + "  ..." : item.FullName;
+                        string imageUrl = (item.ImageUrl == null) ? "default.png" : item.ImageUrl;
+                        string showPrice = item.Price + " 元";
+
+                        <div class="col">
+                            <div class="card my-3 mx-2 text-center border-light ">
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")@imageUrl" data-specid=@item.SpecId data-merchandisid=@item.MerchandiseId class="w-100 img-thumbnail hover-overlay gotoViewpage">
+                                <div class="card-body ">
+                                    <h6 class="card-text ">《 @item.BrandName 》</h6>
+                                    <h5 class="card-title ">@showName</h5>
+                                    <h5 class="card-text ">@showPrice</h5>
+                                    <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="@item.SpecId"> 加入購物車 </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
 
             <!-- 分頁 -->
@@ -157,12 +177,21 @@
         let minPrice = @(ViewBag.minPrice ?? "null");
         let maxPrice = @(ViewBag.maxPrice ?? "null");
 
-        //呈現初始頁面
-        SearchProducts();
-
-        //搜尋所有商品(重置搜尋條件)    //todo 是否保留排序用參數?
+        //搜尋
+        function SearchProducts() {
+            window.location.href = `/Mall/Index/?txtKeyword=${txtKeyword}&`
+                + `searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&`
+                + `PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+        };
+        //搜尋所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {
-            window.location.href = `/Mall/Index/?searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}`;
+            window.location.href = `/Mall/Index`;
+        });
+        //進入商品檢視頁
+        $(".gotoViewpage").on("click", (e) => {
+            const targetMerchandisid = $(e.currentTarget).attr("data-merchandisid");
+            const targetSpecid = $(e.currentTarget).attr("data-specid");
+            window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetMerchandisid}&SpecId=${targetSpecid}`;
         });
 
         //搜尋條件
@@ -196,189 +225,153 @@
             SearchProducts();
         });
 
-        async function SearchProducts() {
-            $(async () => {
-                //產生分頁標籤
-                const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&`
-                    + `searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&`
-                    + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
-                const returnLengthBag = await responseforlength.text();
-                const resultLength = JSON.parse(returnLengthBag);
-                const totalpage = Math.ceil(resultLength / pageSize);
-                const pagingContainer = document.querySelector("#pagingContainer");
+        //產生分頁標籤
+        $(async () => {
+            const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&`
+                + `searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&`
+                + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+            const returnLengthBag = await responseforlength.text();
+            const resultLength = JSON.parse(returnLengthBag);
+            const totalpage = Math.ceil(resultLength / pageSize);
+            const pagingContainer = document.querySelector("#pagingContainer");
 
-                let indexRow = `<li class="page-item border-light toPrevious">\
-                                    <a class="page-link" href="#" aria-label="Previous">\
-                                        <span aria-hidden="true">&laquo;</span>\
-                                    </a>\
-                                </li>`;
-                let indexArray = "";
-                let start, end;
-                if (totalpage <= 5) {
-                    start = 1; end = totalpage;
+            let indexRow = `<li class="page-item border-light toPrevious">\
+                                <a class="page-link" href="#" aria-label="Previous">\
+                                    <span aria-hidden="true">&laquo;</span>\
+                                </a>\
+                            </li>`;
+            let indexArray = "";
+            let start, end;
+            if (totalpage <= 5) {
+                start = 1; end = totalpage;
+                for (var i = start; i <= end; i++) {
+                    indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
+                }
+            }
+            if (totalpage > 5) {
+                if (pageindex < 4) {
+                    start = 1; end = 5;
                     for (var i = start; i <= end; i++) {
                         indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                     }
+                    indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                 }
-                if (totalpage > 5) {
-                    if (pageindex < 4) {
-                        start = 1; end = 5;
+                if (pageindex == 4) {
+                    start = 2; end = 6;
+                    for (var i = start; i <= end; i++) {
+                        indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
+                    }
+                    indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
+                }
+                if (pageindex > 4) {
+                    if (pageindex + 3 <= totalpage) {
+                        start = pageindex - 2; end = parseInt(pageindex) + 2;//未轉型會默認為字串串接
+                        indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
+                                                                    + `<li class="page-item"><a class="page-link" >...</a></li>`
                         for (var i = start; i <= end; i++) {
                             indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                         }
                         indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
                     }
-                    if (pageindex == 4) {
-                        start = 2; end = 6;
+                    if (pageindex + 3 > totalpage) {
+                        start = pageindex - 2; end = totalpage;
+                        indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
+                                                                    + `<li class="page-item"><a class="page-link" >...</a></li>`
                         for (var i = start; i <= end; i++) {
                             indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
                         }
-                        indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
-                    }
-                    if (pageindex > 4) {
-                        if (pageindex + 3 <= totalpage) {
-                            start = pageindex - 2; end = parseInt(pageindex) + 2;//未轉型會默認為字串串接
-                            indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
-                                + `<li class="page-item"><a class="page-link" >...</a></li>`
-                            for (var i = start; i <= end; i++) {
-                                indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
-                            }
-                            indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
-                        }
-                        if (pageindex + 3 > totalpage) {
-                            start = pageindex - 2; end = totalpage;
-                            indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
-                                + `<li class="page-item"><a class="page-link" >...</a></li>`
-                            for (var i = start; i <= end; i++) {
-                                indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
-                            }
-                        }
                     }
                 }
+            }
 
-                indexRow += indexArray + `<li class="page-item toNext">
-                                            <a class="page-link" href="#" aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                          </li>`;
-                pagingContainer.innerHTML = indexRow;
+            indexRow += indexArray + `<li class="page-item toNext">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                     </li>`;
+            pagingContainer.innerHTML = indexRow;
 
-                //改變當前頁籤格式
-                $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
-                //分頁點選+點選後
-                $(".showIndex").on("click", (e) => {
-                    pageindex = $(e.currentTarget).attr("val-index");
+            //改變當前頁籤格式
+            $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
+            //分頁點選+點選後
+            $(".showIndex").on("click", (e) => {
+                pageindex = $(e.currentTarget).attr("val-index");
+                SearchProducts();
+            })
+            //前後頁按鈕
+            $(".toPrevious").on("click", () => {
+                if (pageindex > 1) {
+                    pageindex--;
                     SearchProducts();
-                })
-                //前後頁按鈕
-                $(".toPrevious").on("click", () => {
-                    if (pageindex > 1) {
-                        pageindex--;
-                        SearchProducts();
-                    }
-                })
-                $(".toNext").on("click", () => {
-                    if (pageindex < totalpage) {
-                        pageindex++;
-                        SearchProducts();
-                    }
-                })
+                }
+            })
+            $(".toNext").on("click", () => {
+                if (pageindex < totalpage) {
+                    pageindex++;
+                    SearchProducts();
+                }
+            })
 
-                //產生商品櫥窗
+            if (resultLength == 0) {
                 const pageContent = document.querySelector("#showThisPageMerchandise");
                 pageContent.innerHTML = "<h4>找不到符合的商品</h4>";
+            }
+        })
 
-                if (resultLength > 0) {         // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※換行要用 "+"，不然容易出莫名其妙的問題)
-                    const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&`
-                        + `searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&`
-                        + `PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
-                    const returnJsonBag = await response.text();
-                    const searchResult = JSON.parse(returnJsonBag);
+        //呈現側邊商品類別選項
+        $(async () => {
+            const CategoryOptions = document.querySelector("#categoryOptions")
+            const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&`
+                                                        + `searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+            const returnCategoryBag = await responseforCategory.text();
+            const CategoryResult = JSON.parse(returnCategoryBag);
 
-                    var windows = searchResult.map(window => {
-                        const { price, specId, merchandiseId, brandName } = window;
-                        const showName = (window.fullName.length > 11) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
-                        const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-                        return (
-                            `<div class="col">\
-                                        <div class="card my-3 mx-2 text-center border-light ">\
-                                            <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
-                                                                + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
-                                            <div class="card-body ">\
-                                                <h6 class="card-text ">《 ${brandName} 》</h6>\
-                                                <h6 class="card-title ">${showName}</h6>\
-                                                <h5 class="card-text ">${price} 元</h5>\
-                                                <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}">加入購物車</a>\
-                                            </div>\
-                                        </div>\
-                                    </div>`)
-                    })
-                    pageContent.innerHTML = windows.join("");
+            var categoryList = CategoryResult.map(category => {
+                const { categoryId, categoryName, matchedMerchandiseNumber } = category;
+                return (`<li class="my-1 "><a href="#" class="selectCategory" val-category="${categoryId}">${categoryName} (${matchedMerchandiseNumber})</a></li>`)
+            })
+            CategoryOptions.innerHTML = categoryList.join("");
 
-                    //進入商品檢視頁
-                    $(".gotoViewpage").on("click", (e) => {
-                        const targetMerchandisid = $(e.currentTarget).attr("data-merchandisid");
-                        const targetSpecid = $(e.currentTarget).attr("data-specid");
-                        window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetMerchandisid}&SpecId=${targetSpecid}`;
-                    });
+            $(".selectCategory").on("click", (e) => {
+                sideCategoryId = $(e.currentTarget).attr("val-category");
+                SearchProducts();
+            })
+        })
 
-                    //加入購物車
-                    const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'));
-                    $(".add_to_Cart").on("click", async (e) => {
-                        if (ROLE != "會員") {
-                            await Swal.fire('請登入以使用購物車');
-                            loginModal.show();   //使用js檔中的登入方法，登入成功則刷新原頁面
-                        }
-                        if (ROLE == "會員") {  //傳送資料
-                            const specIdforCart = $(e.currentTarget).attr("data-specid");
-                            const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${specIdforCart}`, {
-                                method: "POST"
-                            });
-                            const returnJsonBag = await responseCart.text();
-                            const isSuccess = JSON.parse(returnJsonBag);
+        //加入購物車
+        const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'));
+        $(".add_to_Cart").on("click", async(e) => {
+            if (ROLE != "會員") {
+                await Swal.fire('請登入以使用購物車');
+                loginModal.show();   //使用js檔中的登入方法，登入成功則刷新原頁面
+            }
+            if (ROLE == "會員") {  //傳送資料
+                const specIdforCart = $(e.currentTarget).attr("data-specid");
+                const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${specIdforCart}`, {
+                    method: "POST"
+                });
+                const returnJsonBag = await responseCart.text();
+                const isSuccess = JSON.parse(returnJsonBag);
 
-                            if (isSuccess) {
-                                Swal.fire({
-                                    position: 'center',
-                                    title: '成功加入購物車！',
-                                    showConfirmButton: false,
-                                    timer: 1000,
-                                    allowOutsideClick: false
-                                })
-                            }
-                            if (!isSuccess) {
-                                Swal.fire({
-                                    position: 'center',
-                                    title: '加入購物車失敗，請稍後再試！',
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                })
-                            }
-                        }
+                if (isSuccess) {
+                    Swal.fire({
+                        position: 'center',
+                        title: '成功加入購物車！',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        allowOutsideClick: false
                     })
                 }
-            })
-
-            //呈現側邊商品類別選項
-            $(async () => {
-                const CategoryOptions = document.querySelector("#categoryOptions")
-                const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&`
-                    + `searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
-                const returnCategoryBag = await responseforCategory.text();
-                const CategoryResult = JSON.parse(returnCategoryBag);
-
-                var categoryList = CategoryResult.map(category => {
-                    const { categoryId, categoryName, matchedMerchandiseNumber } = category;
-                    return (`<li class="my-1 "><a href="#" class="selectCategory" val-category="${categoryId}">${categoryName} (${matchedMerchandiseNumber})</a></li>`)
-                })
-                CategoryOptions.innerHTML = categoryList.join("");
-
-                $(".selectCategory").on("click", (e) => {
-                    sideCategoryId = $(e.currentTarget).attr("val-category");
-                    SearchProducts();
-                })
-            })
-        }
+                if (!isSuccess) {
+                    Swal.fire({
+                        position: 'center',
+                        title: '加入購物車失敗，請稍後再試！',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    })
+                }
+            }
+        })
     </script>
 }
 
