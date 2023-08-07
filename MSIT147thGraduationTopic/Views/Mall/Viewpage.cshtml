@@ -128,7 +128,7 @@
                                 <button class="btn btn-outline-secondary" type="button" id="button_minus">  -  </button>
                                 <input id="buyAmount" type="number" class="form-control" aria-label="Example text with button addon" min="1" value="1" aria-describedby="button-addon1">
                                 <button class="btn btn-outline-secondary" type="button" id="button_plus">  +  </button>
-                                <button id="join_to_Cart" type="button" class="btn btn-outline-secondary mx-2">加入購物車</button>
+                                <button id="add_to_Cart" type="button" class="btn btn-outline-secondary mx-2">加入購物車</button>
                             </div>
 
                         </div>
@@ -280,16 +280,12 @@
         const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'))
 
         //加入購物車
-        $(".add_to_Cart").on("click", (e) => {
-            //驗證登入狀態
-            const responseLogIn = await fetch(`@Url.Content("~/ApiMall/CheckLogInState")`);
-            const returnLogInstate = await responseLogIn.text();
-            const isMember = JSON.parse(returnLogInstate);
-
-            if (!isMember) {
+        $("#add_to_Cart").on("click", async (e) => {
+            if (ROLE != "會員") {
+                await Swal.fire('請先登入再使用購物車');
                 loginModal.show();
             }
-            if (isMember) {  //傳送資料
+            if (ROLE == "會員") {  //傳送資料
                 const specIdforCart = $(e.currentTarget).attr("data-specid");
                 const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${specIdforCart}&Quantity=${purchaseAmount}`, {
                     method: "POST"

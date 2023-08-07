@@ -14,12 +14,12 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Merchandises()//todo 確認是哪個Controller在使用
-        {
-            var datas = _context.Merchandises.OrderBy(a => a.MerchandiseId);
+        //public IActionResult Merchandises()//todo 確認是哪個Controller在使用 //todo 也改回AJAX搜尋
+        //{
+        //    var datas = _context.Merchandises.OrderBy(a => a.MerchandiseId);
 
-            return Json(datas);
-        }
+        //    return Json(datas);
+        //}
 
         [HttpGet]
         public IActionResult GetSearchResultLength(string txtKeyword, int searchCondition = 1) //todo 使用tag篩選 , int? tag

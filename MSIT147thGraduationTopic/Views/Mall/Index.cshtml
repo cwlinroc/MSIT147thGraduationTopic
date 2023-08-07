@@ -339,16 +339,12 @@
         })
 
         //加入購物車
-        $(".add_to_Cart").on("click", (e) => {
-            //todo 確認登入狀態 => 叫用API => 驗證登入身分 => 回傳Bool
-            const responseLogIn = await fetch(`@Url.Content("~/ApiMall/CheckLogInState")`);
-            const returnLogInstate = await responseLogIn.text();
-            const isMember = JSON.parse(returnLogInstate);
-
-            if (!isMember) {    //叫出登入功能塊
-                //todo
+        $(".add_to_Cart").on("click", async(e) => {
+            if (ROLE != "會員") {
+                await Swal.fire('請先登入再使用購物車');
+                loginModal.show();   //使用js檔中的登入方法，登入成功則刷新原頁面
             }
-            if (isMember) {  //傳送資料
+            if (ROLE == "會員") {  //傳送資料
                 const specIdforCart = $(e.currentTarget).attr("data-specid");
                 const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${specIdforCart}`, {
                     method: "POST"
@@ -368,7 +364,7 @@
                 if (!isSuccess) {
                     Swal.fire({
                         position: 'center',
-                        title: '加入購物車失敗，請先登入！',
+                        title: '加入購物車失敗，請稍後再試！',
                         showConfirmButton: false,
                         timer: 1500,
                     })

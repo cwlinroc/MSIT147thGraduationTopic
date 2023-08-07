@@ -1,11 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using NuGet.Versioning;
 using System;
 using System.Linq;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -126,16 +131,7 @@ namespace MSIT147thGraduationTopic.Controllers
             return Json(datas);
         }
 
-        public IActionResult CheckLogInState()
-        {
-            //todo 讀取登入身分
-            bool logInState = false;
-
-            if (logInState) logInState = true;
-
-            return Json(logInState);
-        }
-
+        [Authorize(Roles = "會員")]
         [HttpPost]
         public async Task<IActionResult> AddtoCart(int SpecId, int Quantity = 1)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
@@ -26,9 +27,10 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.sideCategoryId = sideCategoryId;
             ViewBag.minPrice = minPrice;
             ViewBag.maxPrice = maxPrice;
+            //todo 用ViewBag傳參數，再用AJAX(ApiMall/DisplaySearchResult/......)
 
             IEnumerable<MallDisplay> datas = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
 
             if (!string.IsNullOrEmpty(txtKeyword))
             {
@@ -62,10 +64,20 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult Viewpage(int MerchandiseId, int SpecId)
         {
-            IEnumerable<Spec> datas = _context.Specs
-                .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true);
+
+            //紀錄最近三筆瀏覽商品
+            int? last_2 = HttpContext.Session.GetInt32("Last_2");
+            if (last_2.HasValue)
+                HttpContext.Session.SetInt32("Last_3", last_2.Value);
+            int? last_1 = HttpContext.Session.GetInt32("Last_1");
+            if (last_1.HasValue)
+                HttpContext.Session.SetInt32("Last_2", last_1.Value);
+            HttpContext.Session.SetInt32("Last_1", MerchandiseId);
 
             ViewBag.SpecId = SpecId;
+
+            IEnumerable<Spec> datas = _context.Specs
+                .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true).Where(s => s.Amount > 0);
 
             return View(datas);
         }
