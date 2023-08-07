@@ -55,6 +55,7 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
             specvm.MerchandiseId = merchandiseIdCarrier;
+            specvm.Popularity = 0;
             return View(specvm);
         }
 
@@ -64,7 +65,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
-            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
+            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
         {
             if (ModelState.IsValid)
             {
@@ -73,6 +74,10 @@ namespace MSIT147thGraduationTopic.Controllers
                     specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
+
+                //todo 後台新增Tag編輯的View (做成彈出式，參考_MallPage, bootstrap的Modal) 直接輸入新TAG名稱+顯示既有TAG 用AJAX+API新增資料
+                //SpecTag st = new SpecTag();
+
 
                 _context.Add(specvm.spec);
                 await _context.SaveChangesAsync();
@@ -102,7 +107,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, 
-            [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,OnShelf,DiscountPercentage,photo,deleteImageIndicater")] SpecVM specvm)
+            [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo,deleteImageIndicater")] SpecVM specvm)
         {
             if (id != specvm.SpecId) return NotFound();
 
@@ -162,9 +167,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
             if (!string.IsNullOrEmpty(spec.ImageUrl))
                 deleteSpecImageFromUploads(spec.ImageUrl);
+
+            var merchandiseid = _context.Specs
+                .Where(s => s.SpecId ==id).Select(s => s.MerchandiseId).FirstOrDefault();
+
             _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { merchandiseid = merchandiseid });
         }
 
         private bool SpecExists(int id)

@@ -1,7 +1,15 @@
 ﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM>
 @{
     ViewData["Title"] = "Index";
+    //var isUpdate = Model.Count(a => a.Score != 0) > 0 || Model.Count(a => a.comments != null) > 0;  //比對全部資料
+    var isUpdate = Model.Any(a => a.Score != 0) || Model.Any(a => a.comments != null);//比對到第一筆的資料
+
 }
+<!-- 引入 SweetAlert2 的样式文件 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.min.css">
+
+<!-- 引入 SweetAlert2 的 JavaScript 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.3/dist/sweetalert2.all.min.js"></script>
 
 
 
@@ -17,58 +25,57 @@
                         <h5 id="OrderId">訂單編號:@(Model.FirstOrDefault().OrderId)</h5>
                     </div>
                 </div>
-                <form method="post" action="~/Evaluation/EIndex">
+
+                <form id="evaluationForm" method="post" action=@(isUpdate?"/Evaluation/EIndex":"/Evaluation/EIndex" )>
+                    <input name="id" value="@(Model.FirstOrDefault().OrderId)" hidden>
                     @for (int i = 0; i < Model.Count(); i++)
                     {
                         var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
-
                         <div style="border-block-color:#FFDDAA;border-width: 2px">
                             <div class="mt-4 d-flex align-items-center">
                                 <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
                                     <div class="mx-1 mt-2">
-                                        <h6 id="MerchandiseName">@(item.MerchandiseName)</h6>
-                                        <input name="comments[i].MerchandiseId" hidden>
+                                        <h6 id="MerchandiseName_@(i)">@(item.MerchandiseName)</h6>
+                                        <input name="comments[@(i)].MerchandiseId" value="@(item.MerchandiseId)" hidden>
                                     </div>
                                     <div class="mt-2">
                                         <h6 id="SpecName_@(i)"> @(item.SpecName)</h6>
-                                        <input name="comments[i].SpecId" hidden>
+                                        <input name="comments[@(i)].SpecId" hidden>
                                     </div>
                                 </div>
 
                                 <div class="d-flex ms-auto float-end">
                                     <div id="score_@(i)" name="Score" class="float-end mx-1 mt-3" itype="starDiv">
-                                        <input id="inputscore_@(i)" name="comments[i].Score" hidden>
-                                        <img id="stsr@(i)_1" src="/images/空星.png" style="height:40px" />
-                                        <img id="stsr@(i)_2" src="/images/空星.png" style="height:40px" />
-                                        <img id="stsr@(i)_3" src="/images/空星.png" style="height:40px" />
-                                        <img id="stsr@(i)_4" src="/images/空星.png" style="height:40px" />
-                                        <img id="stsr@(i)_5" src="/images/空星.png" style="height:40px" />
+                                        <input id="inputscore_@(i)" name="comments[@(i)].Score" hidden>
+                                        <img id="stsr@(i)_1" src=@(item.Score>=1?"/images/一星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="stsr@(i)_2" src=@(item.Score>=2?"/images/二星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="stsr@(i)_3" src=@(item.Score>=3?"/images/三星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="stsr@(i)_4" src=@(item.Score>=4?"/images/四星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="stsr@(i)_5" src=@(item.Score==5?"/images/五星.png":"/images/空星.png") style="height:40px" />   //@(item.StarImageUrl)
                                     </div>
                                 </div>
                             </div>
                             <div class="form-floating mx-2 mt-2 mb-4">
-                                <textarea id="commentText" name="comments[i].Comment" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                                <textarea id="commentText" name="comments[@(i)].Comment" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">@(item.Comment)</label>
                             </div>
                         </div>
                     }
                     <div>
-                        <button id="send" type="submit" class="btn btn-primary float-end mt-2 mx-1">送出</button>
-                        <button id="edit" type="submit" class="btn btn-primary float-end mt-2 mx-1">編輯</button>
+                        @*<button id="send" @*type="submit"*@ @*class="btn btn-primary float-end mt-2 mx-1">@(isUpdate ?"修改":"送出")</button>*@
+                        <input id="send" type="button" class="btn btn-primary float-end mt-2 mx-1" value="@(isUpdate ? "修改" : "送出")">
                     </div>
                 </form>
 
             }
             else
             {
-                @*<h2>@(ViewBag.ErrorMessage)</h2>*@
-                @*<script>
-                    alert(@Html.Raw(Html.UrlEncoder.Encode(ViewBag.ErrorMessage)))
-                </script>*@
+                <text>
+                    <script>
+                        Swal.fire('此筆訂單目前查無資料');
+                    </script>
+                </text>
             }
-
-            
-
         </div>
 
         <div class="col-2"></div>
@@ -77,6 +84,7 @@
 @section Scripts{
 
     <script>
+
         const starImages = [
             "/images/空星.png",
             "/images/一星.png",
@@ -88,10 +96,11 @@
 
         let stars = $('div[itype="starDiv"] > img');
         let score = 0;
+        //if(score = 0)
+        //{
         //console.log(stars)
-               
         stars.hover(
-            function () {                                
+            function () {
                 lightingStar($(this));
             },
             function () {
@@ -99,11 +108,12 @@
                 $(this).parent().children().attr('src', starImages[0]);
             }
         );
+        //}
+
 
         stars.click(function () {
             //若要改評分
-            if (score > 0)
-            {
+            if (score > 0) {
                 $(this).parent().children().attr('src', starImages[0]);
                 $(this).parent().children().bind('mouseenter').bind('mouseleave');
             }
@@ -118,6 +128,7 @@
             //console.log($(this).parent().find('input').val());
         });
 
+
         let lightingStar = function (obj) {
             let idArray = obj.attr('id').split('_');  //.split 字串分割
             //console.log(idArray);
@@ -128,19 +139,33 @@
                 $("#" + idArray[0] + "_" + i).attr('src', starImages[i]);
             }
         }
-
-
-        
     </script>
-
     <script>
-        //const scoreValue = parseFloat(score.value);
+        $("#send").click(function () {
+            //console.log($("[id^='inputscore_']").length);
+            let isAllHaveScore = true;
+            $("[id^='inputscore_']").each(function (index, score) {
+                
+                if (score.value == '') {
 
-        //if (scoreValue == 0) {
-        //    btnedit.style.display = 'block';
-        //} else {
-        //    btnedit.style.display = 'none';
-        //}
+                    isAllHaveScore = false;
+                    return false;
+
+                }
+            });
+
+            if (isAllHaveScore) {
+
+                $("#evaluationForm").submit();
+
+            } else {
+
+                Swal.fire('還有商品未評分呦');
+
+            }
+
+        })
+
     </script>
 }
 

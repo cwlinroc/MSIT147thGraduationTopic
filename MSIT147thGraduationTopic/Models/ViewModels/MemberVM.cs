@@ -14,6 +14,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public string Account { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
@@ -37,7 +39,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public DateTime DateOfBirth { get; set; }
 
         [Required]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(15, ErrorMessage = "{0}長度不可多於{1}")]
@@ -50,8 +52,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Phone { get; set; }
 
-        public string selectCity { get; set; }
-        public string selectDistrict { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
 
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Address { get; set; }
@@ -73,6 +75,28 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
+
+        [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? Address { get; set; }
+
+        [EmailAddress]
+        [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? Email { get; set; }
+        public string? Avatar { get; set; }
+    }
+
+    public class MemberCenterEditVM
+    {
+        [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? NickName { get; set; }
+        public string? Password { get; set; }
+
+        [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
+        public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
 
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Address { get; set; }
@@ -91,11 +115,11 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [Display(Name = "姓名")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string MemberName { get; set; }
+        public string? MemberName { get; set; }
 
         [Display(Name = "暱稱")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string NickName { get; set; }
+        public string? NickName { get; set; }
 
         [Display(Name = "生日")]
         [Required(ErrorMessage = "{0}必填")]
@@ -104,34 +128,36 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
         [Display(Name = "性別")]
         [Required(ErrorMessage = "{0}必填")]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         [Display(Name = "帳號")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(15, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Account { get; set; }
+        public string? Account { get; set; }
 
         [Display(Name = "密碼")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(65, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [Display(Name = "手機號碼")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
 
         [Display(Name = "地址")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [Display(Name = "Email")]
         [Required(ErrorMessage = "{0}必填")]
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Display(Name = "頭像")]
-        public string Avatar { get; set; }
+        public string? Avatar { get; set; }
     }
 
     public class AddressVM
@@ -204,6 +230,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Gender = dto.Gender ? "male" : "female",
                 Account = dto.Account,
                 Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
                 Address = dto.Address,
                 Email = dto.Email,
                 Salt = dto.Salt,
@@ -219,12 +247,14 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 MemberId = vm.MemberId,
                 MemberName = vm.MemberName,
                 NickName = vm.NickName,
-                DateOfBirth = vm.DateOfBirth,
+                DateOfBirth = vm.DateOfBirth,                
                 Gender = vm.Gender == "male",
                 Account = vm.Account,
                 Password = vm.Password,
                 Phone = vm.Phone,
-                Address = vm.selectCity + vm.selectDistrict + vm.Address,
+                City = vm.City,
+                District = vm.District,
+                Address = vm.Address,
                 Email = vm.Email,
 
             };
@@ -238,9 +268,40 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 NickName = dto.NickName,
                 Password = dto.Password,
                 Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
                 Address = dto.Address,
                 Email = dto.Email,
                 Avatar = dto.Avatar,
+            };
+        }
+
+        public static MemberCenterEditVM ToCenterEditVM(this MemberEditDto dto)
+        {
+            return new MemberCenterEditVM
+            {
+                NickName = dto.NickName,
+                Password = dto.Password,
+                Phone = dto.Phone,
+                City = dto.City,
+                District = dto.District,
+                Address = dto.Address,
+                Email = dto.Email,
+                Avatar = dto.Avatar,
+            };
+        }
+
+        public static MemberEditDto CenterEditToDto(this MemberCenterEditVM vm)
+        {
+            return new MemberEditDto
+            {
+                NickName = vm.NickName,
+                Phone = vm.Phone,
+                City = vm.City,
+                District = vm.District,
+                Address = vm.Address,
+                Email = vm.Email,
+                Avatar = vm.Avatar,
             };
         }
     }

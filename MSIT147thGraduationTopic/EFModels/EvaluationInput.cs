@@ -7,10 +7,13 @@ namespace MSIT147thGraduationTopic.EFModels
 {
     public partial class EvaluationInput
     {
-        public int OrderId { get; set; }
         public string MerchandiseName { get; set; }
         public int MerchandiseId { get; set; }
         public string SpecName { get; set; }
+        public int OrderId { get; set; }
         public int SpecId { get; set; }
+        public int EvaluationId { get; set; }
+        public string Comment { get; set; }
+        public int Score { get; set; }
     }
 }

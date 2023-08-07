@@ -11,11 +11,13 @@ namespace MSIT147thGraduationTopic.EFModels
         public int MerchandiseId { get; set; }
         public string BrandName { get; set; }
         public string CategoryName { get; set; }
+        public int CategoryId { get; set; }
         public string FullName { get; set; }
         public int Price { get; set; }
         public int Amount { get; set; }
         public int DiscountPercentage { get; set; }
         public string ImageUrl { get; set; }
+        public double Popularity { get; set; }
         public bool Display { get; set; }
         public bool OnShelf { get; set; }
     }

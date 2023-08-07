@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using System.ComponentModel.DataAnnotations;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -21,16 +22,17 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         private readonly GraduationTopicContext _context;
         private readonly MemberService _service;
+        private readonly ShoppingHistoryService _shService;
         private readonly IWebHostEnvironment _environment;
         private readonly string[] _employeeRoles;
 
         public ApiMemberController(GraduationTopicContext context
-            , IWebHostEnvironment environment
-            , IOptions<OptionSettings> options)
+            , IWebHostEnvironment environment, IOptions<OptionSettings> options)
         {
             _context = context;
             _environment = environment;
             _service = new MemberService(context, environment);
+            _shService = new ShoppingHistoryService(context, environment);            
 
             _employeeRoles = options.Value.EmployeeRoles!;
         }
@@ -41,17 +43,23 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetAllMembers().ToList();
         }
 
-        [HttpGet("{query}")]
-        public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
+        //[HttpGet("{query}")]
+        //public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
+        //{
+        //    return _service.GetMemberByNameOrAccount(query).ToList();
+        //}
+
+        [HttpGet("{id}")]
+        public ActionResult<List<MemberVM>> GetMemberById(int id)
         {
-            return _service.GetMemberByNameOrAccount(query).ToList();
+            return _service.GetMemberById(id).ToList();
         }
 
-        //[HttpGet("{id}")]
-        //public ActionResult<List<MemberVM>> GetMemberById(int id)
-        //{
-        //    return _service.GetMemberById(id).ToList();
-        //}
+        [HttpGet("ShoppingHistory")]
+        public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId(int memberId)
+        {
+            return _shService.GetOrdersByMemberId(memberId).ToList();
+        }
 
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)
@@ -61,8 +69,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return memberId;
         }
 
-
-
         [HttpPut("{id}")]
         public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
@@ -71,13 +77,24 @@ namespace MSIT147thGraduationTopic.Controllers
             return memberId;
         }
 
+        [HttpPut("memberCenter")]
+        public ActionResult<int> UpdateSelfData([FromForm] MemberCenterEditVM vm, [FromForm] IFormFile? avatar)
+        {
+            int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
+
+            var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
+
+            return memberId;
+        }
+
+
         [HttpDelete("{id}")]
         public ActionResult<int> UpdateMember(int id)
         {
             return _service.DeleteMember(id);
         }
 
-        
+
         public record LoginRecord([Required] string Account, [Required] string Password);
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn(LoginRecord record)
@@ -114,7 +131,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
                 if (member.Password != saltedPassword) return string.Empty;
-                
+
                 var claims = new List<Claim>
                             {
                                 new Claim(ClaimTypes.Name, member.Account),
@@ -138,6 +155,6 @@ namespace MSIT147thGraduationTopic.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Url.Content("~/home/index");
         }
-                
+
     }
 }

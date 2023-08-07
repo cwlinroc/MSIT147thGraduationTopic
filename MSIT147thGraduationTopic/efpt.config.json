@@ -28,11 +28,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Cities]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[CouponOwners]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Coupons]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Districts]",
          "ObjectType": 0
       },
       {
@@ -52,10 +60,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[MerchandiseTags]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[OrderLists]",
          "ObjectType": 0
       },
@@ -69,6 +73,10 @@
       },
       {
          "Name": "[dbo].[Specs]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SpecTags]",
          "ObjectType": 0
       },
       {
@@ -88,7 +96,15 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[OrderWithMember]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[SpecDisplayforOrder]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[SpecsInOrder]",
          "ObjectType": 3
       },
       {
@@ -100,7 +116,7 @@
          "ObjectType": 3
       }
    ],
-   "UiHint": "desktop-43t56sd.GraduationTopic.dbo",
+   "UiHint": "libicrystal-base-03.GraduationTopic.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

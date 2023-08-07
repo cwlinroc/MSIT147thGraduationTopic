@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -79,6 +80,16 @@ namespace MSIT147thGraduationTopic.Controllers
             await _service.DeleteCartItem(id);
 
             return NoContent();
+        }
+
+        [HttpGet("cartcount")]
+        public async Task<ActionResult<int>> GetCartCount()
+        {
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest("找不到對應會員ID");
+            }
+            return await _service.GetCartCount(memberId);
         }
 
     }

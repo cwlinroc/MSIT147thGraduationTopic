@@ -63,12 +63,21 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             get { return _spec.DiscountPercentage; }
             set { _spec.DiscountPercentage = value; }
         }
+
         [DisplayName("顯示順序")]
         public int DisplayOrder
         {
             get { return _spec.DisplayOrder; }
             set { _spec.DisplayOrder = value; }
         }
+
+        [DisplayName("熱門度")]
+        public double Popularity
+        {
+            get { return _spec.Popularity; }
+            set { _spec.Popularity = value; }
+        }
+
         [DisplayName("上架此規格")]
         public bool OnShelf
         {

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
@@ -35,14 +36,14 @@ builder.Services.AddSession(options =>
 //==== AspNetCore.Authentication 全域範圍的驗証機制組態設置 ===== (全環境 cookie 套用)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-        {
-            //未登入時會自動移轉到此網址。
-            //options.LoginPath = new PathString("/Member/NoLogin");
-            //未授權角色時會自動移轉到此網址。
-            //options.AccessDeniedPath = new PathString("/Member/NoRole");
-            ///登入1小時後會失效
-            options.ExpireTimeSpan = TimeSpan.FromHours(1);
-        });
+    {
+        //未登入時會自動移轉到此網址。
+        options.LoginPath = new PathString("/Member/NoLogin");
+        //未授權角色時會自動移轉到此網址。
+        options.AccessDeniedPath = new PathString("/Member/NoRole");
+        //登入1hr後會失效
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    });
 
 
 
@@ -71,6 +72,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=CouponsBackstageSettings}/{action=index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
