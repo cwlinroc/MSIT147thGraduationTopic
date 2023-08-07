@@ -99,9 +99,9 @@
         //抓取會員資料
         getMembers()
         //搜尋按鈕
-        $('#btnQuery').click(e => getEmployees($('#query').val()))
+        $('#btnQuery').click(e => getMembers($('#query').val()))
         //修改權限按鈕
-        $('#btnChangePermission').click(submitChangePermission)
+        $('#btnChangePermission').click(memberDeactivate)
 
         //Ajax 得到會員資料
         async function getMembers(query) {
@@ -118,9 +118,23 @@
             //hideLoadingBox()
         }
 
-        //彈出修改權限
-        async function showEditPermission() {
+        //會員停權
+        async function memberDeactivate(event) {
             if (!await validateRole('管理員')) return;
+
+            const index = event.currentTarget.closest('tr').dataset.index
+            const id = memberData[index].memberId
+
+            //showLoadingBox();
+            const response = await fetch(`@Url.Content("~/api/apimember/permission")/${id}`, {
+                body: JSON.stringify({ 'isActivated': isActivated }),
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+            })
+
+            if (response.status == 400) {
+                console.log("輸入格式錯誤")
+            }
 
             await Swal.fire({
                 title: '確定停權該會員?',
@@ -130,86 +144,63 @@
                 confirmButtonText: '確定',
                 cancelButtonText: '取消',
                 allowOutsideClick: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire('會員已停權!', '', 'success')
-                    submitChangePermission();
+            }).then(() => {
+                if (response.ok) {
+                    const data = await response.json()
+                    console.log(data)
+                    getMembers()
+                    await Swal.fire(
+                        '修改成功!',
+                        '會員已停權!',
+                        'success'
+                    )
                 }
+            })
+            //hideLoadingBox();
+        }        
 
-            }
+        //列出會員
+        function displayMembers() {
+            const trs = memberData.map((element, index) => {
+                const isActivated = element.isActivated ? "已啟用" : "未啟用"
+                const disabled = element.isActivated ? "" : "disabled";
 
-                //Ajax 修改會員權限
-                async function submitChangePermission() {
-                    const confirm = await confirmWithPassword()
-                    if (!confirm) return
+                return `<tr data-index="${index}" >
+                            <td>${element.memberName}</td>
+                            <td>${element.account}</td>
+                            <td>${isActivated}</td>
+                            <td class="text-center">
+                            <button class="btn btn-danger permission-btn ${disabled}"><i class="fa-solid fa-pen-nib"></i></button>
+                            </td>
+                        </tr>`
+            })
 
-                    const isActivated = $('#').val()
-                    const id = $('#').attr('data-memberId')
+            $('.tablebox').find('tbody').html(trs.join(''))
+            $('.tablebox').find('.permission-btn').click(memberDeactivate)
+            $('.tablebox').find('tbody').find('tr').click(displayMemberDataInRow)
+            displayMemberData(0)
+        }
 
-                    //showLoadingBox()
-                    const response = await fetch(`@Url.Content("~/api/apimember/permission")/${id}`, {
-                        body: JSON.stringify({ 'isActivated': isActivated }),
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', },
-                    })
+        //顯示點選tr的會員資料
+        function displayMemberDataInRow(event) {
+            const index = +event.currentTarget.dataset.index
+            displayMemberData(index)
+        }
 
-                    if (response.status == 400) {
-                        console.log("輸入格式錯誤")
-                    }
+        //顯示第n筆會員資料
+        function displayMemberData(index) {
+            if (!memberData.length) return
 
-                    if (response.ok) {
-                        const data = await response.json()
-                        console.log(data)
-                        getMembers()
-                        await Swal.fire(
-                            '修改成功!',
-                            '會員權限已修改!',
-                            'success'
-                        )
-                    }
-                    //hideLoadingBox()
-                }
-
-                //列出會員
-                function displayMembers() {
-                    const trs = memberData.map((element, index) => {
-                        const isActivated = element.isActivated ? "已啟用" : "未啟用"
-                        const disabled = element.isActivated ? "" : "disabled";
-                        return `<tr data-index="${index}" >
-                                    <td>${element.memberName}</td>
-                                    <td>${element.account}</td>
-                                    <td>${isActivated}</td>
-                                    <td class="text-center">
-                                    <button class="btn btn-danger permission-btn ${disabled}"><i class="fa-solid fa-pen-nib"></i></button>
-                                    </td>
-                                    </tr>`
-                    })
-                    $('.tablebox').find('tbody').html(trs.join(''))
-                    $('.tablebox').find('.permission-btn').click(showEditPermission)
-                    $('.tablebox').find('tbody').find('tr').click(displayMemberDataInRow)                
-                    displayMemberData(0)
-                }
-
-                //顯示點選tr的會員資料
-                function displayMemberDataInRow(event) {
-                    const index = +event.currentTarget.dataset.index
-                    displayMemberData(index)
-                }
-
-                //顯示第n筆會員資料
-                function displayMemberData(index) {
-                    if (!memberData.length) return
-
-                    $('#displayName').text(memberData[index].memberName)
-                    $('#displayGender').text(memberData[index].gender)
-                    $('#displayAccount').text(memberData[index].account)
-                    $('#displayPhone').text(memberData[index].phone)
-                    $('#displayEmail').text(memberData[index].email)
-                    $('#displayCity').text(memberData[index].city)
-                    $('#displayDistrict').text(memberData[index].district)
-                    $('#displayAddress').text(memberData[index].address)
-                    $('#displayIsActived').text(memberData[index].isActivated)
-                }
+            $('#displayName').text(memberData[index].memberName)
+            $('#displayGender').text(memberData[index].gender)
+            $('#displayAccount').text(memberData[index].account)
+            $('#displayPhone').text(memberData[index].phone)
+            $('#displayEmail').text(memberData[index].email)
+            $('#displayCity').text(memberData[index].city)
+            $('#displayDistrict').text(memberData[index].district)
+            $('#displayAddress').text(memberData[index].address)
+            $('#displayIsActived').text(memberData[index].isActivated)
+        }
 
     </script>
 }
