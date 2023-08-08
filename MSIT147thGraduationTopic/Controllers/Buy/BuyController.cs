@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Buy
 {
     public class BuyController : Controller
     {
@@ -28,11 +28,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
             if (!ids.Any()) return RedirectToAction("Index", "Cart");
 
-            var member = _service.GetMemberAddressAndPhone(ids[0]);
+            var member = _service.GetMemberData(ids[0]);
             if (member == null) return BadRequest();
 
             //TODO-cw id驗證
             ViewBag.MemberId = member.MemberId;
+            ViewBag.MemberCity = member.City;
+            ViewBag.MemberDistrict = member.District;
             ViewBag.MemberAddress = member.Address;
             ViewBag.MemberPhone = member.Phone;
             ViewBag.MemberName = member.MemberName;
@@ -52,14 +54,17 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
 
-        public record OrderRecord([Required] string Address,
+        public record OrderRecord(
+            [Required] string City,
+            [Required] string District,
+            [Required] string Address,
             [Required] string Phone,
             string? CouponId,
             [Required] string Payment,
             string Remark);
 
         [HttpPost]
-        public IActionResult Index(OrderRecord record)
+        public async Task<IActionResult> Index(OrderRecord record)
         {
             //memberId
             if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
@@ -72,8 +77,7 @@ namespace MSIT147thGraduationTopic.Controllers
             if (string.IsNullOrEmpty(json)) return BadRequest("沒有預計購買的商品");
             int[] cartItemIds = JsonSerializer.Deserialize<int[]>(json)!;
 
-
-            int result = _service.CreateOrder(cartItemIds, memberId, record);
+            int result = await _service.CreateOrder(cartItemIds, memberId, record);
             if (result < 0) return BadRequest();
 
 

@@ -1,9 +1,9 @@
-﻿namespace MSIT147thGraduationTopic.Models.Dtos
+﻿namespace MSIT147thGraduationTopic.Models.Dtos.Recommend
 {
-    public class RecommandSpecDisplayDto
+    public class RecommendSpecDisplayDto
     {
         public int SpecId { get; set; }
-        public int MerchandiseId { get; set; }      
+        public int MerchandiseId { get; set; }
         public string? MerchandiseName { get; set; }
         public string? SpecImageName { get; set; }
         public string? MerchandiseImageName { get; set; }

@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Employee
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -37,18 +37,21 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "管理員,經理")]
         public ActionResult<List<EmployeeVM>> GetAllEmployees()
         {
             return _service.GetAllEmployees().ToList();
         }
 
         [HttpGet("{query}")]
+        [Authorize(Roles = "管理員,經理")]
         public ActionResult<List<EmployeeVM>> GetEmployeesByNameOrAccount(string query)
         {
             return _service.queryEmployeesByNameOrAccount(query).ToList();
         }
 
         [HttpPost]
+        [Authorize(Roles = "管理員,經理")]
         public ActionResult<int> CreateEmployee([FromForm] EmployeeCreateVM vm, [FromForm] IFormFile? avatar)
         {
             var employeeId = _service.CreateEmployee(vm.ToDto(), avatar);
@@ -57,6 +60,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "管理員,經理")]
         public ActionResult<int> UpdateEmployee([FromForm] EmployeeEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
             var employeeId = _service.EditEmployee(dto, id, avatar);
@@ -67,6 +71,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public record Container([Required] string Permission);
 
         [HttpPut("permission/{id}")]
+        [Authorize(Roles = "管理員")]
         public ActionResult<int> UpdateEmployeePermission(Container permission, int id = 0)
         {
             var employeeId = _service.ChangeEmployeePermission(id, permission.Permission);
@@ -76,7 +81,8 @@ namespace MSIT147thGraduationTopic.Controllers
 
 
         [HttpDelete("{id}")]
-        public ActionResult<int> UpdateEmployee(int id)
+        [Authorize(Roles = "管理員")]
+        public ActionResult<int> DeleteEmployee(int id)
         {
             return _service.DeleteEmployee(id);
         }
@@ -119,6 +125,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public record ConfirmRecord([Required] string Password);
         [HttpPost("confirm")]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<ActionResult<bool>> ConfirmPassword(ConfirmRecord record)
         {
             if (!HttpContext.User.Identity?.IsAuthenticated ?? false) return false;

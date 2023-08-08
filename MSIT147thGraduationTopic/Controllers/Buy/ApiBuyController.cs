@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,7 @@ using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using NuGet.Packaging.Signing;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Buy
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -28,10 +29,14 @@ namespace MSIT147thGraduationTopic.Controllers
             _service = new BuyServices(context);
         }
 
-
-        public async Task<IEnumerable<BuyPageCouponVM>> GetAllCouponsAvalible(int id)
+        [HttpGet("coupons")]
+        public async Task<IEnumerable<BuyPageCouponVM>> GetAllCouponsAvalible()
         {
-            var item = (await _service.GetAllCouponsAvalible(id));
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return new List<BuyPageCouponVM>();
+            }
+            var item = await _service.GetAllCouponsAvalible(memberId);
 
             return item;
         }

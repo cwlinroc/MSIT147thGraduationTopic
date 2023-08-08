@@ -48,7 +48,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             });
         }
 
-        public MemberDto? GetMemberAddressAndPhone(int memberId)
+        public MemberDto? GetMemberData(int memberId)
         {
             var member = _context.Members.FirstOrDefault(o => o.MemberId == memberId);
             return member?.ToDto();
@@ -89,6 +89,34 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
             return cartItems.Select(c => (specs.First(s => s.SpecId == c.SpecId), c));
         }
+
+        public IEnumerable<CartItemCheckoutDto> GetCheckoutInformation(int[] cartItemIds)
+        {
+            var cartItems = (from cartItem in _context.CartItems
+                             join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
+                             where cartItemIds.Contains(cartItem.CartItemId)
+                             select new CartItemCheckoutDto
+                             {
+                                 CartItemId = cartItem.CartItemId,
+                                 SpecId = cartItem.SpecId,
+                                 MerchandiseId = spec.MerchandiseId,
+                                 DiscountPercentage = spec.DiscountPercentage,
+                                 Price = spec.Price,
+                                 Quantity = cartItem.Quantity,
+                                 Amount = spec.Amount,
+                                 OnShelf = spec.OnShelf
+                             }).ToList();
+            foreach (var cartItem in cartItems)
+            {
+                cartItem.TagIds = _context.SpecTags.Where(o => o.SpecId == cartItem.SpecId)
+                    .Select(o => o.TagId).ToList();
+            }
+            return cartItems;
+        }
+
+
+
+
 
         public int CreateOrder(OrderDto dto)
         {

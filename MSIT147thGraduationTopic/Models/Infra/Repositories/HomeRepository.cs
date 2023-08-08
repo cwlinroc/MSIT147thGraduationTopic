@@ -1,7 +1,7 @@
 ﻿using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
-using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Dtos.Recommend;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -14,14 +14,14 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context = context;
         }
 
-        public IEnumerable<RecommandSpecDisplayDto> GetMostPopularSpecs(int top = 20)
+        public IEnumerable<RecommendSpecDisplayDto> GetMostPopularSpecs(int top = 20)
         {
-            if (top <= 0) return new List<RecommandSpecDisplayDto>();
+            if (top <= 0) return new List<RecommendSpecDisplayDto>();
 
             var specs = (from spec in _context.Specs
                          join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
                          orderby spec.Popularity
-                         select new RecommandSpecDisplayDto
+                         select new RecommendSpecDisplayDto
                          {
                              SpecId = spec.SpecId,
                              MerchandiseId = spec.MerchandiseId,
@@ -44,9 +44,9 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             }
             return specs;
         }
-        public IEnumerable<RecommandSpecDisplayDto> GetMostFavorableSpecs(int top = 20)
+        public IEnumerable<RecommendSpecDisplayDto> GetMostFavorableSpecs(int top = 20)
         {
-            if (top <= 0) return new List<RecommandSpecDisplayDto>();
+            if (top <= 0) return new List<RecommendSpecDisplayDto>();
 
             var specs = (from spec in _context.Specs
                          join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
@@ -54,7 +54,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                          group new { spec, merchandise, evaluation } by merchandise.MerchandiseId into g
                          orderby g.Average(o => o.evaluation.Score) descending
                          where g.Count() > 2
-                         select new RecommandSpecDisplayDto
+                         select new RecommendSpecDisplayDto
                          {
                              SpecId = g.First().spec.SpecId,
                              MerchandiseId = g.First().spec.MerchandiseId,
@@ -76,14 +76,14 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             }
             return specs;
         }
-        public IEnumerable<RecommandSpecDisplayDto> GetNewestSpecs(int top = 50)
+        public IEnumerable<RecommendSpecDisplayDto> GetNewestSpecs(int top = 50)
         {
-            if (top <= 0) return new List<RecommandSpecDisplayDto>();
+            if (top <= 0) return new List<RecommendSpecDisplayDto>();
 
             var specs = (from spec in _context.Specs
                          join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
                          orderby spec.SpecId descending
-                         select new RecommandSpecDisplayDto
+                         select new RecommendSpecDisplayDto
                          {
                              SpecId = spec.SpecId,
                              MerchandiseId = spec.MerchandiseId,
