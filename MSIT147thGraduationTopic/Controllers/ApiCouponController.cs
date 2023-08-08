@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
@@ -58,8 +59,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPut("{id}")]
-        [ValidateAntiForgeryToken]
-        public ActionResult<int> EditCoupon(int id, [FromBody] CouponEditDto cEDto)
+        public ActionResult<int> EditCoupon(int id, [FromForm] CouponEditDto cEDto)
         {
             if(cEDto == null)
             {

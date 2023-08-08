@@ -26,35 +26,34 @@
                     <p class="lead fw-normal text-muted mb-0"></p>
                 </div>
                 <div class="container px-5 my-5">
-                    <div class="row justify-content-center">
-                        <form id="edit" name="edit" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation" novalidate>
-                            @Html.AntiForgeryToken()
+                    <div class="">
+                        <form id="edit" name="edit" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
+                            <div class="col-8 mb-3">
+                                <input type="hidden" id="CouponId" name="CouponId" value="@Model.CouponId" class="form-control">
+                            </div>
+                            <div class="col-8 mb-3">
+                                優惠券名稱<input type="text" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
+                            </div>
+                            <div class="col-8 mb-3">
+                                適用對象<select name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
+                                    <option></option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </div>
+                            <div class="col-8 mb-3">
+                                開始日期<input name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                            </div>
+                            <div class="col-8 mb-3">
+                                結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                            </div>
+                            <div class="col-8 mb-3">
+                                折扣百分比<input id="CouponDiscount" name="CouponDiscount" value="@Model.CouponDiscount.ToString("#.##"+"折")" type="number" class="form-control" placeholder="請輸入折扣百分比" min="1" max="99">
+                            </div>
                         </form>
-                        <div class="col-8 mb-3">
-                            優惠券序號<input type="hidden" name="CouponId" value="@Model.CouponId" class="form-control">
-                        </div>
-                        <div class="col-8 mb-3">
-                            優惠券名稱<input type="text" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
-                        </div>
-                        <div class="col-8 mb-3">
-                            適用對象<select name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                            </select>
-                        </div>
-                        <div class="col-8 mb-3">
-                            開始日期<input name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
-                        </div>
-                        <div class="col-8 mb-3">
-                            結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
-                        </div>
-                        <div class="col-8 mb-3">
-                            折扣百分比<input name="CouponDiscount" value="@Model.CouponDiscount" type="number" class="form-control" placeholder="請輸入折扣百分比" min="0" max="100">
-                        </div>
                     </div>
-
                     <div class="row justify-content-center px-5 my-5">
                         <div class="col-auto">
                             <button type="button" class="btn btn-primary" id="btnEdit">修改</button>
@@ -91,44 +90,54 @@
     <script>
         //const couponId = '@Model.CouponId';
 
-        $('#btnEdit').click(async function(){
+        $('#btnEdit').click(async function () {
             const discountInput = $('input[name="CouponDiscount"]');
             const discountValue = parseFloat(discountInput.val());
 
-            if(isNaN(discountValue)||discountValue<0||discountValue>100){
-                discountInput[0].setCustomValidity('折扣必須介於0到100');
+            //驗證
+            if ( discountValue < 0 || discountValue > 100) {
+                discountInput[0].setCustomValidity('折扣必須介於1到99');
             }
-            else{
+            else if (isNaN(discountValue) ){
+                discountInput[0].setCustomValidity('折扣為必填欄位');
+            }
+            else {
                 discountInput[0].setCustomValidity('');
             }
 
             const form = document.getElementById('edit');
-            if(form.checkValidity()){
+            if (form.checkValidity()) {
                 const formData = new FormData(form);
-                const editUrl = `@Url.Action("EditCoupon","ApiCoupon",new{id=Model.CouponId})`;
+                const couponId = $('#CouponId').val()
+                const editUrl = `@Url.Content($"~/api/apicoupon/")${couponId}`;
                 console.log(formData)
 
-                $.ajax({
-                    url:editUrl,
-                    type:'PUT',
-                    data:formData,
-                    success:function(data){
-                        Swal.fire({
-                            icon:'success',
-                            title:'成功',
-                            text:'優惠券更新成功',
-                        });
-                    },
-                    error:function(xhr){
-                        Swal.fire({
-                            icon:'error',
-                            title:'失敗',
-                            text: '優惠券更新失敗，請檢查資料及格式是否正確',
-                        });
-                    }
+                const response = await fetch(editUrl, {
+                    body: formData,
+                    method: 'PUT'
+                })
+
+
+                if (!response.ok) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '失敗',
+                        text: '優惠券更新失敗，請檢查資料及格式是否正確',
+                    });
+                    return
+                }
+                await Swal.fire({
+                    icon: 'success',
+                    title: '成功',
+                    text: '優惠券更新成功',
                 });
+
+                const result = await response.json();
+                console.log(result);
+
+
             }
-            else{
+            else {
                 form.reportValidity();
             }
         });
