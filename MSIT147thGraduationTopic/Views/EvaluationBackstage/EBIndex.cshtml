@@ -82,18 +82,21 @@
                 <button id="btnChecitem" class="btn btn-primary ">刪除所有勾選</button>
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
+                        <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo - 1)>0?ViewBag.PageNo - 1:ViewBag.PageNo })" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <div class="pagination ">
-                       @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
+                        @for (int i = 1; i <= ViewBag.TotalPage; i++)
                         {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("EBIndex", new { pageNo = i })">@i</a></li>
+                        <li class="page-item @(i == ViewBag.PageNo ? "active" : "")">
+                                @*若ViewBag.PageNo為當頁,把active加上*@
+                                <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = i })">@i</a>
+                            </li>
                         }
                     </div>
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) @*< ViewBag.PageNo ?ViewBag.PageNo + 1:ViewBag.PageNo*@ })" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -106,6 +109,7 @@
 
 @section Scripts{
     <script>
+        //刪除單筆留言
         $('.btnDelete').click(function () {
 
             var evaluationId = $(this).attr('data-id');
@@ -117,24 +121,28 @@
             });
         });
 
-        $('#btnChecitem').click(function () {
+        //刪除全部留言
+        //$('#btnChecitem').click(function () {
 
-            var Checitems = $(this).attr('data-id').List();
+        //    var Checitems = $(this).attr('data-id').List();
 
-            console.log(this);
+        //    console.log(this);
 
-            $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
-                window.location.reload(); //重載畫面
-            });
-        });
+        //    $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
+        //        window.location.reload(); //重載畫面
+        //    });
+        //});
+        
+        
 
-
+        //關鍵字搜尋
         $("#btnKeywordImage").click(function(){
             var keywordValue = $("#txtkeyword").val();
             console.log(keywordValue);
             $("#SearchForm").submit();
         })
         
+
 
     </script>
 
