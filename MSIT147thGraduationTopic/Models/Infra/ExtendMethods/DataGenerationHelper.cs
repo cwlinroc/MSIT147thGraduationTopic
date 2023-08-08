@@ -29,7 +29,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.ExtendMethods
         {
             using MD5 md5Hasher = MD5.Create();
             var hashed = md5Hasher.ComputeHash(Encoding.Default.GetBytes(str));
-            return BitConverter.ToInt32(hashed, 0);
+            return Math.Abs(BitConverter.ToInt32(hashed, 0));
         }
 
     }

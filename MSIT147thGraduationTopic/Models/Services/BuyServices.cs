@@ -5,7 +5,7 @@ using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.Collections.Generic;
-using static MSIT147thGraduationTopic.Controllers.BuyController;
+using static MSIT147thGraduationTopic.Controllers.Buy.BuyController;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {

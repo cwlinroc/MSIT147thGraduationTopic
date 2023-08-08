@@ -77,7 +77,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                 string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
                 conn.Execute(str, new { SpecId = specId, TagId = tagId });
             }
-
+            return specId;
         }
 
         public int UpdateSpecPopularity(int specId, double popularity)

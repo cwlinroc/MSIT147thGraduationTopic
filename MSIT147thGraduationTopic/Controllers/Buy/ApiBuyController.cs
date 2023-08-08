@@ -14,7 +14,7 @@ using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using NuGet.Packaging.Signing;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Buy
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -36,7 +36,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 return new List<BuyPageCouponVM>();
             }
-            var item = (await _service.GetAllCouponsAvalible(memberId));
+            var item = await _service.GetAllCouponsAvalible(memberId);
 
             return item;
         }

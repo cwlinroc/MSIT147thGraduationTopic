@@ -1,5 +1,5 @@
-﻿@using MSIT147thGraduationTopic.Models.Dtos;
-@model (IEnumerable<RecommandSpecDisplayDto>,IEnumerable<RecommandSpecDisplayDto>,IEnumerable<RecommandSpecDisplayDto>)
+﻿@using MSIT147thGraduationTopic.Models.Dtos.Recommend;
+@model (IEnumerable<RecommendSpecDisplayDto>,IEnumerable<RecommendSpecDisplayDto>,IEnumerable<RecommendSpecDisplayDto>)
 @{
     ViewBag.Title = "Index";
     var popularSpecs = Model.Item1.ToArray();

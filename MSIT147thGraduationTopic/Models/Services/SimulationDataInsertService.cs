@@ -136,6 +136,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             {
                 int orderAmount = (int)(_generator.RandomDouble().InvCSND(0.3) * 30);
                 int paymentMethod = member.MemberName.GetHashedInt() % 3 + 1;
+                int record = paymentMethod;
 
                 for (int i = 0; i < orderAmount; i++)
                 {
@@ -188,7 +189,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             var boughtSpecs = _generator.RandomCollectionFrom(specs, maxItemAmount).ToList();
 
-            foreach (var spec in boughtSpecs)
+            foreach (var spec in boughtSpecs.ToList())
             {
                 var buyChance = (spec.FullName!.GetHashedInt() % 100 / 100.0).InvCSND();
                 if (buyChance < _generator.RandomDouble()) boughtSpecs.Remove(spec);
@@ -229,14 +230,14 @@ namespace MSIT147thGraduationTopic.Models.Services
                     if (_repo.CheckEvaluated(order.orderId, merchandise.merchandiseId)) continue;
                     if (_generator.RandomChance(60)) continue;
                     //int favor = 
-                    int favor = merchandise.merchandiseName.GetHashedInt() % 100;
+                    int favor = merchandise.merchandiseName.GetHashedInt() % 100 + 1;
 
                     int score = _generator.RandomIntByWeight(0,
-                        (500 - favor) / 4 + 1,
-                        (500 - favor) / 8 + 1,
-                        (500 - favor),
-                        favor * 4 / 3,
-                        favor * 5 / 4);
+                        (100 - favor) * (100 - favor) / 200,  // 0   50
+                        (50 - favor / 2) / 5,  //0  10
+                        (25 - favor / 4) / 5,  //  0  5
+                        favor * 30 / 100 + 20,  // 50   20
+                        favor * (favor + 10) / 100 + 20) ;  // 130 20
                     _repo.AddEvaluation(order.orderId, merchandise.merchandiseId, score);
                 }
         }
