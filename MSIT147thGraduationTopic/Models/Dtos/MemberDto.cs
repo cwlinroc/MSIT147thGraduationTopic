@@ -11,8 +11,6 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string NickName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool Gender { get; set; }
-        public string City { get; set; }
-        public string District { get; set; }
         public string Account { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
@@ -85,8 +83,6 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 Account = entity.Account,
                 Password = entity.Password,
                 Phone = entity.Phone,
-                City = entity.City,
-                District = entity.District,
                 Address = entity.Address,
                 Email = entity.Email,
                 Avatar = entity.Avatar,
