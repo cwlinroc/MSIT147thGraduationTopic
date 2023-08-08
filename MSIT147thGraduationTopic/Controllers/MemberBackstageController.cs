@@ -25,7 +25,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _service = new EmployeeService(context, environment, _employeeRoles);
         }
 
-        //[Authorize(Roles = "管理員,經理,員工")]
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index()
         {
             return View();

@@ -93,15 +93,15 @@ namespace MSIT147thGraduationTopic.Controllers
             return memberId;
         }
 
-        public record Container([Required] bool isActivated);
+        //public record Container([Required] bool isActivated);
 
-        [HttpPut("permission/{id}")]
-        public ActionResult<int> UpdateMembePermission(Container isActivated, int id = 0)
-        {
-            var memberId = _service.ChangeMemberPermission(id, isActivated.isActivated);
+        //[HttpPut("permission/{id}")]
+        //public ActionResult<int> UpdateMemberPermission(Container isActivated, int id = 0)
+        //{
+        //    var memberId = _service.ChangeMemberPermission(id, isActivated.isActivated);
 
-            return memberId;
-        }
+        //    return memberId;
+        //}
 
 
         [HttpDelete("{id}")]

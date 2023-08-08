@@ -21,7 +21,13 @@ function displayOrders() {
         return;
     }
 
-    const oTable = orderData.map((e, index) => {
+    const sortedOrders = orderData.sort((orderA, orderB) => {
+        const timeA = new Date(orderA.purchaseTime);
+        const timeB = new Date(orderB.purchaseTime);
+        return timeB - timeA;
+    });
+
+    const oTable = sortedOrders.map((e, index) => {
         //console.log(e.listOfSpecs)
         let specs = e.listOfSpecs.map(s => {
             return `<tr>
@@ -38,7 +44,7 @@ function displayOrders() {
             hour: "numeric",
             minute: "numeric"
         };
-        const datetime = new Date(e.purchaseTime).toLocaleString("zh-TW", dateOptions);
+        const datetimeString = new Date(e.purchaseTime).toLocaleString("zh-TW", dateOptions);
 
         return `<table class="table table-bordered px-4 py-2 mb-1">
                     <thead>
@@ -51,7 +57,7 @@ function displayOrders() {
                     </thead>
                     <tbody class="table-group-divider">
                         <tr>
-                            <td>${datetime}</td>
+                            <td>${datetimeString}</td>
                             <td>${e.orderId}</td>
                             <td>${e.paymentAmount}</td>
                             <td>${e.paymentMethodName}</td>
@@ -96,7 +102,31 @@ $("#queryStartDate,#queryEndDate").change(() => {
 $('#btnQuery').click(displayOrderBetweenDate)
 
 function displayOrderBetweenDate() {
-    const oTable = orderData.map((e, index) => {
+    const qDateOptions = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    };
+    const qStartDate = new Date($('#queryStartDate').val())
+    const qEndDate = new Date($('#queryEndDate').val())
+    const qStartDateString = new Date($('#queryStartDate').val()).toLocaleString("zh-TW", qDateOptions);
+    const qEndDateString = new Date($('#queryEndDate').val()).toLocaleString("zh-TW", qDateOptions);
+    //$('#startDate').html(qStartDate)
+    //$('#endDate').html(qEndDate)
+
+    if (qEndDate < qStartDate) {
+        $('.infotext').html('日期錯誤');
+        $('.orderTables').html('');
+        return;
+    }
+
+    const sortedOrders = orderData.sort((orderA, orderB) => {
+        const timeA = new Date(orderA.purchaseTime);
+        const timeB = new Date(orderB.purchaseTime);
+        return timeB - timeA;
+    });
+
+    const oTable = sortedOrders.map((e, index) => {
         //console.log(e.listOfSpecs)
         let specs = e.listOfSpecs.map(s => {
             return `<tr>
@@ -114,19 +144,12 @@ function displayOrderBetweenDate() {
             hour: "numeric",
             minute: "numeric"
         };
-        const qDateOptions = {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",            
-        };
-        const qStartDate = new Date($('#queryStartDate').val()).toLocaleString("zh-TW", qDateOptions);
-        const qEndDate = new Date($('#queryEndDate').val()).toLocaleString("zh-TW", qDateOptions);
-        const datetime = new Date(e.purchaseTime).toLocaleString("zh-TW", dateOptions);       
 
-        if (qStartDate && qEndDate && datetime >= qStartDate && datetime <= qEndDate) {
-            $('#startDate').html(qStartDate)
-            $('#endDate').html(qEndDate)
+        const datetime = new Date(e.purchaseTime);
+        const datetimeString = new Date(e.purchaseTime).toLocaleString("zh-TW", dateOptions);
 
+        if (datetime >= qStartDate && datetime <= qEndDate) {
+            $('.infotext').html(`您的查詢區間為 ${qStartDateString} 至 ${qEndDateString}`);
             return `<table class="table table-bordered px-4 py-2 mb-1">
                     <thead>
                         <tr>
@@ -138,7 +161,7 @@ function displayOrderBetweenDate() {
                     </thead>
                     <tbody class="table-group-divider">
                         <tr>
-                            <td>${datetime}</td>
+                            <td>${datetimeString}</td>
                             <td>${e.orderId}</td>
                             <td>${e.paymentAmount}</td>
                             <td>${e.paymentMethodName}</td>
@@ -163,12 +186,12 @@ function displayOrderBetweenDate() {
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
-                            ${specs.join('') }
+                            ${specs.join('')}
                         </tbody>
                     </table>
                 </div>
             </div>`;
-        } else {
+        } else if ((datetime < qStartDate || datetime > qEndDate) && sortedOrders < 1) {
             $('.infotext').html('查無訂單');
             $('.orderTables').html('');
             return;

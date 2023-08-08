@@ -26,21 +26,23 @@
                         </button>
                     </div>
                 </div>
-                <div class="tablebox">
-                    <table class="table table-light table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>姓名</th>
-                                <th>帳號名稱</th>
-                                <th>權限</th>
-                                <th style="width:5rem" class="text-center">會員停權</th>
-                                <th style="width:3rem" class="text-center"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
+                <form id="memberPermission">
+                    <div class="tablebox">
+                        <table class="table table-light table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>帳號名稱</th>
+                                    <th>權限</th>
+                                    <th style="width:5rem" class="text-center">會員停權</th>
+                                    <th style="width:3rem" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="col-xl-3 col-lg-6">
@@ -120,16 +122,22 @@
 
         //會員停權
         async function memberDeactivate(event) {
-            if (!await validateRole('管理員')) return;
+            if (!await validateRole('管理員')) {
+                await Swal.fire(
+                    '權限不足!',
+                    'error'
+                )
+                return;
+            }
 
+            const formData = new FormData(document.memberPermission)
             const index = event.currentTarget.closest('tr').dataset.index
             const id = memberData[index].memberId
 
             //showLoadingBox();
-            const response = await fetch(`@Url.Content("~/api/apimember/permission")/${id}`, {
-                body: JSON.stringify({ 'isActivated': isActivated }),
+            const response = await fetch(`@Url.Content("~/api/apimember")/${id}`, {
+                body: formData,
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
             })
 
             if (response.status == 400) {
@@ -144,8 +152,8 @@
                 confirmButtonText: '確定',
                 cancelButtonText: '取消',
                 allowOutsideClick: false,
-            }).then(() => {
-                if (response.ok) {
+            }).then(async (result) => {
+                if (result.isConfirmed && response.ok) {
                     const data = await response.json()
                     console.log(data)
                     getMembers()
@@ -157,7 +165,7 @@
                 }
             })
             //hideLoadingBox();
-        }        
+        }
 
         //列出會員
         function displayMembers() {
@@ -166,13 +174,13 @@
                 const disabled = element.isActivated ? "" : "disabled";
 
                 return `<tr data-index="${index}" >
-                            <td>${element.memberName}</td>
-                            <td>${element.account}</td>
-                            <td>${isActivated}</td>
-                            <td class="text-center">
-                            <button class="btn btn-danger permission-btn ${disabled}"><i class="fa-solid fa-pen-nib"></i></button>
-                            </td>
-                        </tr>`
+                                    <td>${element.memberName}</td>
+                                    <td>${element.account}</td>
+                                    <td>${isActivated}</td>
+                                    <td class="text-center">
+                                    <button class="btn btn-danger permission-btn ${disabled}"><i class="fa-solid fa-pen-nib"></i></button>
+                                    </td>
+                                </tr>`
             })
 
             $('.tablebox').find('tbody').html(trs.join(''))
