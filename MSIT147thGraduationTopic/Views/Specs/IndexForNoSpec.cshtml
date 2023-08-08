@@ -27,9 +27,6 @@
                     <th>
                         商品圖片
                     </th>
-                    <th style="display:none">
-                        商品ID
-                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -39,14 +36,11 @@
                     <td id="mCategory"></td>
                     <td id="mDescription"></td>
                     <td><img id="mImage" class="imgtumbnail" /></td>
-                    <td id="getMerchandiseId" style="display:none">
-                        @Html.DisplayFor(modelItem => Model.merchandiseIdCarrier)
-                    </td>
                 </tr>
             </tbody>
         </table>
         <p>
-            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseidcarrier = Model.merchandiseIdCarrier}, new { @class = "btn btn-primary" })
+            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseidcarrier = ViewBag.MerchandiseId}, new { @class = "btn btn-primary" })
         </p>
         <hr />
         <table class="table table-hover">
@@ -71,7 +65,7 @@
         const mImage = document.querySelector("#mImage");
 
         $(() => {
-            const merchandiseid = $("#getMerchandiseId").text();
+            const merchandiseid = @ViewBag.MerchandiseId;
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
             xhr.send();

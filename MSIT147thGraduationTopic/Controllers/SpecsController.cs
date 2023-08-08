@@ -26,6 +26,8 @@ namespace MSIT147thGraduationTopic.Controllers
         // GET: Specs
         public IActionResult Index(int merchandiseid)
         {
+            ViewBag.MerchandiseId = merchandiseid;
+
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
 
             List<SpecVM> list = new List<SpecVM>();
@@ -37,7 +39,6 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 SpecVM specvm = new SpecVM();
                 specvm.spec = s;
-                specvm.merchandiseIdCarrier = merchandiseid;
                 list.Add(specvm);
             }
 
@@ -45,18 +46,19 @@ namespace MSIT147thGraduationTopic.Controllers
         }
         public IActionResult IndexForNoSpec(int merchandiseid)
         {
+            ViewBag.MerchandiseId = merchandiseid;
+
             SpecVM specvmforCarrier = new SpecVM();
-            specvmforCarrier.merchandiseIdCarrier = merchandiseid;
             specvmforCarrier.SpecName = "**此商品尚無規格，請新增規格資料**";
             return View(specvmforCarrier);
         }
 
         // GET: Specs/Create
-        public IActionResult Create(int merchandiseIdCarrier)
+        public IActionResult Create(int merchandiseId)
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
-            specvm.MerchandiseId = merchandiseIdCarrier;
+            specvm.MerchandiseId = merchandiseId;
             specvm.Popularity = 0;
             return View(specvm);
         }
@@ -174,9 +176,15 @@ namespace MSIT147thGraduationTopic.Controllers
             return RedirectToAction("Index", new { merchandiseid = merchandiseid });
         }
 
-
-        public async Task<IActionResult> AddTag(string tagName, int specId, int merchandiseId)
+        
+        public record TagRecord(string tagName, string specId, int merchandiseId);
+        [HttpPost]
+        public async Task<IActionResult> AddTag([FromBody]TagRecord record)
         {
+            string tagName = record.tagName;
+            int specId = int.Parse(record.specId);
+            int merchandiseId = record.merchandiseId;
+
             bool checkName = _context.Tags.Where(t => t.TagName == tagName).Any();
 
             //若為新標籤則新增
