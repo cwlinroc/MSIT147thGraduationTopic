@@ -74,6 +74,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 var data = new Evaluation();
                 data.OrderId = id;
+                data.SpecId = item.SpecId;
                 data.MerchandiseId = item.MerchandiseId;
                 data.Comment = item.Comment;
                 data.Score = item.Score;
@@ -89,17 +90,17 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult Edit(int id)
         {
-            id = 249;
+            
             var model = (from e in _context.Evaluations
                          join s in _context.Specs on e.SpecId equals s.SpecId
-                         join m in _context.Merchandises on new { s.MerchandiseId } equals new { m.MerchandiseId }
+                         join m in _context.Merchandises on new { e.MerchandiseId } equals new { m.MerchandiseId }
                          where e.OrderId == id
                          select new EvaluationVM
                          {
                              OrderId = e.OrderId,
-                             MerchandiseId = m.MerchandiseId,
+                             MerchandiseId = e.MerchandiseId,
                              MerchandiseName = m.MerchandiseName,
-                             SpecId = s.SpecId,
+                             SpecId = e.SpecId,
                              SpecName = s.SpecName,
                              Comment = e.Comment,
                              Score = e.Score,

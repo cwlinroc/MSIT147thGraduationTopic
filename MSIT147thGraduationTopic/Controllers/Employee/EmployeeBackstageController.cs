@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Employee
 {
     public class EmployeeBackstageController : Controller
     {

@@ -43,15 +43,15 @@ namespace MSIT147thGraduationTopic.Models.Services
             });
         }
 
-        public IEnumerable<MemberVM> GetMemberById(int memberId)
-        {
-            return _repo.GetMemberById(memberId).Select(dto =>
-            {
-                string htmlFilePath = Path.Combine(_environment.WebRootPath, @"uploads\Avatar");
+        //public IEnumerable<MemberVM> GetMemberById(int memberId)
+        //{
+        //    return _repo.GetMemberById(memberId).Select(dto =>
+        //    {
+        //        string htmlFilePath = Path.Combine(_environment.WebRootPath, @"uploads\Avatar");
 
-                return dto.ToVM();
-            });
-        }
+        //        return dto.ToVM();
+        //    });
+        //}
         
 
         public int CreateMember(MemberDto dto, IFormFile file)
@@ -89,6 +89,11 @@ namespace MSIT147thGraduationTopic.Models.Services
             }
             string? fileName = file?.FileName;
             return _repo.EditMember(dto, memberId, fileName);
+        }
+
+        public int ChangeMemberPermission(int id, bool isActivated)
+        {            
+            return _repo.ChangeMemberPermission(id, isActivated);
         }
 
         public int DeleteMember(int memberId)

@@ -1,10 +1,11 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.Collections.Generic;
-using static MSIT147thGraduationTopic.Controllers.BuyController;
+using static MSIT147thGraduationTopic.Controllers.Buy.BuyController;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {
@@ -72,11 +73,11 @@ namespace MSIT147thGraduationTopic.Models.Services
             return cartItemsList;
         }
 
-        public MemberDto? GetMemberAddressAndPhone(int cartItemId)
+        public MemberDto? GetMemberData(int cartItemId)
         {
             int memberId = _repo.GetMemberIdByCartItemId(cartItemId);
 
-            var member = _repo.GetMemberAddressAndPhone(memberId);
+            var member = _repo.GetMemberData(memberId);
 
             return member;
         }
@@ -87,12 +88,14 @@ namespace MSIT147thGraduationTopic.Models.Services
                 .Select(o => new BuyPageCouponVM { CouponId = o.CouponId, CouponName = o.CouponName });
         }
 
-        public int CreateOrder(int[] cartItemIds, int memberId, OrderRecord record)
+        public async Task<int> CreateOrder(int[] cartItemIds, int memberId, OrderRecord record)
         {
-            var combined = _repo.GetCartItemsAndSpecs(cartItemIds);
+            //var combined = _repo.GetCartItemsAndSpecs(cartItemIds);
+            var checkoutDto = _repo.GetCheckoutInformation(cartItemIds);
 
-            //TODO-cw coupon
-            int totalPayment = combined.Select(o => o.Item1.Price * o.Item2.Quantity * o.Item1.DiscountPercentage / 100).Sum();
+            //TODO-cw checkamount
+            int? couponId = int.TryParse(record.CouponId, out int tempNum) ? tempNum : null;
+            int totalPayment = await CalculateTotalPayment(checkoutDto, couponId);
 
             var order = new OrderDto
             {
@@ -102,6 +105,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                 PurchaseTime = DateTime.Now,
                 UsedCouponId = (record.CouponId != null) ? int.Parse(record.CouponId) : null,
                 PaymentAmount = totalPayment,
+                DeliveryCity = record.City,
+                DeliveryDistrict = record.District,
                 DeliveryAddress = record.Address,
                 ContactPhoneNumber = record.Phone,
                 Remark = record.Remark
@@ -113,17 +118,15 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             if (orderId <= 0) return -1;
 
-            var orderLists = combined.Select(o =>
+            var orderLists = checkoutDto.Select(o =>
             {
-                var spec = o.Item1;
-                var cartItem = o.Item2;
                 var dto = new OrderListDto
                 {
                     OrderId = orderId,
-                    SpecId = spec.SpecId,
-                    Quantity = cartItem.Quantity,
-                    Price = spec.Price,
-                    Discount = spec.DiscountPercentage
+                    SpecId = o.SpecId,
+                    Quantity = o.Quantity,
+                    Price = o.Price,
+                    Discount = o.DiscountPercentage
                 };
                 return dto;
             });
@@ -135,6 +138,59 @@ namespace MSIT147thGraduationTopic.Models.Services
             if (cartItemsDeleted <= 0) return -1;
 
             return orderId;
+        }
+
+        private async Task<int> CalculateTotalPayment(IEnumerable<CartItemCheckoutDto> checkoutDtos, int? couponId)
+        {
+            CouponDto? coupon = null;
+            if (couponId != null && couponId > 0) coupon = await _repo.GetCouponById(couponId);
+
+            //無優惠卷或優惠卷無效
+            if (coupon == null
+                || coupon.CouponStartDate > DateTime.Now
+                || coupon.CouponEndDate < DateTime.Now)
+            {
+                return checkoutDtos.Sum(o => (o.Price * o.DiscountPercentage / 100) * o.Quantity);
+            }
+
+            //優惠卷type 0
+            if (coupon.CouponDiscountTypeId == 0 && coupon.CouponTagId == null)
+            {
+                return checkoutDtos.Sum(o => (o.Price * o.DiscountPercentage / 100)
+                    * (int)coupon.CouponDiscount / 100 * o.Quantity);
+            }
+            if (coupon.CouponDiscountTypeId == 0 && coupon.CouponTagId != null)
+            {
+                return checkoutDtos.Sum(o =>
+                {
+                    int discount = 100;
+                    if (!o.TagIds.IsNullOrEmpty() && o.TagIds!.Contains(coupon.CouponTagId.Value))
+                    {
+                        discount = (int)coupon.CouponDiscount;
+                    }
+                    return (o.Price * o.DiscountPercentage / 100) * discount / 100 * o.Quantity;
+                });
+            }
+
+
+            //優惠卷type 1
+            if (coupon.CouponDiscountTypeId == 1 && coupon.CouponTagId == null)
+            {
+                int total = checkoutDtos.Sum(o => (o.Price * o.DiscountPercentage / 100) * o.Quantity);
+                return (coupon.CouponCondition < total) ? total - (int)coupon.CouponDiscount : total;
+            }
+            if (coupon.CouponDiscountTypeId == 1 && coupon.CouponTagId != null)
+            {
+                int total = checkoutDtos.Sum(o => (o.Price * o.DiscountPercentage / 100) * o.Quantity);
+                int requiredTotal = checkoutDtos
+                    .Where(o => !o.TagIds.IsNullOrEmpty() && o.TagIds!.Contains(coupon.CouponTagId.Value))
+                    .Sum(o => (o.Price * o.DiscountPercentage / 100) * o.Quantity);
+                return (coupon.CouponCondition < requiredTotal) ? total - (int)coupon.CouponDiscount : total;
+            }
+
+
+            //else
+            return checkoutDtos.Sum(o => (o.Price * o.DiscountPercentage / 100) * o.Quantity);
         }
 
     }

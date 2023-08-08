@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.Security.Claims;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Cart
 {
     public class CartController : Controller
     {
@@ -19,6 +19,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return View(memberId);
         }
 
-        
+
     }
 }

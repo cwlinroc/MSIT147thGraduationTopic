@@ -92,7 +92,7 @@ async function LogIn() {
         icon: 'success',
         title: '登入成功!',
         allowOutsideClick: false
-    }).then(result => {
+    }).then(() => {
         if (url == 'reload') {
             window.location.reload()
         }

@@ -36,13 +36,18 @@ class MyBootsrapValidator {
                 $(this.form).find('input').removeClass('is-invalid is-valid')
                 this.keyupValid()
             })
+            $(this.form).find('select').on('change', () => {
+                $(this.form).find('select').removeClass('is-invalid is-valid')
+                this.keyupValid()
+            })
             this.addedKeyUp = true
         }
         return (this.validfunc)()
     }
 
     endtValidate() {
-        $(this.form).find('input').removeClass('is-invalid is-valid').off('keyup')
+        $(this.form).find('input').removeClass('is-invalid is-valid').off('keyup','click')
+        $(this.form).find('select').removeClass('is-invalid is-valid')
         this.addedKeyUp = false
     }
 
