@@ -7,6 +7,5 @@
         public int EvaluationWeight { get; set; }
         public int PurchasedWeight { get; set; }
         public int CustomWeight { get; set; }
-        public Action<IEnumerable<RecommendationSpecsDto>>? CalculatePopularity { get; set; }
     }
 }

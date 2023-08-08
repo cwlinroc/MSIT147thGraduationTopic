@@ -40,10 +40,6 @@ using System.Text;
 
 
 /**test**/
-RecommandService service = new(new());
-
-var changed = await service.CalculatePopularities();
-Console.WriteLine(changed);
 
 /**test**/
 
