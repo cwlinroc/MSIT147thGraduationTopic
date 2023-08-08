@@ -63,6 +63,9 @@ function displayOrders() {
                     data-bs-target="#orderdetail${index}">
                     訂單明細
                 </button>
+                <button id="btnEvaluation_${index}" class="btn btn-primary mx-1 " type="button" data-orderid="${e.orderId}">
+                    評價
+                </button>
                 </p>
                 <div class="collapse" id="orderdetail${index}">
                 <div class="card card-body mb-3">
@@ -83,6 +86,14 @@ function displayOrders() {
             </div>`;
     })
     $('.orderTables').html(oTable.join(''));
+
+    oTable.forEach((_, index) => {
+        $(`#btnEvaluation_${index}`).click(function () {
+            var orderId = $(this).data('orderid');
+            console.log(orderId)
+            window.location.href = '/Evaluation/EIndex/' + orderId;
+        });
+    })   
 }
 
 $("#queryStartDate,#queryEndDate").change(() => {
@@ -94,6 +105,8 @@ $("#queryStartDate,#queryEndDate").change(() => {
 })
 
 $('#btnQuery').click(displayOrderBetweenDate)
+
+
 
 function displayOrderBetweenDate() {
     const oTable = orderData.map((e, index) => {
@@ -150,6 +163,9 @@ function displayOrderBetweenDate() {
                     data-bs-target="#orderdetail${index}">
                     訂單明細
                 </button>
+                <button id="btnEvaluation" class="btn btn-primary mx-1 " type="button" data-orderid="${e.orderId}">
+                    評價
+                </button>
                 </p>
                 <div class="collapse" id="orderdetail${index}">
                 <div class="card card-body mb-3">
@@ -175,5 +191,5 @@ function displayOrderBetweenDate() {
         }
     })
     $('.orderTables').html(oTable.join(''));
-
+    
 }

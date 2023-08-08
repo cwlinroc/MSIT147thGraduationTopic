@@ -67,7 +67,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _context.SaveChanges();
 
             
-            return RedirectToAction("Edit", "Evaluation", new { id });   //todo轉跳至訂單頁          
+            return RedirectToAction("ShoppingHistory", "Member", new { id });             
         }
 
         public IActionResult Edit(int id)
@@ -118,7 +118,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             _context.SaveChanges();
 
-            return RedirectToAction("Edit", "Evaluation", new { id });   //todo轉跳至訂單頁          
+            return RedirectToAction("ShoppingHistory", "Member", new { id });            
         }
 
 
