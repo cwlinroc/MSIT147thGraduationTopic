@@ -124,6 +124,7 @@
                             </td>
                             <td>
                                 @Html.ActionLink("修改", "Edit", "Specs", new { id=item.SpecId }, new { @class = "btn btn-warning" }) |
+                                <button class="btn btn-success fortag" data-specid="@item.SpecId">管理標籤</button> |
                                 <button class="btn btn-danger fordelete" data-specid="@item.SpecId">刪除</button>
                             </td>
                         </tr>
@@ -133,6 +134,39 @@
         </table>
         <div class="form-group">
             @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+</div>
+<!-- Tag 管理頁 -->
+<div class="modal fade" id="SpecTagModal" tabindex="-1" aria-labelledby="SpecTagModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-4 " id="SpecTagModalLabel">標籤管理</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-10 mx-auto">
+                            <form name="AddTagForm">
+                                <!-- 輸入Tag名稱 + AutoComplete -->
+                                <div class="form-label mb-3">
+                                    <label for="TagName" class="fw-bold">標籤名稱</label>
+                                    <input class="form-control" id="TagName" type="text" />
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary me-2" id="btnAddTag">新增標籤</button>
+                                </div>
+                            </form>
+                            <hr />
+                            <div class="row" id="currentTag">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -195,6 +229,84 @@
                     })
                 }
             })
+        })
+    </script>
+    @*管理規格*@
+    <script>
+        const merchandiseid = $("#getMerchandiseId").text();
+        const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
+
+        $(".fortag").click(async (e) => {
+            const currentSpecId = $(e.currentTarget).attr("data-specid");
+            $("#TagName").val("");
+            SpecTagModal.show();
+
+            //陳列既有tag
+            const currentTag = document.querySelector("#currentTag");
+            const response = await fetch(`@Url.Content("~/ApiTag/CurrentTags/")${currentSpecId}`);
+            const NameList = await response.text();
+            const Names = JSON.parse(NameList);
+            var names = Names.map(names => {
+                const { specId, tagId, tagName } = names;
+                return (`
+                    <td>${tagName}</td>\
+                    <td>\
+                        <button class="btn btn-danger deletetag" data-specid="${specId}" data-tagid="${tagId}">x</button>\
+                    </td>`)
+            });
+            currentTag.innerHTML = `<tr>` + names.join("") + `</tr>`;
+
+            //新增tag
+            $("#btnAddTag").on("click", () => {
+                const tagName = $("#TagName").val();
+                window.location.href = `/Specs/AddTag/?tagName=${tagName}&specId=${currentSpecId}&merchandiseId=${merchandiseid}`;
+            })
+            
+            //刪除tag
+            $(".deletetag").on("click", (e) => {
+                Swal.fire({
+                    title: '確定刪除這個標籤嗎？',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '刪除',
+                    cancelButtonText: '取消',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const currenttagid = $(e.currentTarget).attr("data-tagid");
+
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: '刪除成功！',
+                            showConfirmButton: false,
+                            timer: 800
+                        }).then(() => {
+                            window.location.href = `/Specs/DeleteTag/?specId=${currentSpecId}&tagId=${currenttagid}&merchandiseId=${merchandiseid}`;
+                        })
+                    }
+                })
+            })
+
+            //設定AutoComplete選項
+            const response2 = await fetch(`@Url.Content("~/ApiTag/AutoCompleteOptions")`);
+            const jsonTagList = await response2.text();
+            const TagList = JSON.parse(jsonTagList);
+            console.log(TagList);
+
+            let optionTags;
+            TagList.foreach(tags => {
+                optionTags.add(`${tags}`);
+            });
+            console.log(optionTags);
+
+            $("#TagName").autocomplete({
+                //source: ["貓用", "狗用", "鼠用", "兔用"],
+                source: optionTags,
+                minLength: 1
+            });
         })
     </script>
 }

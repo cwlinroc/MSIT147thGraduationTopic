@@ -24,7 +24,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises
-        public async Task<IActionResult> Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1)
+        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1)
         {
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;

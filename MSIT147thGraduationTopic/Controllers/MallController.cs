@@ -17,7 +17,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult Index(string txtKeyword = "", int searchCondition = 1, int displayorder = 0, 
                                     int pageSize = 20, int PageIndex = 1, int sideCategoryId = 0, 
-                                    int? minPrice = null, int? maxPrice = null)// todo 寵物類別TAG查詢
+                                    int? minPrice = null, int? maxPrice = null) //todo 使用tag篩選 , int? tag
         {
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
