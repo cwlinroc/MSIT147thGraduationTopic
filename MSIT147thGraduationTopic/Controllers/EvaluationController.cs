@@ -39,24 +39,6 @@ namespace MSIT147thGraduationTopic.Controllers
                          })
                          .ToList();
            
-            //var model = (from x in _context.EvaluationInputs
-            //             join y in _context.Evaluations on new { x.OrderId, x.MerchandiseId, x.SpecId }
-            //                                        equals new { y.OrderId, y.MerchandiseId, y.SpecId }
-            //             where x.OrderId == id
-            //             select new EvaluationVM
-            //             {
-            //                 OrderId = x.OrderId,
-            //                 MerchandiseId = x.MerchandiseId,
-            //                 MerchandiseName = x.MerchandiseName,
-            //                 SpecId = y.SpecId,
-            //                 Comment = y.Comment,
-            //                 Score = y.Score,
-            //             })
-            //             //.GroupBy(e => new { e.Comment,e.Score })  //按此條件分組
-            //             //.Select(a => a.First())   //選許所有組別的第一個
-            //             //.Distinct()
-            //             .ToList();
-
             if (model.Count == 0)
             {
                 ViewBag.ErrorMessage = $"沒有訂單 ( {id} ) 資料";
@@ -122,7 +104,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 data.Comment = item.Comment;
                 data.Score = item.Score;
 
-                var haveEvaluation = _context.Evaluations.FirstOrDefault(e => e.EvaluationId == id && e.MerchandiseId == item.MerchandiseId);
+                var haveEvaluation = _context.Evaluations.FirstOrDefault(e => e.EvaluationId == id && e.MerchandiseId == item.MerchandiseId);  //SpecId??
                 if (haveEvaluation != null)
                 {
                     haveEvaluation.Comment = data.Comment;

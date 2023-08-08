@@ -23,13 +23,12 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             var query = PerformSqlQuery(pageSize, pageNo);
 
-
             if (query == null)
                 return View(new List<EvaluationVM>());
               
             
             // 獲取總記錄數
-            var totalCount = _context.Evaluations.Count(/*p => p.EvaluationId > 10*/);
+            var totalCount = _context.Evaluations.Count();
             // 傳遞查詢結果和總記錄數到View中
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
@@ -57,7 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
             var model = from e in _context.Evaluations
                         where e.OrderId.ToString().Contains(keyword) ||
                               e.Merchandise.MerchandiseName.Contains(keyword) ||
-                              e.Comment.Contains(keyword)
+                              e.Comment.Contains(keyword)                             
                         select new EvaluationVM
                         {
                             EvaluationId = e.EvaluationId,
@@ -83,7 +82,7 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.TotalCount = totalCount;
 
-            // 获取当前页的数据
+            // 當頁數據
             var currentPageData = model.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
 
             return View(currentPageData);
@@ -100,17 +99,15 @@ namespace MSIT147thGraduationTopic.Controllers
                 _context.Evaluations.Remove(evaluation);
                 _context.SaveChanges();
             }
-
             return RedirectToAction("EBIndex");
         }
-
         private List<EvaluationInput> PerformSqlQuery(int pageSize, int pageNo)
         {
             var sql = @"
                         DECLARE @pageSize INT, @pageNo INT;
                         SET @pageSize = @p0;
                         SET @pageNo = @p1;
-                        ;WITH T
+                        ;WITH T                               
                         AS (
                             SELECT *
                             FROM EvaluationInput                           
@@ -120,7 +117,6 @@ namespace MSIT147thGraduationTopic.Controllers
                         ORDER BY EvaluationId DESC
                         OFFSET(@pageNo - 1) * @pageSize ROWS
                         FETCH NEXT @pageSize ROWS ONLY;";
-
             //分頁查詢
             return _context.EvaluationInputs.FromSqlRaw<EvaluationInput>(sql, pageSize, pageNo).ToList();
         }
