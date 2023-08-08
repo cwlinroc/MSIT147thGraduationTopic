@@ -15,6 +15,17 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public IActionResult GetSearchResultLength(string txtKeyword)
+        {
+            IEnumerable<Brand> datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b
+                : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
+
+            var resultLength = datas.Count();
+
+            return Json(resultLength);
+        }
+
         [HttpPost]
         public IActionResult CheckBrandforCreate(BrandVM brandvm)
         {

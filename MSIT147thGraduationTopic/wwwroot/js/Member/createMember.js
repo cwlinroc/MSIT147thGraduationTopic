@@ -16,8 +16,8 @@ $('#confirmPassword').blur(function () {
     checkPasswordMatch();
 });
 
-const selCity = document.querySelector('#selectCity');
-const selDistrict = document.querySelector('#selectDistrict');
+const selCity = document.querySelector('#city');
+const selDistrict = document.querySelector('#district');
 
 LoadCities();
 
@@ -66,8 +66,8 @@ $("#demoMemberRegister").click(() => {
     $('#confirmPassword').val('demoMember99');
     $('#email').val('demoMember99@gmail.com');
     $('#phone').val('0912345678');
-    $('#selectCity').val('臺北市');
-    $('#selectDistrict').val('大安區');
+    $('#city').val('臺北市');
+    $('#district').val('大安區');
     $('#address').val('復興南路一段390號2樓');
     $('#DateOfBirth').val('1999-09-09');
 })

@@ -174,8 +174,17 @@
             }
             if ($("#inputname").val() && !checkName && $("#inputbrandid").val() &&
                 $("#inputcategoryid").val() && $("#descriptionarea").val().length <= 500 && !checkFile) {
-                const forminput = document.querySelector("#forminput");
-                HTMLFormElement.prototype.submit.call(forminput);
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: '商品新增成功！',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    allowOutsideClick: false
+                }).then(() => {
+                    const forminput = document.querySelector("#forminput");
+                    HTMLFormElement.prototype.submit.call(forminput);
+                })
             }
         })
     </script>

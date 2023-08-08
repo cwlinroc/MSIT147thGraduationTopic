@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -23,17 +24,19 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises
-        public async Task<IActionResult> Index(string txtKeyword, int searchCondition)
+        public async Task<IActionResult> Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1)
         {
+            ViewBag.txtKeyword = txtKeyword;
+            ViewBag.searchCondition = searchCondition;
+            ViewBag.PageIndex = PageIndex;
+
             IEnumerable<MerchandiseSearch> datas;
             datas = from m in _context.MerchandiseSearches
                     select m;
             if (!string.IsNullOrEmpty(txtKeyword))
             {
                 if (searchCondition == 1)
-                {
                     datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
-                }
                 if (searchCondition == 2)
                 {
                     datas = null;
@@ -45,21 +48,17 @@ namespace MSIT147thGraduationTopic.Controllers
                     {
                         MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
                         if (unit != null)
-                        {
                             templist.Add(unit);
-                        }
                     }
                     datas = templist;
                 }
                 if (searchCondition == 3)
-                {
                     datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
-                }
                 if (searchCondition == 4)
-                {
                     datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
-                }
             }
+
+            datas = datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
 
             List<MerchandiseSearchVM> list = new List<MerchandiseSearchVM>();
             foreach (MerchandiseSearch ms in datas)
@@ -134,7 +133,6 @@ namespace MSIT147thGraduationTopic.Controllers
                     MerchandiseVM merchandisevm)
         {
             if (id != merchandisevm.MerchandiseId) return NotFound();
-
 
             if (ModelState.IsValid)
             {

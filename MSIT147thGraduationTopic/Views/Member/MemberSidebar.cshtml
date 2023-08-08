@@ -1,29 +1,27 @@
-﻿@{
-    Layout = null;
-    string? memberAvatar = null;
+﻿@using Microsoft.AspNetCore.Http;
+@using System.Security.Claims;
+@inject IHttpContextAccessor HttpContextAccessor;
+@{
+    var user = HttpContextAccessor?.HttpContext?.User;
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;    
+    string? avatarName = string.Empty;
+    
+
+    if (isAuthorized ?? false)
+    {       
+        avatarName = user.FindFirstValue("AvatarName");       
+        if (string.IsNullOrEmpty(avatarName)) avatarName = "memberDefault.png";
+    }
 }
 
 <div class="text-center mb-3">
-    @{
-        if (memberAvatar == null)
-        {
-            <img class="img-fluid rounded-circle mb-4"
-            src="@Url.Content("~/images/avatar_icon.png")" />
-        }
-        else
-        {
-            <img class="img-fluid rounded-circle mb-4"
-                 src="@Url.Content("")" />
-        }
-    }
-    
+    <img class="img-fluid rounded-circle mb-4" style="height:150px;width:150px;object-fit:cover"
+         src="@Url.Content($"~/uploads/Avatar/{avatarName}")" />
     <br>
-    <form>
-        <div class="input-group">
-            @*<input type="file" id="avatar" class="form-control" aria-label="Select Avatar">*@
-            <button class="btn btn-primary mx-auto" type="button" id="changeAvatar">更換頭像</button>
-        </div>
-    </form>    
+    <div class="input-group">
+        @*<input type="file" id="avatar" class="form-control" aria-label="Select Avatar">*@
+        @*<button class="btn btn-primary mx-auto" type="button" id="changeAvatar">更換頭像</button>*@
+    </div>
 </div>
 <br />
 <ul class="offset-3 fs-4" id="sidelist">

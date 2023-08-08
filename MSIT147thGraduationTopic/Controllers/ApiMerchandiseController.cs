@@ -14,11 +14,47 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Merchandises()
-        {
-            var datas = _context.Merchandises.OrderBy(a => a.MerchandiseId);
+        //public IActionResult Merchandises()//todo 確認是哪個Controller在使用 //todo 也改回AJAX搜尋
+        //{
+        //    var datas = _context.Merchandises.OrderBy(a => a.MerchandiseId);
 
-            return Json(datas);
+        //    return Json(datas);
+        //}
+
+        [HttpGet]
+        public IActionResult GetSearchResultLength(string txtKeyword, int searchCondition = 1) //todo 使用tag篩選 , int? tag
+        {
+            IEnumerable<MerchandiseSearch> datas = _context.MerchandiseSearches
+                .Where(ms => ms.Display == true);
+
+            if (!string.IsNullOrEmpty(txtKeyword))
+            {
+                if (searchCondition == 1)
+                    datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
+                if (searchCondition == 2)
+                {
+                    datas = null;
+                    var merchandiseIdFormSpec = _context.Specs
+                        .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
+
+                    List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
+                    foreach (int id in merchandiseIdFormSpec)
+                    {
+                        MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
+                        if (unit != null)
+                            templist.Add(unit);
+                    }
+                    datas = templist;
+                }
+                if (searchCondition == 3)
+                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
+                if (searchCondition == 4)
+                    datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
+            }
+
+            var resultLength = datas.Count();
+
+            return Json(resultLength);
         }
 
         public IActionResult GenerateBrandOptions()

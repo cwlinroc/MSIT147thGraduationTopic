@@ -1,17 +1,51 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
-
-var service = new RandomInsertService(null);
+using System.Text;
 
 //RandomNumberGenerator.GetInt32(10)
 
-//service.AddRandomMembers(50);
-//service.AddRandomMerchandiseAndSpecs(100);
+//var service = new SimulationDataInsertService(null);
+
+//service.AddRandomMembers(100);
+//Console.WriteLine("AddRandomMembers Done!");
+//service.AddRandomMerchandiseAndSpecs(90);
+//Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
 
 //service.AddRandomCart();
-service.AddRandomOrders();
+//Console.WriteLine("AddRandomCart Done!");
+//service.AddRandomOrders();
+//Console.WriteLine("AddRandomOrders Done!");
+//service.AddSpecTags();
+//Console.WriteLine("AddSpecTags Done!");
+//service.AddSpecPopularity();
+//Console.WriteLine("AddSpecPopularity Done!");
+//service.AddRandomEvaluations();
+//Console.WriteLine("AddRandomEvaluations Done!");
+
+
+//var generator = new RandomGenerator();
+
+//for (int i = 0; i < 100; i++)
+//{
+//    int itemAmount = (int)(generator.RandomDouble().InvCSND(0.9,0.1) * 5);
+//    itemAmount = Math.Max(itemAmount, 1);
+//    Console.WriteLine(itemAmount);
+//}
+
+
+/**test**/
+RecommandService service = new(new());
+
+var changed = await service.CalculatePopularities();
+Console.WriteLine(changed);
+
+/**test**/
 
 Console.WriteLine("success");
 

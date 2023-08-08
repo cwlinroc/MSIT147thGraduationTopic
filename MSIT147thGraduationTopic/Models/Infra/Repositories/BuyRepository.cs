@@ -15,41 +15,40 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
         public async Task<IEnumerable<CartItemDisplayDto>> GetCartItems(int[] cartItemIds)
         {
-            //var result = await (from cartItem in _context.CartItems
-            //                    join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
-            //                    join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
-            //                    join merchandiseTag in _context.SpecTags on merchandise.MerchandiseId equals merchandiseTag.MerchandiseId into tags
-            //                    from merchandiseTag in tags.DefaultIfEmpty()
-            //                    where cartItemIds.Contains(cartItem.CartItemId)
-            //                    select new
-            //                    {
-            //                        cartItem.MemberId,
-            //                        merchandise.MerchandiseName,
-            //                        spec.SpecName,
-            //                        spec.Price,
-            //                        spec.DiscountPercentage,
-            //                        merchandise.ImageUrl,
-            //                        cartItem.CartItemId,
-            //                        spec.SpecId,
-            //                        cartItem.Quantity,
-            //                        TagId = (int?)merchandiseTag.TagId,
-            //                    }).ToListAsync();
-            //return result.GroupBy(o => o.CartItemId).Select(o => new CartItemDisplayDto
-            //{
-            //    MemberId = o.First().MemberId,
-            //    CartItemName = o.First().MerchandiseName + o.First().SpecName,
-            //    CartItemPrice = o.First().Price,
-            //    DiscountPercentage = o.First().DiscountPercentage,
-            //    MerchandiseImageName = o.First().ImageUrl,
-            //    CartItemId = o.First().CartItemId,
-            //    SpecId = o.First().SpecId,
-            //    Quantity = o.First().Quantity,
-            //    Tags = o.Where(t => t.TagId != null).Select(t => t.TagId.Value).ToArray(),
-            //});
-            return new List<CartItemDisplayDto>();
+            var result = await (from cartItem in _context.CartItems
+                                join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
+                                join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
+                                join specTags in _context.SpecTags on spec.SpecId equals specTags.SpecId into tags
+                                from specTags in tags.DefaultIfEmpty()
+                                where cartItemIds.Contains(cartItem.CartItemId)
+                                select new
+                                {
+                                    cartItem.MemberId,
+                                    merchandise.MerchandiseName,
+                                    spec.SpecName,
+                                    spec.Price,
+                                    spec.DiscountPercentage,
+                                    merchandise.ImageUrl,
+                                    cartItem.CartItemId,
+                                    spec.SpecId,
+                                    cartItem.Quantity,
+                                    TagId = (int?)specTags.TagId,
+                                }).ToListAsync();
+            return result.GroupBy(o => o.CartItemId).Select(o => new CartItemDisplayDto
+            {
+                MemberId = o.First().MemberId,
+                CartItemName = o.First().MerchandiseName + o.First().SpecName,
+                CartItemPrice = o.First().Price,
+                DiscountPercentage = o.First().DiscountPercentage,
+                MerchandiseImageName = o.First().ImageUrl,
+                CartItemId = o.First().CartItemId,
+                SpecId = o.First().SpecId,
+                Quantity = o.First().Quantity,
+                Tags = o.Where(t => t.TagId != null).Select(t => t.TagId.Value).ToArray(),
+            });
         }
 
-        public MemberDto? GetMemberAddressAndPhone(int memberId)
+        public MemberDto? GetMemberData(int memberId)
         {
             var member = _context.Members.FirstOrDefault(o => o.MemberId == memberId);
             return member?.ToDto();
@@ -66,8 +65,9 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return coupons.Select(o => (o.CouponId, o.CouponName));
         }
 
-        public async Task<CouponDto?> GetCouponById(int couponId)
+        public async Task<CouponDto?> GetCouponById(int? couponId)
         {
+            if (couponId == null) return null;
             return (await _context.Coupons.FindAsync(couponId))?.ToDto();
         }
 
@@ -89,6 +89,34 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
             return cartItems.Select(c => (specs.First(s => s.SpecId == c.SpecId), c));
         }
+
+        public IEnumerable<CartItemCheckoutDto> GetCheckoutInformation(int[] cartItemIds)
+        {
+            var cartItems = (from cartItem in _context.CartItems
+                             join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
+                             where cartItemIds.Contains(cartItem.CartItemId)
+                             select new CartItemCheckoutDto
+                             {
+                                 CartItemId = cartItem.CartItemId,
+                                 SpecId = cartItem.SpecId,
+                                 MerchandiseId = spec.MerchandiseId,
+                                 DiscountPercentage = spec.DiscountPercentage,
+                                 Price = spec.Price,
+                                 Quantity = cartItem.Quantity,
+                                 Amount = spec.Amount,
+                                 OnShelf = spec.OnShelf
+                             }).ToList();
+            foreach (var cartItem in cartItems)
+            {
+                cartItem.TagIds = _context.SpecTags.Where(o => o.SpecId == cartItem.SpecId)
+                    .Select(o => o.TagId).ToList();
+            }
+            return cartItems;
+        }
+
+
+
+
 
         public int CreateOrder(OrderDto dto)
         {

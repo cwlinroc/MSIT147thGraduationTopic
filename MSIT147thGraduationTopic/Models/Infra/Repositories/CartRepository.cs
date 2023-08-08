@@ -55,5 +55,11 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             await _context.SaveChangesAsync();
         }
 
+
+        public async Task<int> GetCartCount(int memberId)
+        {
+            return await _context.CartItems.CountAsync(o => o.MemberId == memberId);
+        }
+
     }
 }

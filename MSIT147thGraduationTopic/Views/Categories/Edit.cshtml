@@ -54,8 +54,17 @@
                 }
                 else {
                     alertspan.innerHTML = "";
-                    const forminput = document.querySelector("#forminput");
-                    HTMLFormElement.prototype.submit.call(forminput);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: '類別資料修改成功！',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        allowOutsideClick: false
+                    }).then(() => {
+                        const forminput = document.querySelector("#forminput");
+                        HTMLFormElement.prototype.submit.call(forminput);
+                    })
                 }
             })
         })

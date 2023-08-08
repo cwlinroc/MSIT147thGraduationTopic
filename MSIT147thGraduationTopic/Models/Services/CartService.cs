@@ -32,6 +32,10 @@ namespace MSIT147thGraduationTopic.Models.Services
             await _repo.DeleteCartItem(cartItemId);
         }
 
+        public async Task<int> GetCartCount(int memberId)
+        {
+            return await _repo.GetCartCount(memberId);
+        }
 
     }
 }

@@ -1,6 +1,9 @@
-﻿@{
+﻿@using MSIT147thGraduationTopic.Models.Dtos;
+@model CouponDto
+@{
     Layout = "_BackstagePage";
     ViewData["Title"] = "優惠券管理系統";
+    var listEditData = Model;
 }
 
 <header class="container px-5 mt-5">
@@ -23,45 +26,39 @@
                     <p class="lead fw-normal text-muted mb-0"></p>
                 </div>
                 <div class="container px-5 my-5">
-                    <div class="row justify-content-center">
-                        <div class="col-8 mb-3">
-                            優惠券名稱<input type="text" class="form-control" placeholder="請輸入優惠券名稱">
-                        </div>
-                        <div class="col-8 mb-3">
-                            適用對象<select class="form-select form-control" placeholder="請選擇適用對象">
-                                <option></option>
-                            </select>
-                        </div>
-                        <br>
-                        <div class="col-8 mb-3">
-                            開始日期<input type="date" class="form-control" placeholder="請輸入使用期限">
-                        </div>
-                        <div class="col-8 mb-3">
-                            結束日期<input type="date" class="form-control" placeholder="請輸入使用期限">
-                        </div>
-                        <div class="col-8 mb-3">
-                            折扣百分比<input type="number" class="form-control" placeholder="請輸入折扣百分比">
-                        </div>
+                    <div class="">
+                        <form id="edit" name="edit" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
+                            <div class="col-8 mb-3">
+                                <input type="hidden" id="CouponId" name="CouponId" value="@Model.CouponId" class="form-control">
+                            </div>
+                            <div class="col-8 mb-3">
+                                優惠券名稱<input type="text" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
+                            </div>
+                            <div class="col-8 mb-3">
+                                適用對象<select name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
+                                    <option></option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </div>
+                            <div class="col-8 mb-3">
+                                開始日期<input name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                            </div>
+                            <div class="col-8 mb-3">
+                                結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                            </div>
+                            <div class="col-8 mb-3">
+                                折扣百分比<input id="CouponDiscount" name="CouponDiscount" value="@Model.CouponDiscount.ToString("#.##"+"折")" type="number" class="form-control" placeholder="請輸入折扣百分比" min="1" max="99">
+                            </div>
+                        </form>
                     </div>
                     <div class="row justify-content-center px-5 my-5">
                         <div class="col-auto">
-                            <button type="button" class="btn btn-primary" id="btnCreate">新增</button>
+                            <button type="button" class="btn btn-primary" id="btnEdit">修改</button>
                             <button type="button" class="btn btn-primary" id="btnBack">返回</button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="py-5 bg-light">
-            <div class="container px-5 my-5">
-                <!--資料表-->
-            </div>
-        </section>
-        <section class="py-5 bg-light">
-            <div class="container px-5 my-5">
-                <div class="row">
-                    <div class="col">
-                        <span class="text-muted">目前資料筆數:0/0</span>
                     </div>
                 </div>
             </div>
@@ -91,18 +88,58 @@
 
 @section Scripts{
     <script>
-        $(document).ready(function () {
-            // tab點擊事件
-            $('.nav-link').on('click', function () {
-                // 從 'data-bs-target' 屬性獲取目標選項卡的 id
-                const targettabid = $(this).attr('data-bs-target');
+        //const couponId = '@Model.CouponId';
 
-                //屏蔽其他標籤
-                $('.tab-pane').removeclass('show active');
+        $('#btnEdit').click(async function () {
+            const discountInput = $('input[name="CouponDiscount"]');
+            const discountValue = parseFloat(discountInput.val());
 
-                // 將“show active”顯示到選擇的標籤頁面
-                $(targettabid).addclass('show active');
-            });
+            //驗證
+            if ( discountValue < 0 || discountValue > 100) {
+                discountInput[0].setCustomValidity('折扣必須介於1到99');
+            }
+            else if (isNaN(discountValue) ){
+                discountInput[0].setCustomValidity('折扣為必填欄位');
+            }
+            else {
+                discountInput[0].setCustomValidity('');
+            }
+
+            const form = document.getElementById('edit');
+            if (form.checkValidity()) {
+                const formData = new FormData(form);
+                const couponId = $('#CouponId').val()
+                const editUrl = `@Url.Content($"~/api/apicoupon/")${couponId}`;
+                console.log(formData)
+
+                const response = await fetch(editUrl, {
+                    body: formData,
+                    method: 'PUT'
+                })
+
+
+                if (!response.ok) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '失敗',
+                        text: '優惠券更新失敗，請檢查資料及格式是否正確',
+                    });
+                    return
+                }
+                await Swal.fire({
+                    icon: 'success',
+                    title: '成功',
+                    text: '優惠券更新成功',
+                });
+
+                const result = await response.json();
+                console.log(result);
+
+
+            }
+            else {
+                form.reportValidity();
+            }
         });
 
         $('#btnBack').on('click', function () {
@@ -118,6 +155,7 @@
                 }
             })
         })
+
         $('#hrefHomePage').on('click', function () {
             Swal.fire({
                 title: '確定要返回主頁面?',
@@ -131,12 +169,5 @@
                 }
             })
         })
-
-        $(document).ready(function () {
-            // 將margin-right屬性設置為20px
-            $('#btnDiscount').css('margin-right', '20px');
-            $('#btnCreate').css('margin-right', '20px');
-        });
     </script>
-
 }

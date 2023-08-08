@@ -4,12 +4,6 @@
 //}
 
 
-
-$(".custom-merchandise").hover(
-    e => $(e.currentTarget).addClass("shadow-lg"),
-    e => $(e.currentTarget).removeClass("shadow-lg")
-)
-
 $("#backToTop").hide()
 
 $("#backToTop").click(e => $(window).scrollTop(0))
@@ -69,8 +63,7 @@ $(function () {
 async function LogIn() {
     //驗證
     const account = $('#loginAccount').val()
-    const password = $('#loginPassword').val()
-    //const chkRemember = $('#chkRemember').prop('checked')
+    const password = $('#loginPassword').val()    
 
     const response = await fetch(ROOT + '/api/apimember/login', {
         body: JSON.stringify({ 'Account': account, 'Password': password }),
@@ -133,6 +126,30 @@ async function LogOut() {
         }
     }
 }
+
+//導覽列購物車數量
+if (ROLE === '會員') refreshNavbarCart()
+async function refreshNavbarCart() {
+    const response = await fetch('/api/apicart/cartcount')
+    const cartItemNumber = await response.json()
+    const numberBadge = document.querySelector('#cartCount')
+    if (!+cartItemNumber) {
+        numberBadge.style.display = 'none'
+    }
+    else {
+        numberBadge.style.display = 'block'
+        numberBadge.querySelector('div').textContent = cartItemNumber
+        numberBadge.closest('a').customAnimate('fadeIn')
+    }
+
+}
+
+
+
+
+
+
+
 
 
 

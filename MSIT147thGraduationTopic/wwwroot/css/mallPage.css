@@ -21,4 +21,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index:900;
 }
+
+#cartCount {
+    height: 20px;
+    width: 20px;
+    left: -20px;
+    top:-15px;
+    text-align: center;
+    font-size:5px;
+    background-color:red;
+    color:azure;
+    border-radius:50%
+}
+    #cartCount div {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }

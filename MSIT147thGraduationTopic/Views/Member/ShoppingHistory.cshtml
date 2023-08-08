@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "購物紀錄";
 }
 
@@ -12,82 +11,26 @@
             await Html.RenderPartialAsync("MemberSidebar");
         }
     </div>
-    <div class="col-lg-6 offset-2 fs-4">
+    <div class="col-lg-5 offset-1 fs-4">
         <div class="border px-4 py-2 mb-3">
             <label class="mb-1">訂單時間</label>
             <div class="input-group mb-3">
                 <span class="input-group-text">自</span>
-                <input type="date" class="form-control">
+                <input type="date" id="queryStartDate" class="form-control">
                 <span class="input-group-text">至</span>
-                <input type="date" class="form-control">
+                <input type="date" id="queryEndDate" class="form-control">
             </div>
-            <label class="mb-1">購買商品</label>
+            @*<label class="mb-1">購買商品</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="請輸入商品名稱"
-                       aria-describedby="button-addon2">
-                <button class="btn btn-primary" type="button" id="button-addon2">查詢</button>
-            </div>
+                <input type="text" class="form-control">
+            </div>*@
+            <button class="btn btn-primary" type="button" id="btnQuery" disabled>查詢</button>
         </div>
-        <div>
-            <p class="mb-1">您的查詢區間為 <span>yyyy/MM/dd</span> 至 <span>yyyy/MM/dd</span></p>
-            <table class="table table-bordered px-4 py-2 mb-1">
-                <thead>
-                    <tr>
-                        <th scope="col">訂單日期</th>
-                        <th scope="col">訂單編號</th>                        
-                        <th scope="col">總金額</th>
-                        <th scope="col">付款方式</th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr>                       
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <p>            
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#orderdetail1" aria-expanded="false" aria-controls="collapseExample">
-                訂單明細
-            </button>
-        </p>
-        <div class="collapse" id="orderdetail1">
-            <div class="card card-body">
-                Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-            </div>
-        </div>
-        <table class="table table-bordered px-4 py-2 mb-1">
-            <thead>
-                <tr>
-                    <th scope="col">訂單日期</th>
-                    <th scope="col">訂單編號</th>                    
-                    <th scope="col">總金額</th>
-                    <th scope="col">付款方式</th>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                <tr>
-                    <td></td>
-                    <td></td>                    
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-        <p>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#orderdetail2" aria-expanded="false" aria-controls="collapseExample">
-                訂單明細
-            </button>
-        </p>
-        <div class="collapse" id="orderdetail2">
-            <div class="card card-body">
-                Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-            </div>
-        </div>
-        <nav aria-label="Page navigation">
+        <p class="infotext mb-1">您的查詢區間為 <span id="startDate"></span> 至 <span id="endDate"></span></p>
+        <div class="orderTables">
+
+        </div>        
+        @*<nav aria-label="Page navigation">
             <ul class="pagination pagination-lg justify-content-center">
                 <li class="page-item"><a class="page-link" href="#">上一頁</a></li>
                 <li class="page-item"><a class="page-link" href="#">1</a></li>
@@ -95,10 +38,19 @@
                 <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
             </ul>
-        </nav>
+        </nav>*@
     </div>
 </div>
 
-@section Scripts{    
-    <script src="~/js/Member/memberSidebar.js"></script>
+@section Styles{
+    <style>
+        #sidelist {
+            list-style: none;
+        }
+    </style>
+}
+
+@section Scripts{
+    <script src="~/js/Member/shoppingHistory.js"></script>
+
 }

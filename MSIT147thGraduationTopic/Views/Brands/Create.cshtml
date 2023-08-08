@@ -52,9 +52,18 @@
                 }
                 else {
                     alertspan.innerHTML = "";
-                    const forminput = document.querySelector("#forminput");
-                    HTMLFormElement.prototype.submit.call(forminput);
-                    //$("#forminput").submit(); //https://trackjs.com/blog/when-form-submit-is-not-a-function/
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: '品牌新增成功！',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        allowOutsideClick: false
+                    }).then(() => {
+                        const forminput = document.querySelector("#forminput");
+                        HTMLFormElement.prototype.submit.call(forminput);
+                        //$("#forminput").submit(); //https://trackjs.com/blog/when-form-submit-is-not-a-function/
+                    })
                 }
             })
         })
