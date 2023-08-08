@@ -3,43 +3,226 @@
     ViewData["Title"] = "會員管理系統";
 }
 
-<section class="py-5">
-    <div class="container px-5 my-5">
-        <div class="text-center mb-5">
-            <h1 class="fw-bolder">會員管理系統</h1>
-            <p class="lead fw-normal text-muted"></p>
+<header class="container px-5 mt-5">
+
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">會員管理</li>
+            <li class="breadcrumb-item active" aria-current="page">會員檢視</li>
+        </ol>
+    </nav>
+</header>
+
+<div class="container px-5">
+    <div class="row gx-5">
+        <div class="col-xl-9 col-lg-6">
+            <div class="contentbox bg-light rounded shadow p-2 mb-5">
+                <div class="p-4">
+                    <h2>會員檢視</h2>
+                    <div class="d-flex">
+                        <input type="text" id="query" name="query">
+                        <button type="button" id="btnQuery">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="tablebox">
+                    <table class="table table-light table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>姓名</th>
+                                <th>帳號名稱</th>
+                                <th>權限</th>
+                                <th style="width:5rem" class="text-center">會員停權</th>
+                                <th style="width:3rem" class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="container">
-            <div class="row">
-                
-                <div class="col-lg-2 offset-2">
-                    <label>ID</label>
-                    <input type="text" class="form-control" placeholder="請輸入ID">
-                </div>
-                <div class="col-lg-2">
-                    <label>名稱</label>
-                    <input type="text" class="form-control" placeholder="請輸入名稱">
-                </div>
-                <div class="col-lg-4"></div><!--中空白區域-->
-                <div class="col-lg-2">
-                    <button type="button" class="btn btn-primary">搜尋</button>
-                    <button type="button" class="btn btn-primary">重置</button>
-                </div>
-               
+        <div class="col-xl-3 col-lg-6">
+            <div class="bg-light rounded shadow p-2 mb-5" id="data">
+                <table class="table">
+                    <thead>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-nowrap">姓名</td>
+                            <td id="displayName"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">帳號名稱</td>
+                            <td id="displayAccount"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">性別</td>
+                            <td id="displayGender"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">縣市</td>
+                            <td id="displayCity"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">區域</td>
+                            <td id="displayDistrict"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">地址</td>
+                            <td id="displayAddress"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">電話</td>
+                            <td id="displayPhone"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">Email</td>
+                            <td id="displayEmail"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-nowrap">權限</td>
+                            <td id="displayIsActivated"></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</section>
-<div class="col-lg-8 offset-2">
-    @{
-        await Html.RenderPartialAsync("MemberList");
-    }
 </div>
 
-@section Styles{
+@section Scripts{
+    <script>
+        //會員資料
+        let memberData
+        //抓取會員資料
+        getMembers()
+        //搜尋按鈕
+        $('#btnQuery').click(e => getMembers($('#query').val()))
+        //修改權限按鈕
+        $('#btnChangePermission').click(memberDeactivate)
 
+        //Ajax 得到會員資料
+        async function getMembers(query) {
+            //showLoadingBox()
+            let str = ''
+            if (query) str = '/' + query
+            const response = await fetch('@Url.Content("~/api/apimember")' + str)
+
+            if (!response.ok) return
+            const data = await response.json()
+
+            memberData = data
+            displayMembers()
+            //hideLoadingBox()
+        }
+
+        //會員停權
+        async function memberDeactivate(event) {
+            if (!await validateRole('管理員')) return;
+
+            const index = event.currentTarget.closest('tr').dataset.index
+            const id = memberData[index].memberId
+
+            //showLoadingBox();
+            const response = await fetch(`@Url.Content("~/api/apimember/permission")/${id}`, {
+                body: JSON.stringify({ 'isActivated': isActivated }),
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+            })
+
+            if (response.status == 400) {
+                console.log("輸入格式錯誤")
+            }
+
+            await Swal.fire({
+                title: '確定停權該會員?',
+                showCancelButton: true,
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                confirmButtonText: '確定',
+                cancelButtonText: '取消',
+                allowOutsideClick: false,
+            }).then(() => {
+                if (response.ok) {
+                    const data = await response.json()
+                    console.log(data)
+                    getMembers()
+                    await Swal.fire(
+                        '修改成功!',
+                        '會員已停權!',
+                        'success'
+                    )
+                }
+            })
+            //hideLoadingBox();
+        }        
+
+        //列出會員
+        function displayMembers() {
+            const trs = memberData.map((element, index) => {
+                const isActivated = element.isActivated ? "已啟用" : "未啟用"
+                const disabled = element.isActivated ? "" : "disabled";
+
+                return `<tr data-index="${index}" >
+                            <td>${element.memberName}</td>
+                            <td>${element.account}</td>
+                            <td>${isActivated}</td>
+                            <td class="text-center">
+                            <button class="btn btn-danger permission-btn ${disabled}"><i class="fa-solid fa-pen-nib"></i></button>
+                            </td>
+                        </tr>`
+            })
+
+            $('.tablebox').find('tbody').html(trs.join(''))
+            $('.tablebox').find('.permission-btn').click(memberDeactivate)
+            $('.tablebox').find('tbody').find('tr').click(displayMemberDataInRow)
+            displayMemberData(0)
+        }
+
+        //顯示點選tr的會員資料
+        function displayMemberDataInRow(event) {
+            const index = +event.currentTarget.dataset.index
+            displayMemberData(index)
+        }
+
+        //顯示第n筆會員資料
+        function displayMemberData(index) {
+            if (!memberData.length) return
+
+            $('#displayName').text(memberData[index].memberName)
+            $('#displayGender').text(memberData[index].gender)
+            $('#displayAccount').text(memberData[index].account)
+            $('#displayPhone').text(memberData[index].phone)
+            $('#displayEmail').text(memberData[index].email)
+            $('#displayCity').text(memberData[index].city)
+            $('#displayDistrict').text(memberData[index].district)
+            $('#displayAddress').text(memberData[index].address)
+            $('#displayIsActived').text(memberData[index].isActivated)
+        }
+
+    </script>
 }
 
-@section Scripts{
-   
+@section Styles{
+    <style>
+        .contentbox {
+            height: 720px;
+            overflow: auto;
+        }
+
+        .tablebox {
+            height: 500px;
+            overflow: auto;
+        }
+
+            .tablebox td img {
+                height: 50px;
+            }
+
+            .tablebox td, th {
+                vertical-align: middle;
+            }
+    </style>
 }

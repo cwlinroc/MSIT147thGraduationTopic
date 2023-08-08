@@ -54,6 +54,16 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return memberId;
         }
 
+        public int ChangeMemberPermission(int id, bool isActivated)
+        {
+            var member = _context.Members.FirstOrDefault(o => o.MemberId == id);
+            if (member == null) return -1;
+
+            member.IsActivated = isActivated;
+            _context.SaveChanges();
+            return id;
+        }
+
         public int DeleteMember(int memberId)
         {
             var member = _context.Members.Find(memberId);
