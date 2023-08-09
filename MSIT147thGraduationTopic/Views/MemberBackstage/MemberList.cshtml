@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MemberVM>
+
+@{
     Layout = "_BackstagePage";
     ViewData["Title"] = "會員管理系統";
 }
@@ -47,7 +49,7 @@
                                     <th style="width:3rem" class="text-center"></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="memberList">
                             </tbody>
                         </table>
                     </div>
@@ -98,23 +100,30 @@
         </div>
         <!-- 分頁 -->
         <nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg justify-content-center" id="pagingContainer">
-                <li class="page-item"><a class="page-link" href="#">上一頁</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                </li>
+                <div class="pagination ">
+                    @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
+                    {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("MemberList", new { pageIndex = i })">@i</a></li>
+                    }
+                </div>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+                </li>
             </ul>
         </nav>
     </div>
 </div>
 
-@section Scripts{
+@section Scripts{    
     <script>
         //會員資料
-        let memberData
+        let memberData        
         //抓取會員資料
-        getMembers()
+        getMembers();
         //搜尋按鈕
         $('#btnQuery').click(e => getMembers($('#query').val()))
         //修改權限按鈕
@@ -188,7 +197,7 @@
                 const isActivated = element.isActivated ? "已啟用" : "未啟用"
                 const disabled = element.isActivated ? "" : "disabled";
 
-                return `<tr data-index="${index}" >
+                return `<tr data-index="${index} class="memberInList" >
                                                     <td>${element.memberName}</td>
                                                     <td>${element.account}</td>
                                                     <td>${isActivated}</td>
@@ -225,26 +234,22 @@
         }
 
         //每頁顯示筆數
-        $(".pageSize").click(e => {
-            pageSize = $(e.currentTarget).val();
-            pageindex = 1;
-            showMembersPagination();
-        })
+        //let pageSize = 10;
+        //$(".pageSize").on("click", (e) => {
+        //    pageSize = $(e.currentTarget).val();
+        //})
+        //會員總數
+        //let numMembers = $('.memberInList').length;
+        //需要頁數
+        //let pageCount = Math.ceil(numMembers / pageSize);
 
-        //pagination 監聽器
-        $('#pagingContainer').click(event => {
-            event.preventDefault()
-            if (event.target.tagName === 'A') {
-                getPageData(event.target.dataset.page)
-            }
-        })
     </script>
 }
 
 @section Styles{
     <style>
         .contentbox {
-            height: 720px;
+            height: 670px;
             overflow: auto;
         }
 
