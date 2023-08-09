@@ -94,6 +94,28 @@
             const conditionValue = parseFloat(conditionInput.val());
             const discountInput = $('input[name = "CouponDiscount"]');
             const discounValue = parseFloat(discountInput.val());
+            const startDateInput = $('input[name="CouponStartDate"]');
+            const endDateInput = $('input[name="CouponEndDate"]');
+            const startDate = new Date(startDateInput.val());
+            const endDate = new Date(endDateInput.val());
+
+            if (startDate > endDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '請檢查日期格式是否正確：開始日期不得晚於結束日期'
+                });
+                return;
+            }
+
+            if (endDate < startDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '請檢查日期格式是否正確：結束日期不得早於開始日期'
+                });
+                return;
+            }
 
         if (conditionValue < 0) {
             conditionInput[0].setCustomValidity('額度門檻必須超過0');

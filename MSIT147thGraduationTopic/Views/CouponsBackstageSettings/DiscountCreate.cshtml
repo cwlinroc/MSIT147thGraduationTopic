@@ -92,6 +92,42 @@
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
+        const discountInput = $('input[name="CouponDiscount"]');
+        const discountValue = parseFloat(discountInput.val());
+        const startDateInput = $('input[name="CouponStartDate"]');
+        const endDateInput = $('input[name="CouponEndDate"]');
+        const startDate = new Date(startDateInput.val());
+        const endDate = new Date(endDateInput.val());
+
+        if (startDate > endDate) {
+            Swal.fire({
+                icon: 'error',
+                title: '失敗',
+                text: '請檢查日期格式是否正確：開始日期不得晚於結束日期'
+            });
+            return;
+        }
+
+        if (endDate < startDate) {
+            Swal.fire({
+                icon: 'error',
+                title: '失敗',
+                text: '請檢查日期格式是否正確：結束日期不得早於開始日期'
+            });
+            return;
+        }
+
+        //驗證
+        if (discountValue < 0 || discountValue > 100) {
+            discountInput[0].setCustomValidity('折扣必須介於1到99');
+        }
+        else if (isNaN(discountValue)) {
+            discountInput[0].setCustomValidity('折扣為必填欄位');
+        }
+        else {
+            discountInput[0].setCustomValidity('');
+        }
+
         $('#btnBack').on('click', function () {
             Swal.fire({
                 title: '確定要返回主頁面?',
@@ -145,6 +181,7 @@
             });
             $('#create').reset();
         })
+
         //demo
         $('#demo').click(e => {
             $('#couponName').val('123');
@@ -153,49 +190,5 @@
             $('#discount').val('95');
             console.log('123');
         })
-
-                ////ajax 得到優惠券資料
-                //async function getcoupon(query){
-                //let str = ''
-                //if(query) str = '/' + query
-                //const response = await fetch('@@url.content("~/api/apicoupon")'+str)
-                //if(!response.ok)return
-                //const data = await response.json()
-                //coupondata = data
-                //console.log(data)
-                //}
-                ////新增優惠券表單驗證
-                //// 0. section最上面要引用  script src="~/js/mybootstrapvalidator.js"
-                //// 1. const myvalid = new mybootsrapvalidator(表單element)
-                //const myvalid = new mybootstrapvalidator(document.queryselector('.needs-validation'))
-                //function createvalidator() {
-                //// 2. myvalid.validatefunction( 回傳bool的函式 ) //自訂判斷整個表單是否格式正確，正確回傳true
-                //myvalid.validatefunction(() => {
-                //const name = document.queryselector('#couponname')
-                //const namehasvalue = !!name.value
-                //// 3. input元素.setvalidate( 回傳bool的函式 , [錯誤訊息字串] )  //自訂判斷這個input是否格式正確，如果有輸入錯誤字串會更改顯示的錯誤訊息
-                //// ps:也可以使用 input元素.setvalidate(...).setvalidate(...).setvalidate(...) 串接多個條件判斷  只要其中有錯誤就會顯示第一個錯的錯誤，包含錯誤信息
-                //name.setvalidate(() => namehasvalue, '為必填欄位')
-                //const condition = document.queryselector('#condition')
-                //const conditionhasvalue = !!condition.value
-                //const conditionnotnegative = +condition.value > 0
-                //condition.setvalidate(() => conditionhasvalue, '為必填欄位')
-                //.setvalidate(() => conditionnotnegative, '數值不得為負數')
-
-                //const discount = document.queryselector('#discount')
-                //const discounthasvalue = !!discount.value
-                //const discountnotnegative = +condition.value > 0
-                //discount.setvalidate(() => discounthasvalue, '為必填欄位')
-                //.setvalidate(() => discountnotnegative, '數值不得為負數')
-
-                //discount.setvalidate(() => discountvalid)
-
-                ////全數正確回傳表單
-                //return namevalid && coupontagvalid && discounttypevalid && conditionvalid && discountvalid
-                //})
-                ////myvalid.startvalidate()
-                ////開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
-                //return myvalid.startvalidate()
-                //}
     </script>
 }
