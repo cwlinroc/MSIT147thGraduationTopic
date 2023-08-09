@@ -76,7 +76,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[RatingWeights]",
+         "Name": "[dbo].[RatingDatas]",
          "ObjectType": 0
       },
       {

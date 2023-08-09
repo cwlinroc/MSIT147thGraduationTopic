@@ -34,14 +34,14 @@ namespace MSIT147thGraduationTopic.Models
             };
         }
 
-        static public Action<IEnumerable<RecommendationSpecsDto>, int, int> CalculatePopularity
+        static public Action<IEnumerable<RecommendationSpecsDto>, int, int, int> CalculatePopularity
         {
-            get => (specs, evaluateWeight, purchaseWeight) =>
+            get => (specs, evaluateWeight, purchaseWeight, customWeight) =>
             {
                 foreach (var spec in specs.ToList())
                 {
-                    spec.Popularity = (spec.EvaluationRating * evaluateWeight + spec.PurchasedRating * purchaseWeight)
-                        / (evaluateWeight + purchaseWeight);
+                    spec.Popularity = (spec.EvaluationRating * evaluateWeight + spec.PurchasedRating * purchaseWeight + spec.CustomRating * customWeight)
+                        / (evaluateWeight + purchaseWeight + customWeight);
                 }
             };
         }

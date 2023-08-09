@@ -5,10 +5,12 @@ using System.Collections.Generic;
 
 namespace MSIT147thGraduationTopic.EFModels
 {
-    public partial class RatingWeight
+    public partial class RatingData
     {
         public int EvaluationWeight { get; set; }
         public int PurchasedWeight { get; set; }
         public int ManuallyWeight { get; set; }
+        public int RateEvaluationFunc { get; set; }
+        public int RatePurchaseFunc { get; set; }
     }
 }
