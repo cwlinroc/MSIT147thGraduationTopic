@@ -70,6 +70,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
             ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
+            //, [Bind("Cat,Dog,Mouse,Rabbit")] PetTagVM pettagvm
         {
             if (ModelState.IsValid)
             {
