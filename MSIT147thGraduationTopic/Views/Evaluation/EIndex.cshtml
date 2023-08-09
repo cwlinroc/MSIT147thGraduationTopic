@@ -22,12 +22,12 @@
             {
                 <div class="d-flex mt-3 ">
                     <div class="ms-auto d-flex flex-column justify-content-end align-items-end ">
-                        <h5 id="OrderId">訂單編號:@(Model.FirstOrDefault().OrderId)</h5>
+                        <h5 id="OrderId">訂單編號:@ViewBag.OrderId</h5>
                     </div>
                 </div>
 
                 <form id="evaluationForm" method="post" action=@(isUpdate?"/Evaluation/EIndex":"/Evaluation/EIndex" )>
-                    <input name="id" value="@(Model.FirstOrDefault().OrderId)" hidden>
+                    <input name="id" value="@ViewBag.OrderId" @*@(Model.FirstOrDefault().OrderId)*@ hidden>
                     @for (int i = 0; i < Model.Count(); i++)
                     {
                         var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
@@ -63,9 +63,11 @@
                     }
                     <div>
                         @*<button id="send" @*type="submit"*@ @*class="btn btn-primary float-end mt-2 mx-1">@(isUpdate ?"修改":"送出")</button>*@
+                        <button id="return" class="btn btn-primary float-end mt-2 mx-1">返回</button>
                         <input id="send" type="button" class="btn btn-primary float-end mt-2 mx-1" value="@(isUpdate ? "修改" : "送出")">
                     </div>
                 </form>
+                
 
             }
             else
@@ -155,6 +157,9 @@
             } else {
                 Swal.fire('還有商品未評分呦');
             }
+        })
+        $("#return").click(function () {
+            href = "/Member/ShoppingHistory"
         })
 
     </script>
