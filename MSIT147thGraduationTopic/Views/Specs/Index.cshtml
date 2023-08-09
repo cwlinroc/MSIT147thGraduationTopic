@@ -220,7 +220,7 @@
             })
         })
     </script>
-    @*管理規格*@
+    @*管理標籤*@
     <script>
         const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
@@ -229,21 +229,7 @@
             const currentSpecId = $(e.currentTarget).attr("data-specid");
             $("#TagName").val("");
             SpecTagModal.show();
-
-            //陳列既有tag
-            const currentTag = document.querySelector("#currentTag");
-            const response = await fetch(`@Url.Content("~/ApiTag/CurrentTags/")${currentSpecId}`);
-            const NameList = await response.text();
-            const Names = JSON.parse(NameList);
-            var names = Names.map(names => {
-                const { specId, tagId, tagName } = names;
-                return (`
-                    <td>${tagName}</td>\
-                    <td>\
-                        <button class="btn btn-danger deletetag" data-specid="${specId}" data-tagid="${tagId}">x</button>\
-                    </td>`)
-            });
-            currentTag.innerHTML = `<tr>` + names.join("") + `</tr>`;
+            ShowCurrentTag(currentSpecId);
 
             //新增tag
             $("#btnAddTag").on("click", async () => {
@@ -253,9 +239,17 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', },
                 })
-
                 //更新頁面已顯示變更
-                window.location.reload();
+                ShowCurrentTag(currentSpecId);
+            })
+            //使用Enter送出
+            $("#TagName").on("keypress", (e) => {
+                var keyPressed = e.keyCode || e.which;
+                if (keyPressed === 13) {
+                    event.preventDefault();
+                    console.log("ADDING by ENTER");
+                    $("#btnAddTag").click();
+                }
             })
             
             //刪除tag
@@ -302,6 +296,23 @@
                 minLength: 1
             });
         })
+        
+        //陳列既有tag
+        async function ShowCurrentTag(currentSpecId) {
+            const currentTag = document.querySelector("#currentTag");
+            const response = await fetch(`@Url.Content("~/ApiTag/CurrentTags/")${currentSpecId}`);
+            const NameList = await response.text();
+            const Names = JSON.parse(NameList);
+            var names = Names.map(names => {
+                const { specId, tagId, tagName } = names;
+                return (`
+                                    <td>${tagName}</td>\
+                                    <td>\
+                                        <button class="btn btn-danger deletetag" data-specid="${specId}" data-tagid="${tagId}">x</button>\
+                                    </td>`)
+            });
+            currentTag.innerHTML = `<tr>` + names.join("") + `</tr>`;
+        }
     </script>
 }
 
