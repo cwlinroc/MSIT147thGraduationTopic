@@ -53,6 +53,7 @@
                 </div>
             }
         </div>
+    </div>
 </nav>
 
 
@@ -80,22 +81,10 @@
                             </li>
                             <!-- 摺疊選單 for 寵物類型 -->
                             <li class="nav-item">
-                                <a class="nav-link collapsed" href="#tagOptions" data-bs-toggle="collapse" aria-expanded="false">寵物類型(未實裝)</a>
+                                <a class="nav-link collapsed" href="#tagOptions" data-bs-toggle="collapse" aria-expanded="false">寵物類型</a>
                                 <ul id="tagOptions" class="list-unstyled collapse mx-4">
                                     <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="0">不限</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="1">貓咪</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="2">狗狗</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="3">鼠寶</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="4">兔寶</a>
+                                        <a href="#" class="selectTag" val-tag="標籤ID">寵物類別 (商品數)</a>
                                     </li>
                                 </ul>
                             </li>
@@ -156,6 +145,7 @@
         let pageindex = @ViewBag.PageIndex;
         let minPrice = @(ViewBag.minPrice ?? "null");
         let maxPrice = @(ViewBag.maxPrice ?? "null");
+        let tagId = @(ViewBag.tagId ?? "null");
 
         //呈現初始頁面
         SearchProducts();
@@ -167,7 +157,13 @@
 
         //搜尋所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {
-            window.location.href = `/Mall/Index/?searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}`;
+            txtKeyword = "";
+            sideCategoryId = 0;
+            pageindex = 1;
+            minPrice = null;
+            maxPrice = null;
+            tagId = 0;
+            SearchProducts();
         });
 
         //搜尋條件
@@ -206,7 +202,7 @@
                 //產生分頁標籤
                 const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&`
                     + `searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&`
-                    + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+                    + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}&tagId=${tagId}`);
                 const returnLengthBag = await responseforlength.text();
                 const resultLength = JSON.parse(returnLengthBag);
                 const totalpage = Math.ceil(resultLength / pageSize);
@@ -295,8 +291,8 @@
 
                 if (resultLength > 0) {         // ↓ C#語法，連接系統路徑                         // ↓ Js語法，串接參數(※換行要用 "+"，不然容易出莫名其妙的問題)
                     const response = await fetch(`@Url.Content("~/ApiMall/DisplaySearchResult/")?txtKeyword=${txtKeyword}&`
-                        + `searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&`
-                        + `PageIndex=${pageindex}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+                        + `searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}&PageIndex=${pageindex}&`
+                        + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}&tagId=${tagId}`);
                     const returnJsonBag = await response.text();
                     const searchResult = JSON.parse(returnJsonBag);
 
@@ -368,7 +364,7 @@
             $(async () => {
                 const CategoryOptions = document.querySelector("#categoryOptions")
                 const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&`
-                    + `searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+                    + `searchCondition=${searchCondition}&minPrice=${minPrice}&maxPrice=${maxPrice}&tagId=${tagId}`);
                 const returnCategoryBag = await responseforCategory.text();
                 const CategoryResult = JSON.parse(returnCategoryBag);
 
@@ -380,6 +376,26 @@
 
                 $(".selectCategory").on("click", (e) => {
                     sideCategoryId = $(e.currentTarget).attr("val-category");
+                    SearchProducts();
+                })
+            })
+
+            //呈現側邊寵物類別選項
+            $(async () => {
+                const TagOptions = document.querySelector("#tagOptions")
+                const responseforTag = await fetch(`@Url.Content("~/ApiMall/GenerateSideTagOptions")?txtKeyword=${txtKeyword}&`
+                    + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}`);
+                const returnTagBag = await responseforTag.text();
+                const TagResult = JSON.parse(returnTagBag);
+
+                var tagList = TagResult.map(tag => {
+                    const { tagId, tagName, matchedMerchandiseNumber } = tag;
+                    return (`<li class="my-1 "><a href="#" class="selectTag" val-tag="${tagId}">${tagName} (${matchedMerchandiseNumber})</a></li>`)
+                })
+                TagOptions.innerHTML = tagList.join("");
+
+                $(".selectTag").on("click", (e) => {
+                    tagId = $(e.currentTarget).attr("val-tag");
                     SearchProducts();
                 })
             })

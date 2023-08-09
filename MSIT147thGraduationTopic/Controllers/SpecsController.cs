@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -24,6 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(int merchandiseid)
         {
             ViewBag.MerchandiseId = merchandiseid;
@@ -44,6 +47,8 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return View(list);
         }
+
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult IndexForNoSpec(int merchandiseid)
         {
             ViewBag.MerchandiseId = merchandiseid;
@@ -54,6 +59,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs/Create
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Create(int merchandiseId)
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
@@ -68,9 +74,9 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Create
-            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
-            //, [Bind("Cat,Dog,Mouse,Rabbit")] PetTagVM pettagvm
+            ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo,selectTag")] SpecVM specvm)
         {
             if (ModelState.IsValid)
             {
@@ -82,6 +88,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
                 _context.Add(specvm.spec);
                 await _context.SaveChangesAsync();
+
+                //新增寵物標籤
+                int SpecId = specvm.SpecId;
+                if (specvm.selectTag.Contains("Cat")) addSpecTag(SpecId, 1);
+                if (specvm.selectTag.Contains("Dog")) addSpecTag(SpecId, 2);
+                if (specvm.selectTag.Contains("Mouse")) addSpecTag(SpecId, 3);
+                if (specvm.selectTag.Contains("Rabbit")) addSpecTag(SpecId, 4);
                 return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
@@ -89,6 +102,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs/Edit/5
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int? id)
         {
             if (id == null || _context.Specs == null) return NotFound();
@@ -107,6 +121,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int id, 
             [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo,deleteImageIndicater")] SpecVM specvm)
         {
@@ -158,6 +173,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs/Delete/5
+        [Authorize(Roles = "管理員,經理")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Specs == null) return Problem("找不到規格資料");
@@ -176,51 +192,43 @@ namespace MSIT147thGraduationTopic.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", new { merchandiseid = merchandiseid });
         }
-
-        
+                
         public record TagRecord(string tagName, string specId, int merchandiseId);
         [HttpPost]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> AddTag([FromBody]TagRecord record)
         {
             string tagName = record.tagName;
             int specId = int.Parse(record.specId);
             int merchandiseId = record.merchandiseId;
 
-            bool checkName = _context.Tags.Where(t => t.TagName == tagName).Any();
-
-            //若為新標籤則新增
-            if (!checkName)
+            //todo 是否改成回傳訊息?
+            if (!string.IsNullOrEmpty(tagName))
             {
-                Tag tag = new Tag();
-                tag.TagName = tagName;
-                _context.Add(tag);
-                await _context.SaveChangesAsync();
+                bool checkName = _context.Tags.Where(t => t.TagName == tagName).Any();
+                //若為新標籤則新增
+                if (!checkName)
+                {
+                    Tag tag = new Tag();
+                    tag.TagName = tagName;
+                    _context.Add(tag);
+                    await _context.SaveChangesAsync();
+                }
+
+                bool chaeckSame = _context.SpecTagWithTagNames.Where(sttn => sttn.SpecId == specId)
+                                                        .Where(sttn => sttn.TagName == tagName).Any();
+                if (chaeckSame)
+                    return RedirectToAction("Index", new { merchandiseid = merchandiseId });
+
+                int tagId = await _context.Tags.Where(t => t.TagName == tagName).Select(t => t.TagId).FirstAsync();
+
+                addSpecTag(specId, tagId);
             }
-
-            bool chaeckSame = _context.SpecTagWithTagNames.Where(sttn => sttn.SpecId == specId)
-                                                    .Where(sttn => sttn.TagName == tagName).Any();
-            if(chaeckSame) 
-                return RedirectToAction("Index", new { merchandiseid = merchandiseId });
-
-            int tagId = await _context.Tags.Where(t => t.TagName == tagName).Select(t => t.TagId).FirstAsync();
-
-            //資料表無主索引鍵，無法使用EF新增
-            //SpecTag specTag = new SpecTag()
-            //{
-            //    SpecId = specId,
-            //    TagId = tagId,
-            //}; 
-            //_context.SpecTags.Add(specTag);
-            //await _context.SaveChangesAsync();
-
-            //Dapper語法
-            using var conn = new SqlConnection(_context.Database.GetConnectionString());
-            string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
-            conn.Execute(str, new { SpecId = specId, TagId = tagId });
 
             return RedirectToAction("Index", new { merchandiseid = merchandiseId });
         }
 
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> DeleteTag(int specId, int tagId, int merchandiseId)
         {
             if (_context.SpecTags == null) return Problem("找不到標籤資料");
@@ -259,6 +267,13 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             string deletepath = Path.Combine(_host.WebRootPath, "uploads/specPicture", ImageUrl);
             System.IO.File.Delete(deletepath);
+        }
+        private void addSpecTag(int SpecId, int TagId)
+        {
+            //資料表無主索引鍵，無法使用EF新增 => 改使用Dapper語法
+            using var conn = new SqlConnection(_context.Database.GetConnectionString());
+            string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
+            conn.Execute(str, new { SpecId = SpecId, TagId = TagId });
         }
     }
 }

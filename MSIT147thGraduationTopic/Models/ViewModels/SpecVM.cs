@@ -86,5 +86,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
         public IFormFile? photo { get; set; }
         public bool? deleteImageIndicater { get; set; }
+        public string[] selectTag { get; set; }
     }
 }

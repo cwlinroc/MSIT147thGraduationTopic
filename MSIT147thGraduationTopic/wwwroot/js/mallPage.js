@@ -144,6 +144,14 @@ async function refreshNavbarCart() {
 
 }
 
+//頂端列搜尋商品
+$("#navbar_search").on("click", (e) => {
+    console.log("SEARCH");
+    e.preventDefault();
+    const txtKeyword = $("#navbar_input").val();
+    window.location.href = ROOT + `/Mall/Index/?txtKeyword=${txtKeyword}`;
+})
+
 
 
 

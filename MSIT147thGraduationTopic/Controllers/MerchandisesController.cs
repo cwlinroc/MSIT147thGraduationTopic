@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1)
         {
             ViewBag.txtKeyword = txtKeyword;
@@ -72,6 +74,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Create
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
@@ -85,6 +88,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Create
             ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo")]
                 MerchandiseVM merchandisevm)
@@ -108,6 +112,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Edit/5
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Merchandises == null) return NotFound();
@@ -128,6 +133,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int id, 
             [Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo,deleteImageIndicater")] 
                     MerchandiseVM merchandisevm)
@@ -175,6 +181,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Delete/5
+        [Authorize(Roles = "管理員,經理")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (_context.Specs.Where(s => s.MerchandiseId == id).Count() > 0)

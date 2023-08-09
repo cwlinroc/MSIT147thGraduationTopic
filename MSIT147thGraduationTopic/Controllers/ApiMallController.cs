@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using Azure;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -25,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpGet]
         public IActionResult DisplaySearchResult(
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
-            int sideCategoryId, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
+            int sideCategoryId, int? minPrice, int? maxPrice, int tagId = 0)
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
@@ -55,6 +56,13 @@ namespace MSIT147thGraduationTopic.Controllers
                 _ => datas.OrderByDescending(md => md.SpecId)
             };
 
+            //tag篩選
+            if (tagId != 0)
+            {
+                IQueryable<int> thisTag = _context.SpecTags.Where(st => st.TagId == tagId).Select(st => st.SpecId);
+                datas = datas.Where(md => thisTag.Contains(md.SpecId));
+            }
+
             var contentofThisPage = datas.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToList();
 
             return Json(contentofThisPage);
@@ -62,11 +70,10 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpGet]
         public IActionResult GetSearchResultLength(
-            string txtKeyword, int searchCondition, int pageSize, int PageIndex,
-            int sideCategoryId, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
+            string txtKeyword, int searchCondition, int sideCategoryId, int? minPrice, int? maxPrice, int tagId = 0)
         {
             IEnumerable<MallDisplay> datas = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
 
             if (!string.IsNullOrEmpty(txtKeyword))
             {
@@ -83,6 +90,12 @@ namespace MSIT147thGraduationTopic.Controllers
             datas = (minPrice.HasValue)?datas.Where(sp => sp.Price >= minPrice):datas;
             datas = (maxPrice.HasValue)?datas.Where(sp => sp.Price <= maxPrice):datas;
 
+            if (tagId != 0)
+            {
+                IQueryable<int> thisTag = _context.SpecTags.Where(st => st.TagId == tagId).Select(st => st.SpecId);
+                datas = datas.Where(md => thisTag.Contains(md.SpecId));
+            }
+
             var resultLength = datas.Count();
 
             return Json(resultLength);
@@ -90,12 +103,12 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpGet]
         public IActionResult GenerateSideCategoryOptions(
-            string txtKeyword, int searchCondition, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
+            string txtKeyword, int? minPrice, int? maxPrice, int searchCondition = 0, int tagId = 0)
         {
             var categoriesFromEF = _context.Categories.OrderBy(c => c.CategoryId);
 
             IEnumerable<MallDisplay> selectedProducts = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
 
             if (!string.IsNullOrEmpty(txtKeyword))
             {
@@ -109,6 +122,12 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
             if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
+
+            if (tagId != 0)
+            {
+                IQueryable<int> thisTag = _context.SpecTags.Where(st => st.TagId == tagId).Select(st => st.SpecId);
+                selectedProducts = selectedProducts.Where(md => thisTag.Contains(md.SpecId));
+            }
 
             List<CategoryVM> datas = new List<CategoryVM>();
             CategoryVM data_0 = new CategoryVM()
@@ -129,6 +148,55 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             return Json(datas);
+        }
+
+        [HttpGet]
+        public IActionResult GenerateSideTagOptions(
+            string txtKeyword, int? minPrice, int? maxPrice, int searchCondition = 0, int sideCategoryId = 0)
+        {
+            var tagsFromEF = _context.Tags.OrderBy(c => c.TagId);
+
+            IEnumerable<MallDisplay> selectedProducts = _context.MallDisplays
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
+
+            if (!string.IsNullOrEmpty(txtKeyword))
+            {
+                selectedProducts = searchCondition switch
+                {
+                    1 => selectedProducts.Where(sp => sp.FullName.Contains(txtKeyword)),
+                    2 => selectedProducts.Where(sp => sp.BrandName.Contains(txtKeyword)),
+                    3 => selectedProducts.Where(sp => sp.CategoryName.Contains(txtKeyword)),
+                    _ => selectedProducts
+                };
+            }
+            selectedProducts = (sideCategoryId == 0) ? selectedProducts : selectedProducts.Where(md => md.CategoryId == sideCategoryId);
+            if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
+            if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
+
+            List<TagVM> tags = new List<TagVM>();
+            TagVM tag_0 = new TagVM()
+            {
+                TagId = 0,
+                TagName = "不限",
+                matchedMerchandiseNumber = selectedProducts.Count()
+            };
+            tags.Add(tag_0);
+
+            //前後台寵物類型名稱用詞不同，因此需另外輸入
+            string[] TagNames = new string[] { "貓咪", "狗狗", "鼠寶", "兔寶" };
+            for (int i = 1; i <=4; i++)
+            {
+                TagVM tag = new TagVM()
+                {
+                    TagId = i,
+                    TagName = TagNames[i - 1]
+                };
+                IQueryable<int> matchedSpec = _context.SpecTags.Where(st => st.TagId == i).Select(st => st.SpecId);
+                tag.matchedMerchandiseNumber = selectedProducts.Where(md => matchedSpec.Contains(md.SpecId)).Count();
+                tags.Add(tag);
+            }
+
+            return Json(tags);
         }
 
         [Authorize(Roles = "會員")]

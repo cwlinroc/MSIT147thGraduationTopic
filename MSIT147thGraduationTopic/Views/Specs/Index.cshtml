@@ -298,10 +298,9 @@
             console.log(optionTags);
 
             $("#TagName").autocomplete({
-                //source: ["貓用", "狗用", "鼠用", "兔用"],
-                source: optionTags,
+                source: optionTags, //因排版問題，無法展示候選字列表
                 minLength: 1
-            },{});
+            });
         })
     </script>
 }
