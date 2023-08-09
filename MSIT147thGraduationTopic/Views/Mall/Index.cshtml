@@ -159,8 +159,13 @@
 
         //呈現初始頁面
         SearchProducts();
+        //設定下拉選單初值
+        $(() => {
+            $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
+            $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+        })
 
-        //搜尋所有商品(重置搜尋條件)    //todo 是否保留排序用參數?
+        //搜尋所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {
             window.location.href = `/Mall/Index/?searchCondition=${searchCondition}&displayorder=${displayorder}&pageSize=${pageSize}`;
         });
