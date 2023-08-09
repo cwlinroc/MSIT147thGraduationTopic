@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                             <div class="form-floating mx-2 mt-2 mb-4">
-                                <textarea id="commentText" name="comments[@(i)].Comment" class="form-control" placeholder="Leave a comment here" style="height: 100px"></textarea>
+                                <textarea id="commentText" name="comments[@(i)].Comment" class="form-control" placeholder="請輸入您的評價~" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">@(item.Comment)</label>
                             </div>
                         </div>
@@ -144,26 +144,17 @@
         $("#send").click(function () {
             //console.log($("[id^='inputscore_']").length);
             let isAllHaveScore = true;
-            $("[id^='inputscore_']").each(function (index, score) {
-                
+            $("[id^='inputscore_']").each(function (index, score) {                
                 if (score.value == '') {
-
                     isAllHaveScore = false;
                     return false;
-
                 }
             });
-
             if (isAllHaveScore) {
-
                 $("#evaluationForm").submit();
-
             } else {
-
                 Swal.fire('還有商品未評分呦');
-
             }
-
         })
 
     </script>
