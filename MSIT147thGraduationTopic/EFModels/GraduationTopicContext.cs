@@ -29,6 +29,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
         public virtual DbSet<MallDisplay> MallDisplays { get; set; }
+        public virtual DbSet<ManuallyWeightedEntry> ManuallyWeightedEntries { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
@@ -36,6 +37,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<OrderList> OrderLists { get; set; }
         public virtual DbSet<OrderWithMember> OrderWithMembers { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public virtual DbSet<RatingData> RatingDatas { get; set; }
         public virtual DbSet<Spec> Specs { get; set; }
         public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
         public virtual DbSet<SpecTag> SpecTags { get; set; }
@@ -128,6 +130,12 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.DistrictName)
                     .IsRequired()
                     .HasMaxLength(10);
+
+                entity.HasOne(d => d.City)
+                    .WithMany(p => p.Districts)
+                    .HasForeignKey(d => d.CityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Districts_Cities");
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -220,6 +228,28 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+            });
+
+            modelBuilder.Entity<ManuallyWeightedEntry>(entity =>
+            {
+                entity.HasKey(e => e.EntryId);
+
+                entity.Property(e => e.EntryId).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Merchandise)
+                    .WithMany(p => p.ManuallyWeightedEntries)
+                    .HasForeignKey(d => d.MerchandiseId)
+                    .HasConstraintName("FK_ManuallyWeightedEntries_Merchandises");
+
+                entity.HasOne(d => d.Spec)
+                    .WithMany(p => p.ManuallyWeightedEntries)
+                    .HasForeignKey(d => d.SpecId)
+                    .HasConstraintName("FK_ManuallyWeightedEntries_Specs");
+
+                entity.HasOne(d => d.Tag)
+                    .WithMany(p => p.ManuallyWeightedEntries)
+                    .HasForeignKey(d => d.TagId)
+                    .HasConstraintName("FK_ManuallyWeightedEntries_Tags");
             });
 
             modelBuilder.Entity<Member>(entity =>
@@ -399,6 +429,11 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.PaymentMethodName)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<RatingData>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             modelBuilder.Entity<Spec>(entity =>

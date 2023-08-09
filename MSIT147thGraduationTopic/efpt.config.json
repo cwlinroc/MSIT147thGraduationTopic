@@ -52,6 +52,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ManuallyWeightedEntries]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Members]",
          "ObjectType": 0
       },
@@ -69,6 +73,10 @@
       },
       {
          "Name": "[dbo].[PaymentMethods]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RatingDatas]",
          "ObjectType": 0
       },
       {

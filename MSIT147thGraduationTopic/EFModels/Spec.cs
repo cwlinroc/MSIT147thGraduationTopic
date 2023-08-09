@@ -10,6 +10,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public Spec()
         {
             CartItems = new HashSet<CartItem>();
+            ManuallyWeightedEntries = new HashSet<ManuallyWeightedEntry>();
             OrderLists = new HashSet<OrderList>();
         }
 
@@ -26,6 +27,7 @@ namespace MSIT147thGraduationTopic.EFModels
 
         public virtual Merchandise Merchandise { get; set; }
         public virtual ICollection<CartItem> CartItems { get; set; }
+        public virtual ICollection<ManuallyWeightedEntry> ManuallyWeightedEntries { get; set; }
         public virtual ICollection<OrderList> OrderLists { get; set; }
     }
 }
