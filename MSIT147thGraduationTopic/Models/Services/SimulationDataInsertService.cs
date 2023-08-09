@@ -221,27 +221,28 @@ namespace MSIT147thGraduationTopic.Models.Services
             }
         }
 
+
         public void AddRandomEvaluations()
         {
-            var orders = _repo.GetAllOrdersWithMerchandiseIdAndName();
+            var orders = _repo.GetAllOrdersWithSpecIdAndName();
 
-            foreach (var order in orders) foreach (var merchandise in order.merchandise)
+            foreach (var order in orders) foreach (var spec in order.specs)
                 {
-                    if (_repo.CheckEvaluated(order.orderId, merchandise.merchandiseId)) continue;
+                    if (_repo.CheckEvaluated(order.orderId, spec.specId)) continue;
                     if (_generator.RandomChance(60)) continue;
                     //int favor = 
-                    int favor = merchandise.merchandiseName.GetHashedInt() % 100 + 1;
+                    int hasedInt = spec.specName.GetHashedInt();
+                    int favor = (hasedInt % 100 + hasedInt / 100 % 100 + hasedInt / 10000 % 100) / 3 + 1;
 
                     int score = _generator.RandomIntByWeight(0,
                         (100 - favor) * (100 - favor) / 200,  // 0   50
                         (50 - favor / 2) / 5,  //0  10
                         (25 - favor / 4) / 5,  //  0  5
                         favor * 30 / 100 + 20,  // 50   20
-                        favor * (favor + 10) / 100 + 20) ;  // 130 20
-                    _repo.AddEvaluation(order.orderId, merchandise.merchandiseId, score);
+                        favor * (favor + 10) / 100 + 20);  // 130 20
+                    _repo.AddEvaluation(order.orderId, spec.specId, spec.merchandiseId ,score);
                 }
         }
-
 
 
     }

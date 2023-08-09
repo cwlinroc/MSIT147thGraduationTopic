@@ -184,6 +184,12 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Evaluations_Orders");
+
+                entity.HasOne(d => d.Spec)
+                    .WithMany(p => p.Evaluations)
+                    .HasForeignKey(d => d.SpecId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Evaluations_Specs");
             });
 
             modelBuilder.Entity<EvaluationInput>(entity =>
