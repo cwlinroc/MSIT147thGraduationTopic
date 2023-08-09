@@ -19,8 +19,11 @@ namespace MSIT147thGraduationTopic.Models.Services
 
 
 
-        public async Task<int> CalculatePopularities(RecommendCalculateBo bo)
+        public async Task<int> CalculatePopularities()
         {
+            var rateData = await _repo.GetRatingData();
+            RecommendCalculateBo bo = GetCalculateBO(rateData);
+
             var specs = await _repo.GetAllSpecsWithEvaluation();
 
             //自訂評分
@@ -28,7 +31,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             var taskConvertedEntries = ConvertEntries(taskWeightedEntries);
 
             //顧客評價轉換分數
-            bo.RateEvaluation?.Invoke(specs);
+            bo.RateEvaluationFunc?.Invoke(specs);
             //購買數量轉換分數
             bo.RatePurchased?.Invoke(specs);
 
@@ -40,10 +43,33 @@ namespace MSIT147thGraduationTopic.Models.Services
             }
 
             //依權重計算popularity
-            RecommandFunctions.CalculatePopularity(specs, bo.EvaluationWeight, bo.PurchasedWeight, bo.CustomWeight);
+            RecommandFunctions.CalculatePopularity(specs, bo.EvaluationWeight, bo.PurchasedWeight, bo.ManuallyWeight);
 
             return await _repo.UpdateSpecsPopularity(specs);
         }
+
+        private RecommendCalculateBo GetCalculateBO(RatingDataDto dto)
+        {
+            return new RecommendCalculateBo()
+            {
+                EvaluationWeight = dto.EvaluationWeight,
+                PurchasedWeight = dto.PurchasedWeight,
+                ManuallyWeight = dto.ManuallyWeight,
+                RateEvaluationFunc = dto.RateEvaluationFunc switch
+                {
+                    1 => RecommandFunctions.RateEvaluationWithMathematicaMean,//數理平均
+                    2 => RecommandFunctions.RateEvaluationWithBayesianAverage,//貝葉森平均
+                    _ => RecommandFunctions.RateEvaluationWithMathematicaMean
+                },
+                RatePurchased = dto.RatePurchaseFunc switch
+                {
+                    1 => RecommandFunctions.RatePurchasedWithProportion,//線性比例轉換
+                    2 => RecommandFunctions.RatePurchasedWithLogTransform,//log2對數轉換
+                    _ => RecommandFunctions.RatePurchasedWithProportion
+                }
+            };
+        }
+
 
         private async Task<List<ManuallyWeightedEntryDto>> ConvertEntries(Task<List<ManuallyWeightedEntryDto>> taskWeightedEntries)
         {

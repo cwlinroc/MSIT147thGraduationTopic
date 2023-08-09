@@ -19,6 +19,17 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
         }
 
 
+        [HttpGet("refreshpopularity")]
+        public async Task<ActionResult<int>> RefreshPopularity()
+        {
+            return await _service.CalculatePopularities();
+        }
+
+
+
+
+
+
         public record RateDataRecord(int num, string data);
         [HttpPut("ratedata")]
         public async Task<ActionResult<int>> UpdateRateEvaluationFunc(RateDataRecord record)

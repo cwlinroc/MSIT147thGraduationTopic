@@ -28,8 +28,8 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             {
                 SpecId = o.SpecId,
                 MerchandiseId = o.MerchandiseId,
-                EvaluateCount = o.Merchandise.Evaluations.Count,
-                AverageScore = o.Merchandise.Evaluations.DefaultIfEmpty().Average(evaluation => evaluation.Score),
+                EvaluateCount = o.Evaluations.Count,
+                AverageScore = o.Evaluations.DefaultIfEmpty().Average(evaluation => evaluation.Score),
                 PurchasedAmount = o.OrderLists.Sum(o => o.Quantity),
                 CustomRating = 0.5
             });

@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="my-3">
-                        <button class="btn btn-primary" type="button">立即更新</button>
+                        <button class="btn btn-primary" type="button" id="btnRefreshPopularity">立即更新</button>
                     </div>
 
                 </form>
@@ -76,129 +76,127 @@
                 <div class="p-4">
                     <h1 class="mb-4">熱門排序</h1>
 
-                    <form>
-                        <h5 class="mb-4">顧客評分計算</h5>
-                        <div class="row px-3">
-                            <div class="col-lg-8 mb-3">
-                                <div class=" input-group">
-                                    <label class="input-group-text" for="rateEvaluationFunc">計算方式</label>
-                                    <select class="form-select" id="rateEvaluationFunc">
-                                        <option value="1">一般平均</option>
-                                        <option value="2">貝葉斯平均值</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-8 mb-5">
 
-                                <div class="input-group">
-                                    <label for="spanEvaluationWeight" class="form-label">
-                                        加權倍數：
-                                        <span id="spanEvaluationWeight">@ViewBag.RatingData.EvaluationWeight</span>
-                                    </label>
-                                    <input type="range" class="form-range" min="0" max="20" step="1"
-                                           id="rangeEvaluationWeight" value="@ViewBag.RatingData.EvaluationWeight">
-                                </div>
+                    <h5 class="mb-4">顧客評分計算</h5>
+                    <div class="row px-3">
+                        <div class="col-lg-8 mb-3">
+                            <div class=" input-group">
+                                <label class="input-group-text" for="rateEvaluationFunc">計算方式</label>
+                                <select class="form-select" id="rateEvaluationFunc">
+                                    <option value="1">一般平均</option>
+                                    <option value="2">貝葉斯平均值</option>
+                                </select>
                             </div>
                         </div>
+                        <div class="col-lg-8 mb-5">
 
-                        <h5 class="mb-4">購買數量計算</h5>
-                        <div class="row px-3">
-                            <div class="col-lg-8 mb-3">
-                                <div class=" input-group">
-                                    <label class="input-group-text" for="ratePurchaseFunc">計算方式</label>
-                                    <select class="form-select" id="ratePurchaseFunc">
-                                        <option value="1">一般平均</option>
-                                        <option value="2">log平均值</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-8 mb-5">
-
-                                <div class="input-group">
-                                    <label for="rangePurchaseWeight" class="form-label">
-                                        加權倍數：
-                                        <span id="spanPurchaseWeight">@ViewBag.RatingData.PurchasedWeight</span>
-                                    </label>
-                                    <input type="range" class="form-range" min="0" max="20" step="1"
-                                           id="rangePurchaseWeight" value="@ViewBag.RatingData.PurchasedWeight">
-                                </div>
+                            <div class="input-group">
+                                <label for="spanEvaluationWeight" class="form-label">
+                                    加權倍數：
+                                    <span id="spanEvaluationWeight">@ViewBag.RatingData.EvaluationWeight</span>
+                                </label>
+                                <input type="range" class="form-range" min="0" max="20" step="1"
+                                       id="rangeEvaluationWeight" value="@ViewBag.RatingData.EvaluationWeight">
                             </div>
                         </div>
+                    </div>
 
-                        <div class="d-flex">
-                            <h5 class="mt-2 me-5">自訂評分加權</h5>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">新增自訂項目</button>
-                        </div>
-
-
-                        <div class="row px-3 mt-3">
-                            <div class="col-lg-8 mb-5">
-
-                                <div class="input-group">
-                                    <label for="rangeManuallyWeight" class="form-label">
-                                        加權倍數：
-                                        <span id="spanManuallyWeight">@ViewBag.RatingData.ManuallyWeight</span>
-                                    </label>
-                                    <input type="range" class="form-range" min="0" max="20" step="1"
-                                           id="rangeManuallyWeight" value="@ViewBag.RatingData.ManuallyWeight">
-                                </div>
+                    <h5 class="mb-4">購買數量計算</h5>
+                    <div class="row px-3">
+                        <div class="col-lg-8 mb-3">
+                            <div class=" input-group">
+                                <label class="input-group-text" for="ratePurchaseFunc">計算方式</label>
+                                <select class="form-select" id="ratePurchaseFunc">
+                                    <option value="1">一般平均</option>
+                                    <option value="2">log平均值</option>
+                                </select>
                             </div>
                         </div>
+                        <div class="col-lg-8 mb-5">
 
-                        <div class="">
-
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">類型</th>
-                                        <th scope="col">目標</th>
-                                        <th scope="col">加權</th>
-                                        <th scope="col">刪除</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>標籤</td>
-                                        <td>Otto</td>
-                                        <td>
-                                            <select style="width: 100px;">
-                                                <option>-10</option>
-                                                <option>-9</option>
-                                                <option>-8</option>
-                                                <option>-7</option>
-                                                <option>-0</option>
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>9</option>
-                                                <option>10</option>
-                                            </select>
-                                        </td>
-                                        <td>mdo</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>商品</td>
-                                        <td>Thornton</td>
-                                        <td>fat</td>
-                                        <td>mdo</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>規格</td>
-                                        <td>twitter</td>
-                                        <td>mdo</td>
-                                        <td>mdo</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="input-group">
+                                <label for="rangePurchaseWeight" class="form-label">
+                                    加權倍數：
+                                    <span id="spanPurchaseWeight">@ViewBag.RatingData.PurchasedWeight</span>
+                                </label>
+                                <input type="range" class="form-range" min="0" max="20" step="1"
+                                       id="rangePurchaseWeight" value="@ViewBag.RatingData.PurchasedWeight">
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <h5 class="mt-2 me-5">自訂評分加權</h5>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">新增自訂項目</button>
+                    </div>
 
 
+                    <div class="row px-3 mt-3">
+                        <div class="col-lg-8 mb-5">
 
-                    </form>
+                            <div class="input-group">
+                                <label for="rangeManuallyWeight" class="form-label">
+                                    加權倍數：
+                                    <span id="spanManuallyWeight">@ViewBag.RatingData.ManuallyWeight</span>
+                                </label>
+                                <input type="range" class="form-range" min="0" max="20" step="1"
+                                       id="rangeManuallyWeight" value="@ViewBag.RatingData.ManuallyWeight">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="">
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">類型</th>
+                                    <th scope="col">目標</th>
+                                    <th scope="col">加權</th>
+                                    <th scope="col">刪除</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>標籤</td>
+                                    <td>Otto</td>
+                                    <td>
+                                        <select style="width: 100px;">
+                                            <option>-10</option>
+                                            <option>-9</option>
+                                            <option>-8</option>
+                                            <option>-7</option>
+                                            <option>-0</option>
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>9</option>
+                                            <option>10</option>
+                                        </select>
+                                    </td>
+                                    <td>mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>商品</td>
+                                    <td>Thornton</td>
+                                    <td>fat</td>
+                                    <td>mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>規格</td>
+                                    <td>twitter</td>
+                                    <td>mdo</td>
+                                    <td>mdo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
 
 
                 </div>
@@ -227,11 +225,11 @@
 
                 <div>
                     <div class="input-group">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">選擇類別</button>
+                        <button id="btnChooseSearchType" class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">選擇類別</button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">標籤</a></li>
-                            <li><a class="dropdown-item" href="#">商品</a></li>
-                            <li><a class="dropdown-item" href="#">規格</a></li>
+                            <li><button id="btnChooseTag" class="dropdown-item">標籤</button></li>
+                            <li><button id="btnChooseMerchandise" class="dropdown-item">商品</button></li>
+                            <li><button id="btnChooseSpec" class="dropdown-item">規格</button></li>
                         </ul>
                         <input type="text" class="form-control" aria-label="Text input with 2 dropdown buttons">
                     </div>
@@ -240,30 +238,31 @@
                 <div>
                     <table class="table">
                         <tbody>
-                            <tr>
-                                <td>商品1</td>
-                            </tr>
-                            <tr>
-                                <td>商品1</td>
-                            </tr>
-                            <tr>
-                                <td>商品1</td>
-                            </tr>
-                            <tr>
-                                <td>商品1</td>
-                            </tr>
-                            <tr>
-                                <td>商品1</td>
-                            </tr>
-                            <tr>
-                                <td>商品1</td>
-                            </tr>
+                            @for (int i = 0; i < 10; i++)
+                            {
+                                <tr>
+                                    <td><input type="radio" name="rateObject" id="radio@(i)"/></td>
+                                    <td><label for="radio@(i)">商品X</label></td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
 
             <div class="modal-footer">
+
+                <select style="width: 100px;">
+                    @for(int i = -10; i <= 10; i++)
+                    {
+                        if (i == 0)
+                        {
+                            <option selected>@(i)</option>
+                            continue;
+                        }
+                        <option>@(i)</option>
+                    }
+                </select>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
             </div>
@@ -324,6 +323,23 @@
             const response = await fetch(`${ROOT}/api/apirecommend/mostpopularspecs`)
             return await response.json()
         }
+
+        //立即刷新熱門度
+        $('#btnRefreshPopularity').click(async e => {
+            const response = await fetch(`${ROOT}/api/apirecommend/refreshpopularity`)
+            const result = await response.json()
+            console.log(result)
+            displayMostPopularSpecs()
+        })
+
+
+        //Modal
+        //選擇搜尋種類
+        $('#btnChooseTag').click(e => $('#btnChooseSearchType').text('標籤'))
+        $('#btnChooseMerchandise').click(e => $('#btnChooseSearchType').text('商品'))
+        $('#btnChooseSpec').click(e => $('#btnChooseSearchType').text('規格'))
+
+
 
     </script>
 }
