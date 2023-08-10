@@ -72,6 +72,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=CouponsRecieve}/{action=Index}/{id?}");
+    pattern: "{controller=CouponsReceive}/{action=Index}/{id?}");
 
 app.Run();

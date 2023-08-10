@@ -99,11 +99,7 @@ async function LogIn() {
         else {
             window.location.href = url
         }
-
     })
-
-
-
 }
 
 //Ajax 登出
@@ -141,7 +137,20 @@ async function refreshNavbarCart() {
         numberBadge.querySelector('div').textContent = cartItemNumber
         numberBadge.closest('a').customAnimate('fadeIn')
     }
+}
 
+//提醒小窗
+if (LOADCOUPON) remindCoupon()
+async function remindCoupon() {
+    await Swal.fire({
+        position: 'top-end',
+        icon: 'Info',
+        title: '要看看有沒有可領取的優惠券嗎？',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.href = ROOT + 'CouponsReceive/Index'
+        }
+    })
 }
 
 

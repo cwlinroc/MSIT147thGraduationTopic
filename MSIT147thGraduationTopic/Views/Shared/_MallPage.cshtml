@@ -12,6 +12,14 @@
         userName = user?.Claims.FirstOrDefault(o => o.Type == "UserName")?.Value;
         roleName = user?.FindFirstValue(ClaimTypes.Role);
     }
+
+    string? loadCoupon = HttpContextAccessor?.HttpContext?.Session.GetString("LoadCoupon");
+    if (!string.IsNullOrEmpty(loadCoupon) || loadCoupon == "Load")
+    {
+        HttpContextAccessor?.HttpContext?.Session.SetString("LoadCoupon", string.Empty);
+    }
+
+
 }
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
@@ -238,6 +246,7 @@
 
     <script>const ROOT = '@Url.Content("~")'</script>
     <script>const ROLE = '@roleName'</script>
+    <script>const LOADCOUPON = @((loadCoupon ?? "") == "Load" ? "true" : "false")</script>
     <script src="~/js/mallPage.js"></script>
 
     @RenderSection("Scripts",false)

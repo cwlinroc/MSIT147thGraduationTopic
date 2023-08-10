@@ -18,10 +18,27 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return coupons.Select(c => c.ToDto());
         }
 
-        public IEnumerable<CouponDto> ShowCoupons(int id)
+        //public IEnumerable<CouponDto> ShowCoupons(int id)
+        //{
+        //    var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == id).ToList();
+        //    return coupons.Select(c => c.ToDto());
+        //}
+
+
+        public IEnumerable<CouponDto> ShowCoupons(int id, int showdate)
         {
-            var coupons = _context.Coupons.Where(c=>c.CouponDiscountTypeId == id ).ToList();
-            return coupons.Select(c => c.ToDto());
+            var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == id);
+            if (showdate == 1) coupons = coupons;
+            if (showdate == 2) coupons = coupons
+                    .Where(c => c.CouponStartDate > DateTime.Now);  //目前未開始
+
+            if (showdate == 3) coupons = coupons
+                    .Where(c => c.CouponStartDate < DateTime.Now && c.CouponEndDate > DateTime.Now);  //目前可使用
+            
+            if (showdate == 4) coupons = coupons
+                    .Where(c => c.CouponEndDate < DateTime.Now);  //目前已過期
+
+            return coupons.ToList().Select(c => c.ToDto());
         }
 
         public int CreateCoupon(CouponDto cDto)

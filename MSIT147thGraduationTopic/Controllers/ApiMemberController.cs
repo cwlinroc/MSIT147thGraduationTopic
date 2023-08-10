@@ -159,7 +159,7 @@ namespace MSIT147thGraduationTopic.Controllers
                             };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
+                HttpContext.Session.SetString("LoadCoupon", "Load");
                 return "reload";
             }
             return string.Empty;
