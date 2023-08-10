@@ -161,7 +161,7 @@
 </div>
 
 @section Scripts {
-    @*產生商品資料*@
+    <!-- 產生商品資料 -->
     <script>
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
@@ -188,7 +188,7 @@
             })
         })
     </script>
-    @*確認刪除*@
+    <!-- 確認刪除 -->
     <script>
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除規格嗎？')) return;
@@ -220,7 +220,7 @@
             })
         })
     </script>
-    @*管理標籤*@
+    <!-- 管理標籤 -->
     <script>
         const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
@@ -239,7 +239,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', },
                 })
-                //更新頁面已顯示變更
+                $("#TagName").val("");
+                //更新頁面以顯示變更
                 ShowCurrentTag(currentSpecId);
             })
             //使用Enter送出
@@ -250,34 +251,6 @@
                     console.log("ADDING by ENTER");
                     $("#btnAddTag").click();
                 }
-            })
-            
-            //刪除tag
-            $(".deletetag").on("click", (e) => {
-                Swal.fire({
-                    title: '確定刪除這個標籤嗎？',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: '刪除',
-                    cancelButtonText: '取消',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const currenttagid = $(e.currentTarget).attr("data-tagid");
-
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: '刪除成功！',
-                            showConfirmButton: false,
-                            timer: 800
-                        }).then(() => {
-                            window.location.href = `/Specs/DeleteTag/?specId=${currentSpecId}&tagId=${currenttagid}&merchandiseId=${merchandiseid}`;
-                        })
-                    }
-                })
             })
 
             //設定AutoComplete選項
@@ -305,13 +278,42 @@
             const Names = JSON.parse(NameList);
             var names = Names.map(names => {
                 const { specId, tagId, tagName } = names;
-                return (`
-                                    <td>${tagName}</td>\
-                                    <td>\
-                                        <button class="btn btn-danger deletetag" data-specid="${specId}" data-tagid="${tagId}">x</button>\
-                                    </td>`)
+                return (`<span class="my-2">${tagName}<a class="deletetag" data-specid="${specId}" data-tagid="${tagId}" href="#">&#9746;</a></span>`)
             });
             currentTag.innerHTML = `<tr>` + names.join("") + `</tr>`;
+
+            //啟用刪除tag功能
+            $(".deletetag").on("click", (e) => {
+                Swal.fire({
+                    title: '確定刪除這個標籤嗎？',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '刪除',
+                    cancelButtonText: '取消',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const currentSpecId = $(e.currentTarget).attr("data-specid");
+                        const currenttagid = $(e.currentTarget).attr("data-tagid");
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: '刪除成功！',
+                            showConfirmButton: false,
+                            timer: 800
+                        }).then(async () => {
+                            const response = await fetch(`@Url.Content("~/Specs/DeleteTag")`, {
+                                body: JSON.stringify({ 'specId': currentSpecId, 'tagId': currenttagid, 'merchandiseId': merchandiseid }),
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', },
+                            })
+                            ShowCurrentTag(currentSpecId);
+                        })
+                    }
+                })
+            })
         }
     </script>
 }

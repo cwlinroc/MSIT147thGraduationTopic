@@ -24,7 +24,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
             _host = host;
         }
-
+        #region MyRegion
         // GET: Specs
         [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(int merchandiseid)
@@ -192,7 +192,9 @@ namespace MSIT147thGraduationTopic.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", new { merchandiseid = merchandiseid });
         }
-                
+
+
+        #endregion
         public record TagRecord(string tagName, string specId, int merchandiseId);
         [HttpPost]
         [Authorize(Roles = "管理員,經理,員工")]
@@ -202,11 +204,10 @@ namespace MSIT147thGraduationTopic.Controllers
             int specId = int.Parse(record.specId);
             int merchandiseId = record.merchandiseId;
 
-            //todo 是否改成回傳訊息?
             if (!string.IsNullOrEmpty(tagName))
             {
                 bool checkName = _context.Tags.Where(t => t.TagName == tagName).Any();
-                //若為新標籤則新增
+                //若為新標籤名稱則新增
                 if (!checkName)
                 {
                     Tag tag = new Tag();
@@ -228,9 +229,14 @@ namespace MSIT147thGraduationTopic.Controllers
             return RedirectToAction("Index", new { merchandiseid = merchandiseId });
         }
 
+        public record TagRecord_delete(string specId, string tagId, int merchandiseId);
         [Authorize(Roles = "管理員,經理,員工")]
-        public async Task<IActionResult> DeleteTag(int specId, int tagId, int merchandiseId)
+        public async Task<IActionResult> DeleteTag([FromBody] TagRecord_delete record)
         {
+            int specId = int.Parse(record.specId);
+            int tagId = int.Parse(record.tagId);
+            int merchandiseId = record.merchandiseId;
+
             if (_context.SpecTags == null) return Problem("找不到標籤資料");
 
             var spec = await _context.Specs
@@ -245,15 +251,17 @@ namespace MSIT147thGraduationTopic.Controllers
 
            if (target != null)
             {
-                _context.SpecTags.Remove(target);
-                await _context.SaveChangesAsync();
+                //資料表無主索引鍵，無法使用EF刪除 => 改使用Dapper語法
+                using var conn = new SqlConnection(_context.Database.GetConnectionString());
+                string str = "DELETE FROM SpecTags WHERE SpecId=@SpecId AND TagId=@TagId";
+                conn.Execute(str, new { SpecId = specId, TagId = tagId });
             }
             return RedirectToAction("Index", new { merchandiseid = merchandiseId });
         }
-
+        #region MyRegion
         private bool SpecExists(int id)
         {
-          return (_context.Specs?.Any(e => e.SpecId == id)).GetValueOrDefault();
+            return (_context.Specs?.Any(e => e.SpecId == id)).GetValueOrDefault();
         }
         private void saveSpecImageToUploads(string ImageUrl, IFormFile photo)
         {
@@ -275,5 +283,7 @@ namespace MSIT147thGraduationTopic.Controllers
             string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
             conn.Execute(str, new { SpecId = SpecId, TagId = TagId });
         }
+
+        #endregion
     }
 }
