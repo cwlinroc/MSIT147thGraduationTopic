@@ -210,6 +210,18 @@
 
 @section Styles{
     <style>
+        #pills-tab{
+            border-style:inset;
+        }
+
+        #pills-Discount-tab{
+            margin: 5px;
+        }
+
+        #pills-Rebate-tab {
+            margin: 5px;
+        }
+
         .form-group {
             display: flex;
             margin-bottom: 1rem;
@@ -333,12 +345,6 @@
         }
         //#endregion
 
-        function isDatePassed(dateString) {
-            const currentDate = new Date();
-            const eventDate = new Date(dateString);
-            return currentDate > eventDate;
-        }
-
         //#region 頁面開啟執行
         $(document).ready(function () {
             $("#txtDiscountIdSearch,#txtDiscountNameSearch,#selectDiscountStatus").on('input', function () {
@@ -371,6 +377,8 @@
             const matchingCoupons = couponNameElements.filter((index, element) =>
                 $(element).text().match(searchKeyword)
             );
+            //const now = new Date();
+            //const currentTime = now.toLocaleString();
 
             if (couponDiscountId) {
                 if (couponDiscountId != discountIdValue) {
@@ -414,29 +422,7 @@
                             `<b>折扣：</b> ${couponDiscount}<br><br>`;
                     });
 
-                    if (selectedDiscountStatus === 'upcoming') {
-                        matchingCoupons.each((index, element) => {
-                            const startDate = $(element).closest('tr').find('#DiscountStartDate').text();
-                            if (!isDatePassed(startDate)) {
-                                $(element).closest('tr').hide();
-                            }
-                        });
-                    } else if (selectedDiscountStatus === 'active') {
-                        matchingCoupons.each((index, element) => {
-                            const startDate = $(element).closest('tr').find('#DiscountStartDate').text();
-                            const endDate = $(element).closest('tr').find('#DiscountEndDate').text();
-                            if (!isDatePassed(startDate) || isDatePassed(endDate)) {
-                                $(element).closest('tr').hide();
-                            }
-                        });
-                    } else if (selectedDiscountStatus === 'expired') {
-                        matchingCoupons.each((index, element) => {
-                            const endDate = $(element).closest('tr').find('#DiscountEndDate').text();
-                            if (!isDatePassed(endDate)) {
-                                $(element).closest('tr').hide();
-                            }
-                        });
-                    }
+                    
 
                     Swal.fire({
                         title: '匹配的打折優惠券資訊',
@@ -562,7 +548,7 @@
         })
         //#endregion
 
-        //#region 建立
+        //#region 新增
         $('#btnCreate').click(function () {
             Swal.fire({
                 title: '新增優惠券',
@@ -582,6 +568,6 @@
                 }
             });
         })
-                        //#endregion
+        //#endregion
     </script>
 }

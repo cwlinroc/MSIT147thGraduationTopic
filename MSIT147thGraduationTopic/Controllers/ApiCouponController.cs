@@ -23,23 +23,6 @@ namespace MSIT147thGraduationTopic.Controllers
             _service = new CouponService(context, environment);
         }
 
-        //public ApiCouponController()
-        //{
-
-        //}
-
-        //[HttpPost]
-        //public ActionResult<int> CreateCoupon([FromForm] CouponCreateVM vm)
-        //{
-        //    return -1;
-        //}
-
-        //[HttpGet]
-        //public ActionResult<List<CouponVM>> GetAllCoupons()
-        //{
-        //    return _service.GetAllCoupons().ToList();
-        //}
-
         [HttpPost]
         public ActionResult<int> CreateCoupon([FromForm] CouponCreateVM vm)
         {

@@ -4,11 +4,11 @@ using MSIT147thGraduationTopic.Models.Infra.Repositories;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
-    public class CouponsFrontstageController : Controller
+    public class CouponsRecieveController : Controller
     {
         private readonly GraduationTopicContext _context;
         private readonly CouponRepository _repo;
-        public CouponsFrontstageController(GraduationTopicContext context)
+        public CouponsRecieveController(GraduationTopicContext context)
         {
             _context = context;
             _repo = new CouponRepository(context);

@@ -116,19 +116,6 @@
 
 @section Scripts{
     <script>
-        $(document).ready(function () {
-            // tab點擊事件
-            $('.nav-link').on('click', function () {
-                // 從 'data-bs-target' 屬性獲取目標選項卡的 id
-                const targettabid = $(this).attr('data-bs-target');
-
-                //屏蔽其他標籤
-                $('.tab-pane').removeclass('show active');
-
-                // 將“show active”顯示到選擇的標籤頁面
-                $(targettabid).addclass('show active');
-            });
-        });
     </script>
 
     <script>
