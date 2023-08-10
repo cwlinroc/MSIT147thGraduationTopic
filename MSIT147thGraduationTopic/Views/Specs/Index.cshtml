@@ -147,6 +147,9 @@
                                 <div>
                                     <button type="button" class="btn btn-primary me-2" id="btnAddTag">新增標籤</button>
                                 </div>
+                                <div class="my-3" id="fastAddArea">
+                                    <span>快速標籤：</span> <button class="btn btn-outline-secondary fastAdd">貓用</button> <button>狗用</button> <button>鼠用</button> <button>兔用</button>
+                                </div>
                             </form>
                             <hr />
                             <div class="row" id="currentTag">
@@ -224,34 +227,14 @@
     <script>
         const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
+        let currentSpecId;
+        console.log("currentSpecId = " + currentSpecId);
 
         $(".fortag").click(async (e) => {
-            const currentSpecId = $(e.currentTarget).attr("data-specid");
+            currentSpecId = $(e.currentTarget).attr("data-specid");
             $("#TagName").val("");
             SpecTagModal.show();
             ShowCurrentTag(currentSpecId);
-
-            //新增tag
-            $("#btnAddTag").on("click", async () => {
-                const tagName = $("#TagName").val();
-                const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
-                    body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', },
-                })
-                $("#TagName").val("");
-                //更新頁面以顯示變更
-                ShowCurrentTag(currentSpecId);
-            })
-            //使用Enter送出
-            $("#TagName").on("keypress", (e) => {
-                var keyPressed = e.keyCode || e.which;
-                if (keyPressed === 13) {
-                    event.preventDefault();
-                    console.log("ADDING by ENTER");
-                    $("#btnAddTag").click();
-                }
-            })
 
             //設定AutoComplete選項
             const response2 = await fetch(`@Url.Content("~/ApiTag/AutoCompleteOptions")`);
@@ -262,12 +245,48 @@
             TagList.forEach(tags => {
                 optionTags.push(`${tags}`);
             });
-            console.log(optionTags);
 
             $("#TagName").autocomplete({
                 source: optionTags, //因排版問題，無法展示候選字列表
                 minLength: 1
             });
+        })
+
+        //新增tag
+        let canEdit = true;
+        $("#btnAddTag").on("click", async () => {
+            event.preventDefault();
+            const tagName = $("#TagName").val();
+            console.log('tagName =' + tagName + ', specId =' + currentSpecId + ', merchandiseId =' + merchandiseid);
+            const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
+                body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', },
+            })
+            $("#TagName").val("");
+            //$("#TagName").on("keyup");//todo 無法以此重新啟用keyup事件
+            //更新頁面以顯示變更
+            ShowCurrentTag(currentSpecId);
+            canEdit = true
+        })
+        //使用Enter送出
+        $("#TagName").on("keypress", (e) => {
+            var keyPressed = e.keyCode || e.which;
+            if (keyPressed === 13) {
+                console.log("PRESS ENTER");
+                event.preventDefault();
+            }
+        })
+        $("#TagName").on("keyup", (e) => {
+            var keyPressed = e.keyCode || e.which;
+            if (keyPressed === 13) {
+                if (!canEdit) return
+                canEdit = false;
+                event.preventDefault();
+                //$("#TagName").off("keyup"); //todo 關閉keyup事件以避免重複送出
+                console.log("ADDING by ENTER");
+                $("#btnAddTag").click();
+            }
         })
         
         //陳列既有tag

@@ -41,18 +41,21 @@ namespace MSIT147thGraduationTopic.Controllers
                     datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
                 if (searchCondition == 2)
                 {
-                    datas = null;
-                    var merchandiseIdFormSpec = _context.Specs
+                    IQueryable<int> merchandiseIdFormSpec = _context.Specs
                         .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
-                    
-                    List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
-                    foreach (int id in merchandiseIdFormSpec)
-                    {
-                        MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
-                        if (unit != null)
-                            templist.Add(unit);
-                    }
-                    datas = templist;
+                    #region 建立新集合承接符合項(占版面&耗資源，有更好的寫法↓)
+                    //datas = null;
+
+                    //List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
+                    //foreach (int id in merchandiseIdFormSpec)
+                    //{
+                    //    MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
+                    //    if (unit != null)
+                    //        templist.Add(unit);
+                    //}
+                    //datas = templist;
+                    #endregion
+                    datas = datas.Where(ms => merchandiseIdFormSpec.Contains(ms.MerchandiseId));
                 }
                 if (searchCondition == 3)
                     datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
@@ -134,8 +137,8 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "管理員,經理,員工")]
-        public async Task<IActionResult> Edit(int id, 
-            [Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo,deleteImageIndicater")] 
+        public async Task<IActionResult> Edit(int id,
+            [Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo,deleteImageIndicater")]
                     MerchandiseVM merchandisevm)
         {
             if (id != merchandisevm.MerchandiseId) return NotFound();
@@ -203,7 +206,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         private bool MerchandiseExists(int id)
         {
-          return (_context.Merchandises?.Any(e => e.MerchandiseId == id)).GetValueOrDefault();
+            return (_context.Merchandises?.Any(e => e.MerchandiseId == id)).GetValueOrDefault();
         }
         private void saveMerchandiseImageToUploads(string ImageUrl, IFormFile photo)
         {

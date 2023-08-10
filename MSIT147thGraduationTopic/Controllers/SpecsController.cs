@@ -214,9 +214,14 @@ namespace MSIT147thGraduationTopic.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                bool chaeckSame = _context.SpecTagWithTagNames.Where(sttn => sttn.SpecId == specId)
-                                                        .Where(sttn => sttn.TagName == tagName).Any();
-                if (chaeckSame)
+                //bool chaeckSame = _context.SpecTagWithTagNames    //檢視表無主索引鍵，可能無法正確傳回結果
+                //                   .Where(sttn => sttn.SpecId == specId).Where(sttn => sttn.TagName == tagName).Any();
+
+                using var conn = new SqlConnection(_context.Database.GetConnectionString());
+                var sql = "SELECT COUNT(*) FROM SpecTagWithTagName WHERE SpecId=@SpecId AND TagName=@TagName";
+                int count = conn.QueryFirst<int>(sql, new { SpecId = specId, TagName = tagName });
+
+                if (count > 0)
                     return RedirectToAction("Index", new { merchandiseid = merchandiseId });
 
                 int tagId = await _context.Tags.Where(t => t.TagName == tagName).Select(t => t.TagId).FirstAsync();
