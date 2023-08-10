@@ -11,6 +11,7 @@
     <Content Remove="wwwroot\js\homepage\**" />
     <EmbeddedResource Remove="wwwroot\js\homepage\**" />
     <None Remove="wwwroot\js\homepage\**" />
+    <Content Remove="wwwroot\images\排序.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.143" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="MailKit" Version="4.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.9">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

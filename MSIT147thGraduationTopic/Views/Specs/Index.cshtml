@@ -27,9 +27,6 @@
                     <th>
                         商品圖片
                     </th>
-                    <th style="display:none">
-                        商品ID
-                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -39,13 +36,11 @@
                     <td id="mCategory"></td>
                     <td id="mDescription"></td>
                     <td><img id="mImage" class="imgtumbnail" /></td>
-                    <td id="getMerchandiseId" style="display:none">@Html.DisplayFor(modelItem => Model.First().merchandiseIdCarrier)
-                    </td>
                 </tr>
             </tbody>
         </table>
         <p>
-            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseidcarrier = Model.First().merchandiseIdCarrier}, new { @class = "btn btn-primary" })
+            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseid = ViewBag.MerchandiseId}, new { @class = "btn btn-primary" })
         </p>
         <hr />
         <table class="table table-hover">
@@ -53,9 +48,6 @@
                 <tr>
                     <th>
                         檢視序號
-                    </th>
-                    <th style="display:none">
-                        @Html.DisplayNameFor(model => model.MerchandiseId)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.SpecName)
@@ -93,9 +85,6 @@
                         <tr>
                             <td>
                                 @count
-                            </td>
-                            <td style="display:none">
-                                @Html.DisplayFor(modelItem => item.MerchandiseId)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.SpecName)
@@ -181,7 +170,7 @@
         const mImage = document.querySelector("#mImage");
 
         $(() => {
-            const merchandiseid = $("#getMerchandiseId").text();
+            const merchandiseid = @ViewBag.MerchandiseId;
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
             xhr.send();
@@ -233,7 +222,7 @@
     </script>
     @*管理規格*@
     <script>
-        const merchandiseid = $("#getMerchandiseId").text();
+        const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
 
         $(".fortag").click(async (e) => {
@@ -257,9 +246,16 @@
             currentTag.innerHTML = `<tr>` + names.join("") + `</tr>`;
 
             //新增tag
-            $("#btnAddTag").on("click", () => {
+            $("#btnAddTag").on("click", async () => {
                 const tagName = $("#TagName").val();
-                window.location.href = `/Specs/AddTag/?tagName=${tagName}&specId=${currentSpecId}&merchandiseId=${merchandiseid}`;
+                const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
+                    body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', },
+                })
+
+                //更新頁面已顯示變更
+                window.location.reload();
             })
             
             //刪除tag
@@ -294,11 +290,10 @@
             const response2 = await fetch(`@Url.Content("~/ApiTag/AutoCompleteOptions")`);
             const jsonTagList = await response2.text();
             const TagList = JSON.parse(jsonTagList);
-            console.log(TagList);
 
-            let optionTags;
-            TagList.foreach(tags => {
-                optionTags.add(`${tags}`);
+            let optionTags = [];
+            TagList.forEach(tags => {
+                optionTags.push(`${tags}`);
             });
             console.log(optionTags);
 
@@ -306,7 +301,7 @@
                 //source: ["貓用", "狗用", "鼠用", "兔用"],
                 source: optionTags,
                 minLength: 1
-            });
+            },{});
         })
     </script>
 }
