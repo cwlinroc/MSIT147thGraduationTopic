@@ -3,16 +3,20 @@ using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
+using MSIT147thGraduationTopic.Models.Interfaces;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Configuration;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.Configure<OptionSettings>(builder.Configuration.GetSection("OptionSettings"));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
+builder.Services.AddSingleton<IMailService, SendMailService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

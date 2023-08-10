@@ -34,6 +34,11 @@ namespace MSIT147thGraduationTopic.Controllers
             return View();
         }
 
+        public IActionResult ForgetPwd()
+        {
+            return View();
+        }
+
 
         [Authorize(Roles = "會員")]
         public IActionResult MemberCenter()

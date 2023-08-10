@@ -70,38 +70,59 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)
         {
-            var memberId = _service.CreateMember(vm.ToDto(), avatar);
-
-            return memberId;
+            try
+            {
+                var memberId = _service.CreateMember(vm.ToDto(), avatar);
+                return memberId;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
 
         [HttpPut("{id}")]
         public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
-            var memberId = _service.EditMember(dto, id, avatar);
-
-            return memberId;
+            try
+            {
+                var memberId = _service.EditMember(dto, id, avatar);
+                return memberId;
+            }
+            catch(Exception)
+            {
+                throw;
+            }           
         }
+
+        //[HttpPut("{account}")]
+        //public ActionResult<> ChangeMemberPwd()
+        //{
+        //    try
+        //    {
+        //        
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
 
         [HttpPut("memberCenter")]
         public ActionResult<int> UpdateSelfData([FromForm] MemberCenterEditVM vm, [FromForm] IFormFile? avatar)
         {
-            int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
-
-            var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
-
-            return memberId;
-        }
-
-        //public record Container([Required] bool isActivated);
-
-        //[HttpPut("permission/{id}")]
-        //public ActionResult<int> UpdateMemberPermission(Container isActivated, int id = 0)
-        //{
-        //    var memberId = _service.ChangeMemberPermission(id, isActivated.isActivated);
-
-        //    return memberId;
-        //}
+            try
+            {
+                int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
+                var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
+                return memberId;
+            }
+            catch(Exception)
+            {
+                throw;
+            }            
+        }        
 
 
         [HttpDelete("{id}")]
@@ -164,6 +185,17 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             return string.Empty;
         }
+
+        //public record ChangePwdRecord([Required] string Account);
+        //[HttpPost("changePwd")]
+        //public ActionResult<string> ChangePwd(ChangePwdRecord record)
+        //{           
+        //    var member = _context.Members
+        //            .Select(o => new { o.Account, o.Password, o.Salt, o.MemberId })
+        //        .FirstOrDefaultAsync(o => o.Account == record.Account);
+
+            
+        //}
 
         [HttpGet("logout")]
         public async Task<ActionResult<string>> LogOut()

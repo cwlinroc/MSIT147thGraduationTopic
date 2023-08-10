@@ -27,6 +27,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
     public class MemberEditDto
     {
         public string? NickName { get; set; }
+        public string? Account { get; set; }
         public string? Password { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
@@ -35,6 +36,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string? Address { get; set; }
         public string? Avatar { get; set; }
         public bool IsActivated { get; set; }
+        public string? ConfirmGuid { get; set; }
     }
 
     public class MemberSearchDto
@@ -95,6 +97,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         static public void ChangeByEditDto(this Member entity, MemberEditDto dto)
         {
             entity.NickName = dto.NickName;
+            if (dto.Account != null) entity.Account = dto.Account;
             if (dto.Password != null) entity.Password = dto.Password;
             if (dto.Phone != null) entity.Phone = dto.Phone;
             if (dto.City != null) entity.City = dto.City;

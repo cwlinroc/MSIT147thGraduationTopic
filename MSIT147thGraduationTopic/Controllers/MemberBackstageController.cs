@@ -68,9 +68,9 @@ namespace MSIT147thGraduationTopic.Controllers
         private List<Member> PerformSqlQuery(int pageSize, int pageIndex)
         {
             var sql = @"
-                        DECLARE @pageSize INT, @pageNo INT;
+                        DECLARE @pageSize INT, @pageIndex INT;
                         SET @pageSize = @p0;
-                        SET @pageNo = @p1;
+                        SET @pageIndex = @p1;
                         ;WITH T
                         AS (
                             SELECT *
@@ -79,7 +79,7 @@ namespace MSIT147thGraduationTopic.Controllers
                         SELECT TotalCount = COUNT(1) OVER (), T.*
                         FROM T
                         ORDER BY MemberId
-                        OFFSET(@pageNo - 1) * @pageSize ROWS
+                        OFFSET(@pageIndex - 1) * @pageSize ROWS
                         FETCH NEXT @pageSize ROWS ONLY;";
 
             //分頁查詢
