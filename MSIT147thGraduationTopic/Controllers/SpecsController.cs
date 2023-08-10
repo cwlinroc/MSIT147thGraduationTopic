@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
@@ -22,8 +24,10 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Specs
-        public async Task<IActionResult> Index(int merchandiseid)
+        public IActionResult Index(int merchandiseid)
         {
+            ViewBag.MerchandiseId = merchandiseid;
+
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
 
             List<SpecVM> list = new List<SpecVM>();
@@ -35,7 +39,6 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 SpecVM specvm = new SpecVM();
                 specvm.spec = s;
-                specvm.merchandiseIdCarrier = merchandiseid;
                 list.Add(specvm);
             }
 
@@ -43,18 +46,19 @@ namespace MSIT147thGraduationTopic.Controllers
         }
         public IActionResult IndexForNoSpec(int merchandiseid)
         {
+            ViewBag.MerchandiseId = merchandiseid;
+
             SpecVM specvmforCarrier = new SpecVM();
-            specvmforCarrier.merchandiseIdCarrier = merchandiseid;
             specvmforCarrier.SpecName = "**此商品尚無規格，請新增規格資料**";
             return View(specvmforCarrier);
         }
 
         // GET: Specs/Create
-        public IActionResult Create(int merchandiseIdCarrier)
+        public IActionResult Create(int merchandiseId)
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
-            specvm.MerchandiseId = merchandiseIdCarrier;
+            specvm.MerchandiseId = merchandiseId;
             specvm.Popularity = 0;
             return View(specvm);
         }
@@ -66,6 +70,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create
             ([Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo")] SpecVM specvm)
+            //, [Bind("Cat,Dog,Mouse,Rabbit")] PetTagVM pettagvm
         {
             if (ModelState.IsValid)
             {
@@ -74,10 +79,6 @@ namespace MSIT147thGraduationTopic.Controllers
                     specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
-
-                //todo 後台新增Tag編輯的View (做成彈出式，參考_MallPage, bootstrap的Modal) 直接輸入新TAG名稱+顯示既有TAG 用AJAX+API新增資料
-                //SpecTag st = new SpecTag();
-
 
                 _context.Add(specvm.spec);
                 await _context.SaveChangesAsync();
@@ -169,11 +170,77 @@ namespace MSIT147thGraduationTopic.Controllers
                 deleteSpecImageFromUploads(spec.ImageUrl);
 
             var merchandiseid = _context.Specs
-                .Where(s => s.SpecId ==id).Select(s => s.MerchandiseId).FirstOrDefault();
+                .Where(s => s.SpecId == id).Select(s => s.MerchandiseId).FirstOrDefault();
 
             _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", new { merchandiseid = merchandiseid });
+        }
+
+        
+        public record TagRecord(string tagName, string specId, int merchandiseId);
+        [HttpPost]
+        public async Task<IActionResult> AddTag([FromBody]TagRecord record)
+        {
+            string tagName = record.tagName;
+            int specId = int.Parse(record.specId);
+            int merchandiseId = record.merchandiseId;
+
+            bool checkName = _context.Tags.Where(t => t.TagName == tagName).Any();
+
+            //若為新標籤則新增
+            if (!checkName)
+            {
+                Tag tag = new Tag();
+                tag.TagName = tagName;
+                _context.Add(tag);
+                await _context.SaveChangesAsync();
+            }
+
+            bool chaeckSame = _context.SpecTagWithTagNames.Where(sttn => sttn.SpecId == specId)
+                                                    .Where(sttn => sttn.TagName == tagName).Any();
+            if(chaeckSame) 
+                return RedirectToAction("Index", new { merchandiseid = merchandiseId });
+
+            int tagId = await _context.Tags.Where(t => t.TagName == tagName).Select(t => t.TagId).FirstAsync();
+
+            //資料表無主索引鍵，無法使用EF新增
+            //SpecTag specTag = new SpecTag()
+            //{
+            //    SpecId = specId,
+            //    TagId = tagId,
+            //}; 
+            //_context.SpecTags.Add(specTag);
+            //await _context.SaveChangesAsync();
+
+            //Dapper語法
+            using var conn = new SqlConnection(_context.Database.GetConnectionString());
+            string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
+            conn.Execute(str, new { SpecId = specId, TagId = tagId });
+
+            return RedirectToAction("Index", new { merchandiseid = merchandiseId });
+        }
+
+        public async Task<IActionResult> DeleteTag(int specId, int tagId, int merchandiseId)
+        {
+            if (_context.SpecTags == null) return Problem("找不到標籤資料");
+
+            var spec = await _context.Specs
+                .FirstOrDefaultAsync(s => s.SpecId == specId);
+            if (spec == null) return Problem("找不到規格資料");
+            var tag = await _context.Tags
+                .FirstOrDefaultAsync(t => t.TagId == tagId);
+            if (tag == null) return Problem("找不到標籤資料");
+
+            var target = _context.SpecTags
+                .Where(st => st.SpecId == specId && st.TagId == tagId).FirstOrDefault();
+
+           if (target != null)
+            {
+                _context.SpecTags.Remove(target);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", new { merchandiseid = merchandiseId });
         }
 
         private bool SpecExists(int id)

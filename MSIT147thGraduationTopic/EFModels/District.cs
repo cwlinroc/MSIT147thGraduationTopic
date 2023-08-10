@@ -11,5 +11,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public int ZipCode { get; set; }
         public int CityId { get; set; }
         public string DistrictName { get; set; }
+
+        public virtual City City { get; set; }
     }
 }

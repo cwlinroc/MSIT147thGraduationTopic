@@ -1,9 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using NuGet.Versioning;
+using System;
 using System.Linq;
+using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -20,8 +27,8 @@ namespace MSIT147thGraduationTopic.Controllers
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
             int sideCategoryId, int? minPrice, int? maxPrice) //todo 使用tag篩選 , int? tag
         {
-            IEnumerable<MallDisplay> datas = _context.MallDisplays   //todo 分成後端查詢、前端排列
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+            IEnumerable<MallDisplay> datas = _context.MallDisplays
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
 
             if (!string.IsNullOrEmpty(txtKeyword))
             {
@@ -124,5 +131,51 @@ namespace MSIT147thGraduationTopic.Controllers
             return Json(datas);
         }
 
+        [Authorize(Roles = "會員")]
+        [HttpPost]
+        public async Task<IActionResult> AddtoCart(int SpecId, int Quantity = 1)
+        {
+            int memberId = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
+            bool isSuccess = false;
+
+            if (ModelState.IsValid)
+            {
+                //驗證購物車內是否已有規格
+                IEnumerable<CartItem> thisCartItem = _context.CartItems
+                            .Where(ci => ci.MemberId == memberId).Where(ci => ci.SpecId == SpecId);
+                //有 => 更新
+                if (thisCartItem.Any())
+                {
+                    int thisQuantity = thisCartItem.Select(ci => ci.Quantity).Sum();
+                    
+                    CartItem ci = new CartItem()
+                    {
+                        MemberId = memberId,
+                        SpecId = SpecId,
+                        Quantity = thisQuantity + Quantity
+                    };
+                    
+                    _context.Update(ci);
+                }
+
+                //無 => 新增
+                if (!thisCartItem.Any())
+                {
+                    CartItem ci = new CartItem()
+                    {
+                        MemberId = memberId,
+                        SpecId = SpecId,
+                        Quantity = Quantity
+                    };
+
+                    _context.Add(ci);
+                }
+
+                await _context.SaveChangesAsync();
+                isSuccess = true;
+                return Json(isSuccess);
+            }
+            return Json(isSuccess);
+        }
     }
 }

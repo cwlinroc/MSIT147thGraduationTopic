@@ -14,7 +14,7 @@ using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using Newtonsoft.Json.Linq;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Cart
 {
     [Route("api/[controller]")]
     [ApiController]

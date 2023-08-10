@@ -7,11 +7,11 @@ namespace MSIT147thGraduationTopic.EFModels
 {
     public partial class OrderWithMember
     {
-        public int OrderId { get; set; }
+        public int MemberId { get; set; }
         public int PaymentMethodId { get; set; }
         public DateTime PurchaseTime { get; set; }
         public int? PaymentAmount { get; set; }
         public string PaymentMethodName { get; set; }
-        public int MemberId { get; set; }
+        public int OrderId { get; set; }
     }
 }

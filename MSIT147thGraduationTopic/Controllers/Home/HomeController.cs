@@ -4,7 +4,7 @@ using MSIT147thGraduationTopic.Models;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Diagnostics;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Home
 {
     public class HomeController : Controller
     {
@@ -25,9 +25,6 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return View((popularSpecs, favorableSpecs, newSpecs));
         }
-
-
-
 
         public IActionResult Privacy()
         {

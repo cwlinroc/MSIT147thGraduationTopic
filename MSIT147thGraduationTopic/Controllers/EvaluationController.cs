@@ -39,24 +39,6 @@ namespace MSIT147thGraduationTopic.Controllers
                          })
                          .ToList();
            
-            //var model = (from x in _context.EvaluationInputs
-            //             join y in _context.Evaluations on new { x.OrderId, x.MerchandiseId, x.SpecId }
-            //                                        equals new { y.OrderId, y.MerchandiseId, y.SpecId }
-            //             where x.OrderId == id
-            //             select new EvaluationVM
-            //             {
-            //                 OrderId = x.OrderId,
-            //                 MerchandiseId = x.MerchandiseId,
-            //                 MerchandiseName = x.MerchandiseName,
-            //                 SpecId = y.SpecId,
-            //                 Comment = y.Comment,
-            //                 Score = y.Score,
-            //             })
-            //             //.GroupBy(e => new { e.Comment,e.Score })  //按此條件分組
-            //             //.Select(a => a.First())   //選許所有組別的第一個
-            //             //.Distinct()
-            //             .ToList();
-
             if (model.Count == 0)
             {
                 ViewBag.ErrorMessage = $"沒有訂單 ( {id} ) 資料";
@@ -74,6 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 var data = new Evaluation();
                 data.OrderId = id;
+                data.SpecId = item.SpecId;
                 data.MerchandiseId = item.MerchandiseId;
                 data.Comment = item.Comment;
                 data.Score = item.Score;
@@ -84,22 +67,22 @@ namespace MSIT147thGraduationTopic.Controllers
             _context.SaveChanges();
 
             
-            return RedirectToAction("Edit", "Evaluation", new { id });   //todo轉跳至訂單頁          
+            return RedirectToAction("ShoppingHistory", "Member", new { id });             
         }
 
         public IActionResult Edit(int id)
         {
-            id = 249;
+            
             var model = (from e in _context.Evaluations
                          join s in _context.Specs on e.SpecId equals s.SpecId
-                         join m in _context.Merchandises on new { s.MerchandiseId } equals new { m.MerchandiseId }
+                         join m in _context.Merchandises on new { e.MerchandiseId } equals new { m.MerchandiseId }
                          where e.OrderId == id
                          select new EvaluationVM
                          {
                              OrderId = e.OrderId,
-                             MerchandiseId = m.MerchandiseId,
+                             MerchandiseId = e.MerchandiseId,
                              MerchandiseName = m.MerchandiseName,
-                             SpecId = s.SpecId,
+                             SpecId = e.SpecId,
                              SpecName = s.SpecName,
                              Comment = e.Comment,
                              Score = e.Score,
@@ -121,7 +104,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 data.Comment = item.Comment;
                 data.Score = item.Score;
 
-                var haveEvaluation = _context.Evaluations.FirstOrDefault(e => e.EvaluationId == id && e.MerchandiseId == item.MerchandiseId);
+                var haveEvaluation = _context.Evaluations.FirstOrDefault(e => e.EvaluationId == id && e.MerchandiseId == item.MerchandiseId);  //SpecId??
                 if (haveEvaluation != null)
                 {
                     haveEvaluation.Comment = data.Comment;
@@ -135,7 +118,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             _context.SaveChanges();
 
-            return RedirectToAction("Edit", "Evaluation", new { id });   //todo轉跳至訂單頁          
+            return RedirectToAction("ShoppingHistory", "Member", new { id });            
         }
 
 

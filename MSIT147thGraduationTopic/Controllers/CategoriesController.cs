@@ -21,10 +21,9 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index(string txtKeyword)
+        public IActionResult Index(string txtKeyword)
         {
-            IEnumerable<Category> datas = null;
-            datas = (string.IsNullOrEmpty(txtKeyword)) ? from c in _context.Categories select c
+            IEnumerable<Category> datas = (string.IsNullOrEmpty(txtKeyword)) ? from c in _context.Categories select c
                 : _context.Categories.Where(c => c.CategoryName.Contains(txtKeyword));
 
             List<CategoryVM> list = new List<CategoryVM>();

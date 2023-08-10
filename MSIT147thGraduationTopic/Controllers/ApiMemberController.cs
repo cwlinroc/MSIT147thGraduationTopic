@@ -43,22 +43,28 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetAllMembers().ToList();
         }
 
-        //[HttpGet("{query}")]
-        //public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
-        //{
-        //    return _service.GetMemberByNameOrAccount(query).ToList();
-        //}
-
-        [HttpGet("{id}")]
-        public ActionResult<List<MemberVM>> GetMemberById(int id)
+        [HttpGet("{query}")]
+        public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
         {
-            return _service.GetMemberById(id).ToList();
+            return _service.GetMemberByNameOrAccount(query).ToList();
         }
 
+        //[HttpGet("{id}")]
+        //public ActionResult<List<MemberVM>> GetMemberById(int id)
+        //{
+        //    return _service.GetMemberById(id).ToList();
+        //}
+
         [HttpGet("ShoppingHistory")]
-        public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId(int memberId)
+        public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId()
         {
-            return _shService.GetOrdersByMemberId(memberId).ToList();
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest("找不到對應會員ID");
+            }
+
+            var list = _shService.GetOrdersByMemberId(memberId).ToList();
+            return list;
         }
 
         [HttpPost]
@@ -86,6 +92,16 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return memberId;
         }
+
+        //public record Container([Required] bool isActivated);
+
+        //[HttpPut("permission/{id}")]
+        //public ActionResult<int> UpdateMemberPermission(Container isActivated, int id = 0)
+        //{
+        //    var memberId = _service.ChangeMemberPermission(id, isActivated.isActivated);
+
+        //    return memberId;
+        //}
 
 
         [HttpDelete("{id}")]

@@ -29,6 +29,7 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<Evaluation> Evaluations { get; set; }
         public virtual DbSet<EvaluationInput> EvaluationInputs { get; set; }
         public virtual DbSet<MallDisplay> MallDisplays { get; set; }
+        public virtual DbSet<ManuallyWeightedEntry> ManuallyWeightedEntries { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Merchandise> Merchandises { get; set; }
         public virtual DbSet<MerchandiseSearch> MerchandiseSearches { get; set; }
@@ -36,9 +37,11 @@ namespace MSIT147thGraduationTopic.EFModels
         public virtual DbSet<OrderList> OrderLists { get; set; }
         public virtual DbSet<OrderWithMember> OrderWithMembers { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public virtual DbSet<RatingData> RatingDatas { get; set; }
         public virtual DbSet<Spec> Specs { get; set; }
         public virtual DbSet<SpecDisplayforOrder> SpecDisplayforOrders { get; set; }
         public virtual DbSet<SpecTag> SpecTags { get; set; }
+        public virtual DbSet<SpecTagWithTagName> SpecTagWithTagNames { get; set; }
         public virtual DbSet<SpecWithFullMerchandise> SpecWithFullMerchandises { get; set; }
         public virtual DbSet<SpecWithMerchandiseName> SpecWithMerchandiseNames { get; set; }
         public virtual DbSet<SpecsInOrder> SpecsInOrders { get; set; }
@@ -49,7 +52,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
             }
         }
 
@@ -127,6 +130,12 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.Property(e => e.DistrictName)
                     .IsRequired()
                     .HasMaxLength(10);
+
+                entity.HasOne(d => d.City)
+                    .WithMany(p => p.Districts)
+                    .HasForeignKey(d => d.CityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Districts_Cities");
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -219,6 +228,28 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasColumnName("ImageURL");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+            });
+
+            modelBuilder.Entity<ManuallyWeightedEntry>(entity =>
+            {
+                entity.HasKey(e => e.EntryId);
+
+                entity.Property(e => e.EntryId).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Merchandise)
+                    .WithMany(p => p.ManuallyWeightedEntries)
+                    .HasForeignKey(d => d.MerchandiseId)
+                    .HasConstraintName("FK_ManuallyWeightedEntries_Merchandises");
+
+                entity.HasOne(d => d.Spec)
+                    .WithMany(p => p.ManuallyWeightedEntries)
+                    .HasForeignKey(d => d.SpecId)
+                    .HasConstraintName("FK_ManuallyWeightedEntries_Specs");
+
+                entity.HasOne(d => d.Tag)
+                    .WithMany(p => p.ManuallyWeightedEntries)
+                    .HasForeignKey(d => d.TagId)
+                    .HasConstraintName("FK_ManuallyWeightedEntries_Tags");
             });
 
             modelBuilder.Entity<Member>(entity =>
@@ -400,6 +431,11 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<RatingData>(entity =>
+            {
+                entity.HasNoKey();
+            });
+
             modelBuilder.Entity<Spec>(entity =>
             {
                 entity.Property(e => e.ImageUrl)
@@ -451,6 +487,17 @@ namespace MSIT147thGraduationTopic.EFModels
                     .HasForeignKey(d => d.TagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SpecTags_Tags");
+            });
+
+            modelBuilder.Entity<SpecTagWithTagName>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("SpecTagWithTagName");
+
+                entity.Property(e => e.TagName)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<SpecWithFullMerchandise>(entity =>

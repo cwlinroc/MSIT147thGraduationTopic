@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.Data;
+using System.Drawing.Printing;
 using System.Linq;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
@@ -22,17 +23,17 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             var query = PerformSqlQuery(pageSize, pageNo);
 
-
             if (query == null)
                 return View(new List<EvaluationVM>());
               
             
             // 獲取總記錄數
-            var totalCount = _context.Evaluations.Count(p => p.EvaluationId > 10);
+            var totalCount = _context.Evaluations.Count();
             // 傳遞查詢結果和總記錄數到View中
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = totalCount;
+            //ViewBag.TotalCount = totalCount;
+            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
             
 
             return View(query.Select(e => new EvaluationVM
@@ -55,7 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
             var model = from e in _context.Evaluations
                         where e.OrderId.ToString().Contains(keyword) ||
                               e.Merchandise.MerchandiseName.Contains(keyword) ||
-                              e.Comment.Contains(keyword)
+                              e.Comment.Contains(keyword)                             
                         select new EvaluationVM
                         {
                             EvaluationId = e.EvaluationId,
@@ -81,7 +82,7 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.TotalCount = totalCount;
 
-            // 获取当前页的数据
+            // 當頁數據
             var currentPageData = model.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
 
             return View(currentPageData);
@@ -98,27 +99,24 @@ namespace MSIT147thGraduationTopic.Controllers
                 _context.Evaluations.Remove(evaluation);
                 _context.SaveChanges();
             }
-
             return RedirectToAction("EBIndex");
         }
-
         private List<EvaluationInput> PerformSqlQuery(int pageSize, int pageNo)
         {
             var sql = @"
                         DECLARE @pageSize INT, @pageNo INT;
                         SET @pageSize = @p0;
                         SET @pageNo = @p1;
-                        ;WITH T
+                        ;WITH T                               
                         AS (
                             SELECT *
                             FROM EvaluationInput                           
                         )
                         SELECT TotalCount = COUNT(1) OVER (), T.*
                         FROM T
-                        ORDER BY EvaluationId
+                        ORDER BY EvaluationId DESC
                         OFFSET(@pageNo - 1) * @pageSize ROWS
                         FETCH NEXT @pageSize ROWS ONLY;";
-
             //分頁查詢
             return _context.EvaluationInputs.FromSqlRaw<EvaluationInput>(sql, pageSize, pageNo).ToList();
         }

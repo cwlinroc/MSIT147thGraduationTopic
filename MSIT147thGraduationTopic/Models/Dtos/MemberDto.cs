@@ -11,11 +11,11 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public string NickName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool Gender { get; set; }
-        public string City { get; set; }
-        public string District { get; set; }
         public string Account { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }

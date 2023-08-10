@@ -19,11 +19,11 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return order.Select(o => o.ToShDto());
         }
 
-        public IEnumerable<SpecInOrder> GetSpecsByOrderId(int orderId)
+        public IEnumerable<SpecsInOrderDto> GetSpecsByOrderId(int orderId)
         {
-            var list = _context.OrderWithMembers
+            var list = _context.SpecsInOrders
                 .Where(o => o.OrderId == orderId);
-            return (IEnumerable<SpecInOrder>)list.Select(o => o.ToShDto());
+            return list.Select(o => o.ToSpecsInOrderDto()).ToList();
         }
     }
 }
