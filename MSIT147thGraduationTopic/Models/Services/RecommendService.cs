@@ -1,15 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Dtos.Recommend;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using static MSIT147thGraduationTopic.Controllers.Recommend.ApiRecommendController;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {
     public class RecommendService
     {
         private readonly GraduationTopicContext _context;
-        private readonly RecommandRepositoy _repo;
+        private readonly RecommendRepositoy _repo;
 
         public RecommendService(GraduationTopicContext context)
         {
@@ -104,6 +106,33 @@ namespace MSIT147thGraduationTopic.Models.Services
             return await _repo.GetMostPopularSpecsName(top);
         }
 
+        public async Task<List<SearchedItemsDto>> GetSearchedItems(string text, string type)
+        {
+            if (string.IsNullOrEmpty(text)) return new();
+            if (type != "tag" && type != "merchandise" && type != "spec") return new();
+            return await _repo.GetSearchedItems(text, type);
+        }
 
+        public async Task<int> InsertWeightedEntries(InsertEntriesRecord record)
+        {
+            if (record.Ids.IsNullOrEmpty() || record.Weight < -10 || record.Weight > 10) return -1;
+            if (record.Type != "tag" && record.Type != "merchandise" && record.Type != "spec") return -1;
+            return await _repo.InsertWeightedEntries(record);
+        }
+
+        public async Task<List<WeightedEntryDisplayDto>> GetAllWeightedEntries()
+        {
+            return await _repo.GetAllWeightedEntries();
+        }
+
+        public async Task<int> UpdateEntryWeight(int id, int weight)
+        {
+            return await _repo.UpdateEntryWeight(id, weight);
+        }
+
+        public async Task<int> DeleteWeightedEntry(int id)
+        {
+            return await _repo.DeleteWeightedEntry(id);
+        }
     }
 }

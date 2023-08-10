@@ -62,6 +62,11 @@ namespace MSIT147thGraduationTopic.Models
         {
             get => (specs, evaluateWeight, purchaseWeight, customWeight) =>
             {
+                if (evaluateWeight == 0 && purchaseWeight == 0 && customWeight == 0)
+                {
+                    foreach (var spec in specs.ToList()) spec.Popularity = 0.5;
+                    return;
+                }
                 foreach (var spec in specs.ToList())
                 {
                     spec.Popularity = (spec.EvaluationRating * evaluateWeight + spec.PurchasedRating * purchaseWeight + spec.CustomRating * customWeight)

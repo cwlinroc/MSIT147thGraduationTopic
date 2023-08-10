@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\js\homepage\**" />
+    <Content Remove="wwwroot\js\homepage\**" />
+    <EmbeddedResource Remove="wwwroot\js\homepage\**" />
+    <None Remove="wwwroot\js\homepage\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="efpt.config.json" />
   </ItemGroup>
 
@@ -29,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\js\homepage\" />
     <Folder Include="wwwroot\uploads\merchandisePicture\" />
   </ItemGroup>
 
