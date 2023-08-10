@@ -40,7 +40,7 @@
             </tbody>
         </table>
         <p>
-            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseidcarrier = ViewBag.MerchandiseId}, new { @class = "btn btn-primary" })
+            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseId = ViewBag.MerchandiseId}, new { @class = "btn btn-primary" })
         </p>
         <hr />
         <table class="table table-hover">
@@ -63,9 +63,10 @@
         const mCategory = document.querySelector("#mCategory");
         const mDescription = document.querySelector("#mDescription");
         const mImage = document.querySelector("#mImage");
+        const merchandiseid = @ViewBag.MerchandiseId;
+        console.log("merchandiseid = "+merchandiseid);
 
         $(() => {
-            const merchandiseid = @ViewBag.MerchandiseId;
             const xhr = new XMLHttpRequest();
             xhr.open("GET", `/ApiSpec/ShowMerchandise/${merchandiseid}`);
             xhr.send();

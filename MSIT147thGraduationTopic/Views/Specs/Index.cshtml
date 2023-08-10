@@ -148,7 +148,7 @@
                                     <button type="button" class="btn btn-primary me-2" id="btnAddTag">新增標籤</button>
                                 </div>
                                 <div class="my-3" id="fastAddArea">
-                                    <span>快速標籤：</span> <button class="btn btn-outline-secondary fastAdd">貓用</button> <button>狗用</button> <button>鼠用</button> <button>兔用</button>
+                                    
                                 </div>
                             </form>
                             <hr />
@@ -228,7 +228,6 @@
         const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
         let currentSpecId;
-        console.log("currentSpecId = " + currentSpecId);
 
         $(".fortag").click(async (e) => {
             currentSpecId = $(e.currentTarget).attr("data-specid");
@@ -253,18 +252,15 @@
         })
 
         //新增tag
-        let canEdit = true;
-        $("#btnAddTag").on("click", async () => {
-            event.preventDefault();
+        $("#btnAddTag").on("click", async (e) => {
+            e.preventDefault();
             const tagName = $("#TagName").val();
-            console.log('tagName =' + tagName + ', specId =' + currentSpecId + ', merchandiseId =' + merchandiseid);
             const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
                 body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', },
             })
             $("#TagName").val("");
-            //$("#TagName").on("keyup");//todo 無法以此重新啟用keyup事件
             //更新頁面以顯示變更
             ShowCurrentTag(currentSpecId);
             canEdit = true
@@ -273,20 +269,39 @@
         $("#TagName").on("keypress", (e) => {
             var keyPressed = e.keyCode || e.which;
             if (keyPressed === 13) {
-                console.log("PRESS ENTER");
-                event.preventDefault();
+                e.preventDefault();
             }
         })
+        //使用布林值作為指標，避免短時間內重複送出來不及驗證
+        let canEdit = true;
         $("#TagName").on("keyup", (e) => {
             var keyPressed = e.keyCode || e.which;
             if (keyPressed === 13) {
                 if (!canEdit) return
                 canEdit = false;
-                event.preventDefault();
-                //$("#TagName").off("keyup"); //todo 關閉keyup事件以避免重複送出
-                console.log("ADDING by ENTER");
+                e.preventDefault();
                 $("#btnAddTag").click();
             }
+        })
+
+        //產生快速標籤按鈕
+        $(() => {
+            const fastAddArea = document.querySelector("#fastAddArea");
+            fastAddArea.innerHTML += `<span>快速標籤：</span>`;
+            const TagNames = ["", "貓用", "狗用", "鼠用", "兔用"];
+            for (let i = 1; i <= 4; i++) {
+                fastAddArea.innerHTML += `<button class="btn btn-outline-secondary fastAdd"> ${TagNames[i]} </button>`
+            }
+            $(".fastAdd").on("click", async (e) => {
+                e.preventDefault();
+                const tagName = $(e.currentTarget).text();
+                const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
+                    body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', },
+                })
+                ShowCurrentTag(currentSpecId);
+            })
         })
         
         //陳列既有tag

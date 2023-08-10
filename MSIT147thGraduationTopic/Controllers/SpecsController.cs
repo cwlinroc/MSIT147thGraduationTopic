@@ -32,11 +32,10 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.MerchandiseId = merchandiseid;
 
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
-
-            List<SpecVM> list = new List<SpecVM>();
-
             if (datas.Count() == 0)
                 return RedirectToAction("IndexForNoSpec", new { merchandiseid = merchandiseid });
+
+            List<SpecVM> list = new List<SpecVM>();
 
             foreach (Spec s in datas)
             {
@@ -90,11 +89,15 @@ namespace MSIT147thGraduationTopic.Controllers
                 await _context.SaveChangesAsync();
 
                 //新增寵物標籤
-                int SpecId = specvm.SpecId;
-                if (specvm.selectTag.Contains("Cat")) addSpecTag(SpecId, 1);
-                if (specvm.selectTag.Contains("Dog")) addSpecTag(SpecId, 2);
-                if (specvm.selectTag.Contains("Mouse")) addSpecTag(SpecId, 3);
-                if (specvm.selectTag.Contains("Rabbit")) addSpecTag(SpecId, 4);
+                if (specvm.selectTag != null)
+                {
+                    int SpecId = specvm.SpecId;
+                    if (specvm.selectTag.Contains("Cat")) addSpecTag(SpecId, 1);
+                    if (specvm.selectTag.Contains("Dog")) addSpecTag(SpecId, 2);
+                    if (specvm.selectTag.Contains("Mouse")) addSpecTag(SpecId, 3);
+                    if (specvm.selectTag.Contains("Rabbit")) addSpecTag(SpecId, 4);
+                }
+                
                 return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
@@ -196,7 +199,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public record TagRecord(string tagName, string specId, int merchandiseId);
         [HttpPost]
         [Authorize(Roles = "管理員,經理,員工")]
-        public async Task<IActionResult> AddTag([FromBody]TagRecord record)
+        public async Task<IActionResult> AddTag([FromBody] TagRecord record)
         {
             string tagName = record.tagName;
             int specId = int.Parse(record.specId);
@@ -252,7 +255,7 @@ namespace MSIT147thGraduationTopic.Controllers
             var target = _context.SpecTags
                 .Where(st => st.SpecId == specId && st.TagId == tagId).FirstOrDefault();
 
-           if (target != null)
+            if (target != null)
             {
                 //資料表無主索引鍵，無法使用EF刪除 => 改使用Dapper語法
                 using var conn = new SqlConnection(_context.Database.GetConnectionString());
@@ -261,7 +264,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             return RedirectToAction("Index", new { merchandiseid = merchandiseId });
         }
-        
+
         private bool SpecExists(int id)
         {
             return (_context.Specs?.Any(e => e.SpecId == id)).GetValueOrDefault();
