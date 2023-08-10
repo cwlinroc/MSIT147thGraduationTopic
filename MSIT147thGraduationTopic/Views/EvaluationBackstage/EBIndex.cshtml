@@ -78,7 +78,7 @@
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <div class="pagination ">
+                    @*<div class="pagination ">*@
                         @if (ViewBag.TotalPage == 1)
                         {
                             <li class="page-item @(1 == ViewBag.PageNo ? "active" : "")">
@@ -94,7 +94,7 @@
                                 </li>
                             }
                         }
-                    </div>
+                    @*</div>*@
                     <li class="page-item">
                         <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) <= ViewBag.TotalPage ?ViewBag.PageNo + 1:ViewBag.PageNo })" aria-label="Next">                        
                             <span aria-hidden="true">&raquo;</span>

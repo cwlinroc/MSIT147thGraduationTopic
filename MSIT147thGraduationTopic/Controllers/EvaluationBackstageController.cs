@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
@@ -25,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public IActionResult EBIndex()
         {           
             //if (keyword == null)
-                return View();
+                return View(new List<EvaluationVM>());
             //var query = PerformSqlQuery(pageSize, pageNo, keyword);
 
             //// 獲取帶出資料總記錄數
@@ -53,18 +54,20 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             var pageSize = 5; 
             var pageNo = 1;
-            //var model = from e in _context.Evaluations
-            //            where e.OrderId.ToString().Contains(keyword) ||
-            //                  e.Merchandise.MerchandiseName.Contains(keyword) ||
-            //                  e.Comment.Contains(keyword)                             
-            //            select new EvaluationVM
-            //            {
-            //                EvaluationId = e.EvaluationId,
-            //                OrderId = e.OrderId,
-            //                MerchandiseName = e.Merchandise.MerchandiseName,
-            //                Score = e.Score,
-            //                Comment = e.Comment,
-            //            };
+            var model = from e in _context.EvaluationInputs
+                        where e.OrderId.ToString().Contains(keyword) ||
+                              e.MerchandiseName.Contains(keyword) ||
+                              e.Comment.Contains(keyword)
+
+                        select new EvaluationVM
+                        {
+                            EvaluationId = e.EvaluationId,
+                            OrderId = e.OrderId,
+                            MerchandiseName = e.MerchandiseName,
+                            Score = e.Score,
+                            Comment = e.Comment,
+                        };
+            model = model.OrderByDescending(e => e.EvaluationId);
 
             ////var model = _context.Evaluations
             ////            .Where(x => string.IsNullOrEmpty(keyword) || x.Merchandise.MerchandiseName.Contains(keyword))
@@ -75,10 +78,11 @@ namespace MSIT147thGraduationTopic.Controllers
             ////                Score = x.Score,
             ////                Comment = x.Comment,
             ////            }).ToList();
-            var query = PerformSqlQuery(pageSize, pageNo, keyword);
+            
+            //var query = PerformSqlQuery(pageSize, pageNo, keyword);
 
             // 獲取帶出資料總記錄數
-            var totalCount = query.Count();
+            var totalCount = model.Count();
             
             // 傳遞查詢結果和總記錄數到View中
             ViewBag.keyword = keyword;
@@ -88,17 +92,17 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
 
             // 當頁數據
-            var currentPageData = query.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            var currentPageData = model.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
 
-            return View(currentPageData.Select(e => new EvaluationVM
-            {
-                EvaluationId = e.EvaluationId,
-                OrderId = e.OrderId,
-                MerchandiseName = e.MerchandiseName,
-                Score = e.Score,
-                Comment = e.Comment,
-            }));
-            //return View(currentPageData);
+            //return View(currentPageData.Select(e => new EvaluationVM
+            //{
+            //    EvaluationId = e.EvaluationId,
+            //    OrderId = e.OrderId,
+            //    MerchandiseName = e.MerchandiseName,
+            //    Score = e.Score,
+            //    Comment = e.Comment,
+            //}));
+            return View(currentPageData);
         }
 
         [HttpPost]
