@@ -24,7 +24,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
             _host = host;
         }
-        #region MyRegion
+
         // GET: Specs
         [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(int merchandiseid)
@@ -122,7 +122,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "管理員,經理,員工")]
-        public async Task<IActionResult> Edit(int id, 
+        public async Task<IActionResult> Edit(int id,
             [Bind("SpecId,SpecName,MerchandiseId,Price,Amount,ImageUrl,DisplayOrder,Popularity,OnShelf,DiscountPercentage,photo,deleteImageIndicater")] SpecVM specvm)
         {
             if (id != specvm.SpecId) return NotFound();
@@ -193,8 +193,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return RedirectToAction("Index", new { merchandiseid = merchandiseid });
         }
 
-
-        #endregion
         public record TagRecord(string tagName, string specId, int merchandiseId);
         [HttpPost]
         [Authorize(Roles = "管理員,經理,員工")]
@@ -258,7 +256,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             return RedirectToAction("Index", new { merchandiseid = merchandiseId });
         }
-        #region MyRegion
+        
         private bool SpecExists(int id)
         {
             return (_context.Specs?.Any(e => e.SpecId == id)).GetValueOrDefault();
@@ -283,7 +281,5 @@ namespace MSIT147thGraduationTopic.Controllers
             string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
             conn.Execute(str, new { SpecId = SpecId, TagId = TagId });
         }
-
-        #endregion
     }
 }
