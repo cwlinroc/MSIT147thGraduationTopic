@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing.Printing;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace MSIT147thGraduationTopic.Controllers
@@ -21,34 +22,30 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult EBIndex(string keyword,int pageSize = 5, int pageNo = 1 )
-        {
-            var query = PerformSqlQuery(pageSize, pageNo, keyword);
+        public IActionResult EBIndex()
+        {           
+            //if (keyword == null)
+                return View();
+            //var query = PerformSqlQuery(pageSize, pageNo, keyword);
 
-            if (query == null)
-                return View(new List<EvaluationVM>());
-              
-            
-            // 獲取總記錄數
-            var totalCount = _context.Evaluations.Count();
-            // 傳遞查詢結果和總記錄數到View中
-            ViewBag.keyword = keyword;
-            ViewBag.PageNo = pageNo;
-            ViewBag.PageSize = pageSize;
+            //// 獲取帶出資料總記錄數
+            //var totalCount = query.Count();
+            //// 傳遞查詢結果和總記錄數到View中
+            //ViewBag.keyword = keyword;
+            //ViewBag.PageNo = pageNo;
+            //ViewBag.PageSize = pageSize;
             //ViewBag.TotalCount = totalCount;
-            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
+            //ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
             
 
-            return View(query.Select(e => new EvaluationVM
-            {
-                EvaluationId = e.EvaluationId,
-                OrderId = e.OrderId,
-                MerchandiseName = e.MerchandiseName,
-                Score = e.Score,
-                Comment = e.Comment,
-            }));
-            
-
+            //return View(query.Select(e => new EvaluationVM
+            //{
+            //    EvaluationId = e.EvaluationId,
+            //    OrderId = e.OrderId,
+            //    MerchandiseName = e.MerchandiseName,
+            //    Score = e.Score,
+            //    Comment = e.Comment,
+            //}));           
         }
         
         [HttpPost]
@@ -56,42 +53,52 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             var pageSize = 5; 
             var pageNo = 1;
-            var model = from e in _context.Evaluations
-                        where e.OrderId.ToString().Contains(keyword) ||
-                              e.Merchandise.MerchandiseName.Contains(keyword) ||
-                              e.Comment.Contains(keyword)                             
-                        select new EvaluationVM
-                        {
-                            EvaluationId = e.EvaluationId,
-                            OrderId = e.OrderId,
-                            MerchandiseName = e.Merchandise.MerchandiseName,
-                            Score = e.Score,
-                            Comment = e.Comment,
-                        };
-
-            //var model = _context.Evaluations
-            //            .Where(x => string.IsNullOrEmpty(keyword) || x.Merchandise.MerchandiseName.Contains(keyword))
-            //            .Select(x => new EvaluationVM
+            //var model = from e in _context.Evaluations
+            //            where e.OrderId.ToString().Contains(keyword) ||
+            //                  e.Merchandise.MerchandiseName.Contains(keyword) ||
+            //                  e.Comment.Contains(keyword)                             
+            //            select new EvaluationVM
             //            {
-            //                OrderId = x.OrderId,
-            //                MerchandiseId = x.MerchandiseId,
-            //                Score = x.Score,
-            //                Comment = x.Comment,
-            //            }).ToList();
-            var totalCount = model.Count();
+            //                EvaluationId = e.EvaluationId,
+            //                OrderId = e.OrderId,
+            //                MerchandiseName = e.Merchandise.MerchandiseName,
+            //                Score = e.Score,
+            //                Comment = e.Comment,
+            //            };
 
+            ////var model = _context.Evaluations
+            ////            .Where(x => string.IsNullOrEmpty(keyword) || x.Merchandise.MerchandiseName.Contains(keyword))
+            ////            .Select(x => new EvaluationVM
+            ////            {
+            ////                OrderId = x.OrderId,
+            ////                MerchandiseId = x.MerchandiseId,
+            ////                Score = x.Score,
+            ////                Comment = x.Comment,
+            ////            }).ToList();
+            var query = PerformSqlQuery(pageSize, pageNo, keyword);
+
+            // 獲取帶出資料總記錄數
+            var totalCount = query.Count();
+            
             // 傳遞查詢結果和總記錄數到View中
             ViewBag.keyword = keyword;
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
-            //ViewBag.TotalCount = totalCount;
+            ViewBag.TotalCount = totalCount;
             ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
 
             // 當頁數據
-            var currentPageData = model.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            var currentPageData = query.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
 
-            return View(currentPageData);
-            //return View(model);
+            return View(currentPageData.Select(e => new EvaluationVM
+            {
+                EvaluationId = e.EvaluationId,
+                OrderId = e.OrderId,
+                MerchandiseName = e.MerchandiseName,
+                Score = e.Score,
+                Comment = e.Comment,
+            }));
+            //return View(currentPageData);
         }
 
         [HttpPost]
@@ -129,14 +136,9 @@ namespace MSIT147thGraduationTopic.Controllers
                         ORDER BY EvaluationId DESC
                         OFFSET(@pageNo - 1) * @pageSize ROWS
                         FETCH NEXT @pageSize ROWS ONLY;";
-
             //分頁查詢
             return _context.EvaluationInputs.FromSqlRaw<EvaluationInput>(sql, pageSize, pageNo, keyword).ToList();
         }
-
-
-
-
     }
 
 }

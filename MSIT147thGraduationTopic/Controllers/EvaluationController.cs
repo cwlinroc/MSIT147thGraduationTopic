@@ -68,62 +68,93 @@ namespace MSIT147thGraduationTopic.Controllers
                 ViewBag.OrderId = id;
                 return View(model);
             }
-        }         
+        }
 
-        [HttpPost]  
+        //[HttpPost]  
+        //public IActionResult EIndex(int id, List<Comments> comments)
+        //{
+        //    var evaluation = _context.Evaluations.FirstOrDefault(e => e.OrderId == id );
+        //    List<Evaluation> datalist = new List<Evaluation>();
+        //    if (evaluation != null)    //todo 既有顯示資料回存為空,無法覆蓋
+        //    {
+        //        foreach (var item in comments)
+        //        {
+        //            var data = new Evaluation();
+        //            data.OrderId = id;
+        //            data.SpecId = item.SpecId;
+        //            data.MerchandiseId = item.MerchandiseId;
+        //            data.Comment = item.Comment;
+        //            data.Score = item.Score;
+
+        //            var haveEvaluation = _context.Evaluations.FirstOrDefault
+        //                (e => e.OrderId == id && e.SpecId == item.SpecId);  //SpecId??
+        //            if (haveEvaluation != null)
+        //            {
+        //                haveEvaluation.EvaluationId = data.EvaluationId;
+        //                haveEvaluation.Comment = data.Comment;
+        //                haveEvaluation.Score = data.Score;
+        //                _context.Evaluations.Update(haveEvaluation);
+        //            }
+        //            else
+        //            {
+        //                _context.Evaluations.Add(data);
+        //            }
+        //        }
+        //        _context.SaveChanges();
+
+        //        return RedirectToAction("ShoppingHistory", "Member");
+        //    }
+        //    else 
+        //    {
+        //        foreach (var item in comments)
+        //        {
+        //            var data = new Evaluation();
+        //            data.OrderId = id;
+        //            data.SpecId = item.SpecId;
+        //            data.MerchandiseId = item.MerchandiseId;
+        //            data.Comment = item.Comment;
+        //            data.Score = item.Score;
+
+        //            datalist.Add(data);
+        //        }
+        //        _context.Evaluations.AddRange(datalist);
+        //        _context.SaveChanges();
+        //        return RedirectToAction("ShoppingHistory", "Member");              
+        //    }                     
+        //}
+
+        [HttpPost]
         public IActionResult EIndex(int id, List<Comments> comments)
         {
-            var evaluation = _context.Evaluations.FirstOrDefault(e => e.OrderId == id);
-            List<Evaluation> datalist = new List<Evaluation>();
-            if (evaluation != null)    //todo 既有顯示資料回存為空,無法覆蓋
+            foreach (var comment in comments)
             {
-                foreach (var item in comments)
+                var evaluation = _context.Evaluations.FirstOrDefault
+                    (e => e.OrderId == id && e.SpecId == comment.SpecId);
+
+                if (evaluation != null)
                 {
-                    var data = new Evaluation();
-                    data.OrderId = id;                    
-                    data.SpecId = item.SpecId;
-                    data.MerchandiseId = item.MerchandiseId;
-                    data.Comment = item.Comment;
-                    data.Score = item.Score;
-
-                    var haveEvaluation = _context.Evaluations.FirstOrDefault(e => e.OrderId == id && e.EvaluationId == item.EvaluationId && e.MerchandiseId == item.MerchandiseId);  //SpecId??
-                    if (haveEvaluation != null)
-                    {
-                        haveEvaluation.Comment = data.Comment;
-                        haveEvaluation.Score = data.Score;
-                        _context.Evaluations.Update(haveEvaluation);
-                    }
-                    else
-                    {
-                        _context.Evaluations.Add(data);
-                    }
+                    evaluation.Comment = comment.Comment;
+                    evaluation.Score = comment.Score;
                 }
-                _context.SaveChanges();
-
-                return RedirectToAction("ShoppingHistory", "Member");
-            }
-            else 
-            {
-                foreach (var item in comments)
+                else
                 {
                     var data = new Evaluation();
                     data.OrderId = id;
-                    data.SpecId = item.SpecId;
-                    data.MerchandiseId = item.MerchandiseId;
-                    data.Comment = item.Comment;
-                    data.Score = item.Score;
-
-                    datalist.Add(data);
+                    data.SpecId = comment.SpecId;
+                    data.MerchandiseId = comment.MerchandiseId;
+                    data.Comment = comment.Comment;
+                    data.Score = comment.Score;
+                    _context.Evaluations.Add(data);
                 }
-                _context.Evaluations.AddRange(datalist);
-                _context.SaveChanges();
-                return RedirectToAction("ShoppingHistory", "Member");              
-            }                     
+            }
+            _context.SaveChanges();
+
+            return RedirectToAction("ShoppingHistory", "Member");
         }
 
         //public IActionResult Edit(int id)
         //{
-            
+
         //    var model = (from e in _context.Evaluations
         //                 join s in _context.Specs on e.SpecId equals s.SpecId
         //                 join m in _context.Merchandises on new { e.MerchandiseId } equals new { m.MerchandiseId }
