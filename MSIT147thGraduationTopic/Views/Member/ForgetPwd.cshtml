@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "忘記密碼";    
+}
+
+<div class="text-center mb-4">
+    <h1 class="fw-bold mt-4">忘記密碼</h1>
+</div>
+<div class="row" style="--bs-gutter-x:0;">
+    <div class="col-lg-5">
+        <form id="memberCenterForm" class="needs-validation" method="Post"
+              enctype="multipart/form-data" novalidate>
+            <!-- Account input-->
+            <div class="form mb-3">
+                <label for="account" class="form-label fw-bold">帳號</label>
+                <input class="form-control" id="account" name="Account" type="text" required />
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
+            </div>
+            <!-- Email address input-->
+            <div class="form mb-3">
+                <label for="email" class="form-label fw-bold">Email</label>
+                <input class="form-control" id="email" name="Email" type="email" required />
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
+            </div>
+            <!-- Submit Button-->
+            <div class="d-grid col-lg-5 offset-2 mt-3 mb-5">
+                <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
+                    送出
+                </button>                
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Script{
+    <script src="~/js/MyBootstrapValidator.js"></script>
+    <script>
+        const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
+
+        function ForgetPwdValidator() {            
+            myValid.validateFunction(() => {
+                const account = document.querySelector('#account')
+                const accountValid = !!account.value
+                account.setValidate(() => accountValid, '請輸入帳號')
+
+                const email = document.querySelector('#email')
+                const emailValid = !!email.value
+                const emailPatternValid = /^\w+@@\w+/.test(email.value)
+                email.setValidate(() => emailValid, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
+
+                return accountValid && emailValid && emailPatternValid                          
+            })            
+            return myValid.startValidate()
+        }
+
+        $('#btnSubmit').click(ForgetPwdValidator)
+    </script>
+}
