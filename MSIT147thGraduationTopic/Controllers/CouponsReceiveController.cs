@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using System.Data;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -14,10 +16,12 @@ namespace MSIT147thGraduationTopic.Controllers
             _repo = new CouponRepository(context);
         }
 
+        [Authorize(Roles = "會員")]
         public IActionResult Index()
         {
-            var couponlistA = _repo.ShowCoupons(0, 1);
-            var couponlistB = _repo.ShowCoupons(1, 1);
+            
+            var couponlistA = _repo.ShowCoupons(0);
+            var couponlistB = _repo.ShowCoupons(1);
 
             return View((couponlistA, couponlistB));
         }

@@ -1,5 +1,5 @@
 ﻿@using MSIT147thGraduationTopic.Models.Dtos
-@model (IEnumerable<CouponDto> listDiscount,IEnumerable<CouponDto> listRebate)
+@model (IEnumerable<CouponDto> listDiscountAll,IEnumerable<CouponDto> listRebateAll)
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "優惠券管理系統";
@@ -75,7 +75,7 @@
                             </thead>
                             <tbody>
                                 @{
-                                    foreach (CouponDto c in Model.listDiscount)
+                                    foreach (CouponDto c in Model.listDiscountAll)
                                     {
                                         <tr>
                                             <td id="DiscountId" scope="col">@c.CouponId</td>
@@ -152,7 +152,7 @@
 
                                 <tbody>
                                     @{
-                                        foreach (CouponDto c in Model.listRebate)
+                                        foreach (CouponDto c in Model.listRebateAll)
                                         {
                                             <tr>
                                                 <td id="RebateId" scope="col">@c.CouponId</td>

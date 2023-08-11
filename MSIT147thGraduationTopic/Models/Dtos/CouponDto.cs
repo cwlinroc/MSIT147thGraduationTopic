@@ -1,4 +1,5 @@
 ﻿using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace MSIT147thGraduationTopic.Models.Dtos
@@ -16,7 +17,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
     }
     public class CouponEditDto
     {
-        public int CouponId { get;set; }
+        public int CouponId { get; set; }
         public int? CouponTagId { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "優惠券名稱為必填欄位")]
         public string CouponName { get; set; }
@@ -31,7 +32,7 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         [Range(0, (double)decimal.MaxValue, ErrorMessage = "折扣條件不得為負數")]
         public decimal? CouponCondition { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "優惠券折扣為必填欄位")]
-        [Range(0,(double)decimal.MaxValue, ErrorMessage = "折價不得為負數")]
+        [Range(0, (double)decimal.MaxValue, ErrorMessage = "折價不得為負數")]
         public decimal CouponDiscount { get; set; }
 
         //判斷活動日期
@@ -47,11 +48,25 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         //判斷打折符合百分比
         public IEnumerable<ValidationResult> CouponConditionValidation(ValidationContext validationContext)
         {
-            if(this.CouponCondition == null && CouponDiscount>=100 )
+            if (this.CouponCondition == null && CouponDiscount >= 100)
             {
                 yield return new ValidationResult("打折數必須一百之內");
             }
         }
+    }
+
+    public class CouponFrontDto
+    {
+        public int MemberId { get; set; }
+        public int CouponId { get; set; }
+        public int? CouponTagId { get; set; }
+        public string CouponName { get; set; }
+        public DateTime CouponStartDate { get; set; }
+        public DateTime CouponEndDate { get; set; }
+        public int CouponDiscountTypeId { get; set; }
+        public decimal? CouponCondition { get; set; }
+        public decimal CouponDiscount { get; set; }
+        public bool CouponUsed { get; set; }
     }
 
     static public class CouponConvert
@@ -71,6 +86,23 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             };
         }
 
+        static public CouponFrontDto ToFrontDto(this CouponReceive couponReceive)
+        {
+            return new CouponFrontDto
+            {
+                MemberId = couponReceive.MemberId,
+                CouponId = couponReceive.CouponId,
+                CouponName = couponReceive.CouponName,
+                CouponStartDate = couponReceive.CouponStartDate,
+                CouponEndDate = couponReceive.CouponEndDate,
+                CouponCondition = couponReceive.CouponCondition,
+                CouponDiscount = couponReceive.CouponDiscount,
+                CouponDiscountTypeId = couponReceive.CouponDiscountTypeId,
+                CouponTagId = couponReceive.CouponTagId,
+                CouponUsed= couponReceive.CouponUsed,
+            };
+        }
+
         static public Coupon ToEF(this CouponDto couponDto)
         {
             return new Coupon
@@ -83,6 +115,23 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 CouponEndDate = couponDto.CouponEndDate,
                 CouponDiscount = couponDto.CouponDiscount,
                 CouponDiscountTypeId = couponDto.CouponDiscountTypeId,
+            };
+        }
+
+        static public CouponReceive ToFrontEF(this CouponFrontDto couponFrontDto)
+        {
+            return new CouponReceive
+            {
+                MemberId = couponFrontDto.MemberId,
+                CouponId = couponFrontDto.CouponId,
+                CouponName = couponFrontDto.CouponName,
+                CouponStartDate = couponFrontDto.CouponStartDate,
+                CouponEndDate = couponFrontDto.CouponEndDate,
+                CouponCondition = couponFrontDto.CouponCondition,
+                CouponDiscount = couponFrontDto.CouponDiscount,
+                CouponDiscountTypeId = couponFrontDto.CouponDiscountTypeId,
+                CouponTagId = couponFrontDto.CouponTagId,
+                CouponUsed = couponFrontDto.CouponUsed,
             };
         }
 

@@ -18,27 +18,17 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return coupons.Select(c => c.ToDto());
         }
 
-        //public IEnumerable<CouponDto> ShowCoupons(int id)
-        //{
-        //    var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == id).ToList();
-        //    return coupons.Select(c => c.ToDto());
-        //}
-
-
-        public IEnumerable<CouponDto> ShowCoupons(int id, int showdate)
+        public IEnumerable<CouponDto> ShowCoupons(int id)
         {
             var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == id);
-            if (showdate == 1) coupons = coupons;
-            if (showdate == 2) coupons = coupons
-                    .Where(c => c.CouponStartDate > DateTime.Now);  //目前未開始
-
-            if (showdate == 3) coupons = coupons
-                    .Where(c => c.CouponStartDate < DateTime.Now && c.CouponEndDate > DateTime.Now);  //目前可使用
-            
-            if (showdate == 4) coupons = coupons
-                    .Where(c => c.CouponEndDate < DateTime.Now);  //目前已過期
 
             return coupons.ToList().Select(c => c.ToDto());
+        }
+
+        public IEnumerable<CouponFrontDto> ShowCouponsFront(int id)
+        {
+            var coupons = _context.CouponReceives.Where(c=>c.MemberId == id);
+            return coupons.ToList().Select(c=>c.ToFrontDto());
         }
 
         public int CreateCoupon(CouponDto cDto)
@@ -91,21 +81,23 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             var coupon = _context.Coupons.FirstOrDefault(c => c.CouponId == id);
             if (coupon == null)
             {
-                // 位搜尋到id時的處理
+                // 未搜尋到id時的處理
                 return null;
             }
 
             return coupon.ToDto(); //將coupon實體轉換為couponDto
         }
 
-        //public int DetectionName(string name)
-        //{
-        //    var coupon = _context.Coupons.FirstOrDefault(c=>c.CouponName == name);
+        public CouponFrontDto GetCouponByMemberID(int id)
+        {
+            var coupon = _context.CouponReceives.FirstOrDefault(c=>c.MemberId == id);
+            if(coupon == null)
+            {
+                return null;
+            }
+            return coupon.ToFrontDto();
+        }
 
-        //    if(coupon != null)
-        //    {
 
-        //    }
-        //}
     }
 }
