@@ -33,7 +33,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
             if (datas.Count() == 0)
-                return RedirectToAction("IndexForNoSpec", new { merchandiseid = merchandiseid });
+                return RedirectToAction("IndexForNoSpec", new { merchandiseid });
 
             List<SpecVM> list = new List<SpecVM>();
 
@@ -81,7 +81,10 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 if (specvm.photo != null)
                 {
-                    specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName;
+                    int fileNameLangth = specvm.photo.FileName.Length;
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
 
@@ -97,7 +100,7 @@ namespace MSIT147thGraduationTopic.Controllers
                     if (specvm.selectTag.Contains("Mouse")) addSpecTag(SpecId, 3);
                     if (specvm.selectTag.Contains("Rabbit")) addSpecTag(SpecId, 4);
                 }
-                
+
                 return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
@@ -136,14 +139,21 @@ namespace MSIT147thGraduationTopic.Controllers
                 //沒圖→有圖
                 if (specvm.ImageUrl == null && specvm.photo != null)
                 {
-                    specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName;
+                    int fileNameLangth = specvm.photo.FileName.Length;
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
                 //有圖→新圖
                 if (specvm.ImageUrl != null && specvm.photo != null)
                 {
                     deleteSpecImageFromUploads(specvm.ImageUrl);
-                    specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName;
+
+                    int fileNameLangth = specvm.photo.FileName.Length;
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
                 //有圖→刪除
@@ -191,9 +201,13 @@ namespace MSIT147thGraduationTopic.Controllers
             var merchandiseid = _context.Specs
                 .Where(s => s.SpecId == id).Select(s => s.MerchandiseId).FirstOrDefault();
 
+            using var conn = new SqlConnection(_context.Database.GetConnectionString());
+            string str = "DELETE FROM SpecTags WHERE SpecId=@SpecId";
+            conn.Execute(str, new { SpecId = id });
+
             _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", new { merchandiseid = merchandiseid });
+            return RedirectToAction("Index", new { merchandiseid });
         }
 
         public record TagRecord(string tagName, string specId, int merchandiseId);
@@ -287,7 +301,7 @@ namespace MSIT147thGraduationTopic.Controllers
             //資料表無主索引鍵，無法使用EF新增 => 改使用Dapper語法
             using var conn = new SqlConnection(_context.Database.GetConnectionString());
             string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
-            conn.Execute(str, new { SpecId = SpecId, TagId = TagId });
+            conn.Execute(str, new { SpecId, TagId });
         }
     }
 }

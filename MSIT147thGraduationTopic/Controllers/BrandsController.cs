@@ -28,10 +28,10 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.PageIndex = PageIndex;
 
-            IEnumerable<Brand> datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b
+            IEnumerable<Brand> datas = string.IsNullOrEmpty(txtKeyword) ? from b in _context.Brands select b
                 : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
 
-            datas=datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
+            datas = datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
 
             List<BrandVM> list = new List<BrandVM>();
             foreach (Brand b in datas)
@@ -130,7 +130,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (_context.Merchandises.Where(m => m.BrandId == id).Count() > 0)
-                return RedirectToAction(nameof(Index));            
+                return RedirectToAction(nameof(Index));
 
             if (id == null || _context.Brands == null)
                 return Problem("找不到品牌資料");

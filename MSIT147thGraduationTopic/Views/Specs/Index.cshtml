@@ -208,15 +208,15 @@
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     const currentspecid = $(e.currentTarget).attr("data-specid");
-                    const response = await fetch(`@Url.Content("~/ApiSpec/CheckEvaluationforDeleteSpec/")${currentspecid}`);
-                    const returnResult = await response.text();
-                    const hasEvaluation = JSON.parse(returnResult);
+                    const responseDataLink = await fetch(`@Url.Content("~/ApiSpec/CheckDataLinkforDeleteSpec/")${currentspecid}`);
+                    const returnDataLinkResult = await responseDataLink.text();
+                    const hasDataLink = JSON.parse(returnDataLinkResult);
 
-                    if (hasEvaluation) {
+                    if (hasDataLink) {
                         Swal.fire({
                             icon: 'error',
                             title: '刪除失敗',
-                            text: '規格尚有評論資料！',
+                            text: '規格尚與其他資料連結，無法刪除！',
                             allowOutsideClick: false
                         })
                     }
@@ -226,7 +226,7 @@
                             icon: 'success',
                             title: '刪除成功！',
                             showConfirmButton: false,
-                            timer: 1500,
+                            timer: 800,
                             allowOutsideClick: false
                         }).then(() => {
                             window.location.href = `/Specs/Delete/${currentspecid}`;
@@ -349,7 +349,7 @@
                             icon: 'success',
                             title: '刪除成功！',
                             showConfirmButton: false,
-                            timer: 800
+                            timer: 600
                         }).then(async () => {
                             const response = await fetch(`@Url.Content("~/Specs/DeleteTag")`, {
                                 body: JSON.stringify({ 'specId': currentSpecId, 'tagId': currenttagid, 'merchandiseId': merchandiseid }),

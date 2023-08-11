@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(string txtKeyword)
         {
-            IEnumerable<Category> datas = (string.IsNullOrEmpty(txtKeyword)) ? from c in _context.Categories select c
+            IEnumerable<Category> datas = string.IsNullOrEmpty(txtKeyword) ? from c in _context.Categories select c
                 : _context.Categories.Where(c => c.CategoryName.Contains(txtKeyword));
 
             List<CategoryVM> list = new List<CategoryVM>();
@@ -154,7 +154,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         private bool CategoryExists(int id)
         {
-          return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
+            return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
         }
     }
 }
