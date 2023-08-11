@@ -17,7 +17,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult Index(string txtKeyword = "", int searchCondition = 1, int displayorder = 0, 
                                     int pageSize = 20, int PageIndex = 1, int sideCategoryId = 0, 
-                                    int? minPrice = null, int? maxPrice = null) //todo 使用tag篩選 , int? tag
+                                    int? minPrice = null, int? maxPrice = null, int tagId = 0)
         {
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
@@ -27,7 +27,8 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.sideCategoryId = sideCategoryId;
             ViewBag.minPrice = minPrice;
             ViewBag.maxPrice = maxPrice;
-                        
+            ViewBag.tagId = tagId;
+
             return View();
         }
 

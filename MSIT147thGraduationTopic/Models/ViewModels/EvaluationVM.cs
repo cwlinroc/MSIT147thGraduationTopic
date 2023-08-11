@@ -24,6 +24,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
 
         public class Comments //要回傳的資料
         {
+            public int EvaluationId { get; set; }
             public int MerchandiseId { get; set; }
             public string MerchandiseName { get; set; }
             public int SpecId { get; set; }

@@ -4,13 +4,14 @@ using System.Data;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Merchandise
 {
     public class MerchandisesController : Controller
     {
@@ -24,6 +25,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1)
         {
             ViewBag.txtKeyword = txtKeyword;
@@ -39,18 +41,21 @@ namespace MSIT147thGraduationTopic.Controllers
                     datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
                 if (searchCondition == 2)
                 {
-                    datas = null;
-                    var merchandiseIdFormSpec = _context.Specs
+                    IQueryable<int> merchandiseIdFormSpec = _context.Specs
                         .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
-                    
-                    List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
-                    foreach (int id in merchandiseIdFormSpec)
-                    {
-                        MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
-                        if (unit != null)
-                            templist.Add(unit);
-                    }
-                    datas = templist;
+                    #region 建立新集合承接符合項(占版面&耗資源，有更好的寫法↓)
+                    //datas = null;
+
+                    //List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
+                    //foreach (int id in merchandiseIdFormSpec)
+                    //{
+                    //    MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
+                    //    if (unit != null)
+                    //        templist.Add(unit);
+                    //}
+                    //datas = templist;
+                    #endregion
+                    datas = datas.Where(ms => merchandiseIdFormSpec.Contains(ms.MerchandiseId));
                 }
                 if (searchCondition == 3)
                     datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
@@ -72,7 +77,8 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Create
-        public IActionResult Create()
+        [Authorize(Roles = "管理員,經理,員工")]
+        public IActionResult Create()   //todo Demo產品名稱、品牌、類別需有實際資料後才可決定
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
@@ -85,6 +91,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Create
             ([Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo")]
                 MerchandiseVM merchandisevm)
@@ -94,7 +101,10 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 if (merchandisevm.photo != null)
                 {
-                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
+                    int fileNameLangth = merchandisevm.photo.FileName.Length;                    
+                    merchandisevm.ImageUrl = (fileNameLangth > 100) 
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50) 
+                        : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
 
@@ -108,6 +118,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Edit/5
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Merchandises == null) return NotFound();
@@ -128,8 +139,9 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, 
-            [Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo,deleteImageIndicater")] 
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<IActionResult> Edit(int id,
+            [Bind("MerchandiseId,MerchandiseName,BrandId,CategoryId,Description,ImageUrl,Display,photo,deleteImageIndicater")]
                     MerchandiseVM merchandisevm)
         {
             if (id != merchandisevm.MerchandiseId) return NotFound();
@@ -140,14 +152,21 @@ namespace MSIT147thGraduationTopic.Controllers
                 //沒圖→有圖
                 if (merchandisevm.ImageUrl == null && merchandisevm.photo != null)
                 {
-                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
+                    int fileNameLangth = merchandisevm.photo.FileName.Length;
+                    merchandisevm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
                 //有圖→新圖
                 if (merchandisevm.ImageUrl != null && merchandisevm.photo != null)
                 {
                     deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
-                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
+
+                    int fileNameLangth = merchandisevm.photo.FileName.Length;
+                    merchandisevm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
                 //有圖→刪除
@@ -175,6 +194,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Merchandises/Delete/5
+        [Authorize(Roles = "管理員,經理")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (_context.Specs.Where(s => s.MerchandiseId == id).Count() > 0)
@@ -196,7 +216,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         private bool MerchandiseExists(int id)
         {
-          return (_context.Merchandises?.Any(e => e.MerchandiseId == id)).GetValueOrDefault();
+            return (_context.Merchandises?.Any(e => e.MerchandiseId == id)).GetValueOrDefault();
         }
         private void saveMerchandiseImageToUploads(string ImageUrl, IFormFile photo)
         {

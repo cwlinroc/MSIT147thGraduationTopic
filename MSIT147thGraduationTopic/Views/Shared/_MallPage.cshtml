@@ -76,8 +76,8 @@
                 <div class="collapse navbar-collapse" id="navbarHeaderContent">
                     <div class="nav-item flex-fill mx-5">
                         <form class="d-flex me-3 my-3">
-                            <input class="form-control me-2 flex-fill" type="search" placeholder="請輸入關鍵字" aria-label="Search">
-                            <button class="btn btn-outline-light text-nowrap" type="submit">搜尋</button>
+                            <input id="navbar_input" class="form-control me-2 flex-fill" type="search" placeholder="請輸入關鍵字" aria-label="Search">
+                            <button id="navbar_search" class="btn btn-outline-light text-nowrap" type="submit">搜尋</button>
                         </form>
                     </div>
 
@@ -194,8 +194,8 @@
 
                     <ul class="navbar-nav mb-2 mb-lg-0">
                         <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">優惠專區(未開通)</a></li>
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">狗狗商品(未開通)</a></li>
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">貓咪商品(未開通)</a></li>
+                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?tagId=2")">狗狗商品</a></li>
+                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?tagId=1")">貓咪商品</a></li>
                         <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?sideCategoryId=1")">狗貓零食</a></li>
                         <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?sideCategoryId=6")">玩具用品</a></li>
                         <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?sideCategoryId=9")">外出用具</a></li>

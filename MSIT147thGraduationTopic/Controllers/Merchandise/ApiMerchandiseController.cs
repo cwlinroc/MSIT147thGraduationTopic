@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Merchandise
 {
     public class ApiMerchandiseController : Controller
     {
@@ -22,7 +23,7 @@ namespace MSIT147thGraduationTopic.Controllers
         //}
 
         [HttpGet]
-        public IActionResult GetSearchResultLength(string txtKeyword, int searchCondition = 1) //todo 使用tag篩選 , int? tag
+        public IActionResult GetSearchResultLength(string txtKeyword, int searchCondition = 1)
         {
             IEnumerable<MerchandiseSearch> datas = _context.MerchandiseSearches
                 .Where(ms => ms.Display == true);
@@ -33,18 +34,21 @@ namespace MSIT147thGraduationTopic.Controllers
                     datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
                 if (searchCondition == 2)
                 {
-                    datas = null;
-                    var merchandiseIdFormSpec = _context.Specs
+                    IQueryable<int> merchandiseIdFormSpec = _context.Specs
                         .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
+                    #region 建立新集合承接符合項(占版面&耗資源，有更好的寫法↓)
+                    //datas = null;
 
-                    List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
-                    foreach (int id in merchandiseIdFormSpec)
-                    {
-                        MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
-                        if (unit != null)
-                            templist.Add(unit);
-                    }
-                    datas = templist;
+                    //List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
+                    //foreach (int id in merchandiseIdFormSpec)
+                    //{
+                    //    MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
+                    //    if (unit != null)
+                    //        templist.Add(unit);
+                    //}
+                    //datas = templist;
+                    #endregion
+                    datas = datas.Where(ms => merchandiseIdFormSpec.Contains(ms.MerchandiseId));
                 }
                 if (searchCondition == 3)
                     datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));

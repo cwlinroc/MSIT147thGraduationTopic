@@ -11,7 +11,7 @@
     <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
         <!-- 關鍵字搜尋 -->
         <form class="bd-search position-relative me-auto mx-5" id="keywordsearch">
-            <span class="algolia-autocomplete" style="position: relative; display: inline-block; direction: ltr;">
+            <span class="algolia-autocomplete d-flex" style="position: relative; display: inline-block; direction: ltr;">
                 <!-- 選擇搜尋條件 -->
                 <label class="input-group-text" for="searchCondition">選擇搜尋條件</label>
                 <select class="form-select conditionname" name="searchCondition">
@@ -19,15 +19,15 @@
                     <option value="2">品牌名稱</option>
                     <option value="3">類別名稱</option>
                 </select>
-                @*****************************************待解決會垂直排列的排版問題*****************************************@
                 <!-- 輸入關鍵字 -->
-                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="off" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
+                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="on" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
                 <input type="submit" value="尋找商品" class="btn btn-secondary" />
                 <span class="ds-dropdown-menu" role="listbox" id="algolia-autocomplete-listbox-0" style="position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;">
                     <div class="ds-dataset-1"></div>
                 </span>
             </span>
         </form>
+    </div>
 </nav>
 
 
@@ -45,32 +45,20 @@
                     <div class="navbar-collapse collapse">
                         <ul class="navbar-nav flex-column" id="sublist">
                             <!-- 摺疊選單 for 商品類別 -->
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="#categoryOptions" data-bs-toggle="collapse" aria-expanded="false">商品類別</a>
-                                <ul id="categoryOptions" class="list-unstyled collapse mx-4">
+                            <li>
+                                <div>商品類別</div>
+                                <ul id="categoryOptions" class="mx-4">
                                     <li class="my-1 ">
                                         <a href="#" class="selectCategory" val-category="類別ID">類別名稱</a>
                                     </li>
                                 </ul>
                             </li>
                             <!-- 摺疊選單 for 寵物類型 -->
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="#tagOptions" data-bs-toggle="collapse" aria-expanded="false">寵物類型(未實裝)</a>
-                                <ul id="tagOptions" class="list-unstyled collapse mx-4">
+                            <li>
+                                <div>寵物類型</div>
+                                <ul id="tagOptions" class="mx-4">
                                     <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="0">不限</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="1">貓咪</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="2">狗狗</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="3">鼠寶</a>
-                                    </li>
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-category="4">兔寶</a>
+                                        <a href="#" class="selectTag" val-tag="標籤ID">寵物類別 (商品數)</a>
                                     </li>
                                 </ul>
                             </li>
@@ -138,8 +126,8 @@
                 </div>
             </div>
             <!-- 推薦商品 -->
-            <div style="background-color:red">
-                ---------------------------------------------------------- 推薦商品(未實裝) ----------------------------------------------------------
+            <div>
+                @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)
             </div>
         </div>
     </div>
@@ -147,11 +135,13 @@
 
 @section Scripts{
     @*搜尋功能待改(回傳參數)*@
+    <script src="~/js/recommend/partialview.js"></script>
     <script>
         //給予搜尋初值
         let txtKeyword = "";
         let searchCondition = 1;
         let sideCategoryId = 0;
+        let tagId= 0;
 
         //搜尋條件
         $(".conditionname").on("change", (e) => {
@@ -171,14 +161,13 @@
         //搜尋
         function SearchProducts() {
             window.location.href = `/Mall/Index/?txtKeyword=${txtKeyword}&`
-                + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}`;
+                + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}&tagId=${tagId}`;
         };
 
         //呈現側邊商品類別選項
         $(async () => {
             const CategoryOptions = document.querySelector("#categoryOptions")
-            const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")?txtKeyword=${txtKeyword}&`
-                + `searchCondition=${searchCondition}`);
+            const responseforCategory = await fetch(`@Url.Content("~/ApiMall/GenerateSideCategoryOptions")`);
             const returnCategoryBag = await responseforCategory.text();
             const CategoryResult = JSON.parse(returnCategoryBag);
 
@@ -190,6 +179,25 @@
 
             $(".selectCategory").on("click", (e) => {
                 sideCategoryId = $(e.currentTarget).attr("val-category");
+                SearchProducts();
+            })
+        })
+
+        //呈現側邊寵物類別選項
+        $(async () => {
+            const TagOptions = document.querySelector("#tagOptions")
+            const responseforTag = await fetch(`@Url.Content("~/ApiMall/GenerateSideTagOptions")`);
+            const returnTagBag = await responseforTag.text();
+            const TagResult = JSON.parse(returnTagBag);
+
+            var tagList = TagResult.map(tag => {
+                const { tagId, tagName } = tag;
+                return (`<li class="my-1 "><a href="#" class="selectTag" val-tag="${tagId}">${tagName}</a></li>`)
+            })
+            TagOptions.innerHTML = tagList.join("");
+
+            $(".selectTag").on("click", (e) => {
+                tagId = $(e.currentTarget).attr("val-tag");
                 SearchProducts();
             })
         })
@@ -286,8 +294,7 @@
                 loginModal.show();
             }
             if (ROLE == "會員") {  //傳送資料
-                const specIdforCart = $(e.currentTarget).attr("data-specid");
-                const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${specIdforCart}&Quantity=${purchaseAmount}`, {
+                const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${currentSpecid}&Quantity=${purchaseAmount}`, {
                     method: "POST"
                 });
                 const returnJsonBag = await responseCart.text();
@@ -298,7 +305,7 @@
                         position: 'center',
                         title: '成功加入購物車！',
                         showConfirmButton: false,
-                        timer: 1000,
+                        timer: 500,
                         allowOutsideClick: false
                     })
                 }
@@ -307,7 +314,7 @@
                         position: 'center',
                         title: '加入購物車失敗，請稍後再試！',
                         showConfirmButton: false,
-                        timer: 1500,
+                        timer: 1000,
                     })
                 }
             }
@@ -316,5 +323,10 @@
 }
 
 @section Styles{
-
+    <link rel="stylesheet" href="~/css/recommend/partialview.css" />    
+    <style>
+        li {
+            list-style: none;
+        }
+    </style>
 }

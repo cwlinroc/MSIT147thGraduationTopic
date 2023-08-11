@@ -22,12 +22,12 @@
             {
                 <div class="d-flex mt-3 ">
                     <div class="ms-auto d-flex flex-column justify-content-end align-items-end ">
-                        <h5 id="OrderId">訂單編號:@(Model.FirstOrDefault().OrderId)</h5>
+                        <h5 id="OrderId">訂單編號:@ViewBag.OrderId</h5>
                     </div>
                 </div>
 
                 <form id="evaluationForm" method="post" action=@(isUpdate?"/Evaluation/EIndex":"/Evaluation/EIndex" )>
-                    <input name="id" value="@(Model.FirstOrDefault().OrderId)" hidden>
+                    <input name="id" value="@ViewBag.OrderId" @*@(Model.FirstOrDefault().OrderId)*@ hidden>
                     @for (int i = 0; i < Model.Count(); i++)
                     {
                         var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
@@ -47,11 +47,11 @@
                                 <div class="d-flex ms-auto float-end">
                                     <div id="score_@(i)" name="Score" class="float-end mx-1 mt-3" itype="starDiv">
                                         <input id="inputscore_@(i)" name="comments[@(i)].Score" hidden>
-                                        <img id="stsr@(i)_1" src=@(item.Score>=1?"/images/一星.png":"/images/空星.png") style="height:40px" />
-                                        <img id="stsr@(i)_2" src=@(item.Score>=2?"/images/二星.png":"/images/空星.png") style="height:40px" />
-                                        <img id="stsr@(i)_3" src=@(item.Score>=3?"/images/三星.png":"/images/空星.png") style="height:40px" />
-                                        <img id="stsr@(i)_4" src=@(item.Score>=4?"/images/四星.png":"/images/空星.png") style="height:40px" />
-                                        <img id="stsr@(i)_5" src=@(item.Score==5?"/images/五星.png":"/images/空星.png") style="height:40px" />   @*//@(item.StarImageUrl)*@
+                                        <img id="star@(i)_1" src=@(item.Score>=1?"/images/一星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="star@(i)_2" src=@(item.Score>=2?"/images/二星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="star@(i)_3" src=@(item.Score>=3?"/images/三星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="star@(i)_4" src=@(item.Score>=4?"/images/四星.png":"/images/空星.png") style="height:40px" />
+                                        <img id="star@(i)_5" src=@(item.Score==5?"/images/五星.png":"/images/空星.png") style="height:40px" />   
                                     </div>
                                 </div>
                             </div>
@@ -63,9 +63,12 @@
                     }
                     <div>
                         @*<button id="send" @*type="submit"*@ @*class="btn btn-primary float-end mt-2 mx-1">@(isUpdate ?"修改":"送出")</button>*@
+                        @*<button id="return" class="btn btn-primary float-end mt-2 mx-1">返回</button> 使用這個會導致生成新評論區塊*@
+                        <input value="返回" class="btn btn-primary float-end mt-2 mx-1" type="button" onclick="window.location.href = '/Member/ShoppingHistory'">
                         <input id="send" type="button" class="btn btn-primary float-end mt-2 mx-1" value="@(isUpdate ? "修改" : "送出")">
                     </div>
                 </form>
+                
 
             }
             else
@@ -144,7 +147,8 @@
         $("#send").click(function () {
             //console.log($("[id^='inputscore_']").length);
             let isAllHaveScore = true;
-            $("[id^='inputscore_']").each(function (index, score) {                
+            $("[id^='inputscore_']").each(function (index, score) {
+                console.log(score.value)
                 if (score.value == '') {
                     isAllHaveScore = false;
                     return false;
@@ -156,6 +160,9 @@
                 Swal.fire('還有商品未評分呦');
             }
         })
+        //$("#return").click(function () {
+        //    href = "/Member/ShoppingHistory"
+        //})
 
     </script>
 }

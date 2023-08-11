@@ -1612,6 +1612,10 @@ progress {
     flex: 0 0 auto;
     width: 16.6666666667%;
   }
+  .row-cols-xxl-8 > * {
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
   .col-xxl-auto {
     flex: 0 0 auto;
     width: auto;

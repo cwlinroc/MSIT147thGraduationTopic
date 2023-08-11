@@ -197,7 +197,7 @@
                     icon: 'success',
                     title: '商品資料修改成功！',
                     showConfirmButton: false,
-                    timer: 1000,
+                    timer: 800,
                     allowOutsideClick: false
                 }).then(() => {
                     const forminput = document.querySelector("#forminput");
@@ -209,7 +209,9 @@
     @*計算商品描述字數*@
     <script>
         $("#countdiscription").text($("#descriptionarea").val().length);
-        $("#descriptionarea").on("keyup", () => {
+
+        const descriptionarea = document.querySelector("#descriptionarea")
+        descriptionarea.addEventListener("keyup", () => {
             $("#countdiscription").text($("#descriptionarea").val().length);
         })
     </script>

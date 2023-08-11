@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +23,10 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Categories
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(string txtKeyword)
         {
-            IEnumerable<Category> datas = (string.IsNullOrEmpty(txtKeyword)) ? from c in _context.Categories select c
+            IEnumerable<Category> datas = string.IsNullOrEmpty(txtKeyword) ? from c in _context.Categories select c
                 : _context.Categories.Where(c => c.CategoryName.Contains(txtKeyword));
 
             List<CategoryVM> list = new List<CategoryVM>();
@@ -38,6 +41,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Categories/Create
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Create()
         {
             CategoryVM categoryvm = new CategoryVM();
@@ -49,6 +53,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] CategoryVM categoryvm)
         {
             if (ModelState.IsValid)
@@ -61,6 +66,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Categories/Edit/5
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Categories == null)
@@ -85,6 +91,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName")] CategoryVM categoryvm)
         {
             if (id != categoryvm.CategoryId)
@@ -116,6 +123,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Categories/Delete/5
+        [Authorize(Roles = "管理員,經理")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (_context.Merchandises.Where(m => m.CategoryId == id).Count() > 0)
@@ -146,7 +154,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         private bool CategoryExists(int id)
         {
-          return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
+            return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
         }
     }
 }

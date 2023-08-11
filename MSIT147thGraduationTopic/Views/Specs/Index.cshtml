@@ -147,6 +147,9 @@
                                 <div>
                                     <button type="button" class="btn btn-primary me-2" id="btnAddTag">新增標籤</button>
                                 </div>
+                                <div class="my-3" id="fastAddArea">
+                                    
+                                </div>
                             </form>
                             <hr />
                             <div class="row" id="currentTag">
@@ -161,7 +164,7 @@
 </div>
 
 @section Scripts {
-    @*產生商品資料*@
+    <!-- 產生商品資料 -->
     <script>
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
@@ -188,7 +191,7 @@
             })
         })
     </script>
-    @*確認刪除*@
+    <!-- 確認刪除 -->
     <script>
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除規格嗎？')) return;
@@ -202,63 +205,131 @@
                 confirmButtonText: '確定刪除',
                 cancelButtonText: '取消！！',
                 allowOutsideClick: false
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
                     const currentspecid = $(e.currentTarget).attr("data-specid");
+                    const responseDataLink = await fetch(`@Url.Content("~/ApiSpec/CheckDataLinkforDeleteSpec/")${currentspecid}`);
+                    const returnDataLinkResult = await responseDataLink.text();
+                    const hasDataLink = JSON.parse(returnDataLinkResult);
 
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: '刪除成功！',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        allowOutsideClick: false
-                    }).then(() => {
-                        window.location.href = `/Specs/Delete/${currentspecid}`;
-                    })
+                    if (hasDataLink) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '刪除失敗',
+                            text: '規格尚與其他資料連結，無法刪除！',
+                            allowOutsideClick: false
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: '刪除成功！',
+                            showConfirmButton: false,
+                            timer: 800,
+                            allowOutsideClick: false
+                        }).then(() => {
+                            window.location.href = `/Specs/Delete/${currentspecid}`;
+                        })
+                    }                    
                 }
             })
         })
     </script>
-    @*管理規格*@
+    <!-- 管理標籤 -->
     <script>
         const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
+        let currentSpecId;
 
         $(".fortag").click(async (e) => {
-            const currentSpecId = $(e.currentTarget).attr("data-specid");
+            currentSpecId = $(e.currentTarget).attr("data-specid");
             $("#TagName").val("");
             SpecTagModal.show();
+            ShowCurrentTag(currentSpecId);
 
-            //陳列既有tag
+            //設定AutoComplete選項
+            const response2 = await fetch(`@Url.Content("~/ApiTag/AutoCompleteOptions")`);
+            const jsonTagList = await response2.text();
+            const TagList = JSON.parse(jsonTagList);
+
+            let optionTags = [];
+            TagList.forEach(tags => {
+                optionTags.push(`${tags}`);
+            });
+
+            $("#TagName").autocomplete({
+                source: optionTags, //因排版問題，無法展示候選字列表
+                minLength: 1
+            });
+        })
+
+        //新增tag
+        $("#btnAddTag").on("click", async (e) => {
+            e.preventDefault();
+            const tagName = $("#TagName").val();
+            const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
+                body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', },
+            })
+            $("#TagName").val("");
+            //更新頁面以顯示變更
+            ShowCurrentTag(currentSpecId);
+            canEdit = true
+        })
+        //使用Enter送出
+        $("#TagName").on("keypress", (e) => {
+            var keyPressed = e.keyCode || e.which;
+            if (keyPressed === 13) {
+                e.preventDefault();
+            }
+        })
+        //使用布林值作為指標，避免短時間內重複送出來不及驗證
+        let canEdit = true;
+        $("#TagName").on("keyup", (e) => {
+            var keyPressed = e.keyCode || e.which;
+            if (keyPressed === 13) {
+                if (!canEdit) return
+                canEdit = false;
+                e.preventDefault();
+                $("#btnAddTag").click();
+            }
+        })
+
+        //產生快速標籤按鈕
+        $(() => {
+            const fastAddArea = document.querySelector("#fastAddArea");
+            fastAddArea.innerHTML += `<span>快速標籤：</span>`;
+            const TagNames = ["", "貓用", "狗用", "鼠用", "兔用"];
+            for (let i = 1; i <= 4; i++) {
+                fastAddArea.innerHTML += `<button class="btn btn-outline-secondary mx-1 fastAdd">${TagNames[i]}</button>`
+            }
+            $(".fastAdd").on("click", async (e) => {
+                e.preventDefault();
+                const tagName = $(e.currentTarget).text();
+                const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
+                    body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', },
+                })
+                ShowCurrentTag(currentSpecId);
+            })
+        })
+        
+        //陳列既有tag
+        async function ShowCurrentTag(currentSpecId) {
             const currentTag = document.querySelector("#currentTag");
             const response = await fetch(`@Url.Content("~/ApiTag/CurrentTags/")${currentSpecId}`);
             const NameList = await response.text();
             const Names = JSON.parse(NameList);
             var names = Names.map(names => {
                 const { specId, tagId, tagName } = names;
-                return (`
-                    <td>${tagName}</td>\
-                    <td>\
-                        <button class="btn btn-danger deletetag" data-specid="${specId}" data-tagid="${tagId}">x</button>\
-                    </td>`)
+                return (`<span class="my-2">${tagName}<a class="deletetag" data-specid="${specId}" data-tagid="${tagId}" href="#">&#9746;</a></span>`)
             });
             currentTag.innerHTML = `<tr>` + names.join("") + `</tr>`;
 
-            //新增tag
-            $("#btnAddTag").on("click", async () => {
-                const tagName = $("#TagName").val();
-                const response = await fetch(`@Url.Content("~/Specs/AddTag")`, {
-                    body: JSON.stringify({ 'tagName': tagName, 'specId': currentSpecId, 'merchandiseId': merchandiseid }),
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', },
-                })
-
-                //更新頁面已顯示變更
-                window.location.reload();
-            })
-            
-            //刪除tag
+            //啟用刪除tag功能
             $(".deletetag").on("click", (e) => {
                 Swal.fire({
                     title: '確定刪除這個標籤嗎？',
@@ -271,38 +342,26 @@
                     allowOutsideClick: false
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        const currentSpecId = $(e.currentTarget).attr("data-specid");
                         const currenttagid = $(e.currentTarget).attr("data-tagid");
-
                         Swal.fire({
                             position: 'center',
                             icon: 'success',
                             title: '刪除成功！',
                             showConfirmButton: false,
-                            timer: 800
-                        }).then(() => {
-                            window.location.href = `/Specs/DeleteTag/?specId=${currentSpecId}&tagId=${currenttagid}&merchandiseId=${merchandiseid}`;
+                            timer: 600
+                        }).then(async () => {
+                            const response = await fetch(`@Url.Content("~/Specs/DeleteTag")`, {
+                                body: JSON.stringify({ 'specId': currentSpecId, 'tagId': currenttagid, 'merchandiseId': merchandiseid }),
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json', },
+                            })
+                            ShowCurrentTag(currentSpecId);
                         })
                     }
                 })
             })
-
-            //設定AutoComplete選項
-            const response2 = await fetch(`@Url.Content("~/ApiTag/AutoCompleteOptions")`);
-            const jsonTagList = await response2.text();
-            const TagList = JSON.parse(jsonTagList);
-
-            let optionTags = [];
-            TagList.forEach(tags => {
-                optionTags.push(`${tags}`);
-            });
-            console.log(optionTags);
-
-            $("#TagName").autocomplete({
-                //source: ["貓用", "狗用", "鼠用", "兔用"],
-                source: optionTags,
-                minLength: 1
-            },{});
-        })
+        }
     </script>
 }
 

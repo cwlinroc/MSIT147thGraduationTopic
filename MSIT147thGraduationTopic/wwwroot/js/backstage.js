@@ -41,8 +41,8 @@ async function confirmWithPassword() {
     const { value: password } = await Swal.fire({
         title: '請輸入密碼確認',
         input: 'password',
-        inputLabel: 'Your password',
-        inputValue: "",
+        inputLabel: '因為是demo所以預先輸入密碼(demoAdmin99)',
+        inputValue: "demoAdmin99",
         showCancelButton: true,
         confirmButtonText: '確認',
         cancelButtonText: `離開`,
