@@ -83,8 +83,18 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.CategoryName)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
+                            <td style="max-width:300px;">
+                                @{
+                                    string? thisDescription = item.Description;
+                                    if (thisDescription != null)
+                                    {
+                                        if (thisDescription.Length > 40)
+                                        {
+                                            thisDescription = thisDescription.Substring(0, 39) + "...";
+                                        }
+                                    }
+                                }
+                                @thisDescription
                             </td>
                             <td>
                                 @{

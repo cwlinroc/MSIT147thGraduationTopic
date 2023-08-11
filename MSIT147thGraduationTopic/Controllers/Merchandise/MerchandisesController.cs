@@ -78,7 +78,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
         // GET: Merchandises/Create
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Create()   //todo Demo產品名稱、品牌、類別尚未決定
+        public IActionResult Create()   //todo Demo產品名稱、品牌、類別需有實際資料後才可決定
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
@@ -101,7 +101,10 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             {
                 if (merchandisevm.photo != null)
                 {
-                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(0,50);
+                    int fileNameLangth = merchandisevm.photo.FileName.Length;                    
+                    merchandisevm.ImageUrl = (fileNameLangth > 100) 
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50) 
+                        : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
 
@@ -149,14 +152,21 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 //沒圖→有圖
                 if (merchandisevm.ImageUrl == null && merchandisevm.photo != null)
                 {
-                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(0, 50);
+                    int fileNameLangth = merchandisevm.photo.FileName.Length;
+                    merchandisevm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
                 //有圖→新圖
                 if (merchandisevm.ImageUrl != null && merchandisevm.photo != null)
                 {
                     deleteMerchandiseImageFromUploads(merchandisevm.ImageUrl);
-                    merchandisevm.ImageUrl = Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(0, 50);
+
+                    int fileNameLangth = merchandisevm.photo.FileName.Length;
+                    merchandisevm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
                 //有圖→刪除

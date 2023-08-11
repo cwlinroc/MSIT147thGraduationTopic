@@ -11,7 +11,7 @@
     <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
         <!-- 關鍵字搜尋 -->
         <form class="bd-search position-relative me-auto mx-5" id="keywordsearch">
-            <span class="algolia-autocomplete" style="position: relative; display: inline-block; direction: ltr;">
+            <span class="algolia-autocomplete d-flex" style="position: relative; display: inline-block; direction: ltr;">
                 <!-- 選擇搜尋條件 -->
                 <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
                 <select class="form-select conditionname" name="selectSearchCondition">
@@ -19,9 +19,8 @@
                     <option value="2">品牌名稱</option>
                     <option value="3">類別名稱</option>
                 </select>
-                @*****************************************待解決會垂直排列的排版問題*****************************************@
                 <!-- 輸入關鍵字 -->
-                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="off" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
+                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="on" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
                 <input type="submit" value="尋找商品" class="btn btn-secondary" />
                 <span class="ds-dropdown-menu" role="listbox" id="algolia-autocomplete-listbox-0" style="position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;">
                     <div class="ds-dataset-1"></div>

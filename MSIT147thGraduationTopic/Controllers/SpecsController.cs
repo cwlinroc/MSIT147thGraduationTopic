@@ -81,7 +81,10 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 if (specvm.photo != null)
                 {
-                    specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(0, 50);
+                    int fileNameLangth = specvm.photo.FileName.Length;
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
 
@@ -136,14 +139,21 @@ namespace MSIT147thGraduationTopic.Controllers
                 //沒圖→有圖
                 if (specvm.ImageUrl == null && specvm.photo != null)
                 {
-                    specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(0, 50);
+                    int fileNameLangth = specvm.photo.FileName.Length;
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
                 //有圖→新圖
                 if (specvm.ImageUrl != null && specvm.photo != null)
                 {
                     deleteSpecImageFromUploads(specvm.ImageUrl);
-                    specvm.ImageUrl = Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(0, 50);
+
+                    int fileNameLangth = specvm.photo.FileName.Length;
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
                 //有圖→刪除
@@ -190,6 +200,10 @@ namespace MSIT147thGraduationTopic.Controllers
 
             var merchandiseid = _context.Specs
                 .Where(s => s.SpecId == id).Select(s => s.MerchandiseId).FirstOrDefault();
+
+            using var conn = new SqlConnection(_context.Database.GetConnectionString());
+            string str = "DELETE FROM SpecTags WHERE SpecId=@SpecId";
+            conn.Execute(str, new { SpecId = id });
 
             _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
