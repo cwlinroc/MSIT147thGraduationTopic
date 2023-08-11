@@ -23,30 +23,30 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult EBIndex()
-        {           
-            //if (keyword == null)
-                return View(new List<EvaluationVM>());
-            //var query = PerformSqlQuery(pageSize, pageNo, keyword);
+        public IActionResult EBIndex(string keyword, int pageSize, int pageNo,int totalCount)
+        {
+            pageSize = 5;
+            if (keyword == null)
+                return View();
 
-            //// 獲取帶出資料總記錄數
-            //var totalCount = query.Count();
-            //// 傳遞查詢結果和總記錄數到View中
-            //ViewBag.keyword = keyword;
-            //ViewBag.PageNo = pageNo;
-            //ViewBag.PageSize = pageSize;
-            //ViewBag.TotalCount = totalCount;
-            //ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
-            
+            var query = PerformSqlQuery(pageSize, pageNo, keyword);
 
-            //return View(query.Select(e => new EvaluationVM
-            //{
-            //    EvaluationId = e.EvaluationId,
-            //    OrderId = e.OrderId,
-            //    MerchandiseName = e.MerchandiseName,
-            //    Score = e.Score,
-            //    Comment = e.Comment,
-            //}));           
+            // 獲取帶出資料總記錄數
+            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
+            ViewBag.TotalCount = totalCount;            
+            // 傳遞查詢結果和總記錄數到View中
+            ViewBag.keyword = keyword;
+            ViewBag.PageNo = pageNo;
+            ViewBag.PageSize = pageSize;
+
+            return View(query.Select(e => new EvaluationVM
+            {
+                EvaluationId = e.EvaluationId,
+                OrderId = e.OrderId,
+                MerchandiseName = e.MerchandiseName,
+                Score = e.Score,
+                Comment = e.Comment,
+            }));
         }
         
         [HttpPost]
@@ -54,6 +54,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             var pageSize = 5; 
             var pageNo = 1;
+            keyword = !string.IsNullOrEmpty(keyword) ? keyword : "NULL";
             var model = from e in _context.EvaluationInputs
                         where e.OrderId.ToString().Contains(keyword) ||
                               e.MerchandiseName.Contains(keyword) ||
@@ -78,31 +79,34 @@ namespace MSIT147thGraduationTopic.Controllers
             ////                Score = x.Score,
             ////                Comment = x.Comment,
             ////            }).ToList();
-            
-            //var query = PerformSqlQuery(pageSize, pageNo, keyword);
+
+            var query = PerformSqlQuery(pageSize, pageNo, keyword);
 
             // 獲取帶出資料總記錄數
-            var totalCount = model.Count();
-            
+            //var totalCount = model.Count();
+            var totalCount = _context.EvaluationInputs
+                .Where(x=> x.OrderId.ToString().Contains(keyword)|| x.MerchandiseName.Contains(keyword)||x.Comment.Contains(keyword) )
+                .Count();
+
             // 傳遞查詢結果和總記錄數到View中
             ViewBag.keyword = keyword;
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalCount = totalCount;
-            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
+            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize); 
+            
 
             // 當頁數據
-            var currentPageData = model.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+            var currentPageData = query.Skip((pageNo-1) * pageSize).Take(pageSize).ToList();
 
-            //return View(currentPageData.Select(e => new EvaluationVM
-            //{
-            //    EvaluationId = e.EvaluationId,
-            //    OrderId = e.OrderId,
-            //    MerchandiseName = e.MerchandiseName,
-            //    Score = e.Score,
-            //    Comment = e.Comment,
-            //}));
-            return View(currentPageData);
+            return View(currentPageData.Select(e => new EvaluationVM
+            {
+                EvaluationId = e.EvaluationId,
+                OrderId = e.OrderId,
+                MerchandiseName = e.MerchandiseName,
+                Score = e.Score,
+                Comment = e.Comment,
+            }));
         }
 
         [HttpPost]
@@ -123,7 +127,7 @@ namespace MSIT147thGraduationTopic.Controllers
                         DECLARE @pageSize INT, @pageNo INT, @keyword NVARCHAR(255);
                         SET @pageSize = @p0;
                         SET @pageNo = @p1;
-                        SET @keyword = {(!string.IsNullOrEmpty(keyword) ? keyword : "NULL")};
+                        SET @keyword = @p2;
                         ;WITH T                               
                         AS (                            
                                 SELECT *

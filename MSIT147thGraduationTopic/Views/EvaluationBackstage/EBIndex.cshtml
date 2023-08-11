@@ -71,37 +71,34 @@
                 </tbody>
             </table>
             <!-- 顯示分頁控制元件 -->
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo - 1)>0?ViewBag.PageNo - 1:ViewBag.PageNo })" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    @*<div class="pagination ">*@
-                        @if (ViewBag.TotalPage == 1)
+            @if (ViewBag.TotalPage < 1 || ViewBag.Keyword==null)
+            {
+                <nav></nav>
+            }
+            else
+            {
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo - 1) > 0 ? ViewBag.PageNo - 1 : ViewBag.PageNo, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount  })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>                        
+                        @for (int i = 1; i <= ViewBag.TotalPage; i++)
                         {
-                            <li class="page-item @(1 == ViewBag.PageNo ? "active" : "")">
-                                <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = 1 })">1</a>
+                            <li class="page-item @(i == ViewBag.PageNo ? "active" : "")">
+                                @*若ViewBag.PageNo為當頁,把active加上*@
+                                <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = i, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })">@i</a>
                             </li>
-                        }
-                        else
-                        {
-                            @for (int i = 1; i <= ViewBag.TotalPage; i++)
-                            {
-                                <li class="page-item @(i == ViewBag.PageNo ? "active" : "")"> @*若ViewBag.PageNo為當頁,把active加上*@                                   
-                                    <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = i, keyword = ViewBag.Keyword  })">@i</a>
-                                </li>
-                            }
-                        }
-                    @*</div>*@
-                    <li class="page-item">
-                        <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) <= ViewBag.TotalPage ?ViewBag.PageNo + 1:ViewBag.PageNo })" aria-label="Next">                        
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                        }                        
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) <= ViewBag.TotalPage ?ViewBag.PageNo + 1:ViewBag.PageNo , keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }            
         </div>
         <div class="col-1"></div>
     </div>
