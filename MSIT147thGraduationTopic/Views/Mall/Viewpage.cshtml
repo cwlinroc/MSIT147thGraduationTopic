@@ -46,18 +46,18 @@
                     <div class="navbar-collapse collapse">
                         <ul class="navbar-nav flex-column" id="sublist">
                             <!-- 摺疊選單 for 商品類別 -->
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="#categoryOptions" data-bs-toggle="collapse" aria-expanded="false">商品類別</a>
-                                <ul id="categoryOptions" class="list-unstyled collapse mx-4">
+                            <li>
+                                <div>商品類別</div>
+                                <ul id="categoryOptions" class="mx-4">
                                     <li class="my-1 ">
                                         <a href="#" class="selectCategory" val-category="類別ID">類別名稱</a>
                                     </li>
                                 </ul>
                             </li>
                             <!-- 摺疊選單 for 寵物類型 -->
-                            <li class="nav-item">
-                                <a class="nav-link collapsed" href="#tagOptions" data-bs-toggle="collapse" aria-expanded="false">寵物類型</a>
-                                <ul id="tagOptions" class="list-unstyled collapse mx-4">
+                            <li>
+                                <div>寵物類型</div>
+                                <ul id="tagOptions" class="mx-4">
                                     <li class="my-1">
                                         <a href="#" class="selectTag" val-tag="標籤ID">寵物類別 (商品數)</a>
                                     </li>
@@ -294,8 +294,7 @@
                 loginModal.show();
             }
             if (ROLE == "會員") {  //傳送資料
-                const specIdforCart = $(e.currentTarget).attr("data-specid");
-                const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${specIdforCart}&Quantity=${purchaseAmount}`, {
+                const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${currentSpecid}&Quantity=${purchaseAmount}`, {
                     method: "POST"
                 });
                 const returnJsonBag = await responseCart.text();
@@ -306,7 +305,7 @@
                         position: 'center',
                         title: '成功加入購物車！',
                         showConfirmButton: false,
-                        timer: 1000,
+                        timer: 500,
                         allowOutsideClick: false
                     })
                 }
@@ -315,7 +314,7 @@
                         position: 'center',
                         title: '加入購物車失敗，請稍後再試！',
                         showConfirmButton: false,
-                        timer: 1500,
+                        timer: 1000,
                     })
                 }
             }
@@ -324,5 +323,9 @@
 }
 
 @section Styles{
-
+    <style>
+        li {
+            list-style: none;
+        }
+    </style>
 }

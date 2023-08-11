@@ -209,25 +209,25 @@ namespace MSIT147thGraduationTopic.Controllers
             if (ModelState.IsValid)
             {
                 //驗證購物車內是否已有規格
-                IEnumerable<CartItem> thisCartItem = _context.CartItems
+                IEnumerable<CartItem> cartItem = _context.CartItems
                             .Where(ci => ci.MemberId == memberId).Where(ci => ci.SpecId == SpecId);
+                bool cartHasItem = cartItem.Any();
+
                 //有 => 更新
-                if (thisCartItem.Any())
+                if (cartHasItem)
                 {
-                    int thisQuantity = thisCartItem.Select(ci => ci.Quantity).Sum();
-                    
-                    CartItem ci = new CartItem()
-                    {
-                        MemberId = memberId,
-                        SpecId = SpecId,
-                        Quantity = thisQuantity + Quantity
-                    };
-                    
-                    _context.Update(ci);
+                    int Amount = _context.Specs.Where(s =>  s.SpecId == SpecId).Select(s => s.Amount).First();
+
+                    CartItem thisCartItem = cartItem.First();
+                    int thisQuantity = thisCartItem.Quantity;
+                    //驗證不可超過庫存數
+                    thisCartItem.Quantity = (thisQuantity + Quantity > Amount) ? Amount : thisQuantity + Quantity;
+
+                    _context.Update(thisCartItem);
                 }
 
                 //無 => 新增
-                if (!thisCartItem.Any())
+                if (!cartHasItem)
                 {
                     CartItem ci = new CartItem()
                     {
