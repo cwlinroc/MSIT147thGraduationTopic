@@ -57,5 +57,11 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return Json(package);
         }
+        public IActionResult CheckEvaluationforDeleteSpec(int id)
+        {
+            var exists = _context.Evaluations.Any(e => e.SpecId == id);
+
+            return Json(exists);
+        }
     }
 }

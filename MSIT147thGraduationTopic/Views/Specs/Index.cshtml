@@ -205,20 +205,33 @@
                 confirmButtonText: '確定刪除',
                 cancelButtonText: '取消！！',
                 allowOutsideClick: false
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
                     const currentspecid = $(e.currentTarget).attr("data-specid");
+                    const response = await fetch(`@Url.Content("~/ApiSpec/CheckEvaluationforDeleteSpec/")${currentspecid}`);
+                    const returnResult = await response.text();
+                    const hasEvaluation = JSON.parse(returnResult);
 
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: '刪除成功！',
-                        showConfirmButton: false,
-                        timer: 1500,
-                        allowOutsideClick: false
-                    }).then(() => {
-                        window.location.href = `/Specs/Delete/${currentspecid}`;
-                    })
+                    if (hasEvaluation) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '刪除失敗',
+                            text: '規格尚有評論資料！',
+                            allowOutsideClick: false
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: '刪除成功！',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            allowOutsideClick: false
+                        }).then(() => {
+                            window.location.href = `/Specs/Delete/${currentspecid}`;
+                        })
+                    }                    
                 }
             })
         })
@@ -290,7 +303,7 @@
             fastAddArea.innerHTML += `<span>快速標籤：</span>`;
             const TagNames = ["", "貓用", "狗用", "鼠用", "兔用"];
             for (let i = 1; i <= 4; i++) {
-                fastAddArea.innerHTML += `<button class="btn btn-outline-secondary fastAdd"> ${TagNames[i]} </button>`
+                fastAddArea.innerHTML += `<button class="btn btn-outline-secondary mx-1 fastAdd">${TagNames[i]}</button>`
             }
             $(".fastAdd").on("click", async (e) => {
                 e.preventDefault();
