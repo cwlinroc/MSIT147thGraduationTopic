@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
@@ -12,7 +11,6 @@ using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using System.ComponentModel.DataAnnotations;
-using MSIT147thGraduationTopic.Models.Infra.Repositories;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -22,8 +20,9 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         private readonly GraduationTopicContext _context;
         private readonly MemberService _service;
-        private readonly ShoppingHistoryService _shService;
-        private readonly IWebHostEnvironment _environment;
+        private readonly ShoppingHistoryService _shService;        
+        private readonly IWebHostEnvironment _environment;        
+
         private readonly string[] _employeeRoles;
 
         public ApiMemberController(GraduationTopicContext context
@@ -32,7 +31,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
             _environment = environment;
             _service = new MemberService(context, environment);
-            _shService = new ShoppingHistoryService(context, environment);            
+            _shService = new ShoppingHistoryService(context, environment);
 
             _employeeRoles = options.Value.EmployeeRoles!;
         }
@@ -48,12 +47,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             return _service.GetMemberByNameOrAccount(query).ToList();
         }
-
-        //[HttpGet("{id}")]
-        //public ActionResult<List<MemberVM>> GetMemberById(int id)
-        //{
-        //    return _service.GetMemberById(id).ToList();
-        //}
+        
 
         [HttpGet("ShoppingHistory")]
         public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId()
@@ -79,7 +73,6 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 throw;
             }
-            
         }
 
         [HttpPut("{id}")]
@@ -90,10 +83,10 @@ namespace MSIT147thGraduationTopic.Controllers
                 var memberId = _service.EditMember(dto, id, avatar);
                 return memberId;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
-            }           
+            }
         }
 
         //[HttpPut("{account}")]
@@ -118,11 +111,11 @@ namespace MSIT147thGraduationTopic.Controllers
                 var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
                 return memberId;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
-            }            
-        }        
+            }
+        }
 
 
         [HttpDelete("{id}")]
@@ -185,17 +178,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             return string.Empty;
         }
-
-        //public record ChangePwdRecord([Required] string Account);
-        //[HttpPost("changePwd")]
-        //public ActionResult<string> ChangePwd(ChangePwdRecord record)
-        //{           
-        //    var member = _context.Members
-        //            .Select(o => new { o.Account, o.Password, o.Salt, o.MemberId })
-        //        .FirstOrDefaultAsync(o => o.Account == record.Account);
-
-            
-        //}
+        
 
         [HttpGet("logout")]
         public async Task<ActionResult<string>> LogOut()

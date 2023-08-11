@@ -14,9 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.Configure<OptionSettings>(builder.Configuration.GetSection("OptionSettings"));
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
-builder.Services.AddSingleton<IMailService, SendMailService>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddScoped<IMailService, SendMailService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

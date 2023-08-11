@@ -28,62 +28,60 @@ namespace MSIT147thGraduationTopic.Controllers
             _service = new EmployeeService(context, environment, _employeeRoles);
         }
 
+        [Authorize(Roles = "管理員,經理,員工")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         //[Authorize(Roles = "管理員,經理,員工")]
-        //public IActionResult Index()
+        //public IActionResult MemberList(int pageSize = 10, int pageIndex = 1)
         //{
-        //    return View();
+        //    var query = PerformSqlQuery(pageSize, pageIndex);
+
+        //    if (query == null)
+        //        return View(new List<MemberVM>());
+
+        //    // 獲取總記錄數
+        //    var totalCount = _context.Members.Count(p => p.MemberId > 10);
+        //    // 傳遞查詢結果和總記錄數到View中
+        //    ViewBag.PageIndex = pageIndex;
+        //    ViewBag.PageSize = pageSize;
+        //    ViewBag.TotalCount = totalCount;
+
+        //    return View(query.Select(e => new MemberVM
+        //    {
+        //        MemberId = e.MemberId,
+        //        MemberName = e.MemberName,
+        //        Gender = e.Gender ? "male" : "female",
+        //        Account = e.Account,
+        //        Phone = e.Phone,
+        //        City = e.City,
+        //        District = e.District,
+        //        Address = e.Address,
+        //        Email = e.Email,
+        //    }));
         //}
 
-        [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult MemberList(int pageSize = 10, int pageIndex = 1)
-        {
-            var query = PerformSqlQuery(pageSize, pageIndex);
+        //private List<Member> PerformSqlQuery(int pageSize, int pageIndex)
+        //{
+        //    var sql = @"
+        //                DECLARE @pageSize INT, @pageIndex INT;
+        //                SET @pageSize = @p0;
+        //                SET @pageIndex = @p1;
+        //                ;WITH T
+        //                AS (
+        //                    SELECT *
+        //                    FROM Members
+        //                )
+        //                SELECT TotalCount = COUNT(1) OVER (), T.*
+        //                FROM T
+        //                ORDER BY MemberId
+        //                OFFSET(@pageIndex - 1) * @pageSize ROWS
+        //                FETCH NEXT @pageSize ROWS ONLY;";
 
-            if (query == null)
-                return View(new List<MemberVM>());
-
-            // 獲取總記錄數
-            var totalCount = _context.Members.Count(p => p.MemberId > 10);
-            // 傳遞查詢結果和總記錄數到View中
-            ViewBag.PageIndex = pageIndex;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = totalCount;
-
-            return View(query.Select(e => new MemberVM
-            {
-                MemberId = e.MemberId,
-                MemberName = e.MemberName,
-                Gender = e.Gender ? "male" : "female",
-                Account = e.Account,
-                Phone = e.Phone,
-                City = e.City,
-                District = e.District,
-                Address = e.Address,
-                Email = e.Email,
-            }));
-
-
-        }
-
-        private List<Member> PerformSqlQuery(int pageSize, int pageIndex)
-        {
-            var sql = @"
-                        DECLARE @pageSize INT, @pageIndex INT;
-                        SET @pageSize = @p0;
-                        SET @pageIndex = @p1;
-                        ;WITH T
-                        AS (
-                            SELECT *
-                            FROM Members
-                        )
-                        SELECT TotalCount = COUNT(1) OVER (), T.*
-                        FROM T
-                        ORDER BY MemberId
-                        OFFSET(@pageIndex - 1) * @pageSize ROWS
-                        FETCH NEXT @pageSize ROWS ONLY;";
-
-            //分頁查詢
-            return _context.Members.FromSqlRaw(sql, pageSize, pageIndex).ToList();
-        }
+        //    //分頁查詢
+        //    return _context.Members.FromSqlRaw(sql, pageSize, pageIndex).ToList();
+        //}
     }
 }

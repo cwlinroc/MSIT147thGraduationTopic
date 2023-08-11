@@ -64,7 +64,7 @@ $("#demoMemberRegister").click(() => {
     $('#account').val('demoMember99');
     $('#password').val('demoMember99');
     $('#confirmPassword').val('demoMember99');
-    $('#email').val('demoMember99@gmail.com');
+    $('#email').val('demoMember999@gmail.com');
     $('#phone').val('0912345678');
     $('#city').val('臺北市');
     $('#district').val('大安區');

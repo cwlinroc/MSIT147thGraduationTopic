@@ -39,7 +39,7 @@
                 </div>
                 <form id="memberPermission">
                     <div class="tablebox">
-                        <table class="table table-light table-striped table-hover">
+                        <table class="table table-light table-striped table-hover" id="myTable">
                             <thead>
                                 <tr>
                                     <th>姓名</th>
@@ -99,7 +99,7 @@
             </div>
         </div>
         <!-- 分頁 -->
-        <nav aria-label="Page navigation">
+        @* <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 <li class="page-item">
                     <a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
@@ -114,11 +114,13 @@
                     <a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
                 </li>
             </ul>
-        </nav>
+        </nav> *@
     </div>
 </div>
 
-@section Scripts{    
+@section Scripts{
+    <!-- DataTables BS5版本-->
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.js"></script>
     <script>
         //會員資料
         let memberData        
@@ -233,6 +235,30 @@
             $('#displayAddress').text(memberData[index].address)
         }
 
+        //主要語法
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                pageLength: 10, // 每頁顯示10筆資料 下面都是變更欄位為中文
+                columnDefs: [{                    
+                    targets: [3]  // 替換 [0] 為你希望套用這種排序的柱子索引值。例如：0，如果你希望在第一列上使用這個排序。
+                }],
+                language: {
+                    search: "搜尋：",
+                    paginate: {
+                        first: "首頁",
+                        last: "尾頁",
+                        next: "下一頁",
+                        previous: "上一頁"
+                    },
+                    info: "顯示 START 到 END 的 TOTAL 筆資料",
+                    //最下面顯示
+                    infoEmpty: "顯示 0 到 0 的 0 筆資料",
+                    //下拉選單
+                    lengthMenu: "顯示 MENU 筆資料",
+                }
+            });
+        });
+
         //每頁顯示筆數
         //let pageSize = 10;
         //$(".pageSize").on("click", (e) => {
@@ -247,6 +273,8 @@
 }
 
 @section Styles{
+    <!--DataTables CSS BS5版本-->
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.css" rel="stylesheet">
     <style>
         .contentbox {
             height: 670px;

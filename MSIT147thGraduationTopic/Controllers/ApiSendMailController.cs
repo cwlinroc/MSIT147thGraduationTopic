@@ -27,11 +27,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         [HttpPost("forgetPwd")]
         public async Task<IActionResult> SendPwdMail([FromForm] MailRequest pwdRequest)
-        {
-            pwdRequest.ToEmail = "";
-            pwdRequest.Subject = "修改密碼";
-            pwdRequest.Body = "<p>您的新密碼是</p>";
-
+        {  
             try
             {
                 await _mailService.SendEmailAsync(pwdRequest);

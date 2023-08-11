@@ -1,8 +1,13 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Interfaces;
+using System;
+using System.Security.Policy;
 using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
 
 namespace MSIT147thGraduationTopic.Models.Services
@@ -10,8 +15,11 @@ namespace MSIT147thGraduationTopic.Models.Services
     public class SendMailService : IMailService
     {
         private readonly MailSettings _mailSettings;
-        public SendMailService(IOptions<MailSettings> mailSettings)
+        private readonly GraduationTopicContext _context;
+
+        public SendMailService(GraduationTopicContext context,IOptions<MailSettings> mailSettings)
         {
+            _context = context;
             _mailSettings = mailSettings.Value;
         }
 
@@ -35,6 +43,22 @@ namespace MSIT147thGraduationTopic.Models.Services
             smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
+        }
+
+        public string CreateUrl(string account, IUrlHelper url, string action, string controller)
+        {
+            //產生確認碼
+            string token = Guid.NewGuid().ToString();
+
+            var member = _context.Members.FirstOrDefault(a => a.Account == account);
+            if (member != null)
+            {
+                member.ConfirmGuid = token;
+                _context.SaveChanges();
+            }
+
+            string scheme = url.ActionContext.HttpContext.Request.Scheme;
+            return url.Action(action, controller, new { token }, scheme);
         }
     }
 }

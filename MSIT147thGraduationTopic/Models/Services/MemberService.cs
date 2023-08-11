@@ -71,7 +71,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             dto.Salt = salt;
             dto.Password = dto.Password?.GetSaltedSha256(salt);
             dto.IsActivated = true;
-            dto.ConfirmGuid = Convert.ToString(Guid.NewGuid());
+            dto.ConfirmGuid = Guid.NewGuid().ToString();
 
             return _repo.CreateMember(dto);
         }
