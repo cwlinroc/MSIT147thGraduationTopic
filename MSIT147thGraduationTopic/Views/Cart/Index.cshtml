@@ -136,11 +136,22 @@
 
         //刪除按鈕
         function deleteBtnEvent() {
-            $(".cart-item-delete").click(e => {
-                if (!confirm('確認刪除該項目?')) return
-                deleteCartItem(e.currentTarget)
+            $(".cart-item-delete").click(async e => {
+                const result = await Swal.fire({
+                    title: '刪除項目',
+                    text: "確認刪除該購物車項目?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '確定',
+                    cancelButtonText: '取消'
+                })
+                if (!result.isConfirmed) return
                 $(e.currentTarget).closest('tr').remove()
                 caculateCheckedItemsTotalPrice()
+                await deleteCartItem(e.currentTarget)
+                refreshNavbarCart()
             })
         }
 
@@ -187,9 +198,8 @@
             const cartItemId = +$(element).closest('tr').find('input[type=hidden]').val()
             const response = await fetch(`@Url.Content($"~/api/apicart")/${cartItemId}`, { method: 'DELETE' });
             if (response.status === 204) console.log('Quantity delete succeeded.')
+            return await response.text()
         }
-
-
 
         //Ajax送出訂單
 

@@ -23,7 +23,6 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
             var ratingData = await _service.GetRatingData();
             ViewBag.RatingData = ratingData;
 
-
             return View();
         }
     }
