@@ -138,8 +138,8 @@
                 </div>
             </div>
             <!-- 推薦商品 -->
-            <div style="background-color:red">
-                ---------------------------------------------------------- 推薦商品(未實裝) ----------------------------------------------------------
+            <div>
+                @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)
             </div>
         </div>
     </div>
@@ -147,6 +147,7 @@
 
 @section Scripts{
     @*搜尋功能待改(回傳參數)*@
+    <script src="~/js/recommend/partialview.js"></script>
     <script>
         //給予搜尋初值
         let txtKeyword = "";
@@ -316,5 +317,8 @@
 }
 
 @section Styles{
+    <link rel="stylesheet" href="~/css/recommend/partialview.css" />
+    <style>
 
+    </style>
 }
