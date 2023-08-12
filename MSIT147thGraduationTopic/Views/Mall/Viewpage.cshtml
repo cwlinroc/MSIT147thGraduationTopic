@@ -140,6 +140,7 @@
             <!-- 推薦商品 -->
             <div>
                 @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)
+                @await Html.PartialAsync("Partial/PopularSpecs",Model.First().MerchandiseId)
             </div>
         </div>
     </div>

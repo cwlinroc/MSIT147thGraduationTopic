@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.BackGroundServiecs;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Services;
 using System.Configuration;
@@ -13,6 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<OptionSettings>(builder.Configuration.GetSection("OptionSettings"));
 builder.Services.AddSingleton(HtmlEncoder.Create(UnicodeRanges.All));
+
+
+/*** Timed execute backgroud task ***/
+
+builder.Services.AddScoped<RecommendService>();
+// Register as singleton first so it can be injected through Dependency Injection
+builder.Services.AddSingleton<AutoPopularityCalculationService>();
+// Add as hosted service using the instance registered as singleton before
+builder.Services.AddHostedService(
+    provider => provider.GetRequiredService<AutoPopularityCalculationService>());
+
+
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -73,5 +88,10 @@ app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=home}/{action=index}/{id?}");
+
+
+
+
+
 
 app.Run();

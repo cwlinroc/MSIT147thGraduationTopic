@@ -27,5 +27,12 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
         }
 
 
+        [HttpGet("popularspecs/{merchandiseId}")]
+        public async Task<ActionResult<List<SpecDisplyDto>>> GetPopularSpecs(int? merchandiseId)
+        {
+            return await _service.GetPopularSpecs(merchandiseId);
+        }
+
+
     }
 }

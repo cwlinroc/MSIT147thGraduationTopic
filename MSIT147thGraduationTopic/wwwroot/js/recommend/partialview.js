@@ -1,30 +1,30 @@
 ﻿//partial view js
 
 
-console.log("partial js")
-
 const favorSpecContainer = document.querySelector('#favorSpecContainer')
+const popularSpecContainer = document.querySelector('#popularSpecContainer')
 const merchandiseId = +favorSpecContainer.dataset.merchandiseid
-console.log(merchandiseId)
 
 
+if (!!favorSpecContainer) showRecommendSpecs(favorSpecContainer,'favorspecs')
+if (!!popularSpecContainer) showRecommendSpecs(popularSpecContainer, 'popularspecs')
 
-showFavorSpecs()
-async function showFavorSpecs() {
-    favorSpecContainer.innerHTML = ''
-    const data = await getFavorSpecs()
-    console.log(data)
+//推薦商品
+async function showRecommendSpecs(container,route) {
+    container.innerHTML = ''
+    const data = await getRecommendSpecs(route)
+
     const htmlStr = getRecommendItemsHtml(data)
-    favorSpecContainer.innerHTML = htmlStr
+    container.innerHTML = htmlStr
+    bindHoverEvents()
 }
-
-
-async function getFavorSpecs() {
-    const response = await fetch(`${ROOT}/api/apirecommendpartial/favorspecs/${merchandiseId}`)
+//ajax取得推薦商品
+async function getRecommendSpecs(route) {
+    const response = await fetch(`${ROOT}/api/apirecommendpartial/${route}/${merchandiseId}`)
     return await response.json()
 }
 
-
+//將商品data轉換成html
 function getRecommendItemsHtml(data) {
     return data.map(value => {
         let imageUrl = 'specPicture/default.png'
@@ -35,7 +35,7 @@ function getRecommendItemsHtml(data) {
         const score = (Math.round(value.score * 10) / 10).toFixed(1);
         const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${value.merchandiseId}&SpecId=${value.specId}`
         return `
-        <div class="p-2 position-relative">
+        <div class="p-2 position-relative recommend-item">
                 <figure class="partial-image-container">
                     <img src="${ROOT}/uploads/${imageUrl}" alt="...">
                 </figure>
@@ -53,9 +53,17 @@ function getRecommendItemsHtml(data) {
             </div>
         `
     }).join('')
-
 }
 
+//hover事件
+function bindHoverEvents() {
+    $('.recommend-item').hover(
+        e => {
+            $(e.currentTarget).find('figure').addClass('border-danger')
+            e.currentTarget.customAnimate('headShake')
+        }
+        , e => $(e.currentTarget).find('figure').removeClass('border-danger'))
+}
 
 
 

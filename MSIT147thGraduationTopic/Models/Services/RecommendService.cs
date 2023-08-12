@@ -13,16 +13,40 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly GraduationTopicContext _context;
         private readonly RecommendRepositoy _repo;
 
+        static private bool _inExecution = false;
+        static private TimeSpan _timeInterval = TimeSpan.FromMinutes(15);
+        static private DateTime _lastExecuteTime = DateTime.MinValue;
+
+        static public int TimeIntervalMinutes
+        {
+            get => (int)Math.Floor(_timeInterval.TotalMinutes);
+            set => _timeInterval = TimeSpan.FromMinutes(value);
+        }
+        static public bool TimeToExecute
+        {
+            get => DateTime.Now - _lastExecuteTime > _timeInterval;
+        }
+        static public int LastExecuteTimeMinuteBefore
+        {
+            get => (int)Math.Floor((DateTime.Now - _lastExecuteTime).TotalMinutes);
+        }
+        static public bool IsInExecution
+        {
+            get => _inExecution;
+        }
+
         public RecommendService(GraduationTopicContext context)
         {
             _context = context;
             _repo = new(context);
         }
 
-
-
         public async Task<int> CalculatePopularities()
         {
+            if (_inExecution) return -2;
+            _inExecution = true;
+            _lastExecuteTime = DateTime.Now;
+
             var rateData = await _repo.GetRatingData();
             RecommendCalculateBo bo = GetCalculateBO(rateData);
 
@@ -47,7 +71,9 @@ namespace MSIT147thGraduationTopic.Models.Services
             //依權重計算popularity
             RecommandFunctions.CalculatePopularity(specs, bo.EvaluationWeight, bo.PurchasedWeight, bo.ManuallyWeight);
 
-            return await _repo.UpdateSpecsPopularity(specs);
+            var result = await _repo.UpdateSpecsPopularity(specs);
+            _inExecution = false;
+            return result;
         }
 
         private RecommendCalculateBo GetCalculateBO(RatingDataDto dto)

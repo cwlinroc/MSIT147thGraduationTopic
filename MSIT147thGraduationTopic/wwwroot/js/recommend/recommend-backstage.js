@@ -53,7 +53,49 @@ $('#btnRefreshPopularity').click(async e => {
     const result = await response.json()
     console.log(result)
     displayMostPopularSpecs()
+    getLastExecuteTime()
 })
+
+/****自動更新****/
+
+//取得自動更新間隔時間
+getTimeInterval()
+async function getTimeInterval() {
+    const response = await fetch(`${ROOT}/api/apirecommend/TimeIntervalMinutes`)
+    const timeInterval = await response.json()
+    $('#selectTimeInterval').val(timeInterval)
+}
+
+//設定自動更新間隔時間
+$('#selectTimeInterval').change(async e => {
+    const timeInterval = $('#selectTimeInterval').val()
+    const response = await fetch(`${ROOT}/api/apirecommend/TimeIntervalMinutes/${timeInterval}`, { method: 'PUT' })
+    const result = await response.json()
+    console.log(result)
+})
+
+
+//定時取得上次更新時間
+setInterval(getLastExecuteTime, 10000)
+//取得上一次更新時間
+getLastExecuteTime()
+async function getLastExecuteTime() {
+    const response = await fetch(`${ROOT}/api/apirecommend/LastExecuteTimeMinuteBefore`)
+    const minuteBefore = await response.json()
+    displayLastExecuteTime(minuteBefore)
+    if (minuteBefore == 0) displayMostPopularSpecs()
+}
+function displayLastExecuteTime(minuteBefore) {
+    let displayStr = '無法取得上次更新時間'
+    if (minuteBefore > 0 && minuteBefore < 60) displayStr = `${minuteBefore}分鐘前`
+    if (minuteBefore >= 60) displayStr = `${Math.floor(minuteBefore / 60).toFixed(0)}小時前`
+    if (minuteBefore == 0 || minuteBefore > 1000) displayStr = `剛才`
+    console.log(displayStr)
+    $('#lastExecuteTime').text(displayStr)
+}
+
+//const selectTimeInterval = document.querySelector('#selectTimeInterval')
+
 
 
 /*****Modal*****/
