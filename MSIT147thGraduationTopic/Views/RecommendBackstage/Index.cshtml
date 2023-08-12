@@ -24,12 +24,14 @@
                     熱門度更新
                 </h4>
                 <p>
-                    上次更新：29分鐘前
+                    上次更新：<span id="lastExecuteTime"></span>
                 </p>
                 <form>
                     <div class="my-3">
                         <label>更新間隔</label>
-                        <select class="form-select">
+                        <select class="form-select" id="selectTimeInterval">
+                            <option value="1">1分鐘</option>
+                            <option value="5">5分鐘</option>
                             <option value="15">15分鐘</option>
                             <option value="30">30分鐘</option>
                             <option value="60">1小時</option>

@@ -61,6 +61,16 @@ namespace MSIT147thGraduationTopic.Models.Services
         }
 
 
+        public async Task<List<SpecDisplyDto>> GetPopularSpecs(int? merchandiseId)
+        {
+            var generator = new RandomGenerator();
+
+            var specIds = await _repo.GetRecommendSpecIds(null, null, 40);
+            specIds = generator.RandomCollectionFrom(specIds, 8).ToList();
+            return await _repo.GetSpecDisplayDtos(specIds);
+
+        }
+
 
     }
 }
