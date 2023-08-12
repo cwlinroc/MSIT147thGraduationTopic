@@ -16,5 +16,6 @@ namespace MSIT147thGraduationTopic.EFModels
 
         public virtual Merchandise Merchandise { get; set; }
         public virtual Order Order { get; set; }
+        public virtual Spec Spec { get; set; }
     }
 }

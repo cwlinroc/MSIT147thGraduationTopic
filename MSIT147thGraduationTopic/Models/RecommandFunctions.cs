@@ -20,6 +20,17 @@ namespace MSIT147thGraduationTopic.Models
                 }
             };
         }
+        static public Action<IEnumerable<RecommendationSpecsDto>> RateEvaluationWithMathematicaMean
+        {
+            get => specs =>
+            {
+                foreach (var spec in specs.ToList())
+                {
+                    if (spec.EvaluateCount <= 0) { spec.EvaluationRating = 0.5; continue; }
+                    spec.EvaluationRating = spec.AverageScore / 5.0;
+                }
+            };
+        }
 
         static public Action<IEnumerable<RecommendationSpecsDto>> RatePurchasedWithLogTransform
         {
@@ -34,10 +45,28 @@ namespace MSIT147thGraduationTopic.Models
             };
         }
 
+        static public Action<IEnumerable<RecommendationSpecsDto>> RatePurchasedWithProportion
+        {
+            get => specs =>
+            {
+                double maxPurchasedRate = specs.Max(o => o.PurchasedAmount);
+                foreach (var spec in specs.ToList())
+                {
+                    if (spec.PurchasedAmount <= 0) { spec.PurchasedRating = 0; continue; }
+                    spec.PurchasedRating = spec.PurchasedAmount / maxPurchasedRate;
+                }
+            };
+        }
+
         static public Action<IEnumerable<RecommendationSpecsDto>, int, int, int> CalculatePopularity
         {
             get => (specs, evaluateWeight, purchaseWeight, customWeight) =>
             {
+                if (evaluateWeight == 0 && purchaseWeight == 0 && customWeight == 0)
+                {
+                    foreach (var spec in specs.ToList()) spec.Popularity = 0.5;
+                    return;
+                }
                 foreach (var spec in specs.ToList())
                 {
                     spec.Popularity = (spec.EvaluationRating * evaluateWeight + spec.PurchasedRating * purchaseWeight + spec.CustomRating * customWeight)
@@ -45,6 +74,8 @@ namespace MSIT147thGraduationTopic.Models
                 }
             };
         }
+
+
 
     }
 }

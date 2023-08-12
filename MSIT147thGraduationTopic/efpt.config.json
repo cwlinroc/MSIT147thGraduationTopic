@@ -92,6 +92,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[CouponReceive]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[EvaluationInput]",
          "ObjectType": 3
       },

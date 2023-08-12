@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\js\homepage\**" />
+    <Content Remove="wwwroot\js\homepage\**" />
+    <EmbeddedResource Remove="wwwroot\js\homepage\**" />
+    <None Remove="wwwroot\js\homepage\**" />
     <Content Remove="wwwroot\images\排序.jpg" />
   </ItemGroup>
 
@@ -29,12 +33,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="7.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\js\homepage\" />
     <Folder Include="wwwroot\uploads\merchandisePicture\" />
   </ItemGroup>
 
