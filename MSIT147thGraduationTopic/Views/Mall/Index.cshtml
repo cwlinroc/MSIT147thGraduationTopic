@@ -6,51 +6,54 @@
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
-@*****************************************響應式功能未做*****************************************@
+@*****************************************響應式功能未完成*****************************************@
 <nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
-        <!-- 關鍵字搜尋 -->
-        <form class="bd-search position-relative me-auto mx-5" id="keywordsearch">
-            <span class="algolia-autocomplete d-flex" style="position: relative; display: inline-block; direction: ltr;">
-                <!-- 選擇搜尋條件 -->
-                <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
-                <select class="form-select conditionname" name="selectSearchCondition">
-                    <option value="1">商品名稱</option>
-                    <option value="2">品牌名稱</option>
-                    <option value="3">類別名稱</option>
-                </select>
-                <!-- 輸入關鍵字 -->
-                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="on" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
-                <input type="submit" value="尋找商品" class="btn btn-secondary" />
-                <span class="ds-dropdown-menu" role="listbox" id="algolia-autocomplete-listbox-0" style="position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;">
-                    <div class="ds-dataset-1"></div>
-                </span>
-            </span>
-        </form>
-
-        <div class="dropdown ms-md-auto d-flex mx-5">
-            <!-- 每頁顯示筆數 -->
-            <div class="d-flex select-limit js-select-limit mx-5" style="align-items: center;">
-                每頁顯示 :
-                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
-                <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="50">50</button>
-                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
-                筆
-            </div>
-
-            @using (Html.BeginForm())
-            {
-                <!-- 排序方式 -->
-                <div class="dropdown ms-md-auto">
-                    <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
-                        <option value="0">最新商品</option>
-                        <option value="1">由舊到新</option>
-                        <option value="2">熱門商品</option>
-                        <option value="3">價格由低至高</option>
-                        <option value="4">價格由高至低</option>
-                    </select>
+        <div class="row">
+            <!-- 關鍵字搜尋 -->
+            <form class="bd-search position-relative me-auto mx-5 col-sm-5" id="keywordsearch" style="background-color:saddlebrown">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <!-- 選擇搜尋條件 -->
+                            <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
+                            <select class="form-select conditionname" name="selectSearchCondition">
+                                <option value="1">商品名稱</option>
+                                <option value="2">品牌名稱</option>
+                                <option value="3">類別名稱</option>
+                            </select>
+                            <!-- 輸入關鍵字 -->
+                            <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Text input with dropdown button">
+                            <input type="submit" value="尋找商品" class="btn btn-secondary" />
+                        </div>
+                    </div>
                 </div>
-            }
+            </form>
+
+            <div class="dropdown ms-md-auto d-flex mx-5 col-sm-4" style="background-color:sandybrown">
+                <!-- 每頁顯示筆數 -->
+                <div class="d-flex select-limit js-select-limit mx-5" style="white-space: nowrap; align-items: center;">
+                    每頁顯示 :
+                    <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
+                    <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="50">50</button>
+                    <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
+                    筆
+                </div>
+
+                @using (Html.BeginForm())
+                {
+                    <!-- 排序方式 -->
+                    <div class="dropdown ms-md-auto">
+                        <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
+                            <option value="0">最新商品</option>
+                            <option value="1">由舊到新</option>
+                            <option value="2">熱門商品</option>
+                            <option value="3">價格由低至高</option>
+                            <option value="4">價格由高至低</option>
+                        </select>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </nav>
@@ -62,13 +65,13 @@
         <div class="col-12 col-md-2 my-3">
             <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
                 <div class="container-fluid ">
-                    <!-- ****************************************小視窗用摺疊按鈕(尚無法啟用)**************************************** -->
+                    <!-- 小視窗時摺疊按鈕 -->
                     <button class="navbar-toggler" href="#sublist" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <!-- 小視窗時摺疊區域 -->
-                    <div class="navbar-collapse collapse">
-                        <ul class="navbar-nav flex-column" id="sublist">
+                    <div class="navbar-collapse collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav flex-column" id="sublist" style="margin-top:10px">
                             <!-- 摺疊選單 for 商品類別 -->
                             <li>
                                 <div>商品類別</div>
@@ -210,10 +213,10 @@
                 const pagingContainer = document.querySelector("#pagingContainer");
 
                 let indexRow = `<li class="page-item border-light toPrevious">\
-                                    <a class="page-link" href="#" aria-label="Previous">\
-                                        <span aria-hidden="true">&laquo;</span>\
-                                    </a>\
-                                </li>`;
+                                            <a class="page-link" href="#" aria-label="Previous">\
+                                                <span aria-hidden="true">&laquo;</span>\
+                                            </a>\
+                                        </li>`;
                 let indexArray = "";
                 let start, end;
                 if (totalpage <= 5) {
@@ -259,10 +262,10 @@
                 }
 
                 indexRow += indexArray + `<li class="page-item toNext">
-                                            <a class="page-link" href="#" aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                          </li>`;
+                                                    <a class="page-link" href="#" aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                  </li>`;
                 pagingContainer.innerHTML = indexRow;
 
                 //改變當前頁籤格式
@@ -303,17 +306,17 @@
                         const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
                         return (
                             `<div class="col">\
-                                        <div class="card my-3 mx-2 text-center border-light ">\
-                                            <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
-                                                                + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
-                                            <div class="card-body ">\
-                                                <h6 class="card-text ">《 ${brandName} 》</h6>\
-                                                <h6 class="card-title ">${showName}</h6>\
-                                                <h5 class="card-text ">${price} 元</h5>\
-                                                <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
-                                            </div>\
-                                        </div>\
-                                    </div>`)
+                                                <div class="card my-3 mx-2 text-center border-light ">\
+                                                    <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
+                            + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
+                                                    <div class="card-body ">\
+                                                        <h6 class="card-text ">《 ${brandName} 》</h6>\
+                                                        <h6 class="card-title ">${showName}</h6>\
+                                                        <h5 class="card-text ">${price} 元</h5>\
+                                                        <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
+                                                    </div>\
+                                                </div>\
+                                            </div>`)
                     })
                     pageContent.innerHTML = windows.join("");
 
@@ -408,6 +411,11 @@
     <style>
         li {
             list-style: none;
+        }
+
+        select {
+            max-width: 120px;
+            min-width: 120px
         }
     </style>
 }

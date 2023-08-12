@@ -6,26 +6,27 @@
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
-@*****************************************響應式功能未做*****************************************@
+@*****************************************響應式功能未完成*****************************************@
 <nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
         <!-- 關鍵字搜尋 -->
-        <form class="bd-search position-relative me-auto mx-5" id="keywordsearch">
-            <span class="algolia-autocomplete d-flex" style="position: relative; display: inline-block; direction: ltr;">
-                <!-- 選擇搜尋條件 -->
-                <label class="input-group-text" for="searchCondition">選擇搜尋條件</label>
-                <select class="form-select conditionname" name="searchCondition">
-                    <option value="1">商品名稱</option>
-                    <option value="2">品牌名稱</option>
-                    <option value="3">類別名稱</option>
-                </select>
-                <!-- 輸入關鍵字 -->
-                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="on" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
-                <input type="submit" value="尋找商品" class="btn btn-secondary" />
-                <span class="ds-dropdown-menu" role="listbox" id="algolia-autocomplete-listbox-0" style="position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;">
-                    <div class="ds-dataset-1"></div>
-                </span>
-            </span>
+        <form class="bd-search position-relative me-auto mx-5 col-sm-5" id="keywordsearch" style="background-color:saddlebrown">
+            <div class="row">
+                <div class="form-group">
+                    <div class="input-group mb-3">
+                        <!-- 選擇搜尋條件 -->
+                        <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
+                        <select class="form-select conditionname" name="selectSearchCondition">
+                            <option value="1">商品名稱</option>
+                            <option value="2">品牌名稱</option>
+                            <option value="3">類別名稱</option>
+                        </select>
+                        <!-- 輸入關鍵字 -->
+                        <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Text input with dropdown button">
+                        <input type="submit" value="尋找商品" class="btn btn-secondary" />
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </nav>
@@ -37,13 +38,13 @@
         <div class="col-12 col-md-2 my-3">
             <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
                 <div class="container-fluid ">
-                    <!-- ****************************************小視窗用摺疊按鈕(尚無法啟用)**************************************** -->
+                    <!-- 小視窗時摺疊按鈕 -->
                     <button class="navbar-toggler" href="#sublist" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <!-- 小視窗時摺疊區域 -->
-                    <div class="navbar-collapse collapse">
-                        <ul class="navbar-nav flex-column" id="sublist">
+                    <div class="navbar-collapse collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav flex-column" id="sublist" style="margin-top:10px">
                             <!-- 摺疊選單 for 商品類別 -->
                             <li>
                                 <div>商品類別</div>
@@ -325,6 +326,11 @@
     <style>
         li {
             list-style: none;
+        }
+
+        select {
+            max-width: 120px;
+            min-width: 120px
         }
     </style>
 }

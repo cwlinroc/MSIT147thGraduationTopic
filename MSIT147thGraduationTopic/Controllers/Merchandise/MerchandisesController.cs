@@ -43,18 +43,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 {
                     IQueryable<int> merchandiseIdFormSpec = _context.Specs
                         .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
-                    #region 建立新集合承接符合項(占版面&耗資源，有更好的寫法↓)
-                    //datas = null;
-
-                    //List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
-                    //foreach (int id in merchandiseIdFormSpec)
-                    //{
-                    //    MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
-                    //    if (unit != null)
-                    //        templist.Add(unit);
-                    //}
-                    //datas = templist;
-                    #endregion
+                   
                     datas = datas.Where(ms => merchandiseIdFormSpec.Contains(ms.MerchandiseId));
                 }
                 if (searchCondition == 3)
