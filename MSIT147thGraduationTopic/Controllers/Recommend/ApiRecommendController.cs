@@ -89,5 +89,28 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
             return await _service.DeleteWeightedEntry(id);
         }
 
+
+        [HttpGet("TimeIntervalMinutes")]
+        public ActionResult<int> GetTimeIntervalMinutes()
+        {
+            return RecommendService.TimeIntervalMinutes;
+        }
+
+
+        [HttpPut("TimeIntervalMinutes/{minutes}")]
+        public ActionResult<int> SetTimeIntervalMinutes(int minutes)
+        {
+            RecommendService.TimeIntervalMinutes = minutes;
+            return RecommendService.TimeIntervalMinutes;
+        }
+
+        [HttpGet("LastExecuteTimeMinuteBefore")]
+        public ActionResult<int> LastExecuteTimeMinuteBefore()
+        {
+            return RecommendService.LastExecuteTimeMinuteBefore;
+        }
+
+
+
     }
 }
