@@ -7,13 +7,13 @@
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
 @*****************************************響應式功能未完成*****************************************@
-<nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
-    <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
+<nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
+    <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
-        <form class="bd-search position-relative me-auto mx-5 col-sm-5" id="keywordsearch" style="background-color:saddlebrown">
+        <form class="bd-search position-relative me-auto mx-5 col-sm-5" id="keywordsearch">
             <div class="row">
                 <div class="form-group">
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <!-- 選擇搜尋條件 -->
                         <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
                         <select class="form-select conditionname" name="selectSearchCondition">
@@ -76,10 +76,12 @@
                     <div class="col-12 col-md-5 py-3">
                         <div class="item">
                             <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
-                            <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" width="100%" class="mainImage pb-3">
+                            <figure class="ViewWindow-image-container">
+                                <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" width="100%" height="100%" class="mainImage pb-3">
+                            </figure>
                             <div class="image-container">
                                 <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
-                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage" width="20%" style="border:solid #930000 3px" )>
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage" width="20%" height="20%" style="border:solid #930000 3px" )>
                                 @{
                                     foreach (var item in Model)
                                     {
@@ -108,7 +110,7 @@
                             @{
                                 foreach (var item in Model)
                                 {
-                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
+                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
                                 }
                             }
                         </div>
@@ -240,6 +242,11 @@
             $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
             //顯示價格&庫存
             currentPrice = $(e.currentTarget).attr("data-price");
+            discountPercentage = $(e.currentTarget).attr("data-discountPercentage");
+            const canceledPrice = (discountPercentage == 100) ? '' :
+                `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${currentPrice}</span></del>`;
+
+
             maxAmount = $(e.currentTarget).attr("data-amount");
             $("#showPrice").text(currentPrice + " 元");
             $("#showAmount").text(maxAmount);
@@ -333,6 +340,28 @@
         select {
             max-width: 120px;
             min-width: 120px
+        }
+
+        .ViewWindow-image-container {
+            width: 100%;
+            position: relative;
+            padding-top: 100%;
+        }
+
+            .ViewWindow-image-container img {
+                position: absolute;
+                top: 0%;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .specImage {
+            width: 100%;
+            max-width: 100px;
+            height: 100%;
+            max-height:100px;
+            object-fit: cover;
         }
     </style>
 }

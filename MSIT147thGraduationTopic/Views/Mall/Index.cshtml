@@ -7,11 +7,10 @@
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
 @*****************************************響應式功能未完成*****************************************@
-<nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
-    <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
+<nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
+    <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
-        @*****************************************欄位會上飄*****************************************@                                            @*(↓             沒有效果             )*@
-        <form class="bd-search position-relative me-auto mx-5 col-md-6" id="keywordsearch" style="background-color:darkred; align-items: center;">
+        <form class="bd-search position-relative me-auto mx-5 col-md-6" id="keywordsearch" style="align-items: center;">
             <div class="row">
                 <div class="input-group">
                     <!-- 選擇搜尋條件 -->
@@ -28,7 +27,7 @@
             </div>
         </form>
 
-        <div class="dropdown ms-md-auto d-flex mx-5 col-md-4" style="background-color:saddlebrown">
+        <div class="dropdown ms-md-auto d-flex mx-5 col-md-4">
             <!-- 每頁顯示筆數 -->
             <div class="d-flex select-limit js-select-limit mx-5" style="white-space: nowrap; align-items: center;">
                 每頁顯示 :
@@ -300,29 +299,30 @@
                     const returnJsonBag = await response.text();
                     const searchResult = JSON.parse(returnJsonBag);
 
-                    var windows = searchResult.map(window => {
-                        const { price, specId, merchandiseId, brandName } = window;
-                        const showName = (window.fullName.length > 11) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
-                        const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-                        return (
-                            `<div class="col">\
-                                                <div class="card my-3 mx-2 text-center border-light ">\
-                                                    <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
-                                                                                    + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
-                                                    <div class="card-body ">\
-                                                        <h6 class="card-text ">《 ${brandName} 》</h6>\
-                                                        <h6 class="card-title ">${showName}</h6>\
-                                                        <h5 class="card-text ">${price} 元</h5>\
-                                                        <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
-                                                    </div>\
-                                                </div>\
-                                            </div>`)
-                                })
+                    //var windows = searchResult.map(window => {
+                    //    const { price, specId, merchandiseId, brandName } = window;
+                    //    const showName = (window.fullName.length > 11) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
+                    //    const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
+                    //    return (
+                    //        `<div class="col">\
+                    //                            <div class="card my-3 mx-2 text-center border-light ">\
+                    //                                <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
+                    //                                                                + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
+                    //                                <div class="card-body ">\
+                    //                                    <h6 class="card-text ">《 ${brandName} 》</h6>\
+                    //                                    <h6 class="card-title ">${showName}</h6>\
+                    //                                    <h5 class="card-text ">${price} 元</h5>\
+                    //                                    <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
+                    //                                </div>\
+                    //                            </div>\
+                    //                        </div>`)
+                    //            })
+                    //pageContent.innerHTML = windows.join("");
 
                     let thispageContent = generateProductCard(searchResult);
 
                     pageContent.innerHTML = thispageContent;
-                    //pageContent.innerHTML = windows.join("");
+                    bindHoverEvents();
 
                     //進入商品檢視頁
                     $(".gotoViewpage").on("click", (e) => {
@@ -411,23 +411,24 @@
 
         function generateProductCard(searchResult) {
             return searchResult.map(value => {
-                const { merchandiseImageURL, specImageURL, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName } = value;
+                const { merchandiseImageUrl, specImageUrl, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName } = value;
                 let imageUrl = 'specPicture/default.png'
-                if (!!merchandiseImageURL) imageUrl = 'merchandisePicture/' + merchandiseImageURL
-                if (!!specImageURL) imageUrl = 'specPicture/' + specImageURL
+                if (!!merchandiseImageUrl) imageUrl = 'merchandisePicture/' + merchandiseImageUrl
+                if (!!specImageUrl) imageUrl = 'specPicture/' + specImageUrl
                 const canceledPrice = (discountPercentage == 100) ? '' :
                     `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${price}</span></del>`
                 const score = (Math.round(popularity * 10) / 10).toFixed(1);
                 const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${merchandiseId}&SpecId=${specId}`
                 return `
-                                        <div class="p-2 position-relative mx-1 my-1" style="border: solid 2px brown; background-color: wheat">
+                                        <div class="p-2 position-relative mx-1 my-1 displayedSpec">
                                         <figure class="partial-image-container">
-                                            <img src="${ROOT}/uploads/${imageUrl}" alt="..." class="gotoViewpage"
-                                                        data-specid="${specId}" data-merchandisid="${merchandiseId}" style="width:250px; height:250px">
+                                        <img src="${ROOT}/uploads/${imageUrl}" alt="..." class="gotoViewpage"
+                                                                        data-specid="${specId}" data-merchandisid="${merchandiseId}">                                           
                                         </figure>
-                                        <div class="px-1 my-0" style="height:50px;overflow:hidden">
-                                                    <h6 class="card-text ">《 ${brandName} 》${merchandiseName}</h6>
-                                            <h6 class="card-title ">${specName}</h6>
+                                        <div class="px-1 my-0" style="height:80px;overflow:hidden">
+                                            <h6 class="card-text ">《 ${brandName} 》</h6>
+                                            <h5 class="card-text ">${merchandiseName}</h5>
+                                            <h6 class="card-title ">- ${specName}</h6>
                                         </div>
                                         <div class="my-0 d-flex px-1">
                                             ${canceledPrice}
@@ -441,10 +442,21 @@
                                 `
             }).join('')
         }
+
+        //hover事件
+        function bindHoverEvents() {
+            $('.displayedSpec').hover(
+                e => {
+                    $(e.currentTarget).find('figure').addClass('border-danger')
+                    e.currentTarget.customAnimate('headShake')
+                }
+                , e => $(e.currentTarget).find('figure').removeClass('border-danger'))
+        }
     </script>
 }
 
 @section Styles{
+    <link rel="stylesheet" href="~/css/recommend/partialview.css" />
     <style>
         li {
             list-style: none;
