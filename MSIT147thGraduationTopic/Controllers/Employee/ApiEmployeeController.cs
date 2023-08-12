@@ -138,5 +138,32 @@ namespace MSIT147thGraduationTopic.Controllers.Employee
 
             return correction;
         }
+
+
+        [HttpGet("selfavatar")]
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<ActionResult<string>> GetSelfAvatar()
+        {
+            if (!int.TryParse(HttpContext.User.FindFirstValue("EmployeeId"), out int employeeId))
+            {
+                return BadRequest("找不到對應員工ID");
+            }
+            return await _service.GetAvatarName(employeeId);
+        }
+
+
+
+        [HttpPost("selfavatar")]
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<ActionResult<int>> UploadSelfAvatar(IFormFile? image)
+        {
+            if (image == null) return -1;
+            if (!int.TryParse(HttpContext.User.FindFirstValue("EmployeeId"), out int employeeId))
+            {
+                return BadRequest("找不到對應員工ID");
+            }
+            return await _service.UpdateAvatar(employeeId, image);
+        }
+
     }
 }

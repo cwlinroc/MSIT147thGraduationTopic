@@ -1,6 +1,7 @@
 ﻿using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.EFModels;
 using Microsoft.EntityFrameworkCore;
+using Humanizer;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -79,6 +80,22 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                 .Select(o => new { o.EmployeePassword, o.Salt })
                 .FirstOrDefaultAsync();
             return (employee?.EmployeePassword, employee?.Salt);
+        }
+
+        public async Task<string> GetAvatarName(int employeeId)
+        {
+            return (await _context.Employees.FindAsync(employeeId))?.AvatarName ?? string.Empty;
+        }
+
+        public async Task<int> UpdateAvatar(int employeeId, string? fileName)
+        {
+            var employee = await _context.Employees.FirstOrDefaultAsync(o => o.EmployeeId == employeeId);
+            if (employee == null) return -1;
+
+            if (!string.IsNullOrEmpty(fileName)) employee.AvatarName = fileName;
+
+            await _context.SaveChangesAsync();
+            return employeeId;
         }
     }
 }
