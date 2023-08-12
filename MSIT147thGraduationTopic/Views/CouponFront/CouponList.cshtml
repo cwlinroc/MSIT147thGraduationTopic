@@ -1,5 +1,5 @@
 ﻿@using MSIT147thGraduationTopic.Models.Dtos
-@model (IEnumerable<CouponDto> listDiscount,IEnumerable<CouponDto> listRebate)
+@model (IEnumerable<CouponFrontDto> listDiscount,IEnumerable<CouponFrontDto> listRebate)
 @{
     ViewData["Title"] = "優惠券列表";
     var listA = Model.Item1;
@@ -42,12 +42,14 @@
                                     <th scope="col">活動開始日期</th>
                                     <th scope="col">活動結束日期</th>
                                     <th scope="col">打折優惠</th>
+                                    <th scope="col">使用狀況</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @{
-                                    foreach (CouponDto c in Model.listDiscount)
+                                    foreach (CouponFrontDto c in Model.listDiscount)
                                     {
+                                        string used = c.CouponUsed ? "已使用" : "尚未使用";
                                         <tr>
                                             <td id="DiscountId" scope="col">@c.CouponId</td>
                                             <td id="DiscountName" scope="col">@c.CouponName</td>
@@ -55,6 +57,7 @@
                                             <td id="DiscountStartDate" scope="col">@c.CouponStartDate</td>
                                             <td id="DiscountEndDate" scope="col">@c.CouponEndDate</td>
                                             <td id="DiscountValue" scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
+                                            <td id="DiscountUsed" scope="col">@used</td>
                                         </tr>
                                     }
                                 }
@@ -77,13 +80,15 @@
                                     <th scope="col">活動結束日期</th>
                                     <th scope="col">額度門檻</th>
                                     <th scope="col">折扣金額</th>
+                                    <th scope="col">使用狀況</th>
                                 </tr>
                             </thead>
 
                             <tbody>
                                 @{
-                                    foreach (CouponDto c in Model.listRebate)
+                                    foreach (CouponFrontDto c in Model.listRebate)
                                     {
+                                        string used = c.CouponUsed ? "已使用" : "尚未使用";
                                         <tr>
                                             <td id="RebateId" scope="col">@c.CouponId</td>
                                             <td id="RebateName" scope="col">@c.CouponName</td>
@@ -92,6 +97,7 @@
                                             <td id="RebateEndDate" scope="col">@c.CouponEndDate</td>
                                             <td id="RebateCondition" scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
                                             <td id="RebateDiscount" scope="col">@c.CouponDiscount.ToString("#.##")</td>
+                                            <td id="DiscountUsed" scope="col">@used</td>
                                         </tr>
                                     }
                                 }
@@ -137,5 +143,11 @@
             margin: 5px;
         }
     </style>
+}
+
+@section Scripts{
+    <script>
+
+    </script>
 }
 

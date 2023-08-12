@@ -27,7 +27,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
         public IEnumerable<CouponFrontDto> ShowCouponsFront(int id)
         {
-            var coupons = _context.CouponReceives.Where(c=>c.MemberId == id);
+            var coupons = _context.CouponReceives.Where(c=>c.CouponDiscountTypeId == id);
             return coupons.ToList().Select(c=>c.ToFrontDto());
         }
 

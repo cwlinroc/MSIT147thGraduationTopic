@@ -16,7 +16,7 @@ namespace MSIT147thGraduationTopic.Controllers
             _repo = new CouponRepository(context);
         }
 
-        [Authorize(Roles = "管理員,經理,員工")]
+        //[Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index()
         {
             var couponlistA = _repo.ShowCoupons(0);
@@ -26,21 +26,21 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
 
-        [Authorize(Roles = "管理員,經理,員工")]
+        //[Authorize(Roles = "管理員,經理,員工")]
         public IActionResult DiscountCreate()
         {
             return View();
         }
 
 
-        [Authorize(Roles = "管理員,經理,員工")]
+        //[Authorize(Roles = "管理員,經理,員工")]
         public IActionResult RebateCreate()
         {
             return View();
         }
 
 
-        [Authorize(Roles = "管理員,經理,員工")]
+        //[Authorize(Roles = "管理員,經理,員工")]
         public IActionResult DiscountEdit(int id)
         {
             var couponData = _repo.GetCouponById(id);
@@ -48,7 +48,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
 
-        [Authorize(Roles = "管理員,經理,員工")]
+        //[Authorize(Roles = "管理員,經理,員工")]
         public IActionResult RebateEdit(int id)
         {
             var couponData = _repo.GetCouponById(id);

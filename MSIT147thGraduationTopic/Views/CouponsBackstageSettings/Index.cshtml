@@ -37,19 +37,19 @@
                                 <label for="txtDiscountNameSearch">打折優惠券名稱關鍵字</label>
                                 <input type="text" id="txtDiscountNameSearch" name="txtDiscountNameSearch" class="form-control" placeholder="請輸入名稱關鍵字" />
                             </div>
-                            <div class="col-md-3 mb-3">
+                            @*<div class="col-md-3 mb-3">
                                 <label for="selectDiscountStatus">優惠券狀態</label>
                                 <select id="selectDiscountStatus" name="selectDiscountStatus" class="form-select">
-                                    <option value=""></option>
-                                    <option value="1">全部</option>
-                                    <option value="2">活動中</option>
-                                    <option value="3">未開始</option>
-                                    <option value="4">已結束</option>
+                                    <option></option>
+                                    <option value="" selected>全部</option>
+                                    <option value="upcoming">未開始</option>
+                                    <option value="active">進行中</option>
+                                    <option value="expired">已結束</option>
                                 </select>
-                            </div>
+                            </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
-                                <button type="submit" class="btn btn-primary form-control" id="btnDiscountSearch" disabled>搜尋</button>
+                                <button type="submit" class="btn btn-primary form-control" id="btnDiscountSearch">搜尋</button>
                             </div>
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
@@ -112,19 +112,19 @@
                                 <label for="txtDiscountNameSearch">打折優惠券名稱關鍵字</label>
                                 <input type="text" id="txtDiscountNameSearch" name="txtDiscountNameSearch" class="form-control" placeholder="請輸入名稱關鍵字" />
                             </div>
-                            <div class="col-md-3 mb-3">
+                            @*<div class="col-md-3 mb-3">
                                 <label for="selectRebateStatus">優惠券狀態</label>
                                 <select id="selectRebateStatus" name="selectRebateStatus" class="form-select">
-                                    <option value=""></option>
-                                    <option value="1">全部</option>
-                                    <option value="2">活動中</option>
-                                    <option value="3">未開始</option>
-                                    <option value="4">已結束</option>
+                                    <option></option>
+                                    <option value="" selected>全部</option>
+                                    <option value="upcoming">未開始</option>
+                                    <option value="active">進行中</option>
+                                    <option value="expired">已結束</option>
                                 </select>
-                            </div>
+                            </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
-                                <button type="submit" class="btn btn-primary form-control" id="btnRebateSearch" disabled>搜尋</button>
+                                <button type="submit" class="btn btn-primary form-control" id="btnRebateSearch">搜尋</button>
                             </div>
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
@@ -184,8 +184,6 @@
             <div class="container px-5 my-5 text-center">
                 <button class="btn btn-primary" id="btnCreate">新增</button>
             </div>
-        </section>
-        <section class="py-5 bg-light">
         </section>
         <section class="py-5 bg-light">
             <div class="container px-5 my-5">
@@ -258,7 +256,6 @@
 
 @section Scripts{
     <script>
-        let couponData
         //#region ShowDiscountDataSweetAlert
         function ShowDiscountDataSweetAlert() {
             const couponDiscountId = $('#txtDiscountIdSearch').val();
@@ -355,17 +352,6 @@
 
         //#region 頁面開啟執行
         $(document).ready(function () {
-            $("#txtDiscountIdSearch,#txtDiscountNameSearch,#selectDiscountStatus").on('input', function () {
-                let txtSearchValue = $(this).val();
-
-                if (txtSearchValue === '') {
-                    $('#btnDiscountSearch').prop("disabled", true);
-                }
-                else {
-                    $('#btnDiscountSearch').prop("disabled", false);
-                }
-            });
-
             $('#txtDiscountIdSearch,#txtDiscountNameSearch,#txtRebateIdSearch,#txtRebateNameSearch,#selectDiscountStatus,#selectRebateStatus').val('');
         });
         //#endregion
@@ -385,6 +371,13 @@
             const matchingCoupons = couponNameElements.filter((index, element) =>
                 $(element).text().match(searchKeyword)
             );
+
+            if (!couponDiscountId && !searchKeyword) {
+                Swal.fire({
+                    title: '請輸入查詢條件',
+                    icon: 'info',
+                });
+            }
 
             if (couponDiscountId) {
                 if (couponDiscountId != discountIdValue) {
@@ -448,12 +441,12 @@
                 $(element).text().match(searchKeyword)
             );
 
-            console.log('Button clicked');
-            console.log(couponRebateId);
-            console.log(rebateIdValue);
-            console.log(searchKeyword);
-            console.log(couponNameElements);
-            console.log(matchingCoupons);
+            if (!couponRebateId && !searchKeyword) {
+                Swal.fire({
+                    title: '請輸入查詢條件',
+                    icon: 'info',
+                });
+            }
 
             if (couponRebateId) {
                 if (couponRebateId != rebateIdValue) {
@@ -573,6 +566,6 @@
                 }
             });
         })
-                        //#endregion
+        //#endregion
     </script>
 }

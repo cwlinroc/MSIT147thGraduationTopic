@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using System.Security.Claims;
 
 namespace MSIT147thGraduationTopic.Controllers
 {

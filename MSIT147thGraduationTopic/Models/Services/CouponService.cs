@@ -45,5 +45,10 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             return _repo.GetCouponById(couponId);
         }
+
+        public CouponFrontDto GetCouponByMemberId(int memberId)
+        {
+            return _repo.GetCouponByMemberID(memberId);
+        }
     }
 }
