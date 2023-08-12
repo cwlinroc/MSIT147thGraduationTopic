@@ -9,51 +9,51 @@
 @*****************************************響應式功能未完成*****************************************@
 <nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
-        <div class="row">
-            <!-- 關鍵字搜尋 -->
-            <form class="bd-search position-relative me-auto mx-5 col-sm-5" id="keywordsearch" style="background-color:saddlebrown">
-                <div class="row">
-                    <div class="form-group">
-                        <div class="input-group mb-3">
-                            <!-- 選擇搜尋條件 -->
-                            <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
-                            <select class="form-select conditionname" name="selectSearchCondition">
-                                <option value="1">商品名稱</option>
-                                <option value="2">品牌名稱</option>
-                                <option value="3">類別名稱</option>
-                            </select>
-                            <!-- 輸入關鍵字 -->
-                            <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Text input with dropdown button">
-                            <input type="submit" value="尋找商品" class="btn btn-secondary" />
-                        </div>
-                    </div>
+        <!-- 關鍵字搜尋 -->
+        @*****************************************欄位會上飄*****************************************@                                            @*(↓             沒有效果             )*@
+        <form class="bd-search position-relative me-auto mx-5 col-md-6" id="keywordsearch" style="background-color:darkred; align-items: center;">
+            <div class="row">
+                <div class="input-group">
+                    <!-- 選擇搜尋條件 -->
+                    <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
+                    <select class="form-select conditionname" name="selectSearchCondition">
+                        <option value="1">商品名稱</option>
+                        <option value="2">品牌名稱</option>
+                        <option value="3">類別名稱</option>
+                    </select>
+                    <!-- 輸入關鍵字 -->
+                    <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Text input with dropdown button">
+                    <input type="submit" value="尋找商品" class="btn btn-secondary" />
                 </div>
-            </form>
-
-            <div class="dropdown ms-md-auto d-flex mx-5 col-sm-4" style="background-color:sandybrown">
-                <!-- 每頁顯示筆數 -->
-                <div class="d-flex select-limit js-select-limit mx-5" style="white-space: nowrap; align-items: center;">
-                    每頁顯示 :
-                    <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
-                    <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="50">50</button>
-                    <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
-                    筆
-                </div>
-
-                @using (Html.BeginForm())
-                {
-                    <!-- 排序方式 -->
-                    <div class="dropdown ms-md-auto">
-                        <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
-                            <option value="0">最新商品</option>
-                            <option value="1">由舊到新</option>
-                            <option value="2">熱門商品</option>
-                            <option value="3">價格由低至高</option>
-                            <option value="4">價格由高至低</option>
-                        </select>
-                    </div>
-                }
             </div>
+        </form>
+
+        <div class="dropdown ms-md-auto d-flex mx-5 col-md-4" style="background-color:saddlebrown">
+            <!-- 每頁顯示筆數 -->
+            <div class="d-flex select-limit js-select-limit mx-5" style="white-space: nowrap; align-items: center;">
+                每頁顯示 :
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="50">50</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
+                筆
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                <!-- 排序方式 -->
+                <div class="dropdown ms-md-auto">
+                    <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
+                        <option value="0">最新商品</option>
+                        <option value="1">由舊到新</option>
+                        <option value="2">熱門商品</option>
+                        <option value="3">價格由低至高</option>
+                        <option value="4">價格由高至低</option>
+                    </select>
+                </div>
+            }
+        </div>
+        <div class="row" style="background-color:sandybrown">
+            @*預計用於RWD包覆搜尋欄，但產生了其他排版問題*@
         </div>
     </div>
 </nav>
@@ -308,7 +308,7 @@
                             `<div class="col">\
                                                 <div class="card my-3 mx-2 text-center border-light ">\
                                                     <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
-                            + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
+                                                                                    + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
                                                     <div class="card-body ">\
                                                         <h6 class="card-text ">《 ${brandName} 》</h6>\
                                                         <h6 class="card-title ">${showName}</h6>\
@@ -317,8 +317,12 @@
                                                     </div>\
                                                 </div>\
                                             </div>`)
-                    })
-                    pageContent.innerHTML = windows.join("");
+                                })
+
+                    let thispageContent = generateProductCard(searchResult);
+
+                    pageContent.innerHTML = thispageContent;
+                    //pageContent.innerHTML = windows.join("");
 
                     //進入商品檢視頁
                     $(".gotoViewpage").on("click", (e) => {
@@ -403,6 +407,39 @@
                     SearchProducts();
                 })
             })
+        }
+
+        function generateProductCard(searchResult) {
+            return searchResult.map(value => {
+                const { merchandiseImageURL, specImageURL, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName } = value;
+                let imageUrl = 'specPicture/default.png'
+                if (!!merchandiseImageURL) imageUrl = 'merchandisePicture/' + merchandiseImageURL
+                if (!!specImageURL) imageUrl = 'specPicture/' + specImageURL
+                const canceledPrice = (discountPercentage == 100) ? '' :
+                    `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${price}</span></del>`
+                const score = (Math.round(popularity * 10) / 10).toFixed(1);
+                const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${merchandiseId}&SpecId=${specId}`
+                return `
+                                        <div class="p-2 position-relative mx-1 my-1" style="border: solid 2px brown; background-color: wheat">
+                                        <figure class="partial-image-container">
+                                            <img src="${ROOT}/uploads/${imageUrl}" alt="..." class="gotoViewpage"
+                                                        data-specid="${specId}" data-merchandisid="${merchandiseId}" style="width:250px; height:250px">
+                                        </figure>
+                                        <div class="px-1 my-0" style="height:50px;overflow:hidden">
+                                                    <h6 class="card-text ">《 ${brandName} 》${merchandiseName}</h6>
+                                            <h6 class="card-title ">${specName}</h6>
+                                        </div>
+                                        <div class="my-0 d-flex px-1">
+                                            ${canceledPrice}
+                                            <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
+                                            <span>${score}</span>
+                                        </div>
+                                        <div class="text-danger px-1">
+                                            NTD$<span>${Math.round(price * discountPercentage / 100)}</span>
+                                        </div>
+                                    </div>
+                                `
+            }).join('')
         }
     </script>
 }

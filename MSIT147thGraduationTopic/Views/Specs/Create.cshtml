@@ -10,6 +10,9 @@
 
     <div class="bg-light rounded shadow p-5">
         <h4>輸入規格資料</h4>
+        <button id="demo_spec1">Demo 規格1</button>
+        <button id="demo_spec2_wrong" class="mx-2">Demo 規格2 輸入有誤</button>
+        <button id="demo_spec2_right" class="mx-2">Demo 規格2</button>
         <hr />
         <div class="row">
             <div class="col-md-4">
@@ -94,6 +97,30 @@
 </div>
 
 @section Scripts {
+    @*DEMO*@
+    <script>
+        $("#demo_spec1").on("click", () => {
+            $("#inputspecname").val("寵物專用毛梳");
+            $("#inputprice").val();
+            $("#inputamount").val();
+            $("#inputdiscount").val();
+            $("#inputorder").val();
+        })
+        $("#demo_spec2_wrong").on("click", () => {
+            $("#inputspecname").val("寵物專用毛梳");
+            $("#inputprice").val();
+            $("#inputamount").val();
+            $("#inputdiscount").val();
+            $("#inputorder").val();
+        })
+        $("#demo_spec2_right").on("click", () => {
+            $("#inputspecname").val("寵物專用毛梳");
+            $("#inputprice").val();
+            $("#inputamount").val();
+            $("#inputdiscount").val();
+            $("#inputorder").val();
+        })
+    </script>
     @*產生商品名稱*@
     <script>
         const merchandiseid = $("#showmerchandiseid").val();

@@ -132,7 +132,7 @@
                     foreach (var item in Model)
                     {
                         string showName = (item.FullName.Length > 11) ? item.FullName.Substring(0, 10) + "  ..." : item.FullName;
-                        string imageUrl = (item.ImageUrl == null) ? "default.png" : item.ImageUrl;
+                        string imageUrl = (item.MerchandiseImageUrl == null) ? "default.png" : item.MerchandiseImageUrl;
                         string showPrice = item.Price + " 元";
 
                         <div class="col">

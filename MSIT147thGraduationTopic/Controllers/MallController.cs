@@ -18,7 +18,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public IActionResult Index(string txtKeyword = "", int searchCondition = 1, int displayorder = 0, 
                                     int pageSize = 20, int PageIndex = 1, int sideCategoryId = 0, 
                                     int? minPrice = null, int? maxPrice = null, int tagId = 0)
-        {
+        {   //todo 搜尋欄位RWD換行不成功
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
             ViewBag.displayorder = displayorder;
