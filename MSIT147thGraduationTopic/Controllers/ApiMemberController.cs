@@ -11,6 +11,8 @@ using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using System.ComponentModel.DataAnnotations;
+using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
+using System.Security.Policy;
 
 namespace MSIT147thGraduationTopic.Controllers
 {

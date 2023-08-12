@@ -14,7 +14,8 @@
             <div class="form mb-3">
                 <label for="memberName" class="form-label fw-bold">姓名</label>
                 <input class="form-control" id="memberName" name="MemberName" type="text" required />
-                <div class="invalid-feedback">請輸入姓名</div>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
             </div>
             <!-- Gender input-->
             <div class="form mb-3">
@@ -38,7 +39,8 @@
             <div class="form mb-3">
                 <label for="account" class="form-label fw-bold">帳號</label>
                 <input class="form-control" id="account" name="Account" type="text" required />
-                <div class="invalid-feedback">請輸入帳號</div>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
             </div>
             <!-- Password input-->
             <div class="form mb-3">
@@ -47,28 +49,29 @@
                 </label>                
                 <input class="form-control" id="password" name="Password" type="password"
                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32}" required /> 
-                <div class="invalid-feedback">請輸入密碼</div>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
                 <label for="confirmPassword" class="form-label fw-bold">確認密碼</label>                
-                <input class="form-control" id="confirmPassword"
-                       type="password" required>
-                <div class="invalid-feedback">與密碼不符！</div>
+                <input class="form-control" id="confirmPassword" type="password" required>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
             </div>
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">Email</label>
                 <input class="form-control" id="email" name="Email" type="email" required />
-                <div class="invalid-feedback">請輸入Email</div>
-                @*<div class="invalid-feedback visually-hidden">Email格式錯誤</div>*@
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
-                <input class="form-control" id="phone" name="Phone" type="tel"
-                       pattern="09\d{8}" required />
-                <div class="invalid-feedback">請輸入手機號碼</div>
+                <input class="form-control" id="phone" name="Phone" type="tel" required />
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
             </div>
             <!-- Address input-->
             <div class="form-label mb-3">
@@ -91,7 +94,8 @@
                 <div class="input-group">
                     <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-control" 
                            required />
-                    <div class="invalid-feedback">請輸入生日</div>
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback"></div>
                 </div>
             </div>            
             <!-- Avatar input-->
@@ -109,6 +113,7 @@
                 <button type="button" id="demoMemberRegister">demoMember</button>
             </div>
         </form>
+        <p class="fs-4">@ViewBag.SuccessMessage</p>
     </div>
 </div>
 

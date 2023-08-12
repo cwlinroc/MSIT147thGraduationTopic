@@ -25,12 +25,12 @@ namespace MSIT147thGraduationTopic.Controllers
             _mailService = mailService;
         }
 
-        [HttpPost("forgetPwd")]
-        public async Task<IActionResult> SendPwdMail([FromForm] MailRequest pwdRequest)
+        [HttpPost]
+        public async Task<IActionResult> SendPwdMail([FromForm] MailRequest request)
         {  
             try
             {
-                await _mailService.SendEmailAsync(pwdRequest);
+                await _mailService.SendEmailAsync(request);
                 return Ok();
             }
             catch (Exception)

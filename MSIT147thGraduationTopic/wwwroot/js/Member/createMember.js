@@ -72,6 +72,50 @@ $("#demoMemberRegister").click(() => {
     $('#DateOfBirth').val('1999-09-09');
 })
 
+const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
+
+function createValidator() {
+    
+    myValid.validateFunction(() => {
+        const name = document.querySelector('#memberName')
+        const nameHasValue = Boolean(name.value)
+        
+        name.setValidate(() => nameHasValue, '請輸入姓名')
+
+        const account = document.querySelector('#account')
+        const accountHasValue = !!account.value
+        account.setValidate(() => accountHasValue, '請輸入帳號')
+
+        const password = document.querySelector('#password')
+        const confirmPassword = document.querySelector('#confirmPassword')
+        const passwordHasValue = !!password.value
+        const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
+        const confirmPasswordValid = confirmPassword.value === password.value
+        password.setValidate(() => passwordHasValue, '請輸入密碼')
+                .setValidate(() => passwordPatternValid, '密碼格式錯誤')
+                .setValidate(() => confirmPasswordValid, '與密碼不符')
+        passwordValid = passwordHasValue && passwordPatternValid && confirmPasswordValid
+
+        const phone = document.querySelector('#phone')
+        const phoneHasValue = !!phone.value
+        const phonePatternValid = /^09\d{8}$/.test(phone.value)
+        phone.setValidate(() => phoneHasValue, '請輸入手機號碼')
+             .setValidate(() => phonePatternValid, '手機號碼格式錯誤')
+
+        const email = document.querySelector('#email')
+        const emailHasValue = !!email.value
+        const emailPatternValid = /^\w+@\w+/.test(email.value)
+        email.setValidate(() => emailHasValue, '請輸入Email')
+             .setValidate(() => emailPatternValid, 'Email格式錯誤')
+        
+        return nameHasValue && phoneHasValue && phonePatternValid && emailHasValue && passwordValid
+            && accountHasValue && emailPatternValid
+    })    
+    return myValid.startValidate()
+}
+
+$('#btnSubmit').click(createValidator)
+
 const forms = document.querySelectorAll('.needs-validation');
 
 Array.from(forms).forEach(form => {

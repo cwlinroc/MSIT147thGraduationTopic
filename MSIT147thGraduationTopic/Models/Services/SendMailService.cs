@@ -1,13 +1,10 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Interfaces;
-using System;
-using System.Security.Policy;
 using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
 
 namespace MSIT147thGraduationTopic.Models.Services
@@ -23,7 +20,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             _mailSettings = mailSettings.Value;
         }
 
-        async Task IMailService.SendEmailAsync(MailRequest mailRequest)
+        public async Task SendEmailAsync(MailRequest mailRequest)
         {
             // 寄/收件人資訊
             var email = new MimeMessage();
