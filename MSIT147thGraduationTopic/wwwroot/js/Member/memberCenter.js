@@ -173,7 +173,7 @@ function editValidator() {
         }
 
         const phoneHasValue = !!phone.value
-        let phonePatternValid = /^09\d{8}$/.test(phone.value)
+        let phonePatternValid = /^09\d{2}-\d{3}-\d{3}$/.test(phone.value)
 
         if ($('#phoneEditedChk').attr('checked')) {
             phone.setValidate(() => phoneHasValue, '請輸入手機號碼')

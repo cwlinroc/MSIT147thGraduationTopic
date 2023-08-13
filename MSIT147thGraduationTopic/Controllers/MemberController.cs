@@ -36,25 +36,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             return View();
         }
-
-        //[HttpPost]
-        //public IActionResult CreateMember(string account)
-        //{
-        //    var member = _context.Members.FirstOrDefault(a => a.Account == account);
-        //    string body = _mailService.CreateUrl(member.Account, _url, "EmailVerify", "Member");
-
-        //    MailRequest request = new MailRequest()
-        //    {
-        //        ToEmail = member.Email,
-        //        Subject = "福祿獸購物商城帳號驗證信",
-        //        Body = $"<html><body><h1>驗證確認</h1><h3>EShopping 驗證連結，<a href=\"{body}\">請點選驗證</a></h3></body></html>"
-        //    };
-
-        //    _mailService.SendEmailAsync(request);
-        //    ViewBag.SuccessMessage = "郵件已發送，請檢查您的信箱!";
-        //    return View();
-        //}
-
+        
         public IActionResult LogIn()
         {
             return View();
@@ -99,39 +81,36 @@ namespace MSIT147thGraduationTopic.Controllers
         public ActionResult EmailVerify(string token)
         {   // 在此查找資料庫中與此token相匹配的帳戶
             var member = _context.Members.FirstOrDefault(a => a.ConfirmGuid == token);
-
+                        
             if (member != null)
-            {
+            {                
                 // 轉到改密碼頁面
                 return RedirectToAction("EmailVT", new { account = member.Account });
             }
             else
-            {               
+            {
                 return RedirectToAction("Index", "Home");
             }
         }
-
-        //信件驗證正確頁面(填新密碼 如果是新註冊就啟動後跳轉首頁)
+        
         public ActionResult EmailVT(string account)
         {
             var member = _context.Members.FirstOrDefault(a => a.Account == account);
 
-            if(!member.IsActivated) 
+            if (!member.IsActivated)
             {
                 member.ConfirmGuid = null;
                 member.IsActivated = true;
                 _context.SaveChanges();
-                return RedirectToAction("index", "home");
+
+                return RedirectToAction("CertificateBulletin", "Member");
             }
-            else
-            {
-                return View();
-            }            
-        }
+            return View();
+        }        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EmailVT(string account, string newPassword)
+        public ActionResult EmailVT(string account, string password)
         {
             var member = _context.Members.FirstOrDefault(a => a.Account == account);
 
@@ -142,17 +121,22 @@ namespace MSIT147thGraduationTopic.Controllers
                 // 如果找到了相匹配的帳戶，更新帳戶狀態                
                 member.ConfirmGuid = null; //清空token
                 member.Salt = salt;
-                member.Password = newPassword.GetSaltedSha256(salt);
+                member.Password = password.GetSaltedSha256(salt);
                 _context.SaveChanges();
 
                 ViewBag.SuccessMessage = "儲存成功！將在三秒後跳轉到首頁";
                 Thread.Sleep(3000);
-                return RedirectToAction("index","home");
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.ErrorMessage = "存取失敗，請重新操作。";
             return View();
         }
+
+        public ActionResult CertificateBulletin()
+        {
+            return View();
+        }        
 
 
         [Authorize(Roles = "會員")]

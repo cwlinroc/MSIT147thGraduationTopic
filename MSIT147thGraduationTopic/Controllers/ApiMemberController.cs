@@ -13,6 +13,7 @@ using MSIT147thGraduationTopic.Models.Infra.Utility;
 using System.ComponentModel.DataAnnotations;
 using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
 using System.Security.Policy;
+using MSIT147thGraduationTopic.Models.Interfaces;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -22,16 +23,20 @@ namespace MSIT147thGraduationTopic.Controllers
     {
         private readonly GraduationTopicContext _context;
         private readonly MemberService _service;
-        private readonly ShoppingHistoryService _shService;        
-        private readonly IWebHostEnvironment _environment;        
+        private readonly ShoppingHistoryService _shService;
+        private readonly IMailService _mailService;
+        private readonly IWebHostEnvironment _environment;
+        private readonly IUrlHelper _url;
 
         private readonly string[] _employeeRoles;
 
-        public ApiMemberController(GraduationTopicContext context
-            , IWebHostEnvironment environment, IOptions<OptionSettings> options)
+        public ApiMemberController(GraduationTopicContext context, IMailService mailService
+            , IWebHostEnvironment environment, IOptions<OptionSettings> options, IUrlHelper url)
         {
             _context = context;
             _environment = environment;
+            _mailService = mailService;
+            _url = url;
             _service = new MemberService(context, environment);
             _shService = new ShoppingHistoryService(context, environment);
 
@@ -49,7 +54,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             return _service.GetMemberByNameOrAccount(query).ToList();
         }
-        
+
 
         [HttpGet("ShoppingHistory")]
         public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId()
@@ -69,6 +74,17 @@ namespace MSIT147thGraduationTopic.Controllers
             try
             {
                 var memberId = _service.CreateMember(vm.ToDto(), avatar);
+                string body = _mailService.CreateUrl(vm.Account, _url, "EmailVerify", "Member");
+
+                MailRequest request = new MailRequest()
+                {
+                    ToEmail = vm.Email,
+                    Subject = "福祿獸購物商城帳號驗證信",
+                    Body = $"<html><body><h1>驗證確認</h1><h3><a href=\"{body}\">請點這裡驗證</a></h3></body></html>"
+                };
+
+                _mailService.SendEmailAsync(request);
+
                 return memberId;
             }
             catch (Exception)
@@ -90,19 +106,6 @@ namespace MSIT147thGraduationTopic.Controllers
                 throw;
             }
         }
-
-        //[HttpPut("{account}")]
-        //public ActionResult<> ChangeMemberPwd()
-        //{
-        //    try
-        //    {
-        //        
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
 
         [HttpPut("memberCenter")]
         public ActionResult<int> UpdateSelfData([FromForm] MemberCenterEditVM vm, [FromForm] IFormFile? avatar)
@@ -156,10 +159,10 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             var member = await _context.Members
-                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar, o.MemberId })
+                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar, o.MemberId, o.IsActivated })
                 .FirstOrDefaultAsync(o => o.Account == record.Account);
 
-            if (member != null)
+            if (member != null && member.IsActivated)
             {
                 string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
                 if (member.Password != saltedPassword) return string.Empty;
@@ -178,9 +181,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
                 return "reload";
             }
+            else if (!member.IsActivated)
+            {
+                return "Member/NoRole";
+            }
             return string.Empty;
         }
-        
+
 
         [HttpGet("logout")]
         public async Task<ActionResult<string>> LogOut()

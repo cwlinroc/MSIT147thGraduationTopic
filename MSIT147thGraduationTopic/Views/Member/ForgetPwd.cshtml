@@ -25,14 +25,16 @@
                 <div class="invalid-feedback"></div>
             </div>
             <!-- Submit Button-->
-            <div class="d-grid col-lg-6 offset-3 mt-3 mb-5">
+            <div class="d-grid col-lg-6 offset-3 my-4">
                 <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
                     送出
                 </button>                
             </div>
         </form>
-        <p class="fs-4">@ViewBag.ErrorMessage</p>
-        <p class="fs-4 justify-content-center">@ViewBag.SuccessMessage</p>
+        <div class="col-lg-6 offset-3 d-flex justify-content-center">
+            <p class="fs-4">@ViewBag.ErrorMessage</p>
+            <p class="fs-4">@ViewBag.SuccessMessage</p>
+        </div>        
     </div>
 </div>
 
@@ -55,6 +57,10 @@
                 return accountHasValue && emailHasValue && emailPatternValid
             })            
             return myValid.startValidate()
+        }
+
+        function clearAllValidFeedBack() {            
+            myValid.endtValidate()
         }
 
         $('#btnSubmit').click(ForgetPwdValidator)

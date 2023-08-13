@@ -65,7 +65,7 @@ $("#demoMemberRegister").click(() => {
     $('#password').val('demoMember99');
     $('#confirmPassword').val('demoMember99');
     $('#email').val('demoMember999@gmail.com');
-    $('#phone').val('0912345678');
+    $('#phone').val('0912-345-678');
     $('#city').val('臺北市');
     $('#district').val('大安區');
     $('#address').val('復興南路一段390號2樓');
@@ -98,7 +98,7 @@ function createValidator() {
 
         const phone = document.querySelector('#phone')
         const phoneHasValue = !!phone.value
-        const phonePatternValid = /^09\d{8}$/.test(phone.value)
+        const phonePatternValid = /^09\d{2}-\d{3}-\d{3}$/.test(phone.value)
         phone.setValidate(() => phoneHasValue, '請輸入手機號碼')
              .setValidate(() => phonePatternValid, '手機號碼格式錯誤')
 
@@ -156,6 +156,7 @@ Array.from(forms).forEach(form => {
         await Swal.fire({
             icon: 'success',
             title: '註冊成功!',
+            text: '驗證郵件已發送，請檢查您的信箱!',
             allowOutsideClick: false
         })
 
