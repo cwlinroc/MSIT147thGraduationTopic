@@ -210,7 +210,7 @@ function getEntriesDataHtml(data) {
                             ${options.join('')}
                         </select>
                     </td>
-                    <td><button class="btn btn-danger entry-delete">刪除</button></td>
+                    <td><button class="btn btn-danger entry-delete"><i class="fa-solid fa-trash-can"></i></button></td>
                 </tr>`
     })
     return strs.join('')

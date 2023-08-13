@@ -101,9 +101,20 @@ $('#submitOrder').click(async event => {
         cancelButtonText: '取消'
     })
     if (!result.isConfirmed) return
-
-    orderForm.submit()
+    submitEvent()
+    //orderForm.submit()
 })
+
+async function submitEvent() {
+    const formData = new FormData(document.orderForm)
+    const response = await fetch(`${ROOT}/api/apibuy/sendorder`, {
+        method: 'POST',
+        body: formData
+    })
+    const result = await response.json()
+    console.log(result)
+}
+
 
 /***functions***/
 

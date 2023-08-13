@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<body>
+    <!-- 最上方的 bar -->
+    <div class="topnav">
+        <a>Line Login</a>
+        <a>User Profile</a>
+        <a>Line Pay</a>
+    </div>
+    <!-- 商品畫面 -->
+    <center>
+        <table>
+            <thead>
+                <tr>
+                    <th> 測試商品 </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="https://static.accupass.com/org/2011051025162614811630.jpg"></td>
+                </tr>
+                <tr>
+                    <td> 價格 : 1999 </td>
+                </tr>
+                <tr>
+                    <td> 購買數量 : 2 </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;"> 總金額 : 3998 </td>
+                </tr>
+                <tr>
+                    <td align="center"><button onclick="requestPayment()"> Line Pay 付款</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </center>
+</body>
+
+
+@section Scripts{
+    <script>        
+        const baseUrl = '@(ViewBag.BaseUrl)'
+        console.log(baseUrl)
+        let baseLoginPayUrl = baseUrl + '/api/LinePay/';
+        function requestPayment() {
+            // 交易訂單假資料
+            payment = {
+                amount: 3998,
+                currency: "TWD",
+                orderId: Date.now().toString(), //使用 Timestamp 當作 orderId
+                packages: [
+                    {
+                        id: "20191011I001",
+                        amount: 3998,
+                        name: "測試",
+                        products: [
+                            {
+                                name: "測試商品",
+                                imageUrl: "https://static.accupass.com/org/2011051025162614811630.jpg",
+                                quantity: 2,
+                                price: 1999,
+                            }
+                        ]
+                    },
+                ],
+                RedirectUrls: {
+                    ConfirmUrl: baseUrl + "/Test/Confirm/",
+                    CancelUrl: baseUrl + "/Test/Cancel/",
+                },
+            };
+
+            // 送出 交易申請至商家 server
+            $.post({
+                url: baseLoginPayUrl + "Create",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(payment),
+                success: (res) => {
+                    window.location = res.info.paymentUrl.web;
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            })
+        }
+    </script>
+}

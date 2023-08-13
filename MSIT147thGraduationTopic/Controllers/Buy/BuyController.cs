@@ -40,49 +40,10 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             ViewBag.MemberName = member.MemberName;
             ViewBag.MemberEmail = member.Email;
 
-            //var cartItemsTask = _service.GetCartItems(ids);
-            //var couponsTask = _service.GetAllCouponsAvalible(member.MemberId);
-            //await Task.WhenAll(cartItemsTask, couponsTask);
-            //ViewBag.Coupons = couponsTask.Result;
-            //return View(cartItemsTask.Result);
-
             var cartItems = await _service.GetCartItems(ids);
             var coupons = await _service.GetAllCouponsAvalible(member.MemberId);
             ViewBag.Coupons = coupons;
             return View(cartItems);
-        }
-
-
-
-        public record OrderRecord(
-            [Required] string City,
-            [Required] string District,
-            [Required] string Address,
-            [Required] string Phone,
-            string? CouponId,
-            [Required] string Payment,
-            string Remark);
-
-        [HttpPost]
-        public async Task<IActionResult> Index(OrderRecord record)
-        {
-            //memberId
-            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
-            {
-                return BadRequest("找不到對應會員ID");
-            }
-
-            //cartItemIds
-            string? json = HttpContext.Session.GetString("cartItemIds");
-            if (string.IsNullOrEmpty(json)) return BadRequest("沒有預計購買的商品");
-            int[] cartItemIds = JsonSerializer.Deserialize<int[]>(json)!;
-
-            int result = await _service.CreateOrder(cartItemIds, memberId, record);
-            if (result < 0) return BadRequest();
-
-
-            //??
-            return RedirectToAction("Succeed");
         }
 
 

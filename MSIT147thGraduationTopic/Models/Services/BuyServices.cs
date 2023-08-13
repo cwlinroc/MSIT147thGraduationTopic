@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Dtos.LinePay;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.Collections.Generic;
-using static MSIT147thGraduationTopic.Controllers.Buy.BuyController;
+using System.Transactions;
+using static MSIT147thGraduationTopic.Controllers.Buy.ApiBuyController;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {
@@ -88,10 +91,9 @@ namespace MSIT147thGraduationTopic.Models.Services
                 .Select(o => new BuyPageCouponVM { CouponId = o.CouponId, CouponName = o.CouponName });
         }
 
-        public async Task<int> CreateOrder(int[] cartItemIds, int memberId, OrderRecord record)
+        public async Task<(int, int, List<CartItemCheckoutDto>)> CreateOrder(int[] cartItemIds, int memberId, OrderRecord record)
         {
-            //var combined = _repo.GetCartItemsAndSpecs(cartItemIds);
-            var checkoutDto = _repo.GetCheckoutInformation(cartItemIds);
+            var checkoutDto = await _repo.GetCheckoutInformation(cartItemIds);
 
             //TODO-cw checkamount
             int? couponId = int.TryParse(record.CouponId, out int tempNum) ? tempNum : null;
@@ -101,7 +103,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             {
                 MemberId = memberId,
                 PaymentMethodId = int.Parse(record.Payment),
-                Payed = true,
+                Payed = false,
                 PurchaseTime = DateTime.Now,
                 UsedCouponId = (record.CouponId != null) ? int.Parse(record.CouponId) : null,
                 PaymentAmount = totalPayment,
@@ -112,11 +114,12 @@ namespace MSIT147thGraduationTopic.Models.Services
                 Remark = record.Remark
             };
 
-            //TODO-cw Transaction
+            //Transaction
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
             int orderId = _repo.CreateOrder(order);
 
-            if (orderId <= 0) return -1;
+            if (orderId <= 0) return (-1, -1, new());
 
             var orderLists = checkoutDto.Select(o =>
             {
@@ -132,12 +135,13 @@ namespace MSIT147thGraduationTopic.Models.Services
             });
 
             int listCreated = _repo.CreateOrderLists(orderLists);
-            if (listCreated <= 0) return -1;
+            if (listCreated <= 0) return (-1, -1, new());
 
             int cartItemsDeleted = _repo.ClearCartItems(cartItemIds);
-            if (cartItemsDeleted <= 0) return -1;
+            if (cartItemsDeleted <= 0) return (-1, -1, new());
 
-            return orderId;
+            await _context.Database.CommitTransactionAsync();
+            return (orderId, totalPayment, checkoutDto);
         }
 
         private async Task<int> CalculateTotalPayment(IEnumerable<CartItemCheckoutDto> checkoutDtos, int? couponId)
@@ -192,6 +196,8 @@ namespace MSIT147thGraduationTopic.Models.Services
             //else
             return checkoutDtos.Sum(o => (o.Price * o.DiscountPercentage / 100) * o.Quantity);
         }
+
+        
 
     }
 }
