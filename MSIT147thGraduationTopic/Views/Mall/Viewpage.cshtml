@@ -100,6 +100,10 @@
                             </ol>
                         </nav>
                         <h5 id="showBrandName"></h5>
+                        <span >
+                            <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
+                            <span id="score"></span>
+                        </span>
                         <h2 id="showMerchandiseName">商品名稱</h2><div id="merchandiseIdContainer" val-id="@Model.First().MerchandiseId" style="display:none"></div>
                         <br>
                         <h5>價格：<span id="showPrice"></span></h5>
@@ -110,7 +114,7 @@
                             @{
                                 foreach (var item in Model)
                                 {
-                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
+                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Popularity" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
                                 }
                             }
                         </div>
@@ -208,8 +212,10 @@
         //給予購買數初值
         let currentSpecid;
         let purchaseAmount = 1;
+        let originalPrice;
         let currentPrice;
         let maxAmount;
+        let score;
 
         //產生商品資料
         $(async () => {
@@ -240,15 +246,20 @@
             //變更按鈕格式
             $(".showSpec").attr("class", "btn btn-outline-secondary mx-1 my-1 showSpec");
             $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
+            //顯示評分
+            score = $(e.currentTarget).attr("data-score");
+            $("#score").text(score);
             //顯示價格&庫存
-            currentPrice = $(e.currentTarget).attr("data-price");
+            const showPrice = document.querySelector("#showPrice");
+            originalPrice = $(e.currentTarget).attr("data-price");
             discountPercentage = $(e.currentTarget).attr("data-discountPercentage");
             const canceledPrice = (discountPercentage == 100) ? '' :
-                `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${currentPrice}</span></del>`;
-
+                `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${originalPrice}</span></del>`;
+            currentPrice = originalPrice * discountPercentage / 100;
+            console.log(currentPrice);
 
             maxAmount = $(e.currentTarget).attr("data-amount");
-            $("#showPrice").text(currentPrice + " 元");
+            showPrice.innerHTML = canceledPrice + " NTD$" + currentPrice;
             $("#showAmount").text(maxAmount);
             //設定購買數初值&最大值 + 重置總金額
             $("#buyAmount").attr("max", maxAmount);
