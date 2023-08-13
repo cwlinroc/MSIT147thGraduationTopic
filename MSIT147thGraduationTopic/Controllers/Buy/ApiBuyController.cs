@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Dtos.Buy;
 using MSIT147thGraduationTopic.Models.Dtos.LinePay;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.LinePay;
@@ -68,7 +69,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             string? Remark);
 
         [HttpPost("sendorder")]
-        public async Task<ActionResult<dynamic>> SendOrder([FromForm] OrderRecord record)
+        public async Task<ActionResult<OrderResponseDto>> SendOrder([FromForm] OrderRecord record)
         {
             //memberId
             if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
@@ -92,11 +93,21 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
                 var linepayRequestDto = linepayservice.GetPaymentRequestDto(orderId, totalPaymentAmount, baseUrl, checkoutDtos);
                 var linepayResponseDto = await linepayservice.SendPaymentRequest(linepayRequestDto);
                 //return new JsonResult(linepayResponseDto);
-                return linepayResponseDto;
+                return new OrderResponseDto
+                {
+                    Succeed = linepayResponseDto.ReturnCode == "0000",
+                    Message = "ReturnCode:" + linepayResponseDto.ReturnCode + ". " + linepayResponseDto.ReturnMessage,
+                    Web = linepayResponseDto?.Info?.PaymentUrl?.Web
+                };
             }
 
             //??
-            return null;
+            return new OrderResponseDto
+            {
+                Succeed = true,
+                Message = "it works anyway",
+                Web = baseUrl + "/buy/suceed"
+            };
 
         }
 

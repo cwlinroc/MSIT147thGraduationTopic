@@ -46,8 +46,25 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             return View(cartItems);
         }
 
+        public IActionResult LinePayConfirm(long transactionId, string orderId)
+        {
+            ViewBag.BaseUrl = $"{Request.Scheme}://{Request.Host}";
+            ViewBag.TransactionId = transactionId;
+            ViewBag.OrderId = orderId;
+            ViewBag.Payment = _context.Orders.Find(int.Parse(orderId))?.PaymentAmount;
+
+            return View();
+        }
+
 
         public IActionResult Succeed()
+        {
+            return View();
+        }
+
+
+        //TODO-cw 失敗頁面
+        public IActionResult Failed()
         {
             return View();
         }

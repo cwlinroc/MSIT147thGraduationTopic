@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "LinePayConfirm";
+}
+
+<h1>LinePayConfirm</h1>
+<div class="container d-flex justify-content-center">
+    <div>
+        <h2>交易金額共：NT$<span>@ViewBag.Payment</span>元</h2>
+        <h4>交易狀態：<span id="paymentStatus">待確認</span></h4>
+        <div><button class="btn btn-warning" id="confirmLinepay">確認</button></div>
+    </div>    
+</div>
+
+@section Scripts{
+    <script>
+        const baseUrl = '@(ViewBag.BaseUrl)'
+        const baseLoginPayUrl = baseUrl + '/api/LinePay/';
+        const transactionId = "@ViewBag.TransactionId";
+        const orderId = "@ViewBag.OrderId";
+
+        console.log(transactionId)
+        console.log(orderId)
+
+        $('#confirmLinepay').click(confirmPayment)
+        function confirmPayment() {            
+            payment = {
+                amount: @ViewBag.Payment,
+                currency: "TWD",
+            };
+            //  送出確認交易
+            $.post({
+                url: baseLoginPayUrl + `Confirm?transactionId=${transactionId}&orderId=${orderId}`,
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(payment),
+                success: (res) => {
+                    $("#paymentStatus").text("成功")
+                    console.log(res);
+
+                    setTimeout(() => {
+                        alert('或許該跳轉頁面');
+                    }, 2000);
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            })
+        }
+    </script>
+
+}
+

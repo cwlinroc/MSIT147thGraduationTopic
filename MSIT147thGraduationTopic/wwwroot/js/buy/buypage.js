@@ -90,6 +90,7 @@ $('#nextPage4').click(async e => {
 
 //送出按鈕
 $('#submitOrder').click(async event => {
+    console.log()
     const result = await Swal.fire({
         title: '訂單提交',
         text: "確定將送出該筆訂單?",
@@ -113,6 +114,7 @@ async function submitEvent() {
     })
     const result = await response.json()
     console.log(result)
+    if(result.succeed) window.location = result.web
 }
 
 

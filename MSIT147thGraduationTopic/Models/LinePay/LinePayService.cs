@@ -40,8 +40,8 @@ namespace MSIT147thGraduationTopic.Models.LinePay
             //redirecturl
             var redirectUrl = new RedirectUrlsDto
             {
-                ConfirmUrl = baseUrl + "/Test/Confirm/",
-                CancelUrl = baseUrl + "/Test/Confirm/",
+                ConfirmUrl = baseUrl + "/Buy/LinePayConfirm/",
+                CancelUrl = baseUrl + "/Buy/Failed/",
             };
             req.RedirectUrls = redirectUrl;
 
@@ -64,6 +64,7 @@ namespace MSIT147thGraduationTopic.Models.LinePay
                 OriginalPrice = o.DiscountPercentage == 100 ? null : o.Price * o.Quantity,
             });
             package.Products.AddRange(products);
+            package.Amount = products.Sum(o => o.Price * o.Quantity);
 
             return req;
         }
