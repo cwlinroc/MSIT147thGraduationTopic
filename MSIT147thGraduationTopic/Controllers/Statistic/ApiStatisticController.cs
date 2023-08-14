@@ -21,9 +21,9 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
         }
 
         [HttpGet("salechart")]
-        public async Task<ActionResult<SaleChartDto?>> GetSaleChart(string measurement, string classification, int monthsBefore)
+        public async Task<ActionResult<SaleChartDto?>> GetSaleChart(string measurement, string classification, int daysBefore)
         {
-            return await _service.GetSaleChart(measurement, classification, monthsBefore);
+            return await _service.GetSaleChart(measurement, classification, daysBefore);
         }
 
 

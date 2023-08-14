@@ -17,12 +17,20 @@ namespace MSIT147thGraduationTopic.Models.Services
         }
 
 
-        public async Task<SaleChartDto?> GetSaleChart(string measurement, string classification, int monthBefore)
+        public async Task<SaleChartDto?> GetSaleChart(string measurement, string classification, int daysBefore)
         {
-            var timeBefore = DateTime.Now.AddMonths(-monthBefore);
+            var timeBefore = DateTime.Now.AddDays(-daysBefore);
             measurement = measurement.Trim().ToLower();
             classification = classification.Trim().ToLower();
-            return await _repo.GetSaleChart(measurement, classification, timeBefore);
+
+            var dto = await _repo.GetSaleChart(measurement, classification, timeBefore);
+            if (dto != null) dto.MeasurementUnit = classification switch
+            {
+                "quantity" => "購買數量",
+                "profit" => "訂單總額",
+                _ => string.Empty
+            };
+            return dto;
         }
 
     }

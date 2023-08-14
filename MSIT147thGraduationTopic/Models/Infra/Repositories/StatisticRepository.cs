@@ -39,7 +39,7 @@ WHERE o.PurchaseTime > @TimeBefore
 GROUP BY c.CategoryName
 ",
                 "animal" => $@"
-SELECT t.TagName AS Label , SUM(ol.Quantity * ol.Price * ol.Discount / 100) as Data
+SELECT t.TagName AS Label , SUM({sum}) as Data
 FROM Tags t
 JOIN SpecTags st ON t.TagId = st.TagId
 JOIN Specs s ON st.SpecId = s.SpecId
