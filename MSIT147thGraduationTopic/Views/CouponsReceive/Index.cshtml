@@ -1,10 +1,12 @@
 ﻿@using MSIT147thGraduationTopic.Models.Dtos
-@model (IEnumerable<CouponDto> listDiscountAll,IEnumerable<CouponDto> listRebateAll)
+@model (IEnumerable<CouponDto> listDiscount,IEnumerable<CouponDto> listRebate)
 @{
-    Layout = "_BackstagePage";
-    ViewData["Title"] = "優惠券管理系統";
+    ViewData["Title"] = "可領取優惠券一覽表";
+    var listA = Model.Item1;
+    var listB = Model.Item2;
 }
-
+<head>
+</head>
 <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
         <!-- Page Content-->
@@ -40,16 +42,16 @@
                             @*<div class="col-md-3 mb-3">
                                 <label for="selectDiscountStatus">優惠券狀態</label>
                                 <select id="selectDiscountStatus" name="selectDiscountStatus" class="form-select">
-                                    <option></option>
-                                    <option value="" selected>全部</option>
+                                    <option value=""></option>
+                                    <option value="all">全部</option>
+                                    <option value="active">活動中</option>
                                     <option value="upcoming">未開始</option>
-                                    <option value="active">進行中</option>
                                     <option value="expired">已結束</option>
                                 </select>
                             </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
-                                <button type="submit" class="btn btn-primary form-control" id="btnDiscountSearch">搜尋</button>
+                                <button type="submit" class="btn btn-primary form-control" id="btnDiscountSearch" disabled>搜尋</button>
                             </div>
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
@@ -69,14 +71,14 @@
                                     <th scope="col">活動開始日期</th>
                                     <th scope="col">活動結束日期</th>
                                     <th scope="col">打折優惠</th>
-                                    <th scope="col">修改</th>
-                                    <th scope="col">刪除</th>
+                                    <th scope="col">領取</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @{
-                                    foreach (CouponDto c in Model.listDiscountAll)
-                                    {
+                                <form id="Discount" name="Discount" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
+                                    @{
+                                        foreach (CouponDto c in Model.listDiscount)
+                                        {
                                         <tr>
                                             <td id="DiscountId" scope="col">@c.CouponId</td>
                                             <td id="DiscountName" scope="col">@c.CouponName</td>
@@ -85,18 +87,14 @@
                                             <td id="DiscountEndDate" scope="col">@c.CouponEndDate</td>
                                             <td id="DiscountValue" scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
                                             <td id="Discount" scope="col">
-                                                <button type="button" id="btnEditDiscount_@c.CouponId" class="btn btn-success btnEditDiscont">
-                                                    修改
-                                                </button>
-                                            </td>
-                                            <td scope="col">
-                                                <button type="button" id="btnDelete_@c.CouponId" class="btn btn-danger btnDelete">
-                                                    刪除
+                                                <button type="button" id="btnReceiveDiscount_@c.CouponId" class="btn btn-success btnReceiveDiscount">
+                                                    領取
                                                 </button>
                                             </td>
                                         </tr>
+                                        }
                                     }
-                                }
+                                </form>
                             </tbody>
                         </table>
                     </div>
@@ -115,16 +113,16 @@
                             @*<div class="col-md-3 mb-3">
                                 <label for="selectRebateStatus">優惠券狀態</label>
                                 <select id="selectRebateStatus" name="selectRebateStatus" class="form-select">
-                                    <option></option>
-                                    <option value="" selected>全部</option>
+                                    <option value=""></option>
+                                    <option value="all">全部</option>
+                                    <option value="active">活動中</option>
                                     <option value="upcoming">未開始</option>
-                                    <option value="active">進行中</option>
                                     <option value="expired">已結束</option>
                                 </select>
                             </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
-                                <button type="submit" class="btn btn-primary form-control" id="btnRebateSearch">搜尋</button>
+                                <button type="submit" class="btn btn-primary form-control" id="btnRebateSearch" disabled>搜尋</button>
                             </div>
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
@@ -134,55 +132,48 @@
                     </div>
                     <div class="container px-5 my-5">
                         <h2 class="text-center">滿額送優惠券</h2>
-                        <form id="listOfRebate" name="listOfRebate" data-index="-1" class="needs-validation" novalidate>
-                            <table class="table table-dark table-hover" id="tabRebate">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">序號</th>
-                                        <th scope="col">優惠券名稱</th>
-                                        <th scope="col">適用對象</th>
-                                        <th scope="col">活動開始日期</th>
-                                        <th scope="col">活動結束日期</th>
-                                        <th scope="col">額度門檻</th>
-                                        <th scope="col">折扣金額</th>
-                                        <th scope="col">修改</th>
-                                        <th scope="col">刪除</th>
-                                    </tr>
-                                </thead>
+                        <table class="table table-dark table-hover" id="tabRebate">
+                            <thead>
+                                <tr>
+                                    <th scope="col">序號</th>
+                                    <th scope="col">優惠券名稱</th>
+                                    <th scope="col">適用對象</th>
+                                    <th scope="col">活動開始日期</th>
+                                    <th scope="col">活動結束日期</th>
+                                    <th scope="col">額度門檻</th>
+                                    <th scope="col">折扣金額</th>
+                                    <th scope="col">領取</th>
+                                </tr>
+                            </thead>
 
-                                <tbody>
+                            <tbody>
+                                <form id="Rebate" name="Rebate" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
                                     @{
-                                        foreach (CouponDto c in Model.listRebateAll)
+                                        foreach (CouponDto c in Model.listRebate)
                                         {
-                                            <tr>
-                                                <td id="RebateId" scope="col">@c.CouponId</td>
-                                                <td id="RebateName" scope="col">@c.CouponName</td>
-                                                <td id="RebateTagId" scope="col">@c.CouponTagId</td>
-                                                <td id="RebateStartDate" scope="col">@c.CouponStartDate</td>
-                                                <td id="RebateEndDate" scope="col">@c.CouponEndDate</td>
-                                                <td id="RebateCondition" scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
-                                                <td id="RebateDiscount" scope="col">@c.CouponDiscount.ToString("#.##")</td>
-                                                <td scope="col">
-                                                    <button type="button" id="btnEditRebate_@c.CouponId" class="btn btn-success btnEditRebate">
-                                                        修改
-                                                    </button>
-                                                </td>
-                                                <td scope="col">
-                                                    <button type="button" id="btnDelete_@c.CouponId" class="btn btn-danger btnDelete">
-                                                        刪除
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td id="RebateId" scope="col">@c.CouponId</td>
+                                            <td id="RebateName" scope="col">@c.CouponName</td>
+                                            <td id="RebateTagId" scope="col">@c.CouponTagId</td>
+                                            <td id="RebateStartDate" scope="col">@c.CouponStartDate</td>
+                                            <td id="RebateEndDate" scope="col">@c.CouponEndDate</td>
+                                            <td id="RebateCondition" scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
+                                            <td id="RebateDiscount" scope="col">@c.CouponDiscount.ToString("#.##")</td>
+                                            <td scope="col">
+                                                <button type="button" id="btnReceiveRebate_@c.CouponId" class="btn btn-success btnReceiveRebate">
+                                                    領取
+                                                </button>
+                                            </td>
+                                        </tr>
                                         }
                                     }
-                                </tbody>
-                            </table>
-                        </form>
+                                </form>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
             <div class="container px-5 my-5 text-center">
-                <button class="btn btn-primary" id="btnCreate">新增</button>
             </div>
         </section>
         <section class="py-5 bg-light">
@@ -212,7 +203,6 @@
     </footer>
 </body>
 
-
 @section Styles{
     <style>
         #pills-tab {
@@ -226,100 +216,12 @@
         #pills-Rebate-tab {
             margin: 5px;
         }
-
-        .form-group {
-            display: flex;
-            margin-bottom: 1rem;
-        }
-
-            .form-group label {
-                flex: 0 0 auto;
-                margin-right: 1rem;
-            }
-
-            .form-group .form-select {
-                margin-right: 0.5rem;
-            }
-
-        .row {
-            margin-left: -0.5rem;
-            margin-right: -0.5rem;
-        }
-
-        .col-md-3,
-        .col-md-1 {
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
     </style>
+
 }
 
 @section Scripts{
     <script>
-        //#region ShowDiscountDataSweetAlert
-        function ShowDiscountDataSweetAlert() {
-            const couponDiscountId = $('#txtDiscountIdSearch').val();
-            const couponName = $('#DiscountName').text();
-            const couponTagId = $('#DiscountTagId').text();
-            const couponStartDate = $('#DiscountStartDate').text();
-            const couponEndDate = $('#DiscountEndDate').text();
-            const couponDiscount = $('#DiscountValue').text();
-
-            Swal.fire({
-                title: '打折優惠券資訊',
-                html:
-                    `<b>ID序號：</b> ${couponDiscountId}<br>` +
-                    `<b>優惠券名稱：</b> ${couponName}<br>` +
-                    `<b>適用對象：</b> ${couponTagId}<br>` +
-                    `<b>開始日期：</b> ${couponStartDate}<br>` +
-                    `<b>結束日期：</b> ${couponEndDate}<br>` +
-                    `<b>折扣：</b> ${couponDiscount}`,
-                icon: 'info',
-                showDenyButton: true,
-                denyButtonText: `修改`,
-            }).then((result) => {
-                if (result.isDenied) {
-                    const editUrl = `@Url.Content("~/CouponsBackstageSettings/RebateEdit/")${couponDiscountId}`;
-                    console.log(couponDiscountId);
-                    location.href = editUrl;
-                }
-            })
-        }
-        //#endregion
-
-        //#region ShowRabateDataSweetAlert
-        function ShowRabateDataSweetAlert() {
-            const couponRebateId = $('#txtRebateIdSearch').val();
-            const couponName = $('#RebateName').text();
-            const couponTagId = $('#RebateTagId').text();
-            const couponStartDate = $('#RebateStartDate').text();
-            const couponEndDate = $('#RebateEndDate').text();
-            const couponCondition = $('#RebateCondition').text();
-            const couponDiscount = $('#RebateDiscount').text();
-
-            Swal.fire({
-                title: '滿額送優惠券資訊',
-                html:
-                    `<b>ID序號：</b> ${couponRebateId}<br>` +
-                    `<b>優惠券名稱：</b> ${couponName}<br>` +
-                    `<b>適用對象：</b> ${couponTagId}<br>` +
-                    `<b>開始日期：</b> ${couponStartDate}<br>` +
-                    `<b>結束日期：</b> ${couponEndDate}<br>` +
-                    `<b>消費門檻：<b/>${couponCondition}<br>` +
-                    `<b>折扣：</b> ${couponDiscount}`,
-                icon: 'info',
-                showDenyButton: true,
-                denyButtonText: `修改`,
-            }).then((result) => {
-                if (result.isDenied) {
-                    const editUrl = `@Url.Content("~/CouponsBackstageSettings/RebateEdit/")${couponRebateId}`;
-                    console.log(couponRebateId);
-                    location.href = editUrl;
-                }
-            })
-        }
-        //#endregion
-
         //#region NoIdDataSweetAlert
         function NoIdDataSweetAlert() {
             swal.fire({
@@ -352,6 +254,17 @@
 
         //#region 頁面開啟執行
         $(document).ready(function () {
+            $("#txtDiscountIdSearch,#txtDiscountNameSearch,#selectDiscountStatus").on('input', function () {
+                let txtSearchValue = $(this).val();
+
+                if (txtSearchValue === '') {
+                    $('#btnDiscountSearch').prop("disabled", true);
+                }
+                else {
+                    $('#btnDiscountSearch').prop("disabled", false);
+                }
+            });
+
             $('#txtDiscountIdSearch,#txtDiscountNameSearch,#txtRebateIdSearch,#txtRebateNameSearch,#selectDiscountStatus,#selectRebateStatus').val('');
         });
         //#endregion
@@ -371,13 +284,8 @@
             const matchingCoupons = couponNameElements.filter((index, element) =>
                 $(element).text().match(searchKeyword)
             );
-
-            if (!couponDiscountId && !searchKeyword) {
-                Swal.fire({
-                    title: '請輸入查詢條件',
-                    icon: 'info',
-                });
-            }
+            //const now = new Date();
+            //const currentTime = now.toLocaleString();
 
             if (couponDiscountId) {
                 if (couponDiscountId != discountIdValue) {
@@ -421,6 +329,8 @@
                             `<b>折扣：</b> ${couponDiscount}<br><br>`;
                     });
 
+
+
                     Swal.fire({
                         title: '匹配的打折優惠券資訊',
                         html: couponInfo,
@@ -441,12 +351,12 @@
                 $(element).text().match(searchKeyword)
             );
 
-            if (!couponRebateId && !searchKeyword) {
-                Swal.fire({
-                    title: '請輸入查詢條件',
-                    icon: 'info',
-                });
-            }
+            console.log('Button clicked');
+            console.log(couponRebateId);
+            console.log(rebateIdValue);
+            console.log(searchKeyword);
+            console.log(couponNameElements);
+            console.log(matchingCoupons);
 
             if (couponRebateId) {
                 if (couponRebateId != rebateIdValue) {
@@ -490,82 +400,48 @@
         });
         //#endregion
 
-        //#region 打折修改按鈕
-        $('.btnEditDiscount').click(function () {
-            const couponId = $(this).closest('tr').find('td:eq(0)').text();
-            const editUrl = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit/")${couponId}`;
-            console.log(couponId);
-            location.href = editUrl;
-        })
-        //#endregion
+        //#region 領取打折券
+        $('.btnReceiveDiscount').click(function () {
+            const couponId = $(this).closest("tr").find('#DiscountId').text();
 
-        //#region 滿額送修改按鈕
-        $('.btnEditRebate').click(function () {
-            const couponId = $(this).closest('tr').find('td:eq(0)').text();
-            const editUrl = `@Url.Content("~/CouponsBackstageSettings/RebateEdit/")${couponId}`;
-            console.log(couponId);
-            location.href = editUrl;
-        })
-        //#endregion
-
-        //#region 刪除
-        $('.btnDelete').click(function () {
-            const couponId = $(this).closest('tr').find('td:eq(0)').text();
-            const deleteUrl = `@Url.Content("~/api/apicoupon/")${couponId}`;
-
-            Swal.fire({
-                title: '確定要刪除優惠券？',
-                text: '優惠券資料將被移除',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#FF2D2D',
-                cancelButtonColor: '#019858',
-                confirmButtonText: '刪除',
-                cancelButtonText: '取消',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: deleteUrl,
-                        type: 'DELETE',
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
-                        },
-                        success: function (data) {
-                            console.log(data);
-                            Swal.fire('刪除成功', '資料已刪除', '確認').then(() => {
-                                location.reload();
-                            });
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(error);
-                            Swal.fire('刪除失敗', '資料刪除失敗', '確認');
-                        }
+            $.post({
+                url: "@Url.Content("~/api/apicoupon/couponreceive")",
+                dataType: "json",
+                data: JSON.stringify({ id: couponId }),
+                contentType: "application/json",
+                success: async result => {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '成功',
+                        text: '已領取優惠券',
                     });
-                }
-            });
+                    window.location.reload();
+                },
+                error: err => { console.log(err) }
+            })
         })
         //#endregion
 
-        //#region 新增
-        $('#btnCreate').click(function () {
-            Swal.fire({
-                title: '新增優惠券',
-                text: '您想要新增哪種券',
-                icon: 'question',
-                showDenyButton: true,
-                confirmButtonColor: '#FF2D2D',
-                cancelButtonColor: '#019858',
-                confirmButtonText: '打折券',
-                denyButtonText: '滿額送',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    location.href = `@Url.Content("~/CouponsBackstageSettings/DisCountCreate")`;
-                }
-                else if (result.isDenied) {
-                    location.href = `@Url.Content("~/CouponsBackstageSettings/RebateCreate")`;
-                }
-            });
+        //#region 領取滿額送
+        $('.btnReceiveRebate').click(function () {
+            const couponId = $(this).closest("tr").find('#RebateId').text();
+
+            $.post({
+                url: "@Url.Content("~/api/apicoupon/couponreceive")",
+                dataType: "json",
+                data: JSON.stringify({ id: couponId }),
+                contentType: "application/json",
+                success: async result => {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '成功',
+                        text: '已領取優惠券',
+                    });
+                    window.location.reload();
+                },
+                error: err => { console.log(err) }
+            })
         })
-        //#endregion
+                                        //#endregion
     </script>
 }

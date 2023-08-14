@@ -1,71 +1,121 @@
-﻿
+﻿@using MSIT147thGraduationTopic.Models.Dtos
+@model (IEnumerable<CouponFrontDto> listDiscount,IEnumerable<CouponFrontDto> listRebate)
 @{
     ViewData["Title"] = "優惠券列表";
+    var listA = Model.Item1;
+    var listB = Model.Item2;
 }
 
 <div class="text-center mb-4">
     <h1 class="fw-bold mt-4">優惠券列表</h1>
 </div>
 <div class="row" style="--bs-gutter-x:0;">
-    <div class="col-lg-2 offset-1">
-        @{
-            await Html.RenderPartialAsync("MemberSidebar");
-        }
-    </div>
+    @* <div class="col-lg-2 offset-1">
+    @{
+    await Html.RenderPartialAsync("MemberSidebar");
+    }
+    </div>*@
     <div class="col-lg-5 offset-1">
         <div>
-            <table class="table table-bordered mb-5 align-middle text-center fs-4">
-                <thead>
-                    <tr>
-                        <th scope="col" style="width: 30%">優惠券面額</th>
-                        <th scope="col" style="width: 70%">優惠券說明</th>
+            <div class="container px-5 my-5 ">
+                <div class="row justify-content-center">
+                    <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-Discount-tab" data-bs-toggle="pill" data-bs-target="#pills-Discount" type="button" role="tab" aria-controls="pills-Discount" aria-selected="true">打折券</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-Rebate-tab" data-bs-toggle="pill" data-bs-target="#pills-Rebate" type="button" role="tab" aria-controls="pills-Rebate" aria-selected="false">滿額送</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-Discount" role="tabpanel" aria-labelledby="pills-Discount-tab" tabindex="0">
+                    <div class="container px-5 my-5">
+                        <h2 class="text-center">折價優惠券</h2>
+                        <table class="table table-dark table-hover" id="tabDiscount">
+                            <thead>
+                                <tr>
+                                    <th scope="col">序號</th>
+                                    <th scope="col">優惠券名稱</th>
+                                    <th scope="col">適用對象</th>
+                                    <th scope="col">活動開始日期</th>
+                                    <th scope="col">活動結束日期</th>
+                                    <th scope="col">打折優惠</th>
+                                    <th scope="col">使用狀況</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    foreach (CouponFrontDto c in Model.listDiscount)
+                                    {
+                                        string used = c.CouponUsed ? "已使用" : "尚未使用";
+                                        <tr>
+                                            <td id="DiscountId" scope="col">@c.CouponId</td>
+                                            <td id="DiscountName" scope="col">@c.CouponName</td>
+                                            <td id="DiscountTagId" scope="col">@c.CouponTagId</td>
+                                            <td id="DiscountStartDate" scope="col">@c.CouponStartDate</td>
+                                            <td id="DiscountEndDate" scope="col">@c.CouponEndDate</td>
+                                            <td id="DiscountValue" scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
+                                            <td id="DiscountUsed" scope="col">@used</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-Rebate" role="tabpanel" aria-labelledby="pills-Rebate-tab" tabindex="0">
+                <div class="container px-5 my-5">
+                    <h2 class="text-center">滿額送優惠券</h2>
+                    <form id="listOfRebate" name="listOfRebate" data-index="-1" class="needs-validation" novalidate>
+                        <table class="table table-dark table-hover" id="tabRebate">
+                            <thead>
+                                <tr>
+                                    <th scope="col">序號</th>
+                                    <th scope="col">優惠券名稱</th>
+                                    <th scope="col">適用對象</th>
+                                    <th scope="col">活動開始日期</th>
+                                    <th scope="col">活動結束日期</th>
+                                    <th scope="col">額度門檻</th>
+                                    <th scope="col">折扣金額</th>
+                                    <th scope="col">使用狀況</th>
+                                </tr>
+                            </thead>
 
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr>
-                        <td>
-                            9折
-                            <p class="text-danger">即將到期</p>
-                        </td>
-                        <td>
-                            <ul class="couponscript">
-                                <li>適用商品金額(以上)：$3000</li>
-                                <li>適用商品：<a href="">查看適用商品</a></li>
-                                <li>
-                                    有效期限：自 <span>yyyy/MM/dd</span>
-                                    至 <span>yyyy/MM/dd</span>
-                                </li>                               
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fs-4">
-                            $1000                            
-                        </td>
-                        <td>
-                            <ul class="couponscript">
-                                <li>適用商品金額(以上)：$10000</li>
-                                <li>適用商品：<a href="">查看適用商品</a></li>
-                                <li>
-                                    有效期限：自 <span>yyyy/MM/dd</span>
-                                    至 <span>yyyy/MM/dd</span>
-                                </li>                               
-                            </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>       
-        @*<nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">上一頁</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
-            </ul>
-        </nav>*@
+                            <tbody>
+                                @{
+                                    foreach (CouponFrontDto c in Model.listRebate)
+                                    {
+                                        string used = c.CouponUsed ? "已使用" : "尚未使用";
+                                        <tr>
+                                            <td id="RebateId" scope="col">@c.CouponId</td>
+                                            <td id="RebateName" scope="col">@c.CouponName</td>
+                                            <td id="RebateTagId" scope="col">@c.CouponTagId</td>
+                                            <td id="RebateStartDate" scope="col">@c.CouponStartDate</td>
+                                            <td id="RebateEndDate" scope="col">@c.CouponEndDate</td>
+                                            <td id="RebateCondition" scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
+                                            <td id="RebateDiscount" scope="col">@c.CouponDiscount.ToString("#.##")</td>
+                                            <td id="DiscountUsed" scope="col">@used</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <nav aria-label="Page navigation">
+        <ul class="pagination pagination-lg justify-content-center">
+        <li class="page-item"><a class="page-link" href="#">上一頁</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
+        </ul>
+        </nav>
     </div>
 </div>
 
@@ -80,6 +130,24 @@
             padding-left: 0%;
             text-align: left;
         }
+
+        #pills-tab {
+            border-style: inset;
+        }
+
+        #pills-Discount-tab {
+            margin: 5px;
+        }
+
+        #pills-Rebate-tab {
+            margin: 5px;
+        }
     </style>
 }
-          
+
+@section Scripts{
+    <script>
+
+    </script>
+}
+

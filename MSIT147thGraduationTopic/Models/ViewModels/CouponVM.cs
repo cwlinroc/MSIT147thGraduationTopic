@@ -57,6 +57,21 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         }
     }
 
+    public class CouponReceiveCreateVM
+    {
+        public int MemberId { get; set; }
+        public int CouponId { get; set; }
+        public string CouponName { get; set; }
+        public int? CouponTagId { get; set; }
+        public DateTime CouponStartDate { get; set; }
+        public DateTime CouponEndDate { get; set; }
+        public int CouponDiscountTypeId { get; set; }
+        public decimal? CouponCondition { get; set; }
+        public decimal CouponDiscount { get; set; }
+        public bool CouponUsed { get; set; }
+    }
+
+
     //public class CouponEditVM
     //{
     //    public int? CouponTagId { get; set; }
@@ -124,6 +139,43 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 CouponDiscountTypeId = cVM.CouponDiscountTypeId,
                 CouponCondition = cVM.CouponCondition,
                 CouponDiscount = cVM.CouponDiscount,
+            };
+        }
+    }
+
+    static public class CouponReceiveVMTransfer
+    {
+        static public CouponReceiveCreateVM ToReceiveVM(this CouponFrontDto cFDto)
+        {
+            return new CouponReceiveCreateVM
+            {
+                MemberId = cFDto.MemberId,
+                CouponId = cFDto.CouponId,
+                CouponTagId = cFDto.CouponTagId,
+                CouponName = cFDto.CouponName,
+                CouponStartDate = cFDto.CouponStartDate,
+                CouponEndDate = cFDto.CouponEndDate,
+                CouponDiscountTypeId = cFDto.CouponDiscountTypeId,
+                CouponCondition = cFDto.CouponCondition,
+                CouponDiscount = cFDto.CouponDiscount,
+                CouponUsed = cFDto.CouponUsed,
+            };
+        }
+
+        static public CouponFrontDto ToCFDto(this CouponReceiveCreateVM cRCVM)
+        {
+            return new CouponFrontDto
+            {
+                MemberId = cRCVM.MemberId,
+                CouponId = cRCVM.CouponId,
+                CouponTagId = cRCVM.CouponTagId,
+                CouponName = cRCVM.CouponName,
+                CouponStartDate = cRCVM.CouponStartDate,
+                CouponEndDate = cRCVM.CouponEndDate,
+                CouponDiscountTypeId = cRCVM.CouponDiscountTypeId,
+                CouponCondition = cRCVM.CouponCondition,
+                CouponDiscount = cRCVM.CouponDiscount,
+                CouponUsed = cRCVM.CouponUsed,
             };
         }
     }

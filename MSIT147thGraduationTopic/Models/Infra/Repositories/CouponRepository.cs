@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -20,8 +22,38 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
         public IEnumerable<CouponDto> ShowCoupons(int id)
         {
-            var coupons = _context.Coupons.Where(c=>c.CouponDiscountTypeId == id ).ToList();
+            var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == id);
+
+            return coupons.ToList().Select(c => c.ToDto());
+        }
+
+        public IEnumerable<CouponDto> ShowReceivableCoupons(int typeId , int memberId)
+        {
+            var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == typeId 
+                && c.CouponEndDate > DateTime.Now
+                && c.CouponStartDate < DateTime.Now).ToList();
+
+            foreach (var coupon in coupons.ToList())
+            {
+                if (_context.CouponOwners
+                    .Any(o => o.CouponId == coupon.CouponId && o.MemberId == memberId))
+                {
+                    coupons.Remove(coupon);
+                }
+            }
+
             return coupons.Select(c => c.ToDto());
+        }
+
+
+
+        public IEnumerable<CouponFrontDto> ShowCouponsFront(int id)
+        {
+            var coupons = _context.CouponReceives.Where(c => c.CouponDiscountTypeId == id
+                && c.CouponStartDate < DateTime.Now
+                && c.CouponEndDate > DateTime.Now);
+            
+            return coupons.ToList().Select(c => c.ToFrontDto());
         }
 
         public int CreateCoupon(CouponDto cDto)
@@ -32,11 +64,27 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return obj.CouponId;
         }
 
+        public int CouponReceive(int memberId, int couponId)
+        {
+            //var couponOwner = new CouponOwner { 
+            //    MemberId = memberId,
+            //    CouponId = couponId,
+            //    CouponUsed = false,
+            //};
+            //_context.CouponOwners.Add(couponOwner);
+            //return _context.SaveChanges();
+            var conn = _context.Database.GetDbConnection();
+            string sql = "INSERT INTO CouponOwners ( CouponId , MemberId , CouponUsed )" +
+                " values (@CouponId , @MemberId , @CouponUsed )";
+            return conn.Execute(sql, new { MemberId = memberId, CouponId = couponId, CouponUsed = false });
+
+        }
+
         public int EditCoupon(CouponEditDto cEDto)
         {
-            var couponData = _context.Coupons.FirstOrDefault(c=>c.CouponId == cEDto.CouponId);
+            var couponData = _context.Coupons.FirstOrDefault(c => c.CouponId == cEDto.CouponId);
 
-            if(couponData == null)
+            if (couponData == null)
             {
                 return -1;
             }
@@ -46,8 +94,8 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             couponData.CouponTagId = cEDto.CouponTagId;
             couponData.CouponStartDate = cEDto.CouponStartDate;
             couponData.CouponEndDate = cEDto.CouponEndDate;
-            couponData.CouponDiscount= cEDto.CouponDiscount;
-            couponData.CouponCondition= cEDto.CouponCondition;
+            couponData.CouponDiscount = cEDto.CouponDiscount;
+            couponData.CouponCondition = cEDto.CouponCondition;
 
             _context.Coupons.Update(couponData);
             _context.SaveChanges();
@@ -57,11 +105,11 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         public int DeleteCoupon(int couponId)
         {
             var coupon = _context.Coupons.Find(couponId);
-            if(coupon == null)
+            if (coupon == null)
             {
                 return -1;
             }
-            
+
             _context.Coupons.Remove(coupon);
 
             _context.SaveChanges();
@@ -74,21 +122,21 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             var coupon = _context.Coupons.FirstOrDefault(c => c.CouponId == id);
             if (coupon == null)
             {
-                // 位搜尋到id時的處理
+                // 未搜尋到id時的處理
                 return null;
             }
 
             return coupon.ToDto(); //將coupon實體轉換為couponDto
         }
 
-        //public int DetectionName(string name)
-        //{
-        //    var coupon = _context.Coupons.FirstOrDefault(c=>c.CouponName == name);
-
-        //    if(coupon != null)
-        //    {
-
-        //    }
-        //}
+        public CouponFrontDto GetCouponByMemberID(int id)
+        {
+            var coupon = _context.CouponReceives.FirstOrDefault(c => c.MemberId == id);
+            if (coupon == null)
+            {
+                return null;
+            }
+            return coupon.ToFrontDto();
+        }
     }
 }

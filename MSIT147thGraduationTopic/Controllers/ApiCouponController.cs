@@ -5,6 +5,7 @@ using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Security.Claims;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -23,23 +24,6 @@ namespace MSIT147thGraduationTopic.Controllers
             _service = new CouponService(context, environment);
         }
 
-        //public ApiCouponController()
-        //{
-
-        //}
-
-        //[HttpPost]
-        //public ActionResult<int> CreateCoupon([FromForm] CouponCreateVM vm)
-        //{
-        //    return -1;
-        //}
-
-        //[HttpGet]
-        //public ActionResult<List<CouponVM>> GetAllCoupons()
-        //{
-        //    return _service.GetAllCoupons().ToList();
-        //}
-
         [HttpPost]
         public ActionResult<int> CreateCoupon([FromForm] CouponCreateVM vm)
         {
@@ -48,7 +32,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CouponVM> GetCouponById(int id) 
+        public ActionResult<CouponVM> GetCouponById(int id)
         {
             var couponData = _service.GetCouponById(id);
             if (couponData == null)
@@ -57,6 +41,18 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             return couponData.ToVM();
         }
+        public record ReceiveCouponRecord(int id);
+        [HttpPost("couponreceive")]
+        public ActionResult<int> CouponReceive(ReceiveCouponRecord record)
+        {
+            //memberId
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest("找不到對應會員ID");
+            }
+            var dataRowChanged = _service.CouponReceive(memberId,record.id);
+            return dataRowChanged;
+        } 
 
         [HttpPut("{id}")]
         public ActionResult<int> EditCoupon(int id, [FromForm] CouponEditDto cEDto)

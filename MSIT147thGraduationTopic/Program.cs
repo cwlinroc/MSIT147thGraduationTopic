@@ -87,7 +87,7 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=index}/{id?}");
+    pattern: "{controller=CouponFront}/{action=CouponList}/{id?}");
 
 
 
