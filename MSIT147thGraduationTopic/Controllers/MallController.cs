@@ -15,8 +15,8 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Index(string txtKeyword = "", int searchCondition = 1, int displayorder = 0, 
-                                    int pageSize = 20, int PageIndex = 1, int sideCategoryId = 0, 
+        public IActionResult Index(string txtKeyword = "", int searchCondition = 1, int displayorder = 0,
+                                    int pageSize = 20, int PageIndex = 1, int sideCategoryId = 0,
                                     int? minPrice = null, int? maxPrice = null, int tagId = 0)
         {   //todo 搜尋欄位RWD換行不成功
             ViewBag.txtKeyword = txtKeyword;
@@ -45,8 +45,9 @@ namespace MSIT147thGraduationTopic.Controllers
 
             ViewBag.SpecId = SpecId;
 
-            IEnumerable<Spec> datas = _context.Specs
-                .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true).Where(s => s.Amount > 0);
+            IEnumerable<MallViewPageVM> datas = _context.Specs
+                .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true).Where(s => s.Amount > 0)
+                .Select(o => new MallViewPageVM { spec = o, Score = (o.Evaluations.Any()) ? o.Evaluations.Average(x => x.Score) : 0 }).ToList();
 
             return View(datas);
         }

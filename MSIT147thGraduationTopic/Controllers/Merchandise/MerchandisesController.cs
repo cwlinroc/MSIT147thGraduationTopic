@@ -33,8 +33,9 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             ViewBag.PageIndex = PageIndex;
 
             IEnumerable<MerchandiseSearch> datas;
-            datas = from m in _context.MerchandiseSearches
-                    select m;
+            //datas = from m in _context.MerchandiseSearches
+            //        select m;
+            datas = _context.MerchandiseSearches.OrderByDescending(m => m.MerchandiseId);
             if (!string.IsNullOrEmpty(txtKeyword))
             {
                 if (searchCondition == 1)
