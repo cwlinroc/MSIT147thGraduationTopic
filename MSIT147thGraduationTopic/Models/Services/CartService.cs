@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
@@ -36,6 +37,17 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             return await _repo.GetCartCount(memberId);
         }
+
+        public async Task<(bool enough, string message)> CheckStockQuantity(int[]? cartItemIds)
+        {
+            if (cartItemIds.IsNullOrEmpty()) return (false, "沒有查詢的商品");
+
+            var cartItems = await _repo.GetCartItems(cartItemIds!);
+            var message = await _repo.CheckStockQuantity(cartItems);
+
+            return (message.IsNullOrEmpty(), message ?? string.Empty);
+        }
+
 
     }
 }

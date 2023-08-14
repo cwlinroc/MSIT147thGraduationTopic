@@ -48,7 +48,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         public async Task<List<int>> GetRecommendSpecIds(IEnumerable<int>? tagIds, IEnumerable<int>? collisionSpecIds = null, int amount = 20)
         {
             var specs = _context.SpecTags.Where(o => tagIds.IsNullOrEmpty() || tagIds!.Contains(o.TagId))
-                .Select(o => o.Spec).Distinct();
+                .Select(o => o.Spec).Distinct().Where(o => o.OnShelf && o.Amount > 0 && o.Merchandise.Display);
 
             if (!collisionSpecIds.IsNullOrEmpty())
             {

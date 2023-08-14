@@ -90,6 +90,7 @@ $('#nextPage4').click(async e => {
 
 //送出按鈕
 $('#submitOrder').click(async event => {
+    console.log()
     const result = await Swal.fire({
         title: '訂單提交',
         text: "確定將送出該筆訂單?",
@@ -101,9 +102,37 @@ $('#submitOrder').click(async event => {
         cancelButtonText: '取消'
     })
     if (!result.isConfirmed) return
-
-    orderForm.submit()
+    const stockCheck = await checkStockQuantity()
+    if (!stockCheck.enough) {
+        await Swal.fire({
+            icon: 'error',
+            title: '商品庫存不足',
+            text: stockCheck.message,
+            footer: `<a href="${ROOT}/cart">回到購物車</a>`
+        })
+        console.log(stockCheck)
+        return
+    }
+    submitEvent()
 })
+
+async function checkStockQuantity() {
+    const response = await fetch(`${ROOT}/api/apibuy/checkstockquantity`)
+    return await response.json()
+}
+
+
+async function submitEvent() {
+    const formData = new FormData(document.orderForm)
+    const response = await fetch(`${ROOT}/api/apibuy/sendorder`, {
+        method: 'POST',
+        body: formData
+    })
+    const result = await response.json()
+    console.log(result)
+    if(result.succeed) window.location = result.web
+}
+
 
 /***functions***/
 

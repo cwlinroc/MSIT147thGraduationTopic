@@ -90,32 +90,28 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return cartItems.Select(c => (specs.First(s => s.SpecId == c.SpecId), c));
         }
 
-        public IEnumerable<CartItemCheckoutDto> GetCheckoutInformation(int[] cartItemIds)
+        public async Task<List<CartItemCheckoutDto>> GetCheckoutInformation(int[] cartItemIds)
         {
-            var cartItems = (from cartItem in _context.CartItems
-                             join spec in _context.Specs on cartItem.SpecId equals spec.SpecId
-                             where cartItemIds.Contains(cartItem.CartItemId)
-                             select new CartItemCheckoutDto
-                             {
-                                 CartItemId = cartItem.CartItemId,
-                                 SpecId = cartItem.SpecId,
-                                 MerchandiseId = spec.MerchandiseId,
-                                 DiscountPercentage = spec.DiscountPercentage,
-                                 Price = spec.Price,
-                                 Quantity = cartItem.Quantity,
-                                 Amount = spec.Amount,
-                                 OnShelf = spec.OnShelf
-                             }).ToList();
+            var cartItems = await _context.CartItems.Where(o => cartItemIds.Contains(o.CartItemId)).Select(o => new CartItemCheckoutDto
+            {
+                CartItemId = o.CartItemId,
+                SpecId = o.SpecId,
+                MerchandiseId = o.Spec.MerchandiseId,
+                ItemName = o.Spec.Merchandise.MerchandiseName + o.Spec.SpecName,
+                DiscountPercentage = o.Spec.DiscountPercentage,
+                Price = o.Spec.Price,
+                Quantity = o.Quantity,
+                Amount = o.Spec.Amount,
+                OnShelf = o.Spec.OnShelf
+            }).ToListAsync();
+
             foreach (var cartItem in cartItems)
             {
-                cartItem.TagIds = _context.SpecTags.Where(o => o.SpecId == cartItem.SpecId)
-                    .Select(o => o.TagId).ToList();
+                cartItem.TagIds = await _context.SpecTags.Where(o => o.SpecId == cartItem.SpecId)
+                    .Select(o => o.TagId).ToListAsync();
             }
             return cartItems;
         }
-
-
-
 
 
         public int CreateOrder(OrderDto dto)
@@ -139,5 +135,12 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return _context.SaveChanges();
         }
 
+        public async Task<int> ConfirmOrder(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null) return -1;
+            order.Payed = true;
+            return await _context.SaveChangesAsync();
+        }
     }
 }

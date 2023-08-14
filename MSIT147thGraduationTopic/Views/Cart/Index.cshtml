@@ -72,25 +72,25 @@
 
             const htmls = items.map(o => {
                 return `<tr>
-                            <td>
-                                <input type="hidden" value="${o.cartItemId}"/>
-                                <input type="checkbox" class="form-check-input">
-                            </td>
-                                <td>${o.cartItemName}</td>
-                                <td>$<span class="cartItemPrice">${o.cartItemPrice}</span></td>
-                            <td>
-                                <div class="input-group d-flex justify-content-center">
-                                    <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
-                                                    <input type="number" value="${o.quantity}" class="text-center cart-item-number"
-                                            style="width: 100px;" min="1" oninput="this.value = Math.abs(this.value)">
-                                    <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
-                                </div>
-                            </td>
-                                    <td>$<span class="ItemTotalPrice">${o.cartItemPrice * o.quantity}</span></td>
-                            <td>
-                                        <btn class="btn btn-danger cart-item-delete">刪除</btn>
-                            </td>
-                        </tr>`
+                                    <td>
+                                        <input type="hidden" value="${o.cartItemId}"/>
+                                        <input type="checkbox" class="form-check-input">
+                                    </td>
+                                        <td>${o.cartItemName}</td>
+                                        <td>$<span class="cartItemPrice">${o.cartItemPrice}</span></td>
+                                    <td>
+                                        <div class="input-group d-flex justify-content-center">
+                                            <button class="btn btn-outline-secondary cart-item-sub" type="button">-</button>
+                                                            <input type="number" value="${o.quantity}" class="text-center cart-item-number"
+                                                    style="width: 100px;" min="1" oninput="this.value = Math.abs(this.value)">
+                                            <button class="btn btn-outline-secondary cart-item-add" type="button">+</button>
+                                        </div>
+                                    </td>
+                                            <td>$<span class="ItemTotalPrice">${o.cartItemPrice * o.quantity}</span></td>
+                                    <td>
+                                                <btn class="btn btn-danger cart-item-delete">刪除</btn>
+                                    </td>
+                                </tr>`
             })
             document.querySelector('tbody').innerHTML = htmls.join('')
             changeNumberEvent()
@@ -102,8 +102,8 @@
         }
 
         //更改數量input
-        function changeNumberEvent(){
-            $('.cart-item-number').on('change',e=>{
+        function changeNumberEvent() {
+            $('.cart-item-number').on('change', e => {
                 const numberBar = e.currentTarget
                 if (numberBar.value < 1) numberBar.value = 1
                 changeCartItemQuantity(e.currentTarget)
@@ -213,6 +213,18 @@
 
             const orders = $.map(checkedItems, (val, i) => +$(val).find('input[type=hidden]').val())
 
+            const stockCheck = await checkStockQuantity(orders)
+
+            if (!stockCheck.enough) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: '商品庫存不足',
+                    text: stockCheck.message
+                })
+                console.log(stockCheck)
+                return
+            }
+
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -228,6 +240,12 @@
             window.location.href = response.url
         }
 
+        //檢查庫存數
+        async function checkStockQuantity(orders) {
+            console.log(orders)
+            const response = await fetch(`${ROOT}/api/apicart/checkstockquantity?` + orders.map(o => `ids=${o}`).join('&'))
+            return await response.json()
+        }
 
 
     </script>

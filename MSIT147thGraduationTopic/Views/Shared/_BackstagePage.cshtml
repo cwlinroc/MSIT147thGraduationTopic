@@ -11,9 +11,8 @@
     if (isAuthorized ?? false)
     {
         userName = user.FindFirstValue("UserName");
-        avatarName = user.FindFirstValue("AvatarName");
+        avatarName = "_employeeDefault.jpg";
         roleName = user.FindFirstValue(ClaimTypes.Role);
-        if (string.IsNullOrEmpty(avatarName)) avatarName = "_employeeDefault.jpg";
     }
 }
 
@@ -74,10 +73,11 @@
             @{
                 if (isAuthorized ?? false)
                 {
-                    <img src="@Url.Content($"~/uploads/employeeAvatar/{avatarName}")" id="navbarAvatar" class="rounded-circle ms-auto">
+                    <img src="@Url.Content($"~/uploads/employeeAvatar/{avatarName}")" id="navbarAvatar" class="rounded-circle ms-auto border border-4 border-secondary">
                     <div class="navbar-nav ms-2">
                         <span class="navbar-text me-3 text-white">@userName</span>
-                        <a class="nav-link" aria-current="page" href="#">修改頭像</a>
+                        <a class="nav-link" aria-current="page" href="#" id="changeSelfAvatar">修改頭像</a>
+                        <!--<a class="nav-link" aria-current="page" href="#" id="changeSelfPassword">變更密碼</a>-->
                     </div>
                 }
                 else
