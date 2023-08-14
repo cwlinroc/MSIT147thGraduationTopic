@@ -33,6 +33,11 @@ namespace MSIT147thGraduationTopic.Models.Services
             });
         }
 
+        public MemberDto GetMember(int id)
+        {
+            return _repo.GetMember(id);
+        }
+
         public IEnumerable<MemberVM> GetMemberByNameOrAccount(string query)
         {
             return _repo.GetMemberByNameOrAccount(query).Select(dto =>
