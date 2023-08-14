@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.Recommend;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
@@ -18,6 +19,8 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
             _service = new(context);
         }
 
+
+        [Authorize(Roles = "管理員,經理")]
         public async Task<IActionResult> Index()
         {
             var ratingData = await _service.GetRatingData();

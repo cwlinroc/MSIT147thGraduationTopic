@@ -158,7 +158,7 @@ async function remindCoupon() {
         title: '要看看有沒有可領取的優惠券嗎？',
     }).then((result) => {
         if (result.isConfirmed) {
-            location.href = ROOT + 'CouponsReceive/Index'
+            window.location.href = ROOT + '/CouponsReceive/Index'
         }
     })
 }
