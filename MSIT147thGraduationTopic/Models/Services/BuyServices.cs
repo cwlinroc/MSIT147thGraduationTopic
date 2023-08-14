@@ -197,7 +197,11 @@ namespace MSIT147thGraduationTopic.Models.Services
             return checkoutDtos.Sum(o => (o.Price * o.DiscountPercentage / 100) * o.Quantity);
         }
 
-        
+        public async Task<int> ConfirmOrder(int orderId)
+        {
+            if (orderId <= 0) return -1;
+            return await _repo.ConfirmOrder(orderId);
+        }
 
     }
 }

@@ -106,11 +106,23 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             {
                 Succeed = true,
                 Message = "it works anyway",
-                Web = baseUrl + "/buy/suceed"
+                Web = baseUrl + "/buy/succeed"
             };
 
         }
 
+        [HttpGet("checkstockquantity")]
+        public async Task<ActionResult<dynamic>> CheckStockQuantity()
+        {
+            //cartItemIds
+            string? json = HttpContext.Session.GetString("cartItemIds");
+            if (string.IsNullOrEmpty(json)) return BadRequest("沒有預計購買的商品");
+            int[] cartItemIds = JsonSerializer.Deserialize<int[]>(json)!;
+
+            (bool enough, string message) = await new CartService(_context).CheckStockQuantity(cartItemIds);
+
+            return new { enough, message };
+        }
 
 
     }

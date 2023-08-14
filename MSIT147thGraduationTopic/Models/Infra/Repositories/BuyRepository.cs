@@ -135,5 +135,12 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return _context.SaveChanges();
         }
 
+        public async Task<int> ConfirmOrder(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null) return -1;
+            order.Payed = true;
+            return await _context.SaveChangesAsync();
+        }
     }
 }

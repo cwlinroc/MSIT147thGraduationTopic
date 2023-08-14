@@ -102,9 +102,25 @@ $('#submitOrder').click(async event => {
         cancelButtonText: '取消'
     })
     if (!result.isConfirmed) return
+    const stockCheck = await checkStockQuantity()
+    if (!stockCheck.enough) {
+        await Swal.fire({
+            icon: 'error',
+            title: '商品庫存不足',
+            text: stockCheck.message,
+            footer: `<a href="${ROOT}/cart">回到購物車</a>`
+        })
+        console.log(stockCheck)
+        return
+    }
     submitEvent()
-    //orderForm.submit()
 })
+
+async function checkStockQuantity() {
+    const response = await fetch(`${ROOT}/api/apibuy/checkstockquantity`)
+    return await response.json()
+}
+
 
 async function submitEvent() {
     const formData = new FormData(document.orderForm)

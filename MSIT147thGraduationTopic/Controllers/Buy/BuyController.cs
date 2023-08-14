@@ -57,6 +57,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
         }
 
 
+
         public IActionResult Succeed()
         {
             return View();
