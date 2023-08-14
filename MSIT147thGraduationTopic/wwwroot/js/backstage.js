@@ -1,7 +1,7 @@
 ﻿//權限錯誤跳轉
-//if (!(ROLE == '管理員' || ROLE == '經理' || ROLE == '員工')) {
-//    window.location.href = ROOT + '/home/index'
-//}
+if (!(ROLE == '管理員' || ROLE == '經理' || ROLE == '員工')) {
+    window.location.href = ROOT + '/home/index'
+}
 
 
 $(document).ready(function () {
