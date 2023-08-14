@@ -39,7 +39,7 @@
                                 <label for="txtDiscountNameSearch">打折優惠券名稱關鍵字</label>
                                 <input type="text" id="txtDiscountNameSearch" name="txtDiscountNameSearch" class="form-control" placeholder="請輸入名稱關鍵字" />
                             </div>
-                            <div class="col-md-3 mb-3">
+                            @*<div class="col-md-3 mb-3">
                                 <label for="selectDiscountStatus">優惠券狀態</label>
                                 <select id="selectDiscountStatus" name="selectDiscountStatus" class="form-select">
                                     <option value=""></option>
@@ -48,7 +48,7 @@
                                     <option value="upcoming">未開始</option>
                                     <option value="expired">已結束</option>
                                 </select>
-                            </div>
+                            </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
                                 <button type="submit" class="btn btn-primary form-control" id="btnDiscountSearch" disabled>搜尋</button>
@@ -75,9 +75,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @{
-                                    foreach (CouponDto c in Model.listDiscount)
-                                    {
+                                <form id="Discount" name="Discount" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
+                                    @{
+                                        foreach (CouponDto c in Model.listDiscount)
+                                        {
                                         <tr>
                                             <td id="DiscountId" scope="col">@c.CouponId</td>
                                             <td id="DiscountName" scope="col">@c.CouponName</td>
@@ -91,8 +92,9 @@
                                                 </button>
                                             </td>
                                         </tr>
+                                        }
                                     }
-                                }
+                                </form>
                             </tbody>
                         </table>
                     </div>
@@ -108,7 +110,7 @@
                                 <label for="txtDiscountNameSearch">打折優惠券名稱關鍵字</label>
                                 <input type="text" id="txtDiscountNameSearch" name="txtDiscountNameSearch" class="form-control" placeholder="請輸入名稱關鍵字" />
                             </div>
-                            <div class="col-md-3 mb-3">
+                            @*<div class="col-md-3 mb-3">
                                 <label for="selectRebateStatus">優惠券狀態</label>
                                 <select id="selectRebateStatus" name="selectRebateStatus" class="form-select">
                                     <option value=""></option>
@@ -117,7 +119,7 @@
                                     <option value="upcoming">未開始</option>
                                     <option value="expired">已結束</option>
                                 </select>
-                            </div>
+                            </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
                                 <button type="submit" class="btn btn-primary form-control" id="btnRebateSearch" disabled>搜尋</button>
@@ -130,44 +132,44 @@
                     </div>
                     <div class="container px-5 my-5">
                         <h2 class="text-center">滿額送優惠券</h2>
-                        <form id="listOfRebate" name="listOfRebate" data-index="-1" class="needs-validation" novalidate>
-                            <table class="table table-dark table-hover" id="tabRebate">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">序號</th>
-                                        <th scope="col">優惠券名稱</th>
-                                        <th scope="col">適用對象</th>
-                                        <th scope="col">活動開始日期</th>
-                                        <th scope="col">活動結束日期</th>
-                                        <th scope="col">額度門檻</th>
-                                        <th scope="col">折扣金額</th>
-                                        <th scope="col">領取</th>
-                                    </tr>
-                                </thead>
+                        <table class="table table-dark table-hover" id="tabRebate">
+                            <thead>
+                                <tr>
+                                    <th scope="col">序號</th>
+                                    <th scope="col">優惠券名稱</th>
+                                    <th scope="col">適用對象</th>
+                                    <th scope="col">活動開始日期</th>
+                                    <th scope="col">活動結束日期</th>
+                                    <th scope="col">額度門檻</th>
+                                    <th scope="col">折扣金額</th>
+                                    <th scope="col">領取</th>
+                                </tr>
+                            </thead>
 
-                                <tbody>
+                            <tbody>
+                                <form id="Rebate" name="Rebate" method="post" enctype="multipart/form-data" data-index="-1" class="need-validation row justify-content-center" novalidate>
                                     @{
                                         foreach (CouponDto c in Model.listRebate)
                                         {
-                                            <tr>
-                                                <td id="RebateId" scope="col">@c.CouponId</td>
-                                                <td id="RebateName" scope="col">@c.CouponName</td>
-                                                <td id="RebateTagId" scope="col">@c.CouponTagId</td>
-                                                <td id="RebateStartDate" scope="col">@c.CouponStartDate</td>
-                                                <td id="RebateEndDate" scope="col">@c.CouponEndDate</td>
-                                                <td id="RebateCondition" scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
-                                                <td id="RebateDiscount" scope="col">@c.CouponDiscount.ToString("#.##")</td>
-                                                <td scope="col">
-                                                    <button type="button" id="btnReceiveRebate_@c.CouponId" class="btn btn-success btnReceiveRebate">
-                                                        領取
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td id="RebateId" scope="col">@c.CouponId</td>
+                                            <td id="RebateName" scope="col">@c.CouponName</td>
+                                            <td id="RebateTagId" scope="col">@c.CouponTagId</td>
+                                            <td id="RebateStartDate" scope="col">@c.CouponStartDate</td>
+                                            <td id="RebateEndDate" scope="col">@c.CouponEndDate</td>
+                                            <td id="RebateCondition" scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
+                                            <td id="RebateDiscount" scope="col">@c.CouponDiscount.ToString("#.##")</td>
+                                            <td scope="col">
+                                                <button type="button" id="btnReceiveRebate_@c.CouponId" class="btn btn-success btnReceiveRebate">
+                                                    領取
+                                                </button>
+                                            </td>
+                                        </tr>
                                         }
                                     }
-                                </tbody>
-                            </table>
-                        </form>
+                                </form>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -400,14 +402,46 @@
 
         //#region 領取打折券
         $('.btnReceiveDiscount').click(function () {
+            const couponId = $(this).closest("tr").find('#DiscountId').text();
 
-        }
+            $.post({
+                url: "@Url.Content("~/api/apicoupon/couponreceive")",
+                dataType: "json",
+                data: JSON.stringify({ id: couponId }),
+                contentType: "application/json",
+                success: async result => {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '成功',
+                        text: '已領取優惠券',
+                    });
+                    window.location.reload();
+                },
+                error: err => { console.log(err) }
+            })
+        })
         //#endregion
 
         //#region 領取滿額送
         $('.btnReceiveRebate').click(function () {
+            const couponId = $(this).closest("tr").find('#RebateId').text();
 
+            $.post({
+                url: "@Url.Content("~/api/apicoupon/couponreceive")",
+                dataType: "json",
+                data: JSON.stringify({ id: couponId }),
+                contentType: "application/json",
+                success: async result => {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '成功',
+                        text: '已領取優惠券',
+                    });
+                    window.location.reload();
+                },
+                error: err => { console.log(err) }
+            })
         })
-        //#endregion
+                                        //#endregion
     </script>
 }
