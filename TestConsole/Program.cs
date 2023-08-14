@@ -10,23 +10,23 @@ using System.Text;
 
 //RandomNumberGenerator.GetInt32(10)
 
-var service = new SimulationDataInsertService(null);
+//var service = new SimulationDataInsertService(null);
 
-service.AddRandomMembers(100);
-Console.WriteLine("AddRandomMembers Done!");
-service.AddRandomMerchandiseAndSpecs(90);
-Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
+//service.AddRandomMembers(100);
+//Console.WriteLine("AddRandomMembers Done!");
+//service.AddRandomMerchandiseAndSpecs(90);
+//Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
 
-service.AddRandomCart();
-Console.WriteLine("AddRandomCart Done!");
-service.AddRandomOrders();
-Console.WriteLine("AddRandomOrders Done!");
-service.AddSpecTags();
-Console.WriteLine("AddSpecTags Done!");
-service.AddSpecPopularity();
-Console.WriteLine("AddSpecPopularity Done!");
-service.AddRandomEvaluations();
-Console.WriteLine("AddRandomEvaluations Done!");
+//service.AddRandomCart();
+//Console.WriteLine("AddRandomCart Done!");
+//service.AddRandomOrders();
+//Console.WriteLine("AddRandomOrders Done!");
+//service.AddSpecTags();
+//Console.WriteLine("AddSpecTags Done!");
+//service.AddSpecPopularity();
+//Console.WriteLine("AddSpecPopularity Done!");
+//service.AddRandomEvaluations();
+//Console.WriteLine("AddRandomEvaluations Done!");
 
 
 //var generator = new RandomGenerator();
@@ -40,6 +40,19 @@ Console.WriteLine("AddRandomEvaluations Done!");
 
 
 /**test**/
+
+var repo = new StatisticRepository(new());
+var time = DateTime.Now.AddDays(-120);
+var dto = await repo.GetSaleChart("category", "quantity", time);
+foreach (var label in dto.Labels)
+{
+    Console.WriteLine(label);
+}
+
+foreach (var data in dto.Data)
+{
+    Console.WriteLine(data);
+}
 
 
 /**test**/

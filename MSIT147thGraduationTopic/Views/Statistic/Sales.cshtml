@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Sales";
+    Layout = "_BackstagePage";
+}
+
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="bg-white rounded shadow">
+            <canvas id="mainChart" width="400" height="400"></canvas>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script >
+
+        const ctxMain = document.getElementById('mainChart');
+        const mainChart = new Chart(ctxMain, {
+            type: 'bar',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+    </script>
+}
+
+

@@ -110,9 +110,9 @@
 
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        商品管理
+                        <i class="fa-solid fa-caret-down me-2"></i>商品管理
                     </button>
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse ps-3" aria-labelledby="headingOne"
@@ -137,13 +137,13 @@
                 </div>
             </div>
 
-
+            @*
             <div class="accordion-item">
 
                 <h2 class="accordion-header" id="headingTwo">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        會員管理
+                        <i class="fa-solid fa-caret-down me-2"></i>會員管理
                     </button>
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse ps-3" aria-labelledby="headingTwo"
@@ -159,20 +159,20 @@
 
                 </div>
             </div>
-
+            *@
 
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingThree">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        查看統計
+                        <i class="fa-solid fa-caret-down me-2"></i>查看統計
                     </button>
                 </h2>
                 <div id="collapseThree" class="accordion-collapse collapse ps-3" aria-labelledby="headingThree"
                      data-bs-parent="#accordionExample">
 
                     <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">銷售</a>
+                        <a href="~/Statistic/Sales" class="stretched-link text-light">銷售</a>
                     </div>
 
                     <div class="accordion-body position-relative">
@@ -190,16 +190,32 @@
                 </div>
             </div>
 
-            <div class="accordion-item">
 
+            <div class="accordion-item">
+                <h2 class="accordion-header position-relative">
+                    <a class="accordion-button collapsed link-light stretched-link" href="~/CouponsBackstageSettings/index">
+                        優惠劵設定
+                    </a>
+                </h2>
+            </div>
+
+
+            <div class="accordion-item">
+                <h2 class="accordion-header position-relative">
+                    <a class="accordion-button collapsed link-light stretched-link" href="~/MemberBackstage/MemberList">
+                        會員檢視
+                    </a>
+                </h2>
+            </div>
+
+
+            <div class="accordion-item">
                 <h2 class="accordion-header position-relative">
                     <a class="accordion-button collapsed link-light stretched-link" href="~/employeebackstage">
                         員工檢視
                     </a>
                 </h2>
-
             </div>
-
 
             <div class="accordion-item">
                 <h2 class="accordion-header position-relative">
@@ -208,7 +224,6 @@
                     </a>
                 </h2>                
             </div>
-
 
 
         </div>
@@ -249,6 +264,8 @@
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <!-- SweetAlert2 -->
     <script src="~/js/sweetalert2.min.js"></script>
+    <!-- chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- aos.js -->
     <script src="~/js/aos.js"></script>
     <script>AOS.init();</script>
