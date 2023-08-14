@@ -29,7 +29,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index()
+        public IActionResult MemberList()
         {
             return View();
         }
