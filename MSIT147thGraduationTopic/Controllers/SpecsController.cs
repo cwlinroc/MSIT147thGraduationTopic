@@ -59,7 +59,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs/Create
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Create(int merchandiseId)
+        public IActionResult Create(int merchandiseId)   //todo Demo產品名稱、品牌、類別需有實際資料後才可決定
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
@@ -82,7 +82,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 if (specvm.photo != null)
                 {
                     int fileNameLangth = specvm.photo.FileName.Length;
-                    specvm.ImageUrl = (fileNameLangth > 100)
+                    specvm.ImageUrl = fileNameLangth > 100
                         ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
                         : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
@@ -140,7 +140,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 if (specvm.ImageUrl == null && specvm.photo != null)
                 {
                     int fileNameLangth = specvm.photo.FileName.Length;
-                    specvm.ImageUrl = (fileNameLangth > 100)
+                    specvm.ImageUrl = fileNameLangth > 100
                         ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
                         : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
@@ -151,7 +151,7 @@ namespace MSIT147thGraduationTopic.Controllers
                     deleteSpecImageFromUploads(specvm.ImageUrl);
 
                     int fileNameLangth = specvm.photo.FileName.Length;
-                    specvm.ImageUrl = (fileNameLangth > 100)
+                    specvm.ImageUrl = fileNameLangth > 100
                         ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
                         : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);

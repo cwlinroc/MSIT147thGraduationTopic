@@ -92,5 +92,15 @@ namespace MSIT147thGraduationTopic.Controllers.Cart
             return await _service.GetCartCount(memberId);
         }
 
+
+
+        [HttpGet("checkstockquantity")]
+        public async Task<ActionResult<dynamic>> CheckStockQuantity([FromQuery] int[]? ids)
+        {
+            (bool enough, string message) = await new CartService(_context).CheckStockQuantity(ids);
+
+            return new { enough, message };
+        }
+
     }
 }

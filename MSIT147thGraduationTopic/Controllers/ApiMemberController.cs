@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
@@ -12,7 +11,9 @@ using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using System.ComponentModel.DataAnnotations;
-using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
+using System.Security.Policy;
+using MSIT147thGraduationTopic.Models.Interfaces;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -23,16 +24,21 @@ namespace MSIT147thGraduationTopic.Controllers
         private readonly GraduationTopicContext _context;
         private readonly MemberService _service;
         private readonly ShoppingHistoryService _shService;
+        private readonly IMailService _mailService;
         private readonly IWebHostEnvironment _environment;
+        private readonly IUrlHelper _url;
+
         private readonly string[] _employeeRoles;
 
-        public ApiMemberController(GraduationTopicContext context
-            , IWebHostEnvironment environment, IOptions<OptionSettings> options)
+        public ApiMemberController(GraduationTopicContext context, IMailService mailService
+            , IWebHostEnvironment environment, IOptions<OptionSettings> options, IUrlHelper url)
         {
             _context = context;
             _environment = environment;
+            _mailService = mailService;
+            _url = url;
             _service = new MemberService(context, environment);
-            _shService = new ShoppingHistoryService(context, environment);            
+            _shService = new ShoppingHistoryService(context, environment);
 
             _employeeRoles = options.Value.EmployeeRoles!;
         }
@@ -49,11 +55,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetMemberByNameOrAccount(query).ToList();
         }
 
-        //[HttpGet("{id}")]
-        //public ActionResult<List<MemberVM>> GetMemberById(int id)
-        //{
-        //    return _service.GetMemberById(id).ToList();
-        //}
 
         [HttpGet("ShoppingHistory")]
         public ActionResult<List<ShoppingHistoryDto>> GetOrdersByMemberId()
@@ -70,38 +71,56 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         public ActionResult<int> CreateMember([FromForm] MemberCreateVM vm, [FromForm] IFormFile? avatar)
         {
-            var memberId = _service.CreateMember(vm.ToDto(), avatar);
+            try
+            {
+                var memberId = _service.CreateMember(vm.ToDto(), avatar);
+                string body = _mailService.CreateUrl(vm.Account, _url, "EmailVerify", "Member");
 
-            return memberId;
+                MailRequest request = new MailRequest()
+                {
+                    ToEmail = vm.Email,
+                    Subject = "福祿獸購物商城帳號驗證信",
+                    Body = $"<html><body><h1>驗證確認</h1><h3><a href=\"{body}\">請點這裡驗證</a></h3></body></html>"
+                };
+
+                _mailService.SendEmailAsync(request);
+
+                return memberId;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPut("{id}")]
         public ActionResult<int> UpdateMember([FromForm] MemberEditDto dto, int id, [FromForm] IFormFile? avatar)
         {
-            var memberId = _service.EditMember(dto, id, avatar);
-
-            return memberId;
+            try
+            {
+                var memberId = _service.EditMember(dto, id, avatar);
+                return memberId;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPut("memberCenter")]
         public ActionResult<int> UpdateSelfData([FromForm] MemberCenterEditVM vm, [FromForm] IFormFile? avatar)
         {
-            int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
-
-            var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
-
-            return memberId;
+            try
+            {
+                int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
+                var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
+                return memberId;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
-
-        //public record Container([Required] bool isActivated);
-
-        //[HttpPut("permission/{id}")]
-        //public ActionResult<int> UpdateMemberPermission(Container isActivated, int id = 0)
-        //{
-        //    var memberId = _service.ChangeMemberPermission(id, isActivated.isActivated);
-
-        //    return memberId;
-        //}
 
 
         [HttpDelete("{id}")]
@@ -140,10 +159,10 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             var member = await _context.Members
-                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar, o.MemberId })
+                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar, o.MemberId, o.IsActivated })
                 .FirstOrDefaultAsync(o => o.Account == record.Account);
 
-            if (member != null)
+            if (member != null && member.IsActivated)
             {
                 string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
                 if (member.Password != saltedPassword) return string.Empty;
@@ -162,8 +181,13 @@ namespace MSIT147thGraduationTopic.Controllers
                 HttpContext.Session.SetString("LoadCoupon", "Load");
                 return "reload";
             }
+            else if (!member.IsActivated)
+            {
+                return "Member/NoRole";
+            }
             return string.Empty;
         }
+
 
         [HttpGet("logout")]
         public async Task<ActionResult<string>> LogOut()

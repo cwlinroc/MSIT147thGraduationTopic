@@ -46,7 +46,7 @@
 
                                 <div class="d-flex ms-auto float-end">
                                     <div id="score_@(i)" name="Score" class="float-end mx-1 mt-3" itype="starDiv">
-                                        <input id="inputscore_@(i)" name="comments[@(i)].Score" hidden>
+                                        <input id="inputscore_@(i)" name="comments[@(i)].Score" value="@(item.Score)" hidden>
                                         <img id="star@(i)_1" src=@(item.Score>=1?"/images/一星.png":"/images/空星.png") style="height:40px" />
                                         <img id="star@(i)_2" src=@(item.Score>=2?"/images/二星.png":"/images/空星.png") style="height:40px" />
                                         <img id="star@(i)_3" src=@(item.Score>=3?"/images/三星.png":"/images/空星.png") style="height:40px" />
@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                             <div class="form-floating mx-2 mt-2 mb-4">
-                                <textarea id="commentText" name="comments[@(i)].Comment" class="form-control" placeholder="請輸入您的評價~" style="height: 100px"></textarea>
+                                <textarea id="commentText" name="comments[@(i)].Comment" class="form-control" value="@(item.Comment)" placeholder="請輸入您的評價~" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2">@(item.Comment)</label>
                             </div>
                         </div>
@@ -164,6 +164,16 @@
         //    href = "/Member/ShoppingHistory"
         //})
 
+    </script>
+    <script>
+        var star = $("[id^='inputscore_']");
+
+        star.each(function (index, score) {
+            console.log(score.value)
+            if (score.value != '') {
+                $(this).parent().children().1('mouseenter').unbind('mouseleave');
+            }
+        })
     </script>
 }
 

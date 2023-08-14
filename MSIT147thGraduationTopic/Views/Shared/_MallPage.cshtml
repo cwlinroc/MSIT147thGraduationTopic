@@ -135,7 +135,7 @@
                         <h1 class="modal-title fs-4 " id="loginModalLabel">登入</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body mb-4">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-10 mx-auto">
@@ -158,7 +158,7 @@
                                                 記住我
                                             </label>
                                         </div>
-                                        <span class="offset-6">@Html.ActionLink("忘記密碼", "ForgetPwd", "Member")</span>
+                                        <span class="offset-6"><a style="text-decoration:none" href="@Url.Action("ForgetPwd","Member")">忘記密碼</a></span>
 
                                         <div>
                                             <button type="button" class="btn btn-primary me-2" id="btnLogIn">登入</button>
@@ -193,7 +193,7 @@
                 <div class="collapse navbar-collapse justify-content-center" id="navbarHeaderContent">
 
                     <ul class="navbar-nav mb-2 mb-lg-0">
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">優惠專區(未開通)</a></li>
+                        <!--<li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">優惠專區(未開通)</a></li>-->
                         <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?tagId=2")">狗狗商品</a></li>
                         <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?tagId=1")">貓咪商品</a></li>
                         <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?sideCategoryId=1")">狗貓零食</a></li>
@@ -220,7 +220,7 @@
         <div class="container px-5">
             <div class="row align-items-center justify-content-between flex-column flex-sm-row">
                 <div class="col-auto">
-                    <div class="small m-0 text-white">Copyright &copy; Your Website 2023</div>
+                    <div class="small m-0 text-white">Copyright &copy; 福祿獸購物商城</div>
                 </div>
                 <div class="col-auto">
                     <a class="link-light small" href="#!">Privacy</a>

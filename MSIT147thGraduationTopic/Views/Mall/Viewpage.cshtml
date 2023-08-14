@@ -6,26 +6,27 @@
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
-@*****************************************響應式功能未做*****************************************@
-<nav class="bd-subnavbar py-2" aria-label="Secondary navigation">
-    <div class="container-xxl d-flex align-items-md-center" style="background-color:pink">
+@*****************************************響應式功能未完成*****************************************@
+<nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
+    <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
-        <form class="bd-search position-relative me-auto mx-5" id="keywordsearch">
-            <span class="algolia-autocomplete d-flex" style="position: relative; display: inline-block; direction: ltr;">
-                <!-- 選擇搜尋條件 -->
-                <label class="input-group-text" for="searchCondition">選擇搜尋條件</label>
-                <select class="form-select conditionname" name="searchCondition">
-                    <option value="1">商品名稱</option>
-                    <option value="2">品牌名稱</option>
-                    <option value="3">類別名稱</option>
-                </select>
-                <!-- 輸入關鍵字 -->
-                <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Search docs for..." autocomplete="on" data-bd-docs-version="5.1" spellcheck="false" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" style="position: relative; vertical-align: top;">
-                <input type="submit" value="尋找商品" class="btn btn-secondary" />
-                <span class="ds-dropdown-menu" role="listbox" id="algolia-autocomplete-listbox-0" style="position: absolute; top: 100%; z-index: 100; display: none; left: 0px; right: auto;">
-                    <div class="ds-dataset-1"></div>
-                </span>
-            </span>
+        <form class="bd-search position-relative me-auto mx-5 col-sm-5" id="keywordsearch">
+            <div class="row">
+                <div class="form-group">
+                    <div class="input-group">
+                        <!-- 選擇搜尋條件 -->
+                        <label class="input-group-text" for="selectSearchCondition">選擇搜尋條件</label>
+                        <select class="form-select conditionname" name="selectSearchCondition">
+                            <option value="1">商品名稱</option>
+                            <option value="2">品牌名稱</option>
+                            <option value="3">類別名稱</option>
+                        </select>
+                        <!-- 輸入關鍵字 -->
+                        <input type="search" class="form-control ds-input" name="txtKeyword" id="search-input" placeholder="搜尋關鍵字" aria-label="Text input with dropdown button">
+                        <input type="submit" value="尋找商品" class="btn btn-secondary" />
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </nav>
@@ -37,13 +38,13 @@
         <div class="col-12 col-md-2 my-3">
             <nav class="navbar navbar-expand-lg navbar-light bg-light flex-column">
                 <div class="container-fluid ">
-                    <!-- ****************************************小視窗用摺疊按鈕(尚無法啟用)**************************************** -->
+                    <!-- 小視窗時摺疊按鈕 -->
                     <button class="navbar-toggler" href="#sublist" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="true" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <!-- 小視窗時摺疊區域 -->
-                    <div class="navbar-collapse collapse">
-                        <ul class="navbar-nav flex-column" id="sublist">
+                    <div class="navbar-collapse collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav flex-column" id="sublist" style="margin-top:10px">
                             <!-- 摺疊選單 for 商品類別 -->
                             <li>
                                 <div>商品類別</div>
@@ -75,10 +76,12 @@
                     <div class="col-12 col-md-5 py-3">
                         <div class="item">
                             <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
-                            <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" width="100%" class="mainImage pb-3">
+                            <figure class="ViewWindow-image-container">
+                                <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" width="100%" height="100%" class="mainImage pb-3">
+                            </figure>
                             <div class="image-container">
                                 <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
-                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage" width="20%" style="border:solid #930000 3px" )>
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage" width="20%" height="20%" style="border:solid #930000 3px" )>
                                 @{
                                     foreach (var item in Model)
                                     {
@@ -97,6 +100,10 @@
                             </ol>
                         </nav>
                         <h5 id="showBrandName"></h5>
+                        <span >
+                            <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
+                            <span id="score"></span>
+                        </span>
                         <h2 id="showMerchandiseName">商品名稱</h2><div id="merchandiseIdContainer" val-id="@Model.First().MerchandiseId" style="display:none"></div>
                         <br>
                         <h5>價格：<span id="showPrice"></span></h5>
@@ -107,7 +114,7 @@
                             @{
                                 foreach (var item in Model)
                                 {
-                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
+                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Popularity" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
                                 }
                             }
                         </div>
@@ -128,13 +135,13 @@
             <!-- 推薦商品 -->
             <div>
                 @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)
+                @await Html.PartialAsync("Partial/PopularSpecs",Model.First().MerchandiseId)
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts{
-    @*搜尋功能待改(回傳參數)*@
     <script src="~/js/recommend/partialview.js"></script>
     <script>
         //給予搜尋初值
@@ -205,8 +212,10 @@
         //給予購買數初值
         let currentSpecid;
         let purchaseAmount = 1;
+        let originalPrice;
         let currentPrice;
         let maxAmount;
+        let score;
 
         //產生商品資料
         $(async () => {
@@ -237,10 +246,20 @@
             //變更按鈕格式
             $(".showSpec").attr("class", "btn btn-outline-secondary mx-1 my-1 showSpec");
             $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
+            //顯示評分
+            score = $(e.currentTarget).attr("data-score");
+            $("#score").text(score);
             //顯示價格&庫存
-            currentPrice = $(e.currentTarget).attr("data-price");
+            const showPrice = document.querySelector("#showPrice");
+            originalPrice = $(e.currentTarget).attr("data-price");
+            discountPercentage = $(e.currentTarget).attr("data-discountPercentage");
+            const canceledPrice = (discountPercentage == 100) ? '' :
+                `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${originalPrice}</span></del>`;
+            currentPrice = originalPrice * discountPercentage / 100;
+            console.log(currentPrice);
+
             maxAmount = $(e.currentTarget).attr("data-amount");
-            $("#showPrice").text(currentPrice + " 元");
+            showPrice.innerHTML = canceledPrice + " NTD$" + currentPrice;
             $("#showAmount").text(maxAmount);
             //設定購買數初值&最大值 + 重置總金額
             $("#buyAmount").attr("max", maxAmount);
@@ -327,6 +346,33 @@
     <style>
         li {
             list-style: none;
+        }
+
+        select {
+            max-width: 120px;
+            min-width: 120px
+        }
+
+        .ViewWindow-image-container {
+            width: 100%;
+            position: relative;
+            padding-top: 100%;
+        }
+
+            .ViewWindow-image-container img {
+                position: absolute;
+                top: 0%;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .specImage {
+            width: 100%;
+            max-width: 100px;
+            height: 100%;
+            max-height:100px;
+            object-fit: cover;
         }
     </style>
 }

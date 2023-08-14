@@ -1,7 +1,7 @@
 ﻿//權限錯誤跳轉
-//if (ROLE == '管理員' || ROLE == '經理' || ROLE == '員工') {
-//    window.location.href = ROOT + '/employeebackstage/welcome'
-//}
+if (ROLE == '管理員' || ROLE == '經理' || ROLE == '員工') {
+    window.location.href = ROOT + '/employeebackstage/welcome'
+}
 
 
 $("#backToTop").hide()
@@ -85,15 +85,24 @@ async function LogIn() {
             text: '帳號或密碼錯誤',
             allowOutsideClick: false
         })
-        return
+        return;
+    } else if (url === 'Member/NoRole') {
+        Swal.fire({
+            icon: 'error',
+            title: '沒有授權',
+            text: '您未開通或已遭停權',
+            allowOutsideClick: false
+        })
+        return;
     }
+    
 
     Swal.fire({
         icon: 'success',
         title: '登入成功!',
         allowOutsideClick: false
     }).then(() => {
-        if (url == 'reload') {
+        if (url === 'reload') {
             window.location.reload()
         }
         else {
@@ -101,6 +110,7 @@ async function LogIn() {
         }
     })
 }
+
 
 //Ajax 登出
 async function LogOut() {

@@ -244,11 +244,23 @@ namespace MSIT147thGraduationTopic.EFModels
                     .IsRequired()
                     .HasMaxLength(81);
 
-                entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(150)
-                    .HasColumnName("ImageURL");
-
                 entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
+
+                entity.Property(e => e.MerchandiseImageUrl)
+                    .HasMaxLength(150)
+                    .HasColumnName("MerchandiseImageURL");
+
+                entity.Property(e => e.MerchandiseName)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.SpecImageUrl)
+                    .HasMaxLength(150)
+                    .HasColumnName("SpecImageURL");
+
+                entity.Property(e => e.SpecName)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<ManuallyWeightedEntry>(entity =>

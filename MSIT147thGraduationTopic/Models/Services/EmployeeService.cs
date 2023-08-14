@@ -106,15 +106,29 @@ namespace MSIT147thGraduationTopic.Models.Services
             return saltedPassword == employee.password;
         }
 
-        //public async Task<EmployeeDto?> ValidateEmployeeAccount(string account, string password)
-        //{
-        //    var employee = await _repo.GetEmployeeByAccount(account);
-        //    if (employee == null) return null;
+        public async Task<string> GetAvatarName(int employeeId)
+        {
+            return await _repo.GetAvatarName(employeeId);
+        }
 
 
+        public async Task<int> UpdateAvatar(int employeeId, IFormFile? file)
+        {
+            string? fileName = string.Empty;
+            if (file != null)
+            {
+                fileName = SaveFileToUpload(file);
+            }
+            return await _repo.UpdateAvatar(employeeId, fileName);
+        }
 
-        //}
-
+        private string SaveFileToUpload(IFormFile file)
+        {
+            string path = Path.Combine(_environment.WebRootPath, @"uploads\employeeAvatar", file.FileName);
+            using var fileStream = new FileStream(path, FileMode.Create);
+            file.CopyTo(fileStream);
+            return file.FileName;
+        }
 
     }
 }

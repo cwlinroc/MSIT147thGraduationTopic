@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.Dtos.Buy;
+using MSIT147thGraduationTopic.Models.Dtos.LinePay;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using MSIT147thGraduationTopic.Models.LinePay;
 using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using NuGet.Packaging.Signing;
@@ -52,106 +58,72 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
         }
 
 
-        #region --Default參考--
-        //// GET: api/ApiBuy
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-        //{
-        //  if (_context.Orders == null)
-        //  {
-        //      return NotFound();
-        //  }
-        //    return await _context.Orders.ToListAsync();
-        //}
 
-        //// GET: api/ApiBuy/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Order>> GetOrder(int id)
-        //{
-        //  if (_context.Orders == null)
-        //  {
-        //      return NotFound();
-        //  }
-        //    var order = await _context.Orders.FindAsync(id);
+        public record OrderRecord(
+            [Required] string City,
+            [Required] string District,
+            [Required] string Address,
+            [Required] string Phone,
+            string? CouponId,
+            [Required] string Payment,
+            string? Remark);
 
-        //    if (order == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpPost("sendorder")]
+        public async Task<ActionResult<OrderResponseDto>> SendOrder([FromForm] OrderRecord record)
+        {
+            //memberId
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest("找不到對應會員ID");
+            }
+            string baseUrl = $"{Request.Scheme}://{Request.Host}";
 
-        //    return order;
-        //}
+            //cartItemIds
+            string? json = HttpContext.Session.GetString("cartItemIds");
+            if (string.IsNullOrEmpty(json)) return BadRequest("沒有預計購買的商品");
+            int[] cartItemIds = JsonSerializer.Deserialize<int[]>(json)!;
 
-        //// PUT: api/ApiBuy/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutOrder(int id, Order order)
-        //{
-        //    if (id != order.OrderId)
-        //    {
-        //        return BadRequest();
-        //    }
+            //create order
+            (int orderId, int totalPaymentAmount, var checkoutDtos) = await _service.CreateOrder(cartItemIds, memberId, record);
 
-        //    _context.Entry(order).State = EntityState.Modified;
+            //linepayresponse
+            if (record.Payment == "2")
+            {
+                var linepayservice = new LinePayService();
+                var linepayRequestDto = linepayservice.GetPaymentRequestDto(orderId, totalPaymentAmount, baseUrl, checkoutDtos);
+                var linepayResponseDto = await linepayservice.SendPaymentRequest(linepayRequestDto);
+                //return new JsonResult(linepayResponseDto);
+                return new OrderResponseDto
+                {
+                    Succeed = linepayResponseDto.ReturnCode == "0000",
+                    Message = "ReturnCode:" + linepayResponseDto.ReturnCode + ". " + linepayResponseDto.ReturnMessage,
+                    Web = linepayResponseDto?.Info?.PaymentUrl?.Web
+                };
+            }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!OrderExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            //??
+            return new OrderResponseDto
+            {
+                Succeed = true,
+                Message = "it works anyway",
+                Web = baseUrl + "/buy/succeed"
+            };
 
-        //    return NoContent();
-        //}
+        }
 
-        //// POST: api/ApiBuy
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Order>> PostOrder(Order order)
-        //{
-        //  if (_context.Orders == null)
-        //  {
-        //      return Problem("Entity set 'GraduationTopicContext.Orders'  is null.");
-        //  }
-        //    _context.Orders.Add(order);
-        //    await _context.SaveChangesAsync();
+        [HttpGet("checkstockquantity")]
+        public async Task<ActionResult<dynamic>> CheckStockQuantity()
+        {
+            //cartItemIds
+            string? json = HttpContext.Session.GetString("cartItemIds");
+            if (string.IsNullOrEmpty(json)) return BadRequest("沒有預計購買的商品");
+            int[] cartItemIds = JsonSerializer.Deserialize<int[]>(json)!;
 
-        //    return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
-        //}
+            (bool enough, string message) = await new CartService(_context).CheckStockQuantity(cartItemIds);
 
-        //// DELETE: api/ApiBuy/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteOrder(int id)
-        //{
-        //    if (_context.Orders == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var order = await _context.Orders.FindAsync(id);
-        //    if (order == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return new { enough, message };
+        }
 
-        //    _context.Orders.Remove(order);
-        //    await _context.SaveChangesAsync();
 
-        //    return NoContent();
-        //}
-
-        //private bool OrderExists(int id)
-        //{
-        //    return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
-        //} 
-        #endregion
     }
 }

@@ -1,7 +1,7 @@
 ﻿//權限錯誤跳轉
-//if (!(ROLE == '管理員' || ROLE == '經理' || ROLE == '員工')) {
-//    window.location.href = ROOT + '/home/index'
-//}
+if (!(ROLE == '管理員' || ROLE == '經理' || ROLE == '員工')) {
+    window.location.href = ROOT + '/home/index'
+}
 
 
 $(document).ready(function () {
@@ -17,9 +17,8 @@ $(document).ready(function () {
 });
 
 
-
+//登出後台
 $('#btnLogOut').click(LogOut)
-
 async function LogOut() {
 
     const response = await fetch(ROOT + '/api/apimember/logout')
@@ -35,6 +34,47 @@ async function LogOut() {
         }
     }
 }
+
+//修改頭像
+$('#changeSelfAvatar').click(async e => {
+
+    const { value: file } = await Swal.fire({
+        title: 'Select image',
+        input: 'file',
+        inputAttributes: {
+            'accept': 'image/*',
+            'aria-label': 'Upload your profile picture'
+        }
+    })
+    const formdata = new FormData()
+    formdata.append('image', file, file.name)
+
+    const response = await fetch(`${ROOT}/api/apiemployee/selfavatar`, {
+        method: 'POST',
+        body: formdata,
+    })
+    if (!response.ok) return
+
+    const result = await response.json()
+    if (result >= 0) {
+        Swal.fire('成功上傳圖片', '確定')
+        displaySelfAvatar()
+    }
+})
+
+//更新頭像
+
+displaySelfAvatar()
+async function displaySelfAvatar() {
+    const response = await fetch(`${ROOT}/api/apiemployee/selfavatar`)
+    let avatarName = await response.text()
+    if (!avatarName) avatarName = '_employeeDefault.jpg'
+    const avatarUrl = `${ROOT}/uploads/employeeAvatar/${avatarName}`
+    $('#navbarAvatar').attr('src', avatarUrl)
+}
+
+//更新密碼
+
 
 //使用密碼再次確認
 async function confirmWithPassword() {
@@ -91,12 +131,16 @@ async function validateRole(role) {
     return isValid
 }
 
+//檢視員工資料驗證
+$('#linkEmployeeList').click(async event => {
+    if (!await validateRole('經理')) event.preventDefault();
+})
+
+
+
 //讀取動畫
 const loadingBox = document.querySelector('.loading-box')
 const showLoadingBox = () => loadingBox.style.display = "block";
 const hideLoadingBox = () => loadingBox.style.display = "none"
 
 
-$('#linkEmployeeList').click(async event => {
-    if (!await validateRole('經理')) event.preventDefault();
-})

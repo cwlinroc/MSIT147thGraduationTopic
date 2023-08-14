@@ -31,9 +31,9 @@
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Score) 
-                           @* <span id="btnSort" data-sortOrder="asc" style="cursor: pointer;">
+                            <span id="btnSort" data-sortOrder="asc" style="cursor: pointer;">
                                 <img src="~/images/sort.png" style="height:20px;" />
-                            </span>*@
+                            </span>
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Comment)
@@ -122,10 +122,10 @@
             $("#SearchForm").submit();
         })
 
-        ////排序        
-        //    $('#btnSort').click(function () {
-
-        //        var sortOrder = $(this).data('sortOrder') || 'asc';
+        //排序        
+            $('#btnSort').click(function () {
+                var sortOrder = $(this).data('sortOrder') || 'asc';
+            console.log(sortOrder)
         //        sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
         //        $(this).data('sortOrder', sortOrder);                
         //        //var pageNo = @ViewBag.PageNo;
@@ -133,7 +133,7 @@
         //        //url = url.replace('__pageNo__', pageNo).replace('__sortOrder__', sortOrder);
 
         //        //window.location.href = url; //根據頁碼及排序重載畫面
-        //    });      
+            });      
 
     </script>
 

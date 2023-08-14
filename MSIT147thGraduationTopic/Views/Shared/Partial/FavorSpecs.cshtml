@@ -1,36 +1,14 @@
-﻿@model int
+﻿
+@model int?
 
 <section>
     <h3><strong>您可能也喜歡</strong></h3>
-    <div class="partial-dividing-line"></div>
+    <div class="partial-dividing-line bg-dark"></div>
 
 
-    <div class="row row-cols-2 row-cols-lg-4 row-cols-xxl-8 px-2" data-merchandiseId="@Model" id="favorSpecContainer">
-        @for (int i = 0; i < 8; i++)
-        {
-            <div class="p-2">
-                <figure class="partial-image-container">
-                    <img src="https://dummyimage.com/1000x1000/343a40/6c757d"
-                         class="" alt="...">
-                </figure>
-                <div class="px-1 my-0">
-                    <span>商品名+規格名</span>
-                </div>
-                <div class="my-0 d-flex px-1">
-                    <del class="text-secondary mt-auto" style="font-size:3px">$<span>100</span></del>
-                    <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
-                    <span>4.3</span>
-                </div>
-                <div class="text-danger px-1">                    
-                    NTD$<span>87</span>
-                </div>
-
-
-            </div>
-        }
+    <div class="row row-cols-2 row-cols-lg-4 row-cols-xxl-8 px-2 mt-3 mb-5" data-merchandiseId="@Model" id="favorSpecContainer">
+        
 
     </div>
-
-
 
 </section>

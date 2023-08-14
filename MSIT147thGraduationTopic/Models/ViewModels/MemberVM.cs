@@ -7,21 +7,21 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
     public class MemberVM
     {
         public int MemberId { get; set; }
-        public string MemberName { get; set; }
-        public string NickName { get; set; }
+        public string? MemberName { get; set; }
+        public string? NickName { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string Gender { get; set; }
-        public string Account { get; set; }
-        public string Password { get; set; }
-        public string Phone { get; set; }
-        public string City { get; set; }
-        public string District { get; set; }
-        public string Address { get; set; }
-        public string Email { get; set; }
-        public string Avatar { get; set; }
-        public string Salt { get; set; }
+        public string? Gender { get; set; }
+        public string? Account { get; set; }
+        public string? Password { get; set; }
+        public string? Phone { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
+        public string? Address { get; set; }
+        public string? Email { get; set; }
+        public string? Avatar { get; set; }
+        public string? Salt { get; set; }
         public bool IsActivated { get; set; }
-        public string ConfirmGuid { get; set; }
+        public string? ConfirmGuid { get; set; }
     }
 
     public class MemberCreateVM
@@ -71,6 +71,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public int MemberId { get; set; }
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? NickName { get; set; }
+        public string? Account { get; set; }
         public string? Password { get; set; }
 
         [MaxLength(20, ErrorMessage = "{0}長度不可多於{1}")]
@@ -160,33 +161,6 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         public string? Avatar { get; set; }
     }
 
-    public class AddressVM
-    {
-
-        public class Rootobject
-        {
-            public Class1[] Property1 { get; set; }
-        }
-
-        public class Class1
-        {
-            public Arealist[] AreaList { get; set; }
-            public string CityEngName { get; set; }
-            public string CityName { get; set; }
-        }
-
-        public class Arealist
-        {
-            public string ZipCode { get; set; }
-            public string AreaName { get; set; }
-            public string AreaEngName { get; set; }
-        }
-
-
-    }
-
-
-
     public class DateTimeRangeAttribute : ValidationAttribute
     {
         private readonly DateTime _minDate;
@@ -247,7 +221,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 MemberId = vm.MemberId,
                 MemberName = vm.MemberName,
                 NickName = vm.NickName,
-                DateOfBirth = vm.DateOfBirth,                
+                DateOfBirth = vm.DateOfBirth,
                 Gender = vm.Gender == "male",
                 Account = vm.Account,
                 Password = vm.Password,
@@ -265,6 +239,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             return new MemberEditVM
             {
                 MemberId = dto.MemberId,
+                Account = dto.Account,
                 NickName = dto.NickName,
                 Password = dto.Password,
                 Phone = dto.Phone,
@@ -302,6 +277,15 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Address = vm.Address,
                 Email = vm.Email,
                 Avatar = vm.Avatar,
+            };
+        }
+
+        public static MemberEditDto ChangePwdToDto(this MemberEditVM vm)
+        {
+            return new MemberEditDto
+            {
+                Account= vm.Account,
+                Password= vm.Password,
             };
         }
     }

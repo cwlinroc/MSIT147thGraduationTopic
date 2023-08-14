@@ -43,17 +43,6 @@ namespace MSIT147thGraduationTopic.Models.Services
             });
         }
 
-        //public IEnumerable<MemberVM> GetMemberById(int memberId)
-        //{
-        //    return _repo.GetMemberById(memberId).Select(dto =>
-        //    {
-        //        string htmlFilePath = Path.Combine(_environment.WebRootPath, @"uploads\Avatar");
-
-        //        return dto.ToVM();
-        //    });
-        //}
-        
-
         public int CreateMember(MemberDto dto, IFormFile file)
         {
             if (file != null)
@@ -70,8 +59,8 @@ namespace MSIT147thGraduationTopic.Models.Services
             var salt = new RandomGenerator().RandomSalt();
             dto.Salt = salt;
             dto.Password = dto.Password?.GetSaltedSha256(salt);
-            dto.IsActivated = true;
-            dto.ConfirmGuid = Convert.ToString(Guid.NewGuid());
+            dto.IsActivated = false;
+            //dto.ConfirmGuid = Guid.NewGuid().ToString();
 
             return _repo.CreateMember(dto);
         }
