@@ -10,6 +10,9 @@
 
     <div class="bg-light rounded shadow p-5">
         <h4>輸入規格資料</h4>
+        <button id="demo_spec1">Demo 規格1</button>
+        <button id="demo_spec2_wrong" class="mx-2">Demo 規格2 輸入有誤</button>
+        <button id="demo_spec2_right" class="mx-2">Demo 規格2</button>
         <hr />
         <div class="row">
             <div class="col-md-4">
@@ -61,8 +64,26 @@
                     </div>
                     <div class="form-group form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" asp-for="OnShelf" /> @Html.DisplayNameFor(model => model.OnShelf)
+                            <input class="form-check-input" asp-for="OnShelf" checked /> @Html.DisplayNameFor(model => model.OnShelf)
                         </label>
+                    </div>
+
+                    <div style="border:solid #D0D0D0 1px; background-color:White; border-radius:7.5px">
+                        <label>適用寵物類型</label>
+                        <div class="form-group form-check">
+                            <label>
+                                <input type="checkbox" name="selectTag" value="Cat" /> 貓用
+                            </label>
+                            <label>
+                                <input type="checkbox" name="selectTag" value="Dog" /> 狗用
+                            </label>
+                            <label>
+                                <input type="checkbox" name="selectTag" value="Mouse" /> 鼠用
+                            </label>
+                            <label>
+                                <input type="checkbox" name="selectTag" value="Rabbit" /> 兔用
+                            </label>
+                        </div>
                     </div>
                     <hr />
                     <div class="form-group">
@@ -76,6 +97,30 @@
 </div>
 
 @section Scripts {
+    @*DEMO*@
+    <script>
+        $("#demo_spec1").on("click", () => {
+            $("#inputspecname").val("寵物專用毛梳");
+            $("#inputprice").val();
+            $("#inputamount").val();
+            $("#inputdiscount").val();
+            $("#inputorder").val();
+        })
+        $("#demo_spec2_wrong").on("click", () => {
+            $("#inputspecname").val("寵物專用毛梳");
+            $("#inputprice").val();
+            $("#inputamount").val();
+            $("#inputdiscount").val();
+            $("#inputorder").val();
+        })
+        $("#demo_spec2_right").on("click", () => {
+            $("#inputspecname").val("寵物專用毛梳");
+            $("#inputprice").val();
+            $("#inputamount").val();
+            $("#inputdiscount").val();
+            $("#inputorder").val();
+        })
+    </script>
     @*產生商品名稱*@
     <script>
         const merchandiseid = $("#showmerchandiseid").val();
@@ -171,7 +216,7 @@
                     icon: 'success',
                     title: '規格新增成功！',
                     showConfirmButton: false,
-                    timer: 1500,
+                    timer: 800,
                     allowOutsideClick: false
                 }).then(() => {
                     const forminput = document.querySelector("#forminput");
@@ -202,6 +247,10 @@
         #imageClear {
             display: none;
             float: right;
+        }
+
+        label{
+            margin-right:20px
         }
     </style>
 }

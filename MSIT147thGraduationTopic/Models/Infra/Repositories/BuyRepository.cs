@@ -48,7 +48,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             });
         }
 
-        public MemberDto? GetMemberAddressAndPhone(int memberId)
+        public MemberDto? GetMemberData(int memberId)
         {
             var member = _context.Members.FirstOrDefault(o => o.MemberId == memberId);
             return member?.ToDto();
@@ -90,6 +90,30 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return cartItems.Select(c => (specs.First(s => s.SpecId == c.SpecId), c));
         }
 
+        public async Task<List<CartItemCheckoutDto>> GetCheckoutInformation(int[] cartItemIds)
+        {
+            var cartItems = await _context.CartItems.Where(o => cartItemIds.Contains(o.CartItemId)).Select(o => new CartItemCheckoutDto
+            {
+                CartItemId = o.CartItemId,
+                SpecId = o.SpecId,
+                MerchandiseId = o.Spec.MerchandiseId,
+                ItemName = o.Spec.Merchandise.MerchandiseName + o.Spec.SpecName,
+                DiscountPercentage = o.Spec.DiscountPercentage,
+                Price = o.Spec.Price,
+                Quantity = o.Quantity,
+                Amount = o.Spec.Amount,
+                OnShelf = o.Spec.OnShelf
+            }).ToListAsync();
+
+            foreach (var cartItem in cartItems)
+            {
+                cartItem.TagIds = await _context.SpecTags.Where(o => o.SpecId == cartItem.SpecId)
+                    .Select(o => o.TagId).ToListAsync();
+            }
+            return cartItems;
+        }
+
+
         public int CreateOrder(OrderDto dto)
         {
             var order = dto.ToEF();
@@ -111,5 +135,12 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return _context.SaveChanges();
         }
 
+        public async Task<int> ConfirmOrder(int orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null) return -1;
+            order.Payed = true;
+            return await _context.SaveChangesAsync();
+        }
     }
 }

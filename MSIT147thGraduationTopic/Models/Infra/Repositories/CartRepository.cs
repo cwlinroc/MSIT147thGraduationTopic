@@ -61,5 +61,23 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return await _context.CartItems.CountAsync(o => o.MemberId == memberId);
         }
 
+        public async Task<List<CartItemDto>> GetCartItems(int[] cartItemIds)
+        {
+            return await _context.CartItems.Where(o => cartItemIds.Contains(o.CartItemId))
+                .Select(o => o.ToDto()).ToListAsync();
+        }
+
+        public async Task<string?> CheckStockQuantity(IEnumerable<CartItemDto> cartItems)
+        {
+            foreach (var cartItem in cartItems)
+            {
+                var spec = await _context.Specs.FirstOrDefaultAsync(o => o.SpecId == cartItem.SpecId && o.Amount < cartItem.Quantity);
+                if (spec == null) continue;
+                var name = (await _context.Merchandises.FindAsync(spec.MerchandiseId))!.MerchandiseName + spec.SpecName;
+                return $"{name} 的庫存數量僅剩下{spec.Amount}個";
+            }
+            return null;
+        }
+
     }
 }

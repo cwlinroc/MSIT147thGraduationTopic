@@ -31,6 +31,11 @@ namespace MSIT147thGraduationTopic.Models.Services
             return _repo.CreateCoupon(cDto);
         }
 
+        public int CouponReceive(int memberId,int couponId)
+        {
+            return _repo.CouponReceive(memberId,couponId);
+        }
+
         public int EditCoupon(CouponEditDto cEDto)
         {
             return _repo.EditCoupon(cEDto);
@@ -44,6 +49,11 @@ namespace MSIT147thGraduationTopic.Models.Services
         public CouponDto GetCouponById(int couponId)
         {
             return _repo.GetCouponById(couponId);
+        }
+
+        public CouponFrontDto GetCouponByMemberId(int memberId)
+        {
+            return _repo.GetCouponByMemberID(memberId);
         }
     }
 }

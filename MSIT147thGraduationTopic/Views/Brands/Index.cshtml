@@ -15,13 +15,16 @@
                 <div class="row">
                     <div class="form-group col-sm-5">
                         <div class="input-group mb-3">
-                            <label class="input-group-text" for="searchCondition">關鍵字搜尋</label>
-                            <input type="text" name="txtKeyword" class="form-control" aria-label="Text input with dropdown button">
-                            <input type="submit" value="Search" class="btn btn-secondary" />
+                            <label class="input-group-text">關鍵字搜尋</label>
+                            <input type="text" id="search-input" name="txtKeyword" class="form-control" aria-label="Text input with dropdown button">
+                            <input type="submit" id="keywordsearch" value="Search" class="btn btn-secondary" />
                         </div>
                     </div>
                 </div>
             }
+        </div>
+        <div class="form-group" style="float:right">
+            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
         </div>
         <br />
         <p>
@@ -40,7 +43,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="showResult">
                 @{
                     int count = 0;
                     foreach (var item in Model)
@@ -62,13 +65,130 @@
                 }
             </tbody>
         </table>
-        <div class="form-group">
+        @*<div class="form-group">
             @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
-        </div>
+        </div>*@
+
+        <!-- 分頁 -->
+        <nav aria-label="Page navigation example ">
+            <ul class="pagination justify-content-center mt-4 " id="pagingContainer">
+                <!-- 透過Ajax產生分頁標籤 -->
+            </ul>
+        </nav>
     </div>
 </div>
 
 @section Scripts {
+    @*搜尋商品*@
+    <script>
+        let txtKeyword = "@ViewBag.txtKeyword";
+        let pageindex = @ViewBag.PageIndex;
+
+        //關鍵字
+        $("#keywordsearch").on("click", (e) => {
+            txtKeyword = $("#search-input").val();
+            pageindex = 1;
+            e.preventDefault();
+            SearchBrands();
+        });
+
+        //搜尋
+        function SearchBrands() {
+            window.location.href = `/Brands/Index/?txtKeyword=${txtKeyword}&PageIndex=${pageindex}`;
+        };
+
+        //產生分頁標籤
+        $(async () => {
+            const responseforlength = await fetch(`@Url.Content("~/ApiBrand/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}`);
+            const returnLengthBag = await responseforlength.text();
+            const resultLength = JSON.parse(returnLengthBag);
+            const totalpage = Math.ceil(resultLength / 20);
+            const pagingContainer = document.querySelector("#pagingContainer");
+
+            let indexRow = `<li class="page-item border-light toPrevious">\
+                                                <a class="page-link" href="#" aria-label="Previous">\
+                                                    <span aria-hidden="true">&laquo;</span>\
+                                                </a>\
+                                            </li>`;
+            let indexArray = "";
+            let start, end;
+            if (totalpage <= 5) {
+                start = 1; end = totalpage;
+                for (var i = start; i <= end; i++) {
+                    indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
+                }
+            }
+            if (totalpage > 5) {
+                if (pageindex < 4) {
+                    start = 1; end = 5;
+                    for (var i = start; i <= end; i++) {
+                        indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
+                    }
+                    indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
+                }
+                if (pageindex == 4) {
+                    start = 2; end = 6;
+                    for (var i = start; i <= end; i++) {
+                        indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
+                    }
+                    indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
+                }
+                if (pageindex > 4) {
+                    if (pageindex + 3 <= totalpage) {
+                        start = pageindex - 2; end = parseInt(pageindex) + 2;//未轉型會默認為字串串接
+                        indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
+                            + `<li class="page-item"><a class="page-link" >...</a></li>`
+                        for (var i = start; i <= end; i++) {
+                            indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
+                        }
+                        indexArray += `<li class="page-item"><a class="page-link" >...</a></li>`
+                    }
+                    if (pageindex + 3 > totalpage) {
+                        start = pageindex - 2; end = totalpage;
+                        indexArray += `<li class="page-item showIndex" val-index="1"><a class="page-link" href="#">1</a></li>`
+                            + `<li class="page-item"><a class="page-link" >...</a></li>`
+                        for (var i = start; i <= end; i++) {
+                            indexArray += `<li class="page-item showIndex" val-index="${i}"><a class="page-link" href="#">${i}</a></li>`;
+                        }
+                    }
+                }
+            }
+
+            indexRow += indexArray + `<li class="page-item toNext">
+                                                        <a class="page-link" href="#" aria-label="Next">
+                                                            <span aria-hidden="true">&raquo;</span>
+                                                        </a>
+                                                     </li>`;
+            pagingContainer.innerHTML = indexRow;
+
+            //改變當前頁籤格式
+            $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
+            //分頁點選+點選後
+            $(".showIndex").on("click", (e) => {
+                pageindex = $(e.currentTarget).attr("val-index");
+                SearchBrands();
+            })
+            //前後頁按鈕
+            $(".toPrevious").on("click", () => {
+                if (pageindex > 1) {
+                    pageindex--;
+                    SearchBrands();
+                }
+            })
+            $(".toNext").on("click", () => {
+                if (pageindex < totalpage) {
+                    pageindex++;
+                    SearchBrands();
+                }
+            })
+
+            if (resultLength == 0) {
+                const showResult = document.querySelector("#showResult");
+                showResult.innerHTML = "<h4>找不到符合的品牌</h4>";
+            }
+        })
+    </script>
+    @*刪除品牌*@
     <script>
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除品牌嗎？')) return;
@@ -108,7 +228,7 @@
                                 icon: 'success',
                                 title: '刪除成功！',
                                 showConfirmButton: false,
-                                timer: 1500,
+                                timer: 800,
                                 allowOutsideClick: false
                             }).then(() => {
                                 window.location.href = `/Brands/Delete/${currentbrandid}`;

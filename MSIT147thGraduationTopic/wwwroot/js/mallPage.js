@@ -1,7 +1,7 @@
 ﻿//權限錯誤跳轉
-//if (ROLE == '管理員' || ROLE == '經理' || ROLE == '員工') {
-//    window.location.href = ROOT + '/employeebackstage/welcome'
-//}
+if (ROLE == '管理員' || ROLE == '經理' || ROLE == '員工') {
+    window.location.href = ROOT + '/employeebackstage/welcome'
+}
 
 
 $("#backToTop").hide()
@@ -147,8 +147,29 @@ async function refreshNavbarCart() {
         numberBadge.querySelector('div').textContent = cartItemNumber
         numberBadge.closest('a').customAnimate('fadeIn')
     }
-
 }
+
+//提醒小窗
+if (LOADCOUPON) remindCoupon()
+async function remindCoupon() {
+    await Swal.fire({
+        position: 'top-end',
+        icon: 'Info',
+        title: '要看看有沒有可領取的優惠券嗎？',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.href = ROOT + 'CouponsReceive/Index'
+        }
+    })
+}
+
+//頂端列搜尋商品
+$("#navbar_search").on("click", (e) => {
+    console.log("SEARCH");
+    e.preventDefault();
+    const txtKeyword = $("#navbar_input").val();
+    window.location.href = ROOT + `/Mall/Index/?txtKeyword=${txtKeyword}`;
+})
 
 
 

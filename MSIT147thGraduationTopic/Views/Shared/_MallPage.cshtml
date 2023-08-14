@@ -12,6 +12,14 @@
         userName = user?.Claims.FirstOrDefault(o => o.Type == "UserName")?.Value;
         roleName = user?.FindFirstValue(ClaimTypes.Role);
     }
+
+    string? loadCoupon = HttpContextAccessor?.HttpContext?.Session.GetString("LoadCoupon");
+    if (!string.IsNullOrEmpty(loadCoupon) || loadCoupon == "Load")
+    {
+        HttpContextAccessor?.HttpContext?.Session.SetString("LoadCoupon", string.Empty);
+    }
+
+
 }
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
@@ -68,8 +76,8 @@
                 <div class="collapse navbar-collapse" id="navbarHeaderContent">
                     <div class="nav-item flex-fill mx-5">
                         <form class="d-flex me-3 my-3">
-                            <input class="form-control me-2 flex-fill" type="search" placeholder="請輸入關鍵字" aria-label="Search">
-                            <button class="btn btn-outline-light text-nowrap" type="submit">搜尋</button>
+                            <input id="navbar_input" class="form-control me-2 flex-fill" type="search" placeholder="請輸入關鍵字" aria-label="Search">
+                            <button id="navbar_search" class="btn btn-outline-light text-nowrap" type="submit">搜尋</button>
                         </form>
                     </div>
 
@@ -127,7 +135,7 @@
                         <h1 class="modal-title fs-4 " id="loginModalLabel">登入</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body mb-4">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-10 mx-auto">
@@ -185,12 +193,12 @@
                 <div class="collapse navbar-collapse justify-content-center" id="navbarHeaderContent">
 
                     <ul class="navbar-nav mb-2 mb-lg-0">
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">優惠專區</a></li>
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">狗狗商品</a></li>
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">貓咪商品</a></li>
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">狗貓零食</a></li>
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">玩具用品</a></li>
-                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">美容保健</a></li>
+                        <!--<li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Action("Index","Home")">優惠專區(未開通)</a></li>-->
+                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?tagId=2")">狗狗商品</a></li>
+                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?tagId=1")">貓咪商品</a></li>
+                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?sideCategoryId=1")">狗貓零食</a></li>
+                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?sideCategoryId=6")">玩具用品</a></li>
+                        <li class="nav-item mx-4 px-3 text-nowrap"><a class="nav-link" href="@Url.Content("~/Mall/Index/?sideCategoryId=9")">外出用具</a></li>
                     </ul>
                 </div>
 
@@ -238,6 +246,7 @@
 
     <script>const ROOT = '@Url.Content("~")'</script>
     <script>const ROLE = '@roleName'</script>
+    <script>const LOADCOUPON = @((loadCoupon ?? "") == "Load" ? "true" : "false")</script>
     <script src="~/js/mallPage.js"></script>
 
     @RenderSection("Scripts",false)

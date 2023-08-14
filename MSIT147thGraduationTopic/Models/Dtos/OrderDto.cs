@@ -11,6 +11,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public DateTime PurchaseTime { get; set; }
         public int? UsedCouponId { get; set; }
         public int? PaymentAmount { get; set; }
+        public string DeliveryCity { get; set; }
+        public string DeliveryDistrict { get; set; }
         public string DeliveryAddress { get; set; }
         public string ContactPhoneNumber { get; set; }
         public string Remark { get; set; }
@@ -30,6 +32,8 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 PurchaseTime = dto.PurchaseTime,
                 UsedCouponId = dto.UsedCouponId,
                 PaymentAmount = dto.PaymentAmount,
+                DeliveryCity = dto.DeliveryCity,
+                DeliveryDistrict = dto.DeliveryDistrict,
                 DeliveryAddress = dto.DeliveryAddress,
                 ContactPhoneNumber = dto.ContactPhoneNumber,
                 Remark = dto.Remark,

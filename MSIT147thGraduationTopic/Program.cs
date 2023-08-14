@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.BackGroundServiecs;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Interfaces;
 using MSIT147thGraduationTopic.Models.Services;
@@ -26,6 +27,20 @@ builder.Services.AddScoped<IUrlHelper>(x => {
     var factory = x.GetRequiredService<IUrlHelperFactory>();
     return factory.GetUrlHelper(actionContext);
 });
+
+
+/*** Timed execute backgroud task ***/
+
+builder.Services.AddScoped<RecommendService>();
+// Register as singleton first so it can be injected through Dependency Injection
+builder.Services.AddSingleton<AutoPopularityCalculationService>();
+// Add as hosted service using the instance registered as singleton before
+builder.Services.AddHostedService(
+    provider => provider.GetRequiredService<AutoPopularityCalculationService>());
+
+
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -85,6 +100,8 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
 
 app.Run();

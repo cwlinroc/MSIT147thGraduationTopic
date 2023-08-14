@@ -8,7 +8,7 @@ namespace MSIT147thGraduationTopic.EFModels
     public partial class CouponOwner
     {
         public int CouponId { get; set; }
-        public string CouponSerialNumber { get; set; }
+        public bool CouponUsed { get; set; }
         public int MemberId { get; set; }
 
         public virtual Coupon Coupon { get; set; }

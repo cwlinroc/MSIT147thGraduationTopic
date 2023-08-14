@@ -104,11 +104,11 @@
 </div>
 
 <!-- MainModal -->
-<div class="modal fade" id="edditModal" tabindex="-1" aria-labelledby="edditModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="edditModalLabel">title</h5>
+                <h5 class="modal-title" id="editModalLabel">title</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -255,7 +255,7 @@
         async function getEmployees(query) {
             showLoadingBox()
             let str = ''
-            if (query) str = '/' + query
+            if (query) str = '/' + queryshow
             const response = await fetch('@Url.Content("~/api/apiemployee")' + str)
 
             if (!response.ok) return
@@ -427,7 +427,7 @@
             const addForm = document.querySelector('#createAndEdit')
             addForm.reset()
             $('#account,#password').parent().css('display', 'block')
-            $('#edditModalLabel').text('新增員工')
+            $('#editModalLabel').text('新增員工')
             showOrHideImagePreview()
             clearAllValidFeedBack()
             $('#createAndEdit').attr('data-index', '-1')
@@ -444,7 +444,7 @@
             const editForm = document.querySelector('#createAndEdit')
             editForm.reset()
             $('#account,#password').parent().css('display', 'none')
-            $('#edditModalLabel').text('修改員工資料')
+            $('#editModalLabel').text('修改員工資料')
             showOrHideImagePreview()
             clearAllValidFeedBack()
             const index = event.currentTarget.closest('tr').dataset.index
@@ -492,24 +492,24 @@
         //demos
         $('#demoAddManager').click(e=>{
             $('#name').val('學姐')
-            $('#account').val('demoManager99')
-            $('#password').val('demoManager99')
-            $('#phone').val('0933123456')
+            $('#account').val('demoManager88')
+            $('#password').val('demoManager88')
+            $('#phone').val('0988336699')
             $('#email').val('Manager@@whatever.com')
         })
 
         $('#demoAddEmployee').click(e => {
             $('#name').val('新來的學弟')
-            $('#account').val('demoEmployee99')
-            $('#password').val('demoEmployee99')
-            $('#phone').val('0933123456')
-            $('#email').val('Manager@@yahoo.com.tw')
+            $('#account').val('demoEmployee88')
+            $('#password').val('demoEmployee88')
+            $('#phone').val('0929224466')
+            $('#email').val('NewEmployee@@yahoo.com.tw')
         })
 
         $('#demoEditEmployee').click(e => {
             $('#name').val('來了一陣子的學弟')
             $('#phone').val('0933123456')
-            $('#email').val('Manager@@gmail.com')
+            $('#email').val('NewEmployee@@gmail.com')
         })
 
         function showAddDemoButtons(){

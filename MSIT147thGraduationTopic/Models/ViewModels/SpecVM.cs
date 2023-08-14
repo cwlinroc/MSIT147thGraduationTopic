@@ -85,7 +85,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             set { _spec.OnShelf = value; }
         }
         public IFormFile? photo { get; set; }
-        public int? merchandiseIdCarrier { get; set; }
         public bool? deleteImageIndicater { get; set; }
+        public string[]? selectTag { get; set; }
     }
 }

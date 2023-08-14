@@ -192,17 +192,21 @@ namespace MSIT147thGraduationTopic.Models.Services
             }
         }
 
-        public void AddRandomEvaluations()
-        {
-            var orders = _repo.GetAllOrdersWithMerchandiseId();
+        //public void AddRandomEvaluations()
+        //{
+        //    var orders = _repo.GetAllOrdersWithMerchandiseIdAndName();
 
-            foreach (var order in orders) foreach (var merchandiseId in order.merchandiseId)
-                {
-                    if (_repo.CheckEvaluated(order.orderId, merchandiseId)) continue;
-                    if (_generator.RandomChance(60)) continue;
-                    int score = _generator.RandomIntByWeight(0, 1, 1, 2, 10, 10);
-                    _repo.AddEvaluation(order.orderId, merchandiseId, score);
-                }
-        }
+        //    foreach (var order in orders) foreach (var merchandise in order.merchandise)
+        //        {
+        //            if (_repo.CheckEvaluated(order.orderId, merchandise.merchandiseId)) continue;
+        //            if (_generator.RandomChance(60)) continue;
+        //            int score = _generator.RandomIntByWeight(0, 1, 1, 2, 10, 10);
+        //            _repo.AddEvaluation(order.orderId, merchandise.merchandiseId, score);
+        //        }
+        //}
+
+
+
+
     }
 }

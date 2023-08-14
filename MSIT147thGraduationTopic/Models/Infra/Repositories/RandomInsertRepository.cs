@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
@@ -34,6 +35,20 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return ids;
         }
 
+        public IEnumerable<RandomInsertedSpecDto> GetAllSpecs()
+        {
+            return _context.Specs.Select(o => new RandomInsertedSpecDto
+            {
+                FullName = o.Merchandise.MerchandiseName + o.SpecName,
+                SpecId = o.SpecId,
+                SpecName = o.SpecName,
+                MerchandiseId = o.MerchandiseId,
+                Price = o.Price,
+                DiscountPercentage = o.DiscountPercentage,
+                OnShelf = o.OnShelf
+            });
+        }
+
         public void DeleteAllCartItems()
         {
             _context.CartItems.RemoveRange(_context.CartItems);
@@ -55,11 +70,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         }
 
 
-        public int AddSpecTags(int specId, int tagId)
+        public int AddSpecTags(int specId, params int[] tagIds)
         {
             using var conn = new SqlConnection(_context.Database.GetConnectionString());
-            string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
-            return conn.Execute(str, new { SpecId = specId, TagId = tagId });
+            foreach (var tagId in tagIds)
+            {
+                string str = "INSERT INTO SpecTags (SpecId,TagId) VALUES (@SpecId,@TagId)";
+                conn.Execute(str, new { SpecId = specId, TagId = tagId });
+            }
+            return specId;
         }
 
         public int UpdateSpecPopularity(int specId, double popularity)
@@ -71,17 +90,29 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return spec.SpecId;
         }
 
-
-
-        public IEnumerable<(int orderId, int[] merchandiseId)> GetAllOrdersWithMerchandiseId()
+        public IEnumerable<(int orderId, List<(int specId, int merchandiseId, string specName)> specs)> GetAllOrdersWithSpecIdAndName()
         {
-            var result = (from order in _context.Orders
-                          join orderlist in _context.OrderLists on order.OrderId equals orderlist.OrderId
-                          join spec in _context.Specs on orderlist.SpecId equals spec.SpecId
-                          select new { order.OrderId, spec.MerchandiseId }).Distinct().ToList();
-            return result.GroupBy(o => o.OrderId)
-                .Select(o => (o.First().OrderId, o.Select(x => x.MerchandiseId).ToArray()));
+            var specs = (from order in _context.Orders
+                         join orderlist in _context.OrderLists on order.OrderId equals orderlist.OrderId
+                         join spec in _context.Specs on orderlist.SpecId equals spec.SpecId
+                         join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
+                         select new { order.OrderId, spec.SpecId, spec.MerchandiseId, specName = merchandise.MerchandiseName + spec.SpecName })
+                         .Distinct().ToList();
+
+            return specs.GroupBy(o => o.OrderId)
+                .Select(o => (o.First().OrderId, o.Select(x => (x.SpecId, x.MerchandiseId, x.specName)).ToList()));
         }
+
+        //public IEnumerable<(int orderId, List<(int merchandiseId, string merchandiseName)> merchandise)> GetAllOrdersWithMerchandiseIdAndName()
+        //{
+        //    var result = (from order in _context.Orders
+        //                  join orderlist in _context.OrderLists on order.OrderId equals orderlist.OrderId
+        //                  join spec in _context.Specs on orderlist.SpecId equals spec.SpecId
+        //                  join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
+        //                  select new { order.OrderId, spec.MerchandiseId, merchandise.MerchandiseName }).Distinct().ToList();
+        //    return result.GroupBy(o => o.OrderId)
+        //        .Select(o => (o.First().OrderId, o.Select(x => (x.MerchandiseId, x.MerchandiseName)).ToList()));
+        //}
 
         public bool CheckEvaluated(int orderId, int merchandiseId)
         {
@@ -89,10 +120,11 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                 .Any(o => o.OrderId == orderId && o.MerchandiseId == merchandiseId);
         }
 
-        public int AddEvaluation(int orderId, int merchandiseId, int score)
+        public int AddEvaluation(int orderId, int specId, int merchandiseId, int score)
         {
             var evaluation = new Evaluation
             {
+                SpecId = specId,
                 MerchandiseId = merchandiseId,
                 Score = score,
                 OrderId = orderId

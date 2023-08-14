@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,16 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Brands
-        public async Task<IActionResult> Index(string txtKeyword)
+        [Authorize(Roles = "管理員,經理,員工")]
+        public IActionResult Index(string txtKeyword, int PageIndex = 1)
         {
-            IEnumerable<Brand> datas = null;
-            datas = (string.IsNullOrEmpty(txtKeyword)) ? from b in _context.Brands select b
+            ViewBag.txtKeyword = txtKeyword;
+            ViewBag.PageIndex = PageIndex;
+
+            IEnumerable<Brand> datas = string.IsNullOrEmpty(txtKeyword) ? from b in _context.Brands select b
                 : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
+
+            datas = datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
 
             List<BrandVM> list = new List<BrandVM>();
             foreach (Brand b in datas)
@@ -39,6 +45,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Brands/Create
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Create()
         {
             BrandVM brandvm = new BrandVM();
@@ -50,6 +57,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Create([Bind("BrandId,BrandName")] BrandVM brandvm)
         {
             if (ModelState.IsValid)
@@ -62,6 +70,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Brands/Edit/5
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Brands == null)
@@ -85,6 +94,7 @@ namespace MSIT147thGraduationTopic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName")] BrandVM brandvm)
         {
             if (id != brandvm.BrandId)
@@ -116,10 +126,11 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         // GET: Brands/Delete/5
+        [Authorize(Roles = "管理員,經理")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (_context.Merchandises.Where(m => m.BrandId == id).Count() > 0)
-                return RedirectToAction(nameof(Index));            
+                return RedirectToAction(nameof(Index));
 
             if (id == null || _context.Brands == null)
                 return Problem("找不到品牌資料");

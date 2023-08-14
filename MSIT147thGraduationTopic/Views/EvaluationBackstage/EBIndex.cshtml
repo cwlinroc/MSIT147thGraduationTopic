@@ -17,33 +17,29 @@
                         <input name="Keyword" id="txtkeyword" type="text" class="form-control-sm d-flex mx-2 " style="height: 38px;" placeholder="請輸入關鍵字">
                         <img src="~/images/search.jpg" class="rounded-3 d-flex" id="btnKeywordImage" style="cursor: pointer;" />
                     </div>
-
                 </div>
                 </form>
             </div>
             <table class="table bg-white mt-3 rounded-3 ">
                 <thead>
-                    <tr>
-                        <th style="text-align:center">
-                            勾選
-                            @*@Html.DisplayNameFor(model => model.Comment)*@
-                        </th>
+                    <tr>                        
                         <th>
-
                             @Html.DisplayNameFor(model => model.OrderId)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.MerchandiseName)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Score)
+                            @Html.DisplayNameFor(model => model.Score) 
+                            <span id="btnSort" data-sortOrder="asc" style="cursor: pointer;">
+                                <img src="~/images/sort.png" style="height:20px;" />
+                            </span>
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Comment)
                         </th>
                         <th>
-                            刪除
-                            @*@Html.DisplayNameFor(model => model.Order)*@
+                            刪除                           
                         </th>
                         <th></th>
                     </tr>
@@ -53,10 +49,7 @@
                     {
                         @foreach (var item in Model)
                         {
-                            <tr>
-                                <td style="text-align:center">
-                                    <input class="form-check-input" type="checkbox" id="gridCheck" name="checitem " data-id="@item.EvaluationId">
-                                </td>
+                            <tr>                              
                                 <td>
                                     @Html.DisplayFor(modelItem => item.OrderId)
                                 </td>
@@ -78,27 +71,34 @@
                 </tbody>
             </table>
             <!-- 顯示分頁控制元件 -->
-            <nav aria-label="Page navigation example">
-                <button id="btnChecitem" class="btn btn-primary ">刪除所有勾選</button>
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <div class="pagination ">
-                       @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
+            @if (ViewBag.TotalPage < 1 || ViewBag.Keyword==null)
+            {
+                <nav></nav>
+            }
+            else
+            {
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo - 1) > 0 ? ViewBag.PageNo - 1 : ViewBag.PageNo, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount  })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>                        
+                        @for (int i = 1; i <= ViewBag.TotalPage; i++)
                         {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("EBIndex", new { pageNo = i })">@i</a></li>
-                        }
-                    </div>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>          
+                            <li class="page-item @(i == ViewBag.PageNo ? "active" : "")">
+                                @*若ViewBag.PageNo為當頁,把active加上*@
+                                <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = i, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })">@i</a>
+                            </li>
+                        }                        
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) <= ViewBag.TotalPage ?ViewBag.PageNo + 1:ViewBag.PageNo , keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }            
         </div>
         <div class="col-1"></div>
     </div>
@@ -106,35 +106,34 @@
 
 @section Scripts{
     <script>
+        //刪除單筆留言
         $('.btnDelete').click(function () {
-
             var evaluationId = $(this).attr('data-id');
-
-            console.log(evaluationId);
-
+            //console.log(evaluationId);
             $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
                 window.location.reload(); //重載畫面
             });
         });
 
-        $('#btnChecitem').click(function () {
-
-            var Checitems = $(this).attr('data-id').List();
-
-            console.log(this);
-
-            $.post('/EvaluationBackstage/Delete', { id: evaluationId }, function (data) {
-                window.location.reload(); //重載畫面
-            });
-        });
-
-
+        //關鍵字搜尋
         $("#btnKeywordImage").click(function(){
             var keywordValue = $("#txtkeyword").val();
-            console.log(keywordValue);
+            //console.log(keywordValue);
             $("#SearchForm").submit();
         })
-        
+
+        //排序        
+            $('#btnSort').click(function () {
+                var sortOrder = $(this).data('sortOrder') || 'asc';
+            console.log(sortOrder)
+        //        sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
+        //        $(this).data('sortOrder', sortOrder);                
+        //        //var pageNo = @ViewBag.PageNo;
+        //        //var url = '@Url.Action("EBIndex", new { pageNo = "__pageNo__", sortOrder = "__sortOrder__" })';
+        //        //url = url.replace('__pageNo__', pageNo).replace('__sortOrder__', sortOrder);
+
+        //        //window.location.href = url; //根據頁碼及排序重載畫面
+            });      
 
     </script>
 

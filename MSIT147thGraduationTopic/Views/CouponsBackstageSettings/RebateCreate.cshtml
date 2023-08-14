@@ -92,6 +92,59 @@
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
+        const conditionInput = $('input[name = "CouponCondition"]');
+        const conditionValue = parseFloat(conditionInput.val());
+        const discountInput = $('input[name = "CouponDiscount"]');
+        const discounValue = parseFloat(discountInput.val());
+        const startDateInput = $('input[name="CouponStartDate"]');
+        const endDateInput = $('input[name="CouponEndDate"]');
+        const startDate = new Date(startDateInput.val());
+        const endDate = new Date(endDateInput.val());
+
+        if (startDate > endDate) {
+            Swal.fire({
+                icon: 'error',
+                title: '失敗',
+                text: '請檢查日期格式是否正確：開始日期不得晚於結束日期'
+            });
+            return;
+        }
+
+        if (endDate < startDate) {
+            Swal.fire({
+                icon: 'error',
+                title: '失敗',
+                text: '請檢查日期格式是否正確：結束日期不得早於開始日期'
+            });
+            return;
+        }
+
+        if (conditionValue < 0) {
+            conditionInput[0].setCustomValidity('額度門檻必須超過0');
+        }
+        else if (isNaN(conditionValue)) {
+            conditionInput[0].setCustomValidity('額度門檻為必填欄位');
+        }
+        else if (discounValue > conditionValue) {
+            conditionInput[0].setCustomValidity('額度門檻必須比折扣大');
+        }
+        else {
+            conditionInput[0].setCustomValidity('');
+        }
+
+        if (discounValue < 0) {
+            discountInput[0].setCustomValidity('折扣必須超過0');
+        }
+        else if (discounValue > conditionValue) {
+            discountInput[0].setCustomValidity('折扣必須比額度門檻小');
+        }
+        else if (isNaN(discounValue)) {
+            discountInput[0].setCustomValidity('折扣為必填欄位');
+        }
+        else {
+            discountInput[0].setCustomValidity('');
+        }
+
         $('#btnBack').on('click', function () {
             Swal.fire({
                 title: '確定要返回主頁面?',
@@ -146,30 +199,6 @@
             $('#create').reset();
         })
 
-        //新增優惠券
-        //function CreateCoupon() {
-        //    const formData = $("#create").serializeArray();
-        //    //datas = $("form").serializeArray()
-        //    $.ajax({
-        //        method: "POST",
-        //        url: "@Url.Content("~/api/ApiCoupon")",
-        //        data: formData,
-        //        async:true,
-        //    }).done(function (formData) {
-        //        Swal.fire({
-        //            icon: 'success',
-        //            title: '成功',
-        //            text: '優惠券新增成功',
-        //        });
-        //    }).fail(function (xhr, textStatus, errorThrown) {
-        //        Swal.fire({
-        //            icon: 'error',
-        //            title: '失敗',
-        //            text: '優惠券新增失敗，請檢查資料及格式是否正確',
-        //        });
-        //    });
-        //}
-
         //demo2
         $('#demo').click(e => {
             $('#couponName').val('123');
@@ -178,48 +207,5 @@
             $('#condition').val('1000');
             $('#discount').val('100');
         })
-                                ////ajax 得到優惠券資料
-                                //async function getcoupon(query){
-                                //let str = ''
-                                //if(query) str = '/' + query
-                                //const response = await fetch('@@url.content("~/api/apicoupon")'+str)
-                                //if(!response.ok)return
-                                //const data = await response.json()
-                                //coupondata = data
-                                //console.log(data)
-                                //}
-                                ////新增優惠券表單驗證
-                                //// 0. section最上面要引用  script src="~/js/mybootstrapvalidator.js"
-                                //// 1. const myvalid = new mybootsrapvalidator(表單element)
-                                //const myvalid = new mybootstrapvalidator(document.queryselector('.needs-validation'))
-                                //function createvalidator() {
-                                //// 2. myvalid.validatefunction( 回傳bool的函式 ) //自訂判斷整個表單是否格式正確，正確回傳true
-                                //myvalid.validatefunction(() => {
-                                //const name = document.queryselector('#couponname')
-                                //const namehasvalue = !!name.value
-                                //// 3. input元素.setvalidate( 回傳bool的函式 , [錯誤訊息字串] )  //自訂判斷這個input是否格式正確，如果有輸入錯誤字串會更改顯示的錯誤訊息
-                                //// ps:也可以使用 input元素.setvalidate(...).setvalidate(...).setvalidate(...) 串接多個條件判斷  只要其中有錯誤就會顯示第一個錯的錯誤，包含錯誤信息
-                                //name.setvalidate(() => namehasvalue, '為必填欄位')
-                                //const condition = document.queryselector('#condition')
-                                //const conditionhasvalue = !!condition.value
-                                //const conditionnotnegative = +condition.value > 0
-                                //condition.setvalidate(() => conditionhasvalue, '為必填欄位')
-                                //.setvalidate(() => conditionnotnegative, '數值不得為負數')
-
-                                //const discount = document.queryselector('#discount')
-                                //const discounthasvalue = !!discount.value
-                                //const discountnotnegative = +condition.value > 0
-                                //discount.setvalidate(() => discounthasvalue, '為必填欄位')
-                                //.setvalidate(() => discountnotnegative, '數值不得為負數')
-
-                                //discount.setvalidate(() => discountvalid)
-
-                                ////全數正確回傳表單
-                                //return namevalid && coupontagvalid && discounttypevalid && conditionvalid && discountvalid
-                                //})
-                                ////myvalid.startvalidate()
-                                ////開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
-                                //return myvalid.startvalidate()
-                                //}
     </script>
 }

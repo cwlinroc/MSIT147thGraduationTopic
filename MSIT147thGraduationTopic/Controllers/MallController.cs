@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
@@ -14,33 +15,38 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult Index(/*string txtKeyword = "", int searchCondition = 1, int sideCategoryId = 0*/)//todo 頁籤顯示數量不正常
-        {
-            //IEnumerable<MallDisplay> datas = _context.MallDisplays
-            //    .Where(md => md.Display == true).Where(md => md.OnShelf == true);
+        public IActionResult Index(string txtKeyword = "", int searchCondition = 1, int displayorder = 0, 
+                                    int pageSize = 20, int PageIndex = 1, int sideCategoryId = 0, 
+                                    int? minPrice = null, int? maxPrice = null, int tagId = 0)
+        {   //todo 搜尋欄位RWD換行不成功
+            ViewBag.txtKeyword = txtKeyword;
+            ViewBag.searchCondition = searchCondition;
+            ViewBag.displayorder = displayorder;
+            ViewBag.pageSize = pageSize;
+            ViewBag.PageIndex = PageIndex;
+            ViewBag.sideCategoryId = sideCategoryId;
+            ViewBag.minPrice = minPrice;
+            ViewBag.maxPrice = maxPrice;
+            ViewBag.tagId = tagId;
 
-            //if (!string.IsNullOrEmpty(txtKeyword))
-            //{
-            //    datas = searchCondition switch
-            //    {
-            //        1 => datas.Where(md => md.FullName.Contains(txtKeyword)),
-            //        2 => datas.Where(md => md.BrandName.Contains(txtKeyword)),
-            //        3 => datas.Where(md => md.CategoryName.Contains(txtKeyword)),
-            //        _ => datas
-            //    };
-            //}
-
-            //datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
-
-            // todo 連結至購物車
-            // todo 寵物類別TAG查詢
             return View();
         }
 
-        public IActionResult Viewpage(int MerchandiseId)
+        public IActionResult Viewpage(int MerchandiseId, int SpecId)
         {
+            //紀錄最近三筆瀏覽商品
+            int? last_2 = HttpContext.Session.GetInt32("Last_2");
+            if (last_2.HasValue)
+                HttpContext.Session.SetInt32("Last_3", last_2.Value);
+            int? last_1 = HttpContext.Session.GetInt32("Last_1");
+            if (last_1.HasValue)
+                HttpContext.Session.SetInt32("Last_2", last_1.Value);
+            HttpContext.Session.SetInt32("Last_1", MerchandiseId);
+
+            ViewBag.SpecId = SpecId;
+
             IEnumerable<Spec> datas = _context.Specs
-                .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true);
+                .Where(s => s.MerchandiseId == MerchandiseId).Where(s => s.OnShelf == true).Where(s => s.Amount > 0);
 
             return View(datas);
         }

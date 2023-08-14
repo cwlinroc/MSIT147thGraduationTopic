@@ -57,5 +57,28 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return Json(package);
         }
+        public IActionResult CheckDataLinkforDeleteSpec(int id)
+        {
+            bool result = false;
+            var existEvaluation = _context.Evaluations.Any(e => e.SpecId == id);
+            var existCartItem = _context.CartItems.Any(e => e.SpecId == id);
+            var existOrderList = _context.OrderLists.Any(e => e.SpecId == id);
+            var existManually = _context.ManuallyWeightedEntries.Any(e => e.SpecId == id);
+
+            if (existEvaluation || existCartItem || existOrderList || existManually) result = true;
+
+            return Json(result);
+        }
     }
-}
+}// todo 待辦事項：
+/*
+規格調整：
+固定商品卡片大小
+商城圖片大小、比例統一
+風格統一
+
+額外功能：
+商品檢視:排序、每頁顯示筆數、規格數、僅顯示上/下架
+規格檢視:排序、僅顯示上/下架
+商場 => 商品名與規格名分行顯示
+*/
