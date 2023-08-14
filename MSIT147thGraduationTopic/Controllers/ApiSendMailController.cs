@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendPwdMail([FromForm] MailRequest request)
+        public async Task<IActionResult> SendMail([FromForm] MailRequest request)
         {  
             try
             {

@@ -111,37 +111,6 @@ async function LogIn() {
     })
 }
 
-async function ForgetPwd() {
-    const account = $('#loginAccount').val()   
-
-    const response = await fetch(ROOT + '/api/apisendmail/forgetPwd', {
-        body: JSON.stringify({ 'Account': account}),
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', },
-    })
-
-    if (!response.ok) {
-        console.log('request failed')
-        return
-    }
-
-    const url = await response.text()
-
-    if (!url) {
-        Swal.fire({
-            icon: 'error',
-            title: '帳號不存在!',
-            allowOutsideClick: false
-        })
-        return
-    }
-
-    Swal.fire({
-        icon: 'success',
-        title: '請至信箱收信!',
-        allowOutsideClick: false
-    })
-}
 
 //Ajax 登出
 async function LogOut() {

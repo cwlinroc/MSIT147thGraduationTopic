@@ -236,28 +236,28 @@
         }
 
         //主要語法
-        $(document).ready(function () {
-            $('#myTable').DataTable({
-                pageLength: 10, // 每頁顯示10筆資料 下面都是變更欄位為中文
-                columnDefs: [{                    
-                    targets: [3]  // 替換 [0] 為你希望套用這種排序的柱子索引值。例如：0，如果你希望在第一列上使用這個排序。
-                }],
-                language: {
-                    search: "搜尋：",
-                    paginate: {
-                        first: "首頁",
-                        last: "尾頁",
-                        next: "下一頁",
-                        previous: "上一頁"
-                    },
-                    info: "顯示 START 到 END 的 TOTAL 筆資料",
-                    //最下面顯示
-                    infoEmpty: "顯示 0 到 0 的 0 筆資料",
-                    //下拉選單
-                    lengthMenu: "顯示 MENU 筆資料",
-                }
-            });
-        });
+        // $(document).ready(function () {
+        //     $('#myTable').DataTable({
+        //         pageLength: 10, // 每頁顯示10筆資料 下面都是變更欄位為中文
+        //         columnDefs: [{                    
+        //             targets: [3]  // 替換 [0] 為你希望套用這種排序的柱子索引值。例如：0，如果你希望在第一列上使用這個排序。
+        //         }],
+        //         language: {
+        //             search: "搜尋：",
+        //             paginate: {
+        //                 first: "首頁",
+        //                 last: "尾頁",
+        //                 next: "下一頁",
+        //                 previous: "上一頁"
+        //             },
+        //             info: "顯示 START 到 END 的 TOTAL 筆資料",
+        //             //最下面顯示
+        //             infoEmpty: "顯示 0 到 0 的 0 筆資料",
+        //             //下拉選單
+        //             lengthMenu: "顯示 MENU 筆資料",
+        //         }
+        //     });
+        // });
 
         //每頁顯示筆數
         //let pageSize = 10;
