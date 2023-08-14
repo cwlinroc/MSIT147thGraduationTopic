@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "修改密碼";
+}
+
+<div class="text-center mb-4">
+    <h1 class="fw-bold mt-4">修改密碼</h1>
+</div>
+<div class="row" style="--bs-gutter-x:0;">
+    <div class="col-lg-6 offset-3">
+        @Html.AntiForgeryToken()
+        <form id="ChangePwdForm" class="needs-validation" method="Post"
+              enctype="multipart/form-data" novalidate>
+            <!-- Password input-->
+            <div class="form mb-3">
+                <label for="password" class="form-label fw-bold">
+                    密碼:需要6~32位英文字母及數字組合，包含至少一個大寫字母及小寫字母
+                </label>
+                <input class="form-control" id="password" name="Password" type="password"/>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
+            </div>
+            <!-- Password confirm input-->
+            <div class="form mb-3">
+                <label for="confirmPassword" class="form-label fw-bold">確認密碼</label>
+                <input class="form-control" id="confirmPassword" type="password"/>
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback"></div>
+            </div>
+            <!-- Submit Button-->
+            <div class="d-grid col-lg-6 offset-3 my-4">
+                <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
+                    送出
+                </button>
+            </div>
+        </form>
+        <div class="col-lg-6 offset-3 d-flex justify-content-center">
+            <p class="fs-4">@ViewBag.ErrorMessage</p>
+            <p class="fs-4">@ViewBag.SuccessMessage</p>
+        </div>        
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/MyBootstrapValidator.js"></script>
+    <script>
+        const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
+
+        function ChangePwdValidator() {
+            myValid.validateFunction(() => {
+                const password = document.querySelector('#password')
+                const confirmPassword = document.querySelector('#confirmPassword')
+
+                let passwordValid = false
+                const passwordHasValue = !!password.value
+                const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
+                const confirmPasswordValid = confirmPassword.value === password.value
+                password.setValidate(() => passwordHasValue, '請輸入密碼')
+                    .setValidate(() => passwordPatternValid, '密碼格式錯誤')
+                    .setValidate(() => confirmPasswordValid, '與密碼不符')
+
+                return passwordHasValue && passwordPatternValid && confirmPasswordValid
+            })
+            return myValid.startValidate()
+        }
+
+        $('#btnSubmit').click(ChangePwdValidator)
+    </script>
+}
+

@@ -173,7 +173,7 @@ function editValidator() {
         }
 
         const phoneHasValue = !!phone.value
-        let phonePatternValid = /^09\d{8}$/.test(phone.value)
+        let phonePatternValid = /^09\d{2}-\d{3}-\d{3}$/.test(phone.value)
 
         if ($('#phoneEditedChk').attr('checked')) {
             phone.setValidate(() => phoneHasValue, '請輸入手機號碼')
@@ -200,8 +200,7 @@ function editValidator() {
     return myValid.startValidate()
 }
 
-function clearAllValidFeedBack() {
-    //// 5. myValid.endtValidate() //結束驗證，順便清除顯示錯誤(如果送出表單後頁面會跳走，這個函式就用不到了)
+function clearAllValidFeedBack() {    
     myValid.endtValidate()
 }
 
