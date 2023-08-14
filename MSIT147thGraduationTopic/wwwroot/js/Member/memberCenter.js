@@ -20,7 +20,8 @@ function displayMember() {
     $('#phone').val(memberData.phone)
     $('#city').val(memberData.city)
     $('#district').val(memberData.district)
-    $('#address').val(memberData.address)    
+    $('#address').val(memberData.address)
+    $('#avatar').val(memberData.avatar)
 }
 
 function checkPasswordMatch() {

@@ -3,14 +3,15 @@
 @inject IHttpContextAccessor HttpContextAccessor;
 @{
     var user = HttpContextAccessor?.HttpContext?.User;
-    bool? isAuthorized = user?.Identity?.IsAuthenticated;    
+    bool? isAuthorized = user?.Identity?.IsAuthenticated;
     string? avatarName = string.Empty;
-    
+
 
     if (isAuthorized ?? false)
-    {       
-        avatarName = user.FindFirstValue("AvatarName");       
-        if (string.IsNullOrEmpty(avatarName)) avatarName = "memberDefault.png";
+    {
+        avatarName = user?.FindFirstValue("AvatarName");
+        if (string.IsNullOrEmpty(avatarName))
+            avatarName = "memberDefault.png";
     }
 }
 
@@ -18,10 +19,10 @@
     <img class="img-fluid rounded-circle mb-4" style="height:150px;width:150px;object-fit:cover"
          src="@Url.Content($"~/uploads/Avatar/{avatarName}")" />
     <br>
-    <div class="input-group">
-        @*<input type="file" id="avatar" class="form-control" aria-label="Select Avatar">*@
-        @*<button class="btn btn-primary mx-auto" type="button" id="changeAvatar">更換頭像</button>*@
-    </div>
+    <!--<div class="input-group">
+        <input type="file" id="avatar" class="form-control" aria-label="Select Avatar">
+        <button class="btn btn-primary mx-auto" type="button" id="changeAvatar">更換頭像</button>
+    </div>-->
 </div>
 <br />
 <ul class="offset-3 fs-4" id="sidelist">

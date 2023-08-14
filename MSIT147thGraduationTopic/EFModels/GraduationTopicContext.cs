@@ -333,12 +333,6 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Merchandise>(entity =>
             {
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.BrandId).HasColumnName("BrandID");
-
-                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
