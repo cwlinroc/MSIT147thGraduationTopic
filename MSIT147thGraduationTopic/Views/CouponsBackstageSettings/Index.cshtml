@@ -85,7 +85,7 @@
                                             <td id="DiscountEndDate" scope="col">@c.CouponEndDate</td>
                                             <td id="DiscountValue" scope="col">@c.CouponDiscount.ToString("#.##"+"折")</td>
                                             <td id="Discount" scope="col">
-                                                <button type="button" id="btnEditDiscount_@c.CouponId" class="btn btn-success btnEditDiscont">
+                                                <button type="button" id="btnEditDiscount_@c.CouponId" class="btn btn-success btnEditDiscount">
                                                     修改
                                                 </button>
                                             </td>
@@ -185,7 +185,7 @@
                 <button class="btn btn-primary" id="btnCreate">新增</button>
             </div>
         </section>
-        <section class="py-5 bg-light">
+        @*<section class="py-5 bg-light">
             <div class="container px-5 my-5">
                 <div class="row">
                     <div class="col">
@@ -193,7 +193,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section>*@
     </main>
     <!-- Footer-->
     <footer class="bg-dark py-4 mt-auto">

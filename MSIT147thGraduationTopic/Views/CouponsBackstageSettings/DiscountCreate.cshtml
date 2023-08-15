@@ -96,26 +96,8 @@
         const discountValue = parseFloat(discountInput.val());
         const startDateInput = $('input[name="CouponStartDate"]');
         const endDateInput = $('input[name="CouponEndDate"]');
-        const startDate = new Date(startDateInput.val());
-        const endDate = new Date(endDateInput.val());
 
-        if (startDate > endDate) {
-            Swal.fire({
-                icon: 'error',
-                title: '失敗',
-                text: '請檢查日期格式是否正確：開始日期不得晚於結束日期'
-            });
-            return;
-        }
 
-        if (endDate < startDate) {
-            Swal.fire({
-                icon: 'error',
-                title: '失敗',
-                text: '請檢查日期格式是否正確：結束日期不得早於開始日期'
-            });
-            return;
-        }
 
         //驗證
         if (discountValue < 0 || discountValue > 100) {
@@ -134,7 +116,7 @@
                 showDenyButton: true,
                 confirmButtonText: '取消',
                 denyButtonText: `返回主頁面`,
-                allowOutsideClick: false
+                allowOutsideClick: false,
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isDenied) {
@@ -159,7 +141,30 @@
 
         $('#btnCreate').on('click', function () {
             const formData = $("#create").serializeArray();
+            const startDate = new Date(startDateInput.val());
+            const endDate = new Date(endDateInput.val());
+
             //datas = $("form").serializeArray()
+
+            if (startDate > endDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '請檢查日期格式是否正確：開始日期不得晚於結束日期',
+                });
+                return;
+            }
+
+
+            if (endDate < startDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '請檢查日期格式是否正確：結束日期不得早於開始日期',
+                });
+                return;
+            }
+            
             $.ajax({
                 method: "POST",
                 url: "@Url.Content("~/api/ApiCoupon")",
@@ -179,15 +184,16 @@
                     text: '優惠券新增失敗，請檢查資料及格式是否正確',
                 });
             });
-            $('#create').reset();
+
+            $('#create').trigger("reset");
         })
 
         //demo
         $('#demo').click(e => {
-            $('#couponName').val('123');
+            $('#couponName').val('夏日清涼一夏感謝祭');
             $('#startDate').val('2023-08-25');
             $('#endDate').val('2023-08-30');
-            $('#discount').val('95');
+            $('#discount').val('77');
             console.log('123');
         })
     </script>
