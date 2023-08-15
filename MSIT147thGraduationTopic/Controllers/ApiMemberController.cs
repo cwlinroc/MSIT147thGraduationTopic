@@ -124,7 +124,7 @@ namespace MSIT147thGraduationTopic.Controllers
             try
             {
                 int id = int.Parse(HttpContext.User.FindFirstValue("MemberId"));
-                var memberId = _service.EditMember(vm.CenterEditToDto(), id, avatar);
+                var memberId = _service.EditMember(vm.ToCenterEditDto(), id, avatar);
                 return memberId;
             }
             catch (Exception)

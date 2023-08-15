@@ -106,6 +106,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         [MaxLength(30, ErrorMessage = "{0}長度不可多於{1}")]
         public string? Email { get; set; }
         public string? Avatar { get; set; }
+        public bool IsActivated { get; set; }
     }
 
     public class MemberSearchVM
@@ -266,7 +267,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
             };
         }
 
-        public static MemberEditDto CenterEditToDto(this MemberCenterEditVM vm)
+        public static MemberEditDto ToCenterEditDto(this MemberCenterEditVM vm)
         {
             return new MemberEditDto
             {
@@ -277,16 +278,9 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Address = vm.Address,
                 Email = vm.Email,
                 Avatar = vm.Avatar,
+                IsActivated = true,
             };
         }
-
-        public static MemberEditDto ChangePwdToDto(this MemberEditVM vm)
-        {
-            return new MemberEditDto
-            {
-                Account= vm.Account,
-                Password= vm.Password,
-            };
-        }
+        
     }
 }
