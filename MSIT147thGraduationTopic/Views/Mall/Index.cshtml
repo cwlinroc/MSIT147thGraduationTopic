@@ -419,10 +419,10 @@
                 const score = (Math.round(popularity * 10) / 10).toFixed(1);
                 const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${merchandiseId}&SpecId=${specId}`
                 return `
-                                        <div class="p-2 position-relative mx-1 my-1 displayedSpec">
+                                   <div class="p-2 position-relative mx-1 my-1 displayedSpec gotoViewpage"
+                                                                        data-specid="${specId}" data-merchandisid="${merchandiseId}">                                   
                                         <figure class="partial-image-container">
-                                        <img src="${ROOT}/uploads/${imageUrl}" alt="..." class="gotoViewpage"
-                                                                        data-specid="${specId}" data-merchandisid="${merchandiseId}">                                           
+                                        <img src="${ROOT}/uploads/${imageUrl}" alt="...">                                           
                                         </figure>
                                         <div class="px-1 my-0" style="height:80px;overflow:hidden">
                                             <h6 class="card-text ">《 ${brandName} 》</h6>

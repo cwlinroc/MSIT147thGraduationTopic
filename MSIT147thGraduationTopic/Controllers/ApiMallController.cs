@@ -49,7 +49,7 @@ namespace MSIT147thGraduationTopic.Controllers
             datas = displayorder switch
             {
                 0 => datas.OrderByDescending(md => md.SpecId),      //最新商品
-                1 => datas.OrderBy(md => md.SpecId),                //由舊到新熱門商品
+                1 => datas.OrderBy(md => md.SpecId),                //由舊到新
                 2 => datas.OrderByDescending(md => md.Popularity),  //熱門商品
                 3 => datas.OrderBy(md => md.Price),                 //價格由低至高
                 4 => datas.OrderByDescending(md => md.Price),       //價格由高至低
