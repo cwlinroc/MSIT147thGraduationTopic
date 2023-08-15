@@ -50,7 +50,7 @@
                                 結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                             </div>
                             <div class="col-8 mb-3">
-                                折扣百分比<input id="CouponDiscount" name="CouponDiscount" value="@Model.CouponDiscount.ToString("#.##"+"折")" type="number" class="form-control" placeholder="請輸入折扣百分比" min="1" max="99">
+                                折扣百分比<input id="CouponDiscount" name="CouponDiscount" value="@Model.CouponDiscount.ToString("#'%'")" type="number" class="form-control" placeholder="請輸入折扣百分比" min="1" max="99">
                             </div>
                         </form>
                     </div>
