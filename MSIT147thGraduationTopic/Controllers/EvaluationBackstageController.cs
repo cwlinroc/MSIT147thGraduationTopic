@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -22,7 +23,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult EBIndex(string keyword, int pageSize, int pageNo,int totalCount)
         {
             pageSize = 5;
@@ -48,7 +49,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 Comment = e.Comment,
             }));
         }
-        
+        [Authorize(Roles = "管理員,經理,員工")]
         [HttpPost]
         public IActionResult EBIndex(string keyword)
         {
@@ -108,7 +109,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 Comment = e.Comment,
             }));
         }
-
+        [Authorize(Roles = "管理員,經理")]
         [HttpPost]
         public IActionResult Delete(int id)
         {
