@@ -65,6 +65,9 @@ namespace MSIT147thGraduationTopic.Models.LinePay
             });
             package.Products.AddRange(products);
             package.Amount = products.Sum(o => o.Price * o.Quantity);
+            req.Amount = package.Amount;
+
+            
 
             return req;
         }
