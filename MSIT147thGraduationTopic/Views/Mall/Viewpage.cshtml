@@ -132,6 +132,10 @@
                     </div>
                 </div>
             </div>
+            <!-- 商品評價 -->
+            <div>
+                @Html.Partial("_MerchandiseEvaluation")
+            </div>
             <!-- 推薦商品 -->
             <div>
                 @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)

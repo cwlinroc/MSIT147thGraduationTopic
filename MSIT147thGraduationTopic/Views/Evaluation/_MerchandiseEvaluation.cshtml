@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.EvaluationVM>
+
+@for (int i = 0; i < Model.Count(); i++)
+{
+    var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
+    <div style="border-block-color:#FFDDAA;border-width: 2px">
+        <div class="mt-4 d-flex align-items-center">
+            <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
+                <div class="mx-1 mt-2">
+                    <h6 id="MerchandiseName_@(i)">@(item.MerchandiseName)</h6>
+                </div>
+                <div class="mt-2">
+                    <h6 id="SpecName_@(i)"> @(item.SpecName)</h6>
+                </div>
+            </div>
+
+            <div class="d-flex ms-auto float-end">
+                <div id="score_@(i)" name="Score" class="float-end mx-1 mt-3" itype="starDiv">
+                    <input id="inputscore_@(i)" name="comments[@(i)].Score" value="@(item.Score)" hidden>
+                    <img id="star@(i)_1" src=@(item.Score>=1?"/images/一星.png":"/images/空星.png") style="height:40px" />
+                    <img id="star@(i)_2" src=@(item.Score>=2?"/images/二星.png":"/images/空星.png") style="height:40px" />
+                    <img id="star@(i)_3" src=@(item.Score>=3?"/images/三星.png":"/images/空星.png") style="height:40px" />
+                    <img id="star@(i)_4" src=@(item.Score>=4?"/images/四星.png":"/images/空星.png") style="height:40px" />
+                    <img id="star@(i)_5" src=@(item.Score==5?"/images/五星.png":"/images/空星.png") style="height:40px" />
+                </div>
+            </div>
+        </div>
+        <div class="form-floating mx-2 mt-2 mb-4">
+            <textarea id="commentText_@(i)" name="comments[@(i)].Comment" class="form-control" placeholder="請輸入您的評價~" style="height: 100px">@(item.Comment)</textarea>
+            <label for="floatingTextarea2">@(item.Comment)</label>
+        </div>
+    </div>
+}
