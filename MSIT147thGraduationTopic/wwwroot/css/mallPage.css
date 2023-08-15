@@ -21,20 +21,21 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index:900;
+    z-index: 900;
 }
 
 #cartCount {
     height: 20px;
     width: 20px;
     left: -20px;
-    top:-15px;
+    top: -15px;
     text-align: center;
-    font-size:5px;
-    background-color:red;
-    color:azure;
-    border-radius:50%
+    font-size: 5px;
+    background-color: red;
+    color: azure;
+    border-radius: 50%
 }
+
     #cartCount div {
         left: 50%;
         top: 50%;
@@ -45,4 +46,24 @@ img#navbarAvatar {
     height: 50px;
     width: 50px;
     object-fit: cover;
+}
+
+/*讀取動畫*/
+.loading-box {
+    z-index: 999;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.dropdown:hover > .dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
+    margin-left: 0.125em;
+}
+
+.dropdown-item:hover {
+    background-color: black;
+    color: #fff;
 }

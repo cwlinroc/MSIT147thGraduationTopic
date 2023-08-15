@@ -24,20 +24,20 @@ function displayMember() {
     $('#avatar').val(memberData.avatar)
 }
 
-function checkPasswordMatch() {
-    const password = $('#password').val();
-    const confirmPassword = $('#confirmPassword').val();
+//function checkPasswordMatch() {
+//    const password = $('#password').val();
+//    const confirmPassword = $('#confirmPassword').val();
 
-    if (password !== confirmPassword) {
-        $('#confirmPassword').addClass('is-invalid');
-    } else {
-        $('#confirmPassword').removeClass('is-invalid');
-    }
-}
+//    if (password !== confirmPassword) {
+//        $('#confirmPassword').addClass('is-invalid');
+//    } else {
+//        $('#confirmPassword').removeClass('is-invalid');
+//    }
+//}
 
-$('#confirmPassword').blur(function () {
-    checkPasswordMatch();
-});
+//$('#confirmPassword').blur(function () {
+//    checkPasswordMatch();
+//});
 
 const selCity = document.querySelector('#city');
 const selDistrict = document.querySelector('#district');
@@ -80,13 +80,13 @@ selCity.addEventListener('change', () => {
     LoadDistricts();
 });
 
-$('#nickNameEditedChk').click(function () {
-    if ($('#nickNameEditedChk').is(':checked')) {
-        $('#nickName').prop('readonly', false);
-    } else {
-        $('#nickName').prop('readonly', true);
-    }
-});
+//$('#nickNameEditedChk').click(function () {
+//    if ($('#nickNameEditedChk').is(':checked')) {
+//        $('#nickName').prop('readonly', false);
+//    } else {
+//        $('#nickName').prop('readonly', true);
+//    }
+//});
 
 $('#passwordEditedChk').click(function () {
     if ($('#passwordEditedChk').is(':checked')) {
@@ -98,50 +98,50 @@ $('#passwordEditedChk').click(function () {
     }
 });
 
-$('#emailEditedChk').click(function () {
-    if ($('#emailEditedChk').is(':checked')) {
-        $('#email').prop('readonly', false);
-    } else {
-        $('#email').prop('readonly', true);
-    }
-});
+//$('#emailEditedChk').click(function () {
+//    if ($('#emailEditedChk').is(':checked')) {
+//        $('#email').prop('readonly', false);
+//    } else {
+//        $('#email').prop('readonly', true);
+//    }
+//});
 
-$('#phoneEditedChk').click(function () {
-    if ($('#phoneEditedChk').is(':checked')) {
-        $('#phone').prop('readonly', false);
-    } else {
-        $('#phone').prop('readonly', true);
-    }
-});
+//$('#phoneEditedChk').click(function () {
+//    if ($('#phoneEditedChk').is(':checked')) {
+//        $('#phone').prop('readonly', false);
+//    } else {
+//        $('#phone').prop('readonly', true);
+//    }
+//});
 
-//todo-wl 增加隱藏input
-$('#addressEditedChk').click(function () {
-    if ($('#addressEditedChk').is(':checked')) {
-        $('#city').prop('disabled', false);
-        $('#cityHidden').prop('disabled', true);
+
+//$('#addressEditedChk').click(function () {
+//    if ($('#addressEditedChk').is(':checked')) {
+//        $('#city').prop('disabled', false);
+//        $('#cityHidden').prop('disabled', true);
        
-        $('#district').prop('disabled', false);
-        $('#districtHidden').prop('disabled', true);
+//        $('#district').prop('disabled', false);
+//        $('#districtHidden').prop('disabled', true);
         
-        $('#address').prop('readonly', false);
-    } else {
-        $('#city').prop('disabled', true);
-        $('#cityHidden').prop('disabled', false);
+//        $('#address').prop('readonly', false);
+//    } else {
+//        $('#city').prop('disabled', true);
+//        $('#cityHidden').prop('disabled', false);
         
-        $('#district').prop('disabled', true);
-        $('#districtHidden').prop('disabled', false);
+//        $('#district').prop('disabled', true);
+//        $('#districtHidden').prop('disabled', false);
         
-        $('#address').prop('readonly', true);
-    }
-});
+//        $('#address').prop('readonly', true);
+//    }
+//});
 
-$('#avatarEditedChk').click(function () {
-    if ($('#avatarEditedChk').is(':checked')) {
-        $('#avatar').prop('disabled', false);        
-    } else {
-        $('#avatar').prop('disabled', true);
-    }
-});
+//$('#avatarEditedChk').click(function () {
+//    if ($('#avatarEditedChk').is(':checked')) {
+//        $('#avatar').prop('disabled', false);        
+//    } else {
+//        $('#avatar').prop('disabled', true);
+//    }
+//});
 
 const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 

@@ -62,9 +62,9 @@ $(function () {
 //Ajax 登入
 async function LogIn() {
     //驗證
-    const account = $('#loginAccount').val()
-    const password = $('#loginPassword').val()    
-
+    const account = $('#loginAccount').val();
+    const password = $('#loginPassword').val();
+    
     const response = await fetch(ROOT + '/api/apimember/login', {
         body: JSON.stringify({ 'Account': account, 'Password': password }),
         method: 'POST',
@@ -159,7 +159,7 @@ async function remindCoupon() {
         showCloseButton: true,
         showCancelButton: true,
         confirmButtonText: '去看看!',
-        CancelButtonText: '先不要',
+        cancelButtonText: '先不要',
         showClass: {
             popup: 'animate__animated animate__fadeInDown'
         },
@@ -180,6 +180,23 @@ $("#navbar_search").on("click", (e) => {
     const txtKeyword = $("#navbar_input").val();
     window.location.href = ROOT + `/Mall/Index/?txtKeyword=${txtKeyword}`;
 })
+
+//更新頭像
+displaySelfAvatar()
+async function displaySelfAvatar() {
+    const response = await fetch(`${ROOT}/api/apimember/selfavatar`)
+    let avatarName = await response.text()
+    if (!avatarName) avatarName = 'memberDefault.png'
+    const avatarUrl = `${ROOT}/uploads/Avatar/${avatarName}`
+    $('#navbarAvatar').attr('src', avatarUrl)
+}
+
+//讀取動畫
+const loadingBox = document.querySelector('.loading-box')
+const showLoadingBox = () => loadingBox.style.display = "block";
+const hideLoadingBox = () => loadingBox.style.display = "none"
+
+
 
 
 

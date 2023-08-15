@@ -1,4 +1,5 @@
-﻿@{
+﻿@using MSIT147thGraduationTopic.ViewComponents;
+@{
     ViewData["Title"] = "會員中心";
 }
 
@@ -7,7 +8,7 @@
 </div>
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-2 offset-1">
-        @await Html.PartialAsync("Partial/MemberSidebar")      
+        @await Component.InvokeAsync(nameof(SidebarVC))
     </div>    
     <div class="col-lg-5 offset-1">
         <form id="memberCenterForm" class="needs-validation" method="Post" 
@@ -15,7 +16,7 @@
             <!-- NickName input-->
             <div class="form mb-3">
                 <label for="nickname" class="form-label fw-bold">暱稱</label>
-                <input class="form-control" id="nickName" name="NickName" type="text" readonly/>
+                <input class="form-control" id="nickName" name="NickName" type="text"/>
             </div>            
             <!-- Password input-->
             <div class="form mb-3">
@@ -36,14 +37,14 @@
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">Email</label>
-                <input class="form-control" id="email" name="Email" type="email" required readonly />
+                <input class="form-control" id="email" name="Email" type="email" required/>
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
-                <input class="form-control" id="phone" name="Phone" type="tel" required readonly />
+                <input class="form-control" id="phone" name="Phone" type="tel" required/>
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
                 
@@ -53,19 +54,19 @@
                 <label for="name" class="form-label fw-bold">地址</label>
                 <div class="input-group">
                     <label class="input-group-text" for="city">縣市</label>
-                    <select class="form-select" id="city" name="City" disabled>
+                    <select class="form-select" id="city" name="City">
                     </select>                    
                     <label class="input-group-text" for="district">區域</label>
-                    <select class="form-select" id="district" name="District" disabled>
+                    <select class="form-select" id="district" name="District">
                     </select>                    
-                    <input class="form-control" id="address" name="Address" type="text" readonly />
+                    <input class="form-control" id="address" name="Address" type="text"/>
                 </div>
             </div>
             <!-- Avatar input-->
             <div class="form mb-5">
                 <label class="form-label fw-bold">頭像</label>
                 <div class="input-group">
-                    <input type="file" id="avatar" name="Avatar" class="form-control" disabled />                    
+                    <input type="file" id="avatar" name="Avatar" class="form-control"/>                    
                 </div>
             </div>
             <!-- Submit Button-->
@@ -80,11 +81,14 @@
     </div>
     <div class="col-lg-1 ms-3">
         <label class="form-label fw-bold">是否修改</label>
-        <div class="form-check mt-2">
+        @* <div class="form-check mt-2">
             <input class="form-check-input mx-auto" id="nickNameEditedChk" type="checkbox" />
-        </div>
+        </div> *@
         <br />
-        <br />        
+        <br />
+        <br />
+        <br />
+        <br />
         <div class="form-check mt-2">
             <input class="form-check-input mx-auto" id="passwordEditedChk" type="checkbox" />
         </div>
@@ -94,24 +98,24 @@
         <br />
         <br />
         <br />
-        <div class="form-check mt-2">
+       @*  <div class="form-check mt-2">
             <input class="form-check-input mx-auto" id="emailEditedChk" type="checkbox" />
-        </div>
+        </div> *@
         <br />
         <br />        
-        <div class="form-check mt-2">
+       @*  <div class="form-check mt-2">
             <input class="form-check-input mx-auto" id="phoneEditedChk" type="checkbox" />
-        </div>
+        </div> *@
         <br />
         <br />
-        <div class="form-check mt-2">
+        @* <div class="form-check mt-2">
             <input class="form-check-input mx-auto" id="addressEditedChk" type="checkbox" />
-        </div>
+        </div> *@
         <br />
         <br />
-        <div class="form-check mt-3">
+        @* <div class="form-check mt-3">
             <input class="form-check-input mx-auto" id="avatarEditedChk" type="checkbox" />
-        </div>
+        </div> *@
     </div>
 </div>
 
@@ -123,11 +127,7 @@
 
         #district {
             max-width: 200px
-        }
-
-        #sidelist {
-            list-style: none;
-        }
+        }        
     </style>
 }
 

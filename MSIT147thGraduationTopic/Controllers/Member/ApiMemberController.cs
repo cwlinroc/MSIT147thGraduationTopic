@@ -14,8 +14,9 @@ using System.ComponentModel.DataAnnotations;
 using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
 using System.Security.Policy;
 using MSIT147thGraduationTopic.Models.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Member
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -56,7 +57,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 return BadRequest("找不到對應會員ID");
             }
-            
+
             return _service.GetMember(memberId).ToVM();
         }
 
@@ -138,6 +139,17 @@ namespace MSIT147thGraduationTopic.Controllers
         public ActionResult<int> UpdateMember(int id)
         {
             return _service.DeleteMember(id);
+        }
+
+        [HttpGet("selfavatar")]
+        [Authorize(Roles = "會員")]
+        public async Task<ActionResult<string>> GetSelfAvatar()
+        {
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest("找不到對應ID");
+            }
+            return await _service.GetAvatarName(memberId);
         }
 
 

@@ -56,8 +56,8 @@
                 const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
                 const confirmPasswordValid = confirmPassword.value === password.value
                 password.setValidate(() => passwordHasValue, '請輸入密碼')
-                    .setValidate(() => passwordPatternValid, '密碼格式錯誤')
-                    .setValidate(() => confirmPasswordValid, '與密碼不符')
+                        .setValidate(() => passwordPatternValid, '密碼格式錯誤')
+                confirmPassword.setValidate(() => confirmPasswordValid, '與密碼不符')
 
                 return passwordHasValue && passwordPatternValid && confirmPasswordValid
             })

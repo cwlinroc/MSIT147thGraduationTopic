@@ -94,6 +94,11 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             return _repo.DeleteMember(memberId);
         }
+
+        public async Task<string> GetAvatarName(int memberId)
+        {
+            return await _repo.GetAvatarName(memberId);
+        }
     }
     
     

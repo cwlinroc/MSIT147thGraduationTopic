@@ -9,7 +9,7 @@ using MSIT147thGraduationTopic.Models.Services;
 using MSIT147thGraduationTopic.Models.ViewModels;
 using System.Data;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Member
 {
     public class MemberBackstageController : Controller
     {

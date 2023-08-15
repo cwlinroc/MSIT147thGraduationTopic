@@ -23,11 +23,6 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return View((couponlistA, couponlistB));
         }
-
-        [HttpPost]
-        public IActionResult CouponList(Member member)
-        {
-            return View();
-        }
+        
     }
 }
