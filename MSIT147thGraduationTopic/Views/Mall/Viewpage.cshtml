@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Spec>
+﻿@using MSIT147thGraduationTopic.ViewComponents﻿
+@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MallViewPageVM>
 
 @{
     Layout = "_MallPage";
@@ -140,12 +141,13 @@
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-merchandise" role="tabpanel" aria-labelledby="nav-merchandise-tab">
+                <div class="tab-pane fade show active" id="nav-merchandise"  role="tabpanel" aria-labelledby="nav-merchandise-tab">
                     @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)
                     @await Html.PartialAsync("Partial/PopularSpecs",Model.First().MerchandiseId)
                 </div>
                 <div class="tab-pane fade" id="nav-evaluation" role="tabpanel" aria-labelledby="nav-evaluation-tab">
-
+                    @await Component.InvokeAsync(nameof(EvaluationVC),Model.First().MerchandiseId)
+                    @*@await Html.PartialAsync("~/Views/Evaluation/_MerchandiseEvaluation.cshtml")*@
                 </div>                
             </div>            
            @* <!-- 商品評價 -->
