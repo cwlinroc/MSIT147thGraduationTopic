@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MallViewPageVM>
-
+@using MSIT147thGraduationTopic.ViewComponents
 @{
     Layout = "_MallPage";
     ViewData["Title"] = "尋找商品";
@@ -134,6 +134,7 @@
             </div>
             <!-- 商品評價 -->
             <div>
+                @await Component.InvokeAsync(nameof(EvaluationVC))
                 @*@await Html.PartialAsync("~/Views/Evaluation/_MerchandiseEvaluation.cshtml")*@
             </div>
             <!-- 推薦商品 -->
