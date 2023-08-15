@@ -115,7 +115,7 @@
                                 <a class="page-link">...</a>
                             </li>
                         }
-                        @for (int i = ViewBag.PageNo - 1; i <= ViewBag.PageNo + 1; i++)
+                        @for (int i = ViewBag.PageNo - 3; i <= ViewBag.PageNo + 3; i++)
                         {
                             if (i >= 1 && i <= ViewBag.TotalPage)
                             {
@@ -140,6 +140,7 @@
                         </li>
                     </ul>
                 </nav>
+
             }            
         </div>
         <div class="col-1"></div>
