@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.ViewComponents;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -17,6 +18,13 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             _context = context;
         }
+        public async Task<IActionResult> ShowMoreEvaliation(int id, int evaluationCounts)
+        {
+            var evaluationVC = new EvaluationVC(_context);
+            evaluationVC.InvokeAsync(id);
+            return Json(null);
+        }
+
 
         // GET: ApiEvaluation
         public async Task<IActionResult> Index()

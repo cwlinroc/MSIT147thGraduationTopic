@@ -34,7 +34,7 @@ namespace MSIT147thGraduationTopic.ViewComponents
                                  SpecName = s.SpecName,
                                  Comment = e.Comment,
                                  Score = e.Score,
-                             })
+                             }).Take(5)
                         .ToList();
                 return View(model);
             }
@@ -42,7 +42,7 @@ namespace MSIT147thGraduationTopic.ViewComponents
             ViewBag.noEvaluation = "此商品尚未有評論";
             return View(new List<EvaluationVM>());
         }
-        
+         
 
     }
 }
