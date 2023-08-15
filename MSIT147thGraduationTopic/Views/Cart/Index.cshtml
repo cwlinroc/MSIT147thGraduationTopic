@@ -34,7 +34,7 @@
 
         <div class="d-flex p-2">
             <div class="ms-auto me-4">
-                <btn class="btn btn-warning" id="btnSendOrder">購買選擇項目</btn>
+                <btn class="btn btn-warning" id="btnSendOrder">購買選擇的商品: <span id="selectedCount">0</span>項</btn>
             </div>
         </div>
 
@@ -62,7 +62,7 @@
             $('#tableCartItems').find('tbody')
                 .find('input[type=checkbox]')
                 .prop('checked', $(e.currentTarget).prop('checked'))
-            caculateCheckedItemsTotalPrice()
+            selectedItemEvent()
         })
 
         //ajax取得購物車物件
@@ -98,8 +98,15 @@
             subBtnEvent()
             deleteBtnEvent()
             $('#tableCartItems').find('tbody').find('input[type=checkbox]')
-                .click(caculateCheckedItemsTotalPrice)
+                .click(selectedItemEvent)
         }
+
+        //勾選商品事件
+        function selectedItemEvent(){
+            caculateCheckedItemsTotalPrice()
+            caculateCheckedItemsAmount()
+        }
+
 
         //更改數量input
         function changeNumberEvent() {
@@ -155,6 +162,15 @@
             })
         }
 
+        //計算選取物品的數量
+        function caculateCheckedItemsAmount(){
+            const checkedItemsAmount = $('#tableCartItems').find('tbody')
+                .find('input[type=checkbox]')
+                .filter(':checked').length
+
+            console.log(checkedItemsAmount)
+            $('#selectedCount').text(checkedItemsAmount)
+        }
 
         //計算選取物品的總價
         function caculateCheckedItemsTotalPrice() {

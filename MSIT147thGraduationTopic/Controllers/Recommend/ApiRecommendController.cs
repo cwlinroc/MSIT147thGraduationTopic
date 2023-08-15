@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.Recommend;
 using MSIT147thGraduationTopic.Models.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace MSIT147thGraduationTopic.Controllers.Recommend
 {
@@ -21,6 +23,7 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
         }
 
 
+        [Authorize(Roles = "管理員,經理")]
         [HttpGet("refreshpopularity")]
         public async Task<ActionResult<int>> RefreshPopularity()
         {
@@ -29,6 +32,8 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
 
 
         public record RateDataRecord(int Num, string Data);
+
+        [Authorize(Roles = "管理員,經理")]
         [HttpPut("ratedata")]
         public async Task<ActionResult<int>> UpdateRateEvaluationFunc(RateDataRecord record)
         {
@@ -47,6 +52,7 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
 
 
 
+        [Authorize(Roles = "管理員,經理")]
         [HttpGet("mostpopularspecs")]
         public async Task<ActionResult<List<string>>> GetMostPopularSpecsName(int top = 10)
         {
@@ -54,6 +60,7 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
         }
 
 
+        [Authorize(Roles = "管理員,經理")]
         [HttpGet("getsearcheditems")]
         public async Task<ActionResult<IEnumerable<SearchedItemsDto>>> GetSearchedItems(string text, string type)
         {
@@ -62,6 +69,8 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
 
 
         public record InsertEntriesRecord(int[] Ids, [Range(-10, 10)] int Weight, string Type);
+
+        [Authorize(Roles = "管理員,經理")]
         [HttpPost("insertweightentries")]
         public async Task<ActionResult<int>> InsertWeightedEntries(InsertEntriesRecord record)
         {
@@ -69,7 +78,7 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
             return await _service.InsertWeightedEntries(record);
         }
 
-
+        [Authorize(Roles = "管理員,經理")]
         [HttpGet("getallweightedentries")]
         public async Task<ActionResult<List<WeightedEntryDisplayDto>>> GetAllWeightedEntries()
         {
@@ -77,12 +86,15 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
         }
 
         public record UpdateEntryWeightRecord(int Id, [Range(-10, 10)] int Weight);
+
+        [Authorize(Roles = "管理員,經理")]
         [HttpPut("updateentryweight")]
         public async Task<ActionResult<int>> UpdateEntryWeight(UpdateEntryWeightRecord record)
         {
             return await _service.UpdateEntryWeight(record.Id, record.Weight);
         }
 
+        [Authorize(Roles = "管理員,經理")]
         [HttpDelete("deleteweightentry/{id}")]
         public async Task<ActionResult<int>> DeleteWeightedEntry(int id)
         {
@@ -90,6 +102,7 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
         }
 
 
+        [Authorize(Roles = "管理員,經理")]
         [HttpGet("TimeIntervalMinutes")]
         public ActionResult<int> GetTimeIntervalMinutes()
         {
@@ -97,6 +110,7 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
         }
 
 
+        [Authorize(Roles = "管理員,經理")]
         [HttpPut("TimeIntervalMinutes/{minutes}")]
         public ActionResult<int> SetTimeIntervalMinutes(int minutes)
         {
@@ -104,6 +118,7 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
             return RecommendService.TimeIntervalMinutes;
         }
 
+        [Authorize(Roles = "管理員,經理")]
         [HttpGet("LastExecuteTimeMinuteBefore")]
         public ActionResult<int> LastExecuteTimeMinuteBefore()
         {
