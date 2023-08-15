@@ -47,8 +47,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                 "week" => Enumerable.Range(0, timeIntervals).Select((o, i) => (DateTime.Now.AddDays(-7 * i), DateTime.Now.AddDays(-7 * i - 7))),
                 _ => null
             };
-
             if (dateList.IsNullOrEmpty()) return null;
+            dateList = dateList!.Reverse();
 
             List<List<(string label, long data)>> fullData = new();
 
