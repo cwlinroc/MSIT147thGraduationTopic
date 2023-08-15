@@ -1,12 +1,9 @@
 ﻿let memberData = null;
-getMemberById();
+getMember();
 
 //Ajax 得到會員資料
-async function getMemberById(id) {
-    let str = ''
-    if (id) str = '/' + id
-
-    const response = await fetch(`${ROOT}/api/apiMember${str}`);
+async function getMember() {
+    const response = await fetch(`${ROOT}/api/apiMember/self`);
 
     if (!response.ok) return;
     const data = await response.json();
@@ -17,15 +14,14 @@ async function getMemberById(id) {
 }
 
 //列出會員資料
-function displayMember() {
-    memberData.map((e) => {
-        $('#nickName').val(e.nickName)
-        $('#email').val(e.email)
-        $('#phone').val(e.phone)
-        $('#city').val(e.city)
-        $('#district').val(e.district)
-        $('#address').val(e.address)
-    })
+function displayMember() {    
+    $('#nickName').val(memberData.nickName)
+    $('#email').val(memberData.email)
+    $('#phone').val(memberData.phone)
+    $('#city').val(memberData.city)
+    $('#district').val(memberData.district)
+    $('#address').val(memberData.address)
+    $('#avatar').val(memberData.avatar)
 }
 
 function checkPasswordMatch() {
@@ -161,7 +157,7 @@ function editValidator() {
         const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
         const confirmPasswordValid = confirmPassword.value === password.value
 
-        if ($('#passwordEditedChk').attr('checked')) {
+        if ($('#passwordEditedChk').prop('checked')) {
             password.setValidate(() => passwordHasValue, '請輸入密碼')
                 .setValidate(() => passwordPatternValid, '密碼格式錯誤')
                 .setValidate(() => confirmPasswordValid, '與密碼不符')
@@ -175,7 +171,7 @@ function editValidator() {
         const phoneHasValue = !!phone.value
         let phonePatternValid = /^09\d{2}-\d{3}-\d{3}$/.test(phone.value)
 
-        if ($('#phoneEditedChk').attr('checked')) {
+        if ($('#phoneEditedChk').prop('checked')) {
             phone.setValidate(() => phoneHasValue, '請輸入手機號碼')
                 .setValidate(() => phonePatternValid, '手機號碼格式錯誤')
         } else {
@@ -185,8 +181,7 @@ function editValidator() {
 
         const emailHasValue = !!email.value
         let emailPatternValid = /^\w+@\w+/.test(email.value)
-
-        if ($('#emailEditedChk').attr('checked')) {
+        if ($('#emailEditedChk').prop('checked')) {
             email.setValidate(() => emailHasValue, '請輸入Email')
                 .setValidate(() => emailPatternValid, 'Email格式錯誤')
         } else {

@@ -49,6 +49,17 @@ namespace MSIT147thGraduationTopic.Controllers
             return _service.GetAllMembers().ToList();
         }
 
+        [HttpGet("self")]
+        public ActionResult<MemberVM> GetMember()
+        {
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest("找不到對應會員ID");
+            }
+            
+            return _service.GetMember(memberId).ToVM();
+        }
+
         [HttpGet("{query}")]
         public ActionResult<List<MemberVM>> GetMemberByNameOrAccount(string query)
         {
@@ -159,7 +170,7 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             var member = await _context.Members
-                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.Email, o.Avatar, o.MemberId, o.IsActivated })
+                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.NickName, o.Email, o.Avatar, o.MemberId, o.IsActivated })
                 .FirstOrDefaultAsync(o => o.Account == record.Account);
 
             if (member != null && member.IsActivated)
@@ -171,6 +182,7 @@ namespace MSIT147thGraduationTopic.Controllers
                             {
                                 new Claim(ClaimTypes.Name, member.Account),
                                 new Claim("UserName", member.MemberName),
+                                new Claim("NickName", member.NickName),
                                 new Claim("AvatarName", member.Avatar??""),
                                 new Claim("MemberId", member.MemberId.ToString()),
                                 new Claim(ClaimTypes.Email, member.Email),

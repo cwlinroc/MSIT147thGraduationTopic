@@ -6,11 +6,15 @@
     bool? isAuthorized = user?.Identity?.IsAuthenticated;
     string? userName = string.Empty;
     string? roleName = string.Empty;
+    string? avatarName = string.Empty;
 
     if (isAuthorized ?? false)
     {
-        userName = user?.Claims.FirstOrDefault(o => o.Type == "UserName")?.Value;
+        userName = user?.Claims.FirstOrDefault(o => o.Type == "NickName")?.Value;
         roleName = user?.FindFirstValue(ClaimTypes.Role);
+        avatarName = user?.FindFirstValue("AvatarName");
+        if (string.IsNullOrEmpty(avatarName))
+            avatarName = "memberDefault.png";
     }
 
     string? loadCoupon = HttpContextAccessor?.HttpContext?.Session.GetString("LoadCoupon");
@@ -85,6 +89,10 @@
                         @{
                             if (isAuthorized ?? false)
                             {
+                                <img src="@Url.Content($"~/uploads/Avatar/{avatarName}")" id="navbarAvatar" class="rounded-circle ms-auto border border-4 border-secondary">
+                                <div class="navbar-nav ms-2">
+                                    <span class="navbar-text me-3 text-white">@userName</span>
+                                </div>
                                 <li class="nav-item">
                                     <a class="nav-link text-nowrap" href="#" id="btnLogOut">登出</a>
                                 </li>
