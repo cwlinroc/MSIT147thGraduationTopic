@@ -211,7 +211,7 @@
 
             <div class="accordion-item">
                 <h2 class="accordion-header position-relative">
-                    <a class="accordion-button collapsed link-light stretched-link" href="~/employeebackstage">
+                    <a class="accordion-button collapsed link-light stretched-link" href="~/employeebackstage" id="linkEmployeeList">
                         員工檢視
                     </a>
                 </h2>
@@ -219,7 +219,7 @@
 
             <div class="accordion-item">
                 <h2 class="accordion-header position-relative">
-                    <a class="accordion-button collapsed link-light stretched-link" href="~/recommendbackstage">
+                    <a class="accordion-button collapsed link-light stretched-link" href="~/recommendbackstage" id="linkRecommendRating">
                         熱門排序
                     </a>
                 </h2>                
@@ -280,6 +280,7 @@
     <script src="~/js/backstage.js"></script>
 
     @RenderSection("Scripts",false)
+    @RenderSection("InlineScripts",false)
 
 </body>
 </html>

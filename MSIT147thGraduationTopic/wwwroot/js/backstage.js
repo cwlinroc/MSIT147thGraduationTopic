@@ -135,6 +135,10 @@ async function validateRole(role) {
 $('#linkEmployeeList').click(async event => {
     if (!await validateRole('經理')) event.preventDefault();
 })
+//linkRecommendRating
+$('#linkRecommendRating').click(async event => {
+    if (!await validateRole('經理')) event.preventDefault();
+})
 
 
 
