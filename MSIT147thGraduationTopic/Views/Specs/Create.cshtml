@@ -10,9 +10,12 @@
 
     <div class="bg-light rounded shadow p-5">
         <h4>輸入規格資料</h4>
-        <button id="demo_spec1">Demo 規格1</button>
-        <button id="demo_spec2_wrong" class="mx-2">Demo 規格2 輸入有誤</button>
-        <button id="demo_spec2_right" class="mx-2">Demo 規格2</button>
+        <div style="float:right">
+            <button id="demo_wrong" class="btn btn-outline-secondary mx-2">Demo 錯誤範例</button>
+            <button id="demo_right1" class="btn btn-outline-secondary">Demo 正確範例 顯示</button>
+            <button id="demo_right2" class="btn btn-outline-secondary">Demo 正確範例 隱藏</button>
+            <button id="demo_right3" class="btn btn-outline-secondary">Demo 正確範例 缺貨</button>
+        </div>
         <hr />
         <div class="row">
             <div class="col-md-4">
@@ -97,28 +100,44 @@
 </div>
 
 @section Scripts {
-    @*DEMO*@
+    @*DEMO按鈕*@
     <script>
-        $("#demo_spec1").on("click", () => {
-            $("#inputspecname").val("寵物專用毛梳");
-            $("#inputprice").val();
-            $("#inputamount").val();
-            $("#inputdiscount").val();
-            $("#inputorder").val();
+        $("#demo_wrong").on("click", () => {
+            $("#inputspecname").val("");
+            $("#inputprice").val(0);
+            $("#inputamount").val(-1);
+            $("#inputdiscount").val(101);
+            $("#inputorder").val(0);
         })
-        $("#demo_spec2_wrong").on("click", () => {
-            $("#inputspecname").val("寵物專用毛梳");
-            $("#inputprice").val();
-            $("#inputamount").val();
-            $("#inputdiscount").val();
-            $("#inputorder").val();
+        $("#demo_right1").on("click", () => {
+            $("#inputspecname").val("紅色款");
+            $("#inputprice").val(150);
+            $("#inputamount").val(23);
+            $("#inputdiscount").val(90);
+            $("#inputorder").val(1);
+            $(`input[value="Cat"]`).attr("checked", false);
+            $(`input[value="Dog"]`).attr("checked", false);
+            $(`input[value="Rabbit"]`).attr("checked", false);
         })
-        $("#demo_spec2_right").on("click", () => {
-            $("#inputspecname").val("寵物專用毛梳");
-            $("#inputprice").val();
-            $("#inputamount").val();
-            $("#inputdiscount").val();
-            $("#inputorder").val();
+        $("#demo_right2").on("click", () => {
+            $("#inputspecname").val("藍色款");
+            $("#inputprice").val(150);
+            $("#inputamount").val(30);
+            $("#inputdiscount").val(100);
+            $("#inputorder").val(2);
+            $(`input[value="Cat"]`).attr("checked", true);
+            $(`input[value="Dog"]`).attr("checked", true);
+            $(`input[value="Rabbit"]`).attr("checked", true);
+        })
+        $("#demo_right3").on("click", () => {
+            $("#inputspecname").val("紫色款");
+            $("#inputprice").val(150);
+            $("#inputamount").val(0);
+            $("#inputdiscount").val(100);
+            $("#inputorder").val(3);
+            $(`input[value="Cat"]`).attr("checked", true);
+            $(`input[value="Dog"]`).attr("checked", true);
+            $(`input[value="Rabbit"]`).attr("checked", true);
         })
     </script>
     @*產生商品名稱*@

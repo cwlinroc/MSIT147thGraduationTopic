@@ -27,7 +27,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
         // GET: Merchandises
         [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1, int displayorder = 0, int pageSize = 10)
-        {
+        {//todo DEMO搜尋
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
             ViewBag.PageIndex = PageIndex;
@@ -76,7 +76,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
         // GET: Merchandises/Create
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Create()   //todo Demo產品名稱、品牌、類別需有實際資料後才可決定
+        public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");

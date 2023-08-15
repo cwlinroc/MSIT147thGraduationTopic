@@ -142,10 +142,11 @@
                                 <!-- 輸入Tag名稱 + AutoComplete -->
                                 <div class="form-label mb-3">
                                     <label for="TagName" class="fw-bold">標籤名稱</label>
-                                    <input class="form-control" id="TagName" type="text" />
+                                    <input class="form-control" id="TagName" type="text"/>
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-primary me-2" id="btnAddTag">新增標籤</button>
+                                    <button id="demo" class="btn btn-outline-secondary btn-sm mx-2" style="float:right">Demo 新建標籤</button>
                                 </div>
                                 <div class="my-3" id="fastAddArea">
                                     
@@ -164,6 +165,13 @@
 </div>
 
 @section Scripts {
+    @*DEMO按鈕*@
+    <script>
+        $("#demo").on("click", (e) => {
+            e.preventDefault();
+            $("#TagName").val("寵物美容");
+        })
+    </script>
     <!-- 產生商品資料 -->
     <script>
         const mName = document.querySelector("#mName");

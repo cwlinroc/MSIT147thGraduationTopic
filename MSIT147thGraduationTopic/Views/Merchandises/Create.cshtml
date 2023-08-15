@@ -10,8 +10,10 @@
 
     <div class="bg-light rounded shadow p-5">
         <h4>輸入商品資料</h4>
-        <button id="demo_right" class="btn btn-outline-secondary">Demo 正確範例</button>
-        <button id="demo_wrong" class="btn btn-outline-secondary mx-2">Demo 錯誤範例</button>
+        <div style="float:right">
+            <button id="demo_wrong" class="btn btn-outline-secondary mx-2">Demo 錯誤範例</button>
+            <button id="demo_right" class="btn btn-outline-secondary">Demo 正確範例</button>
+        </div>
         <hr />
         <div class="row">
             <div class="col-md-4">
@@ -87,10 +89,12 @@
             $("#inputbrandid").val(11);
             $("#inputcategoryid").val(5);
             $("#descriptionarea").val(demoDescription);
+            $("#countdiscription").text($("#descriptionarea").val().length);
         })
         $("#demo_wrong").on("click", () => {
             $("#inputname").val("貓用伸縮魔力廢毛梳");
             $("#descriptionarea").val(repeatContent);
+            $("#countdiscription").text($("#descriptionarea").val().length);
         })        
     </script>
     @*產生下拉選項*@
