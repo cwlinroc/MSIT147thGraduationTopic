@@ -335,7 +335,7 @@
                     $(".add_to_Cart").on("click", async (e) => {
                         if (ROLE != "會員") {
                             await Swal.fire('請登入以使用購物車');
-                            loginModal.show();   //使用js檔中的登入方法，登入成功則刷新原頁面
+                            loginModal.show();   //使用js檔中的登入方法，登入成功則刷新原頁面//
                         }
                         if (ROLE == "會員") {  //傳送資料
                             const specIdforCart = $(e.currentTarget).attr("data-specid");
