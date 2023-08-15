@@ -46,7 +46,6 @@
                                     <th>帳號名稱</th>
                                     <th>權限</th>
                                     <th style="width:5rem" class="text-center">會員停權</th>
-                                    <th style="width:3rem" class="text-center"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,14 +198,14 @@
                 const isActivated = element.isActivated ? "已啟用" : "未啟用"
                 const disabled = element.isActivated ? "" : "disabled";
 
-                return `<tr data-index="${index} class="memberInList" >
-                                                    <td>${element.memberName}</td>
-                                                    <td>${element.account}</td>
-                                                    <td>${isActivated}</td>
-                                                    <td class="text-center">
-                                                    <button type="button" class="btn btn-danger permission-btn ${disabled}"><i class="fa-solid fa-pen-nib"></i></button>
-                                                    </td>
-                                                </tr>`
+                return `<tr data-index="${index}">
+                            <td>${element.memberName}</td>
+                            <td>${element.account}</td>
+                            <td>${isActivated}</td>
+                            <td class="text-center">
+                            <button type="button" class="btn btn-danger permission-btn ${disabled}"><i class="fa-solid fa-pen-nib"></i></button>
+                            </td>
+                        </tr>`
             })
 
             $('.tablebox').find('tbody').html(trs.join(''))
@@ -234,11 +233,14 @@
             $('#displayDistrict').text(memberData[index].district)
             $('#displayAddress').text(memberData[index].address)
         }
-
-        //主要語法
-        // $(document).ready(function () {
+        
+        //datatable套件
+        // $(function () {
         //     $('#myTable').DataTable({
-        //         pageLength: 10, // 每頁顯示10筆資料 下面都是變更欄位為中文
+        //         searching: false,
+        //         pageLength: 10, // 每頁顯示10筆資料
+        //         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        //         autoWidth: true,
         //         columnDefs: [{                    
         //             targets: [3]  // 替換 [0] 為你希望套用這種排序的柱子索引值。例如：0，如果你希望在第一列上使用這個排序。
         //         }],

@@ -26,15 +26,17 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
         // GET: Merchandises
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1)
+        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1, int displayorder = 0)
         {
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
             ViewBag.PageIndex = PageIndex;
+            ViewBag.displayorder = displayorder;
 
             IEnumerable<MerchandiseSearch> datas;
-            datas = from m in _context.MerchandiseSearches
-                    select m;
+            //datas = from m in _context.MerchandiseSearches
+            //        select m;
+            datas = _context.MerchandiseSearches.OrderByDescending(m => m.MerchandiseId);
             if (!string.IsNullOrEmpty(txtKeyword))
             {
                 if (searchCondition == 1)
@@ -51,6 +53,12 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 if (searchCondition == 4)
                     datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
             }
+
+            datas = displayorder switch
+            {
+                1 => datas.OrderBy(ms => ms.MerchandiseId),                //由舊到新熱門商品
+                _ => datas.OrderByDescending(ms => ms.MerchandiseId)       //最新商品
+            };
 
             datas = datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
 

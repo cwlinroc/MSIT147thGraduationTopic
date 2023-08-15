@@ -14,17 +14,22 @@ var service = new SimulationDataInsertService(null);
 
 service.AddRandomMembers(100);
 Console.WriteLine("AddRandomMembers Done!");
+/**
 service.AddRandomMerchandiseAndSpecs(90);
 Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
-
+**/
 service.AddRandomCart();
 Console.WriteLine("AddRandomCart Done!");
+
 service.AddRandomOrders();
 Console.WriteLine("AddRandomOrders Done!");
+/**
 service.AddSpecTags();
 Console.WriteLine("AddSpecTags Done!");
+
 service.AddSpecPopularity();
 Console.WriteLine("AddSpecPopularity Done!");
+**/
 service.AddRandomEvaluations();
 Console.WriteLine("AddRandomEvaluations Done!");
 

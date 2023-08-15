@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Sales";
+    Layout = "_BackstagePage";
+}
+
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="bg-white rounded shadow col-lg-8">
+            <canvas id="mainChart" width="300" height="300"></canvas>
+        </div>
+
+        <div class="bg-white rounded shadow col-lg-4">
+            <h2 class="mb-4">暫時</h2>
+            <div>
+                <button class="btn btn-primary mb-3" id="btnAccordingToCategory">依類別</button>
+            </div>
+            <div>
+                <button class="btn btn-primary mb-3" id="btnAccordingToPet">依動物</button>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-primary mb-3" id="btnDisplayPurchasedNumber">購買數</button>
+            </div>
+            <div>
+                <button class="btn btn-primary mb-3" id="btnDisplaySales">銷售額</button>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-primary mb-3" id="btnWithinOneMonth">一個月內</button>
+            </div>
+            <div>
+                <button class="btn btn-primary mb-3" id="btnWithinThreeMonths">三個月內</button>
+            </div>
+            <div>
+                <button class="btn btn-primary mb-3" id="btnAllTime">全部</button>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let measurement = 'category' // animal
+        let classification = 'quantity' // profit
+        let daysBefore = '3650'
+
+        const ctxMain = document.getElementById('mainChart').getContext('2d');
+        const mainChart = new Chart(ctxMain, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '',
+                    data: [],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        })
+
+        $('#btnAccordingToCategory').click(e => {
+            measurement = 'category'
+            updateChart()
+        })
+        $('#btnAccordingToPet').click(e => {
+            measurement = 'animal'
+            updateChart()
+        })
+        $('#btnDisplayPurchasedNumber').click(e => {
+            classification = 'quantity'
+            updateChart()
+        })
+        $('#btnDisplaySales').click(e => {
+            classification = 'profit'
+            updateChart()
+        })
+        $('#btnWithinOneMonth').click(e => {
+            daysBefore = '30'
+            updateChart()
+        })
+        $('#btnWithinThreeMonths').click(e => {
+            daysBefore = '90'
+            updateChart()
+        })
+        $('#btnAllTime').click(e => {
+            daysBefore = '3650'
+            updateChart()
+        })
+        
+        //更新sales chart
+        updateChart()
+        async function updateChart(){
+            const data = await getSalesData()
+            mainChart.data.labels = data.labels
+            mainChart.data.datasets[0].data = data.data
+            mainChart.data.datasets[0].label = data.measurementUnit
+            mainChart.update()
+        }
+
+        //取得data
+        async function getSalesData() {
+            const response = await fetch(`${ROOT}/api/apistatistic/salechart?` +
+                `measurement=${measurement}&classification=${classification}&daysBefore=${daysBefore}`)
+            const data = await response.json()
+            console.log(data)
+            return data
+        }
+        
+
+
+    </script>
+}
+
+

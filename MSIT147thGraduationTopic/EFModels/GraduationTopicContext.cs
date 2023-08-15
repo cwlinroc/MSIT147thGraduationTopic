@@ -53,7 +53,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Persist Security Info=True;User ID=sa6;Password=sa6");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
             }
         }
 
@@ -333,12 +333,6 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Merchandise>(entity =>
             {
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
-
-                entity.Property(e => e.BrandId).HasColumnName("BrandID");
-
-                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)

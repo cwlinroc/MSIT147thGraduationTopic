@@ -26,6 +26,13 @@
                             <input type="submit" id="keywordsearch" value="Search" class="btn btn-secondary" />
                         </div>
                     </div>
+                    <!-- 排序方式 -->
+                    <div class="dropdown" style="width:150px;float:right">
+                        <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
+                            <option value="0">由新到舊</option>
+                            <option value="1">由舊到新</option>
+                        </select>
+                    </div>
                 </div>
             }
         </div>
@@ -136,6 +143,13 @@
         let txtKeyword = "@ViewBag.txtKeyword";
         let searchCondition = @ViewBag.searchCondition;
         let pageindex = @ViewBag.PageIndex;
+        let displayorder = @ViewBag.displayorder;
+
+        //設定下拉選單初值
+        $(() => {
+            $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
+            $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+        })
 
         //搜尋條件
         $(".conditionname").on("change", (e) => {
@@ -148,10 +162,16 @@
             e.preventDefault();
             SearchProducts();
         });
+        //排序方式
+        $("#displayorder").on("change", (e) => {
+            displayorder = $("#displayorder").val();
+            pageindex = 1;
+            SearchProducts();
+        });
 
         //搜尋
         function SearchProducts() {
-            window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}`;
+            window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}&displayorder=${displayorder}`;
         };
 
         //產生分頁標籤
