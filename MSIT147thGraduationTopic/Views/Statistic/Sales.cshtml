@@ -7,33 +7,70 @@
 
 <div class="container mt-5">
     <div class="row">
-        <div class="bg-white rounded shadow col-lg-8">
-            <canvas id="mainChart" width="300" height="300"></canvas>
+
+        <div class="px-3 col-lg-8">
+
+
+            <div class="p-4 bg-white rounded shadow ">
+                <h2 class="mt-2">商品銷售表</h2>
+                <div class="mt-3 ms-2">
+                    <button class="btn btn-sm btn-outline-primary" id="btnAccordingToCategory">類別</button>
+                    <button class="btn btn-sm btn-outline-primary" id="btnAccordingToPet">動物</button>
+                    <button class="btn btn-sm btn-outline-primary">??</button>
+                </div>
+                <div class="p-5" style="height:600px">
+                    <canvas id="mainChart" width="500" height="300"></canvas>
+                </div>
+            </div>
+
         </div>
 
-        <div class="bg-white rounded shadow col-lg-4">
-            <h2 class="mb-4">暫時</h2>
-            <div>
-                <button class="btn btn-primary mb-3" id="btnAccordingToCategory">依類別</button>
+        <div class="px-3 col-lg-4">
+            <div class="p-4 bg-white rounded shadow ">
+
+
+                <div class="p-2 mt-2">
+                    <canvas id="dougnutChart" width="300" height="300"></canvas>
+                </div>
+
+                <div class="p-2">
+                    <label for="selectDaysBefore" class="fs-4 mb-2">時間:</label>
+                    <select class="form-select mb-3" id="selectDaysBefore">
+                        <option value="7300" selected>不限</option>
+                        <option value="7">七天內</option>
+                        <option value="30">一個月內</option>
+                        <option value="90">三個月內</option>
+                    </select>
+                    <label for="selectMeasureUnit" class="fs-4 mb-2">統計單位:</label>
+                    <select class="form-select mb-3" id="selectMeasureUnit">
+                        <option value="quantity" selected>購買數</option>
+                        <option value="profit">銷售額</option>
+                    </select>
+                </div>
+
+
+
+                <!--To be deleted-->
+                <div class="m-3 p-2 border border-dark">
+                    <h2 class="mb-4">暫時</h2>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary mb-3" id="btnDisplayPurchasedNumber">購買數</button>
+
+                        <button class="btn btn-primary mb-3" id="btnDisplaySales">銷售額</button>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-primary mb-3" id="btnWithinOneMonth">一個月內</button>
+
+                        <button class="btn btn-primary mb-3" id="btnWithinThreeMonths">三個月內</button>
+
+                        <button class="btn btn-primary mb-3" id="btnAllTime">全部</button>
+                    </div>
+                </div>
+
+
             </div>
-            <div>
-                <button class="btn btn-primary mb-3" id="btnAccordingToPet">依動物</button>
-            </div>
-            <div class="mt-3">
-                <button class="btn btn-primary mb-3" id="btnDisplayPurchasedNumber">購買數</button>
-            </div>
-            <div>
-                <button class="btn btn-primary mb-3" id="btnDisplaySales">銷售額</button>
-            </div>
-            <div class="mt-3">
-                <button class="btn btn-primary mb-3" id="btnWithinOneMonth">一個月內</button>
-            </div>
-            <div>
-                <button class="btn btn-primary mb-3" id="btnWithinThreeMonths">三個月內</button>
-            </div>
-            <div>
-                <button class="btn btn-primary mb-3" id="btnAllTime">全部</button>
-            </div>
+
         </div>
 
     </div>
@@ -57,7 +94,9 @@
         let classification = 'quantity' // profit
         let daysBefore = '3650'
 
+
         const ctxMain = document.getElementById('mainChart').getContext('2d');
+        const ctxDoughnut = document.getElementById('dougnutChart').getContext('2d');
         const mainChart = new Chart(ctxMain, {
             type: 'bar',
             data: {
@@ -74,6 +113,26 @@
                         beginAtZero: true
                     }
                 }
+            }
+        })
+        const doughnutChart = new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    '品牌1',
+                    '品牌2',
+                    '品牌3'
+                ],
+                datasets: [{
+                    label: 'My First Dataset',
+                    data: [300, 50, 100],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)'
+                    ],
+                    hoverOffset: 4
+                }]
             }
         })
 
@@ -105,10 +164,20 @@
             daysBefore = '3650'
             updateChart()
         })
-        
+
+        //select change
+        $('#selectDaysBefore').change(e => {
+            const val = $(e.currentTarget).val()
+            console.log(val)
+        })
+        $('#selectMeasureUnit').change(e => {
+            const val = $(e.currentTarget).val()
+            console.log(val)
+        })
+
         //更新sales chart
         updateChart()
-        async function updateChart(){
+        async function updateChart() {
             const data = await getSalesData()
             mainChart.data.labels = data.labels
             mainChart.data.datasets[0].data = data.data
@@ -124,7 +193,7 @@
             console.log(data)
             return data
         }
-        
+
 
 
     </script>
