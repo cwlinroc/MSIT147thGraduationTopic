@@ -10,7 +10,7 @@
 <nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
-        <form class="bd-search position-relative me-auto mx-5 col-md-6" id="keywordsearch" style="align-items: center;">
+        <form class="bd-search position-relative me-auto col-md-6" id="keywordsearch" style="align-items: center;">
             <div class="row">
                 <div class="input-group">
                     <!-- 選擇搜尋條件 -->
@@ -27,7 +27,7 @@
             </div>
         </form>
 
-        <div class="dropdown ms-md-auto d-flex mx-5 col-md-4">
+        <div class="dropdown ms-md-auto d-flex col-md-4">
             <!-- 每頁顯示筆數 -->
             <div class="d-flex select-limit js-select-limit mx-5" style="white-space: nowrap; align-items: center;">
                 每頁顯示 :
@@ -51,10 +51,9 @@
                 </div>
             }
         </div>
-        <div class="row" style="background-color:sandybrown">
+        @*<div class="row" style="background-color:sandybrown">
             @*預計用於RWD包覆搜尋欄，但產生了其他排版問題*@
-        </div>
-    </div>
+        @*</div>*@
 </nav>
 
 
@@ -108,7 +107,7 @@
         </div>
 
         <!-- 中間商品欄 -->
-        <div class="col-12 col-md-10">
+        <div class="col-12 col-md-10 my-3" >
             <!-- 搜尋所有商品(重置搜尋條件) -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -116,7 +115,7 @@
                 </ol>
             </nav>
 
-            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3" id="showThisPageMerchandise">
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3 justify-content-around" id="showThisPageMerchandise">
                 <!-- 透過Ajax產生商品櫥窗 -->
             </div>
 
@@ -420,10 +419,10 @@
                 const score = (Math.round(popularity * 10) / 10).toFixed(1);
                 const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${merchandiseId}&SpecId=${specId}`
                 return `
-                                        <div class="p-2 position-relative mx-1 my-1 displayedSpec">
+                                   <div class="p-2 position-relative mx-1 my-1 displayedSpec gotoViewpage"
+                                                                        data-specid="${specId}" data-merchandisid="${merchandiseId}">                                   
                                         <figure class="partial-image-container">
-                                        <img src="${ROOT}/uploads/${imageUrl}" alt="..." class="gotoViewpage"
-                                                                        data-specid="${specId}" data-merchandisid="${merchandiseId}">                                           
+                                        <img src="${ROOT}/uploads/${imageUrl}" alt="...">                                           
                                         </figure>
                                         <div class="px-1 my-0" style="height:80px;overflow:hidden">
                                             <h6 class="card-text ">《 ${brandName} 》</h6>

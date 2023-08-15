@@ -1,5 +1,5 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.Spec>
-
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MallViewPageVM>
+@using MSIT147thGraduationTopic.ViewComponents
 @{
     Layout = "_MallPage";
     ViewData["Title"] = "尋找商品";
@@ -114,7 +114,7 @@
                             @{
                                 foreach (var item in Model)
                                 {
-                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Popularity" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
+                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Score" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
                                 }
                             }
                         </div>
@@ -131,6 +131,11 @@
                         <div class="text-end">共計：<span id="totalPrice"></span></div>
                     </div>
                 </div>
+            </div>
+            <!-- 商品評價 -->
+            <div>
+                @await Component.InvokeAsync(nameof(EvaluationVC))
+                @*@await Html.PartialAsync("~/Views/Evaluation/_MerchandiseEvaluation.cshtml")*@
             </div>
             <!-- 推薦商品 -->
             <div>
@@ -247,7 +252,8 @@
             $(".showSpec").attr("class", "btn btn-outline-secondary mx-1 my-1 showSpec");
             $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
             //顯示評分
-            score = $(e.currentTarget).attr("data-score");
+            const originalscore = $(e.currentTarget).attr("data-score");
+            score = (Math.round(originalscore * 10) / 10).toFixed(1);
             $("#score").text(score);
             //顯示價格&庫存
             const showPrice = document.querySelector("#showPrice");

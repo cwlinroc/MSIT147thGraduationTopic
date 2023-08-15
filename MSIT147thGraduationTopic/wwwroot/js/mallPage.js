@@ -153,12 +153,22 @@ async function refreshNavbarCart() {
 if (LOADCOUPON) remindCoupon()
 async function remindCoupon() {
     await Swal.fire({
-        position: 'top-end',
+        position: 'bottom-start',
         icon: 'Info',
         title: '要看看有沒有可領取的優惠券嗎？',
+        showCloseButton: true,
+        showCancelButton: true,
+        confirmButtonText: '去看看!',
+        CancelButtonText: '先不要',
+        showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+        },
+        hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+        }
     }).then((result) => {
         if (result.isConfirmed) {
-            location.href = ROOT + 'CouponsReceive/Index'
+            location.href = ROOT + '/CouponsReceive/Index'
         }
     })
 }

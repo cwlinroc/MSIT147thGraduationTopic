@@ -25,7 +25,7 @@
             <div class="custom-home-carousel-1 ">
                 <div class="container p-5">
 
-                    <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="row gx-5 align-items-center justify-content-center pt-3">
                         <div class="col-lg-8 col-xl-7 col-xxl-6">
                             <div class="my-5 text-center text-xl-start">
                                 <h1 class="display-5 fw-bolder text-white mb-2">各式精選優質寵物用品，助你為毛孩打造舒適家園！</h1>
@@ -34,7 +34,7 @@
                                 </p>
                                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
                                     <a class="btn btn-warning btn-lg px-4 me-sm-3" href="#merchandise1">瀏覽商品</a>
-                                    <a class="btn btn-outline-warning btn-lg px-4" href="#">查看更多</a>
+                                    <a class="btn btn-outline-warning btn-lg px-4" href="~/Mall/Index/">查看更多</a>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
         <div class="carousel-item bg-dark">
             <div class="custom-home-carousel-2">
                 <div class=" container p-5">
-                    <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="row gx-5 align-items-center justify-content-center pt-3">
                         <div class="col-lg-8 col-xl-7 col-xxl-6">
                             <div class="my-5 text-center text-xl-start">
                                 <h1 class="display-5 fw-bolder text-white mb-2">
@@ -62,7 +62,7 @@
                                 </p>
                                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
                                     <a class="btn btn-warning btn-lg px-4 me-sm-3" href="#merchandise2">瀏覽商品</a>
-                                    <a class="btn btn-outline-warning btn-lg px-4" href="#">查看更多</a>
+                                    <a class="btn btn-outline-warning btn-lg px-4" href="~/Mall/Index/">查看更多</a>
                                 </div>
                             </div>
                         </div>
@@ -81,7 +81,7 @@
         <div class="carousel-item bg-dark">
             <div class="custom-home-carousel-3">
                 <div class=" container p-5">
-                    <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="row gx-5 align-items-center justify-content-center pt-3">
                         <div class="col-lg-8 col-xl-7 col-xxl-6">
                             <div class="my-5 text-center text-xl-start">
                                 <h1 class="display-5 fw-bolder text-white mb-2">新品優惠！選購優質寵物產品，給你的毛孩帶來舒適和樂趣！</h1>
@@ -90,7 +90,7 @@
                                 </p>
                                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
                                     <a class="btn btn-warning btn-lg px-4 me-sm-3" href="#merchandise3">瀏覽商品</a>
-                                    <a class="btn btn-outline-warning btn-lg px-4" href="#">查看更多</a>
+                                    <a class="btn btn-outline-warning btn-lg px-4" href="~/Mall/Index/">查看更多</a>
                                 </div>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
 
         <div class="row position-relative">
             <div class="position-absolute">
-                <div class="custom-title my-5 shadow-lg bg-dark" data-aos="flip-left    " data-aos-anchor-placement="top-bottom">
+                <div class="custom-title my-5 shadow-lg bg-dark" data-aos="flip-left" data-aos-anchor-placement="top-bottom">
                     <div class="custom-title2">
                         <div class="custom-title3 d-flex  align-items-center">
                             <p class="text-light">熱銷商品</p>
@@ -138,7 +138,7 @@
             </div>
 
             <div class="col-lg-8">
-                <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center">
+                <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center mx-2" >
 
                     @for (int i = 0; i < popularSpecs.Length; i++)
                     {
@@ -152,13 +152,13 @@
                             <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-up"
                                  data-aos-anchor-placement="center-bottom" data-aos-duration="@duration">
                                 <div class="card p-2 custom-merchandise bg-light rounded-0">
-                                    <figure class="rounded p-1 bg-warning">
+                                    <figure class="rounded bg-warning recommend-image-container">
                                         <img src="@(Url.Content("~/uploads")+imageUrl)" class="card-img-top"
                                              alt="...">
                                     </figure>
 
                                     <div class="card-body">
-                                        <a class="stretched-link" href="#"></a>
+                                        <a class="stretched-link" href="~/Mall/Viewpage/?MerchandiseId=@(spec.MerchandiseId)&SpecId=@(spec.SpecId)"></a>
 
                                         <div class="mb-3" style="height:55px;overflow:hidden">
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
@@ -166,26 +166,35 @@
                                             </p>
                                         </div>
 
-                                        @if (spec.Tags != null) foreach (var tag in spec.Tags)
+                                        <div class="d-flex" style="height:25px">
+                                            @if (spec.DiscountPercentage != 100)
                                             {
-                                                <div class="badge bg-dark bg-gradient mb-1">@tag</div>
+                                                <div class="ms-auto"><del class="text-secondary fs-6">$@(spec.Price)</del></div>
+                                                <div class="ms-2 badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
                                             }
-                                        @if (spec.DiscountPercentage != 100)
-                                        {
-                                            <div class="badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
-                                        }
-                                        <div class="d-flex justify-content-between mt-3 ">
-                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
-                                                @if (spec.DiscountPercentage != 100)
-                                                {
-                                                    <del class="text-secondary fs-6">$@(spec.Price)</del>
-                                                }
-                                                $@(spec.Price * spec.DiscountPercentage / 100)
-                                            </p>
-                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
-                                                <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
-                                            </p>
                                         </div>
+
+                                        <div style="height:50px">
+                                            <div class="d-flex justify-content-between mt-3 ">
+
+                                                <div>
+                                                    <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
+                                                        <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
+                                                    </p>
+
+                                                </div>
+                                                <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
+
+                                                    $@(spec.Price * spec.DiscountPercentage / 100)
+                                                </p>
+
+                                            </div>
+                                        </div>
+
+
+
+
+
                                     </div>
 
                                 </div>
@@ -208,7 +217,7 @@
 
 
 <!-- 販售商品2.0好評商品 -->
-<section class="py-5 " id="merchandise1">
+<section class="py-5 " id="merchandise2">
     <div class="mt-5">
 
         <div class="row position-relative m-0">
@@ -241,13 +250,13 @@
                             <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-up"
                                  data-aos-anchor-placement="center-bottom" data-aos-duration="@duration">
                                 <div class="card p-2 custom-merchandise bg-light rounded-0">
-                                    <figure class="rounded p-1 bg-warning">
+                                    <figure class="rounded bg-warning recommend-image-container">
                                         <img src="@(Url.Content("~/uploads")+imageUrl)" class="card-img-top"
                                              alt="...">
                                     </figure>
 
                                     <div class="card-body">
-                                        <a class="stretched-link" href="#"></a>
+                                        <a class="stretched-link" href="~/Mall/Viewpage/?MerchandiseId=@(spec.MerchandiseId)&SpecId=@(spec.SpecId)"></a>
 
                                         <div class="mb-3" style="height:55px;overflow:hidden">
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
@@ -255,26 +264,31 @@
                                             </p>
                                         </div>
 
-                                        @if (spec.Tags != null) foreach (var tag in spec.Tags)
+                                        <div class="d-flex" style="height:25px">
+                                            @if (spec.DiscountPercentage != 100)
                                             {
-                                                <div class="badge bg-dark bg-gradient mb-1">@tag</div>
+                                                <div class="ms-auto"><del class="text-secondary fs-6">$@(spec.Price)</del></div>
+                                                <div class="ms-2 badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
                                             }
-                                        @if (spec.DiscountPercentage != 100)
-                                        {
-                                            <div class="badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
-                                        }
-                                        <div class="d-flex justify-content-between mt-3 ">
-                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
-                                                @if (spec.DiscountPercentage != 100)
-                                                {
-                                                    <del class="text-secondary fs-6">$@(spec.Price)</del>
-                                                }
-                                                $@(spec.Price * spec.DiscountPercentage / 100)
-                                            </p>
-                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
-                                                <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
-                                            </p>
                                         </div>
+
+                                        <div style="height:50px">
+                                            <div class="d-flex justify-content-between mt-3 ">
+
+                                                <div>
+                                                    <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
+                                                        <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
+                                                    </p>
+
+                                                </div>
+                                                <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
+
+                                                    $@(spec.Price * spec.DiscountPercentage / 100)
+                                                </p>
+
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                 </div>
@@ -297,7 +311,7 @@
 
 
 <!-- 販售商品2.0熱銷商品 -->
-<section class="py-5 " id="merchandise1">
+<section class="py-5 " id="merchandise3">
     <div class="mt-5 me-5">
 
         <div class="row position-relative">
@@ -331,13 +345,13 @@
                             <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-up"
                                  data-aos-anchor-placement="center-bottom" data-aos-duration="@duration">
                                 <div class="card p-2 custom-merchandise bg-light rounded-0">
-                                    <figure class="rounded p-1 bg-warning">
+                                    <figure class="rounded bg-warning recommend-image-container">
                                         <img src="@(Url.Content("~/uploads")+imageUrl)" class="card-img-top"
                                              alt="...">
                                     </figure>
 
                                     <div class="card-body">
-                                        <a class="stretched-link" href="#"></a>
+                                        <a class="stretched-link" href="~/Mall/Viewpage/?MerchandiseId=@(spec.MerchandiseId)&SpecId=@(spec.SpecId)"></a>
 
                                         <div class="mb-3" style="height:55px;overflow:hidden">
                                             <p class="h4 fw-bolder text-decoration-none link-dark fs-5 p-2">
@@ -345,26 +359,32 @@
                                             </p>
                                         </div>
 
-                                        @if (spec.Tags != null) foreach (var tag in spec.Tags)
+                                        <div class="d-flex" style="height:25px">
+                                            @if (spec.DiscountPercentage != 100)
                                             {
-                                                <div class="badge bg-dark bg-gradient mb-1">@tag</div>
+                                                <div class="ms-auto"><del class="text-secondary fs-6">$@(spec.Price)</del></div>
+                                                <div class="ms-2 badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
                                             }
-                                        @if (spec.DiscountPercentage != 100)
-                                        {
-                                            <div class="badge bg-danger bg-gradient rounded-pill mb-1">@(100 - spec.DiscountPercentage)%OFF</div>
-                                        }
-                                        <div class="d-flex justify-content-between mt-3 ">
-                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
-                                                @if (spec.DiscountPercentage != 100)
-                                                {
-                                                    <del class="text-secondary fs-6">$@(spec.Price)</del>
-                                                }
-                                                $@(spec.Price * spec.DiscountPercentage / 100)
-                                            </p>
-                                            <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
-                                                <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
-                                            </p>
                                         </div>
+
+                                        <div style="height:50px">
+                                            <div class="d-flex justify-content-between mt-3 ">
+
+                                                <div>
+                                                    <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-secondary">
+                                                        <i class="fa-solid fa-star text-warning me-1"></i>@(spec.EvaluationScore.ToString("0.0"))
+                                                    </p>
+
+                                                </div>
+                                                <p class="h4 fw-bolder text-decoration-none link-dark fs-3 text-danger">
+
+                                                    $@(spec.Price * spec.DiscountPercentage / 100)
+                                                </p>
+
+                                            </div>
+                                        </div>
+
+
                                     </div>
 
                                 </div>
@@ -403,7 +423,7 @@
             e => $(e.currentTarget).removeClass("shadow-lg bg-danger").addClass("bg-dark")
         )
         $(".custom-merchandise").parent().mouseover(e => e.currentTarget.customAnimate('pulse', 'animate__faster'))
-        
+
     </script>
 }
 

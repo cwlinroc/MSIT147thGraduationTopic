@@ -102,9 +102,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-nowrap" href="@Url.Action("ShoppingHistory","Member")">購物紀錄</a>
                                 </li>
-                                //<li class="nav-item">
-                                //    <a class="nav-link text-nowrap" href="@Url.Action("","")">優惠券列表</a>
-                                //</li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-nowrap" href="@Url.Action("CouponList","CouponFront")">優惠券列表</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Content("~/cart")">
                                         <i class="fa-solid fa-cart-shopping text-light fs-4 mx-2 text-nowrap"></i>
@@ -258,6 +258,7 @@
     <script src="~/js/mallPage.js"></script>
 
     @RenderSection("Scripts",false)
+    @RenderSection("InlineScripts",false)
 
 </body>
 
