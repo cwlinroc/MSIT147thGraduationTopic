@@ -26,12 +26,13 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
         // GET: Merchandises
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1, int displayorder = 0)
+        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1, int displayorder = 0, int pageSize = 10)
         {
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
             ViewBag.PageIndex = PageIndex;
             ViewBag.displayorder = displayorder;
+            ViewBag.pageSize = pageSize;
 
             IEnumerable<MerchandiseSearch> datas;
             //datas = from m in _context.MerchandiseSearches
@@ -60,7 +61,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 _ => datas.OrderByDescending(ms => ms.MerchandiseId)       //最新商品
             };
 
-            datas = datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
+            datas = datas.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToList();
 
             List<MerchandiseSearchVM> list = new List<MerchandiseSearchVM>();
             foreach (MerchandiseSearch ms in datas)
