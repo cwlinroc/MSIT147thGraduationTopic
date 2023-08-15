@@ -1,20 +1,20 @@
 ﻿const today = new Date().toISOString().split('T')[0];
 $("#DateOfBirth").attr('max', today);
 
-function checkPasswordMatch() {
-    const password = $('#password').val();
-    const confirmPassword = $('#confirmPassword').val();
+//function checkPasswordMatch() {
+//    const password = $('#password').val();
+//    const confirmPassword = $('#confirmPassword').val();
 
-    if (password !== confirmPassword) {
-        $('#confirmPassword').addClass('is-invalid');
-    } else {
-        $('#confirmPassword').removeClass('is-invalid');
-    }
-}
+//    if (password !== confirmPassword) {
+//        $('#confirmPassword').addClass('is-invalid');
+//    } else {
+//        $('#confirmPassword').removeClass('is-invalid');
+//    }
+//}
 
-$('#confirmPassword').blur(function () {
-    checkPasswordMatch();
-});
+//$('#confirmPassword').blur(function () {
+//    checkPasswordMatch();
+//});
 
 const selCity = document.querySelector('#city');
 const selDistrict = document.querySelector('#district');
@@ -93,7 +93,7 @@ function createValidator() {
         const confirmPasswordValid = confirmPassword.value === password.value
         password.setValidate(() => passwordHasValue, '請輸入密碼')
                 .setValidate(() => passwordPatternValid, '密碼格式錯誤')
-                .setValidate(() => confirmPasswordValid, '與密碼不符')
+        confirmPassword.setValidate(() => confirmPasswordValid, '與密碼不符')
         passwordValid = passwordHasValue && passwordPatternValid && confirmPasswordValid
 
         const phone = document.querySelector('#phone')
