@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "Trends";
+    Layout = "_BackstagePage";
+}
+
+<h1>Trends</h1>
+
+<button id="test"> test</button>
+
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let measurement = 'category' // animal
+        let classification = 'quantity' // profit
+        let timeUnit = 'month'
+        let timeIntervals = 12
+
+
+        $('#test').click(getSalesData)
+        getSalesData()
+
+        //取得data
+        async function getSalesData() {
+            const response = await fetch(`${ROOT}/api/apistatistic/saletrend?` +
+                `measurement=${measurement}&classification=${classification}&timeUnit=${timeUnit}&timeIntervals=${timeIntervals}`)
+            const data = await response.json()
+            console.log(data)
+            return data
+        }
+
+
+
+    </script>
+}
+
+
