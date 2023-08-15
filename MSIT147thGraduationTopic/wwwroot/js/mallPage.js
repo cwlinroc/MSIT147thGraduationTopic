@@ -153,7 +153,7 @@ async function refreshNavbarCart() {
 if (LOADCOUPON) remindCoupon()
 async function remindCoupon() {
     await Swal.fire({
-        position: 'top-end',
+        position: 'Bottom-Start',
         icon: 'Info',
         title: '要看看有沒有可領取的優惠券嗎？',
     }).then((result) => {
