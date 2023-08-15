@@ -277,6 +277,7 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
                 Address = vm.Address,
                 Email = vm.Email,
                 Avatar = vm.Avatar,
+                IsActivated = true
             };
         }
 
@@ -284,8 +285,8 @@ namespace MSIT147thGraduationTopic.Models.ViewModels
         {
             return new MemberEditDto
             {
-                Account= vm.Account,
-                Password= vm.Password,
+                Account = vm.Account,
+                Password = vm.Password,
             };
         }
     }
