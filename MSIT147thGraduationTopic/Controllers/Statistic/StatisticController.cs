@@ -8,5 +8,16 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
         {
             return View();
         }
+
+        public IActionResult Trends()
+        {
+            return View();
+        }
+        public IActionResult Test()
+        {
+            return View();
+        }
+
+
     }
 }

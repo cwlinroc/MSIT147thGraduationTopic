@@ -38,12 +38,27 @@
 
 div.custom-title {
     width: 80%;
-    height: 500px;
+    height: 300px;
     padding: 20px 20px 20px 0px;
     border-radius: 0 15px 15px 0;
     border: 3px #2A2A2E double;
     border-left: 0;
 }
+
+div.custom-jumpout {
+    position: relative;
+}
+
+@media (min-width: 1050px) {
+    div.custom-jumpout {
+        position:absolute;
+    }
+    div.custom-title{
+        height:500px;
+    }
+}
+
+
 
 div.custom-title2 {
     width: 100%;
