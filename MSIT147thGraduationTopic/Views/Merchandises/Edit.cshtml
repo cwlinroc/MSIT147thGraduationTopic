@@ -70,7 +70,7 @@
 </div>
 
 @section Scripts {
-    @*產生下拉選項*@
+    <!-- 產生下拉選項 -->
     <script>
         const brand = document.querySelector("#inputbrandid");
         const category = document.querySelector("#inputcategoryid");
@@ -103,7 +103,7 @@
             })
         })
     </script>
-    @*產生圖片路徑、預覽*@
+    <!-- 產生圖片路徑、預覽 -->
     <script>
         const originalImageUrl = $("#origimageurl").val();
         const originalImagePath = originalImageUrl
@@ -157,7 +157,7 @@
             })
         }
     </script>
-    @*錯誤提示訊息*@
+    <!-- 錯誤提示訊息 -->
     <script>
         const alertName = document.querySelector("#alertspanforname");
         const alertDescription = document.querySelector("#alertspanfordescription");
@@ -206,7 +206,7 @@
             }
         })
     </script>
-    @*計算商品描述字數*@
+    <!-- 計算商品描述字數 -->
     <script>
         $("#countdiscription").text($("#descriptionarea").val().length);
 

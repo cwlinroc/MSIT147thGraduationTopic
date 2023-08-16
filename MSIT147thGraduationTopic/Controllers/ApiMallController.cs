@@ -43,8 +43,8 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
-            datas = (minPrice.HasValue) ? datas.Where(sp => sp.Price >= minPrice) : datas;
-            datas = (maxPrice.HasValue) ? datas.Where(sp => sp.Price <= maxPrice) : datas;
+            datas = (minPrice.HasValue) ? datas.Where(sp => (sp.Price * sp.DiscountPercentage / 100) >= minPrice) : datas;
+            datas = (maxPrice.HasValue) ? datas.Where(sp => (sp.Price * sp.DiscountPercentage / 100) <= maxPrice) : datas;
 
             datas = displayorder switch
             {
@@ -87,8 +87,8 @@ namespace MSIT147thGraduationTopic.Controllers
             }
 
             datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
-            datas = (minPrice.HasValue)?datas.Where(sp => sp.Price >= minPrice):datas;
-            datas = (maxPrice.HasValue)?datas.Where(sp => sp.Price <= maxPrice):datas;
+            datas = (minPrice.HasValue)?datas.Where(sp => (sp.Price * sp.DiscountPercentage / 100) >= minPrice):datas;
+            datas = (maxPrice.HasValue)?datas.Where(sp => (sp.Price * sp.DiscountPercentage / 100) <= maxPrice):datas;
 
             if (tagId != 0)
             {
@@ -120,8 +120,10 @@ namespace MSIT147thGraduationTopic.Controllers
                     _ => selectedProducts
                 };
             }
-            if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
-            if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
+            if (minPrice.HasValue)
+                selectedProducts = selectedProducts.Where(sp => (sp.Price * sp.DiscountPercentage / 100) >= minPrice);
+            if (maxPrice.HasValue)
+                selectedProducts = selectedProducts.Where(sp => (sp.Price * sp.DiscountPercentage / 100) <= maxPrice);
 
             if (tagId != 0)
             {
@@ -170,8 +172,10 @@ namespace MSIT147thGraduationTopic.Controllers
                 };
             }
             selectedProducts = (sideCategoryId == 0) ? selectedProducts : selectedProducts.Where(md => md.CategoryId == sideCategoryId);
-            if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
-            if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
+            if (minPrice.HasValue)
+                selectedProducts = selectedProducts.Where(sp => (sp.Price * sp.DiscountPercentage / 100) >= minPrice);
+            if (maxPrice.HasValue)
+                selectedProducts = selectedProducts.Where(sp => (sp.Price * sp.DiscountPercentage / 100) <= maxPrice);
 
             List<TagVM> tags = new List<TagVM>();
             TagVM tag_0 = new TagVM()

@@ -6,7 +6,6 @@
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
-@*****************************************響應式功能未完成*****************************************@
 <nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
@@ -26,6 +25,7 @@
                 </div>
             </div>
         </form>
+        <button id="demo_keyword" class="btn btn-outline-secondary btn-sm mt-2" style="float:left">Demo 關鍵字</button>
 
         <div class="dropdown ms-md-auto d-flex col-md-4">
             <!-- 每頁顯示筆數 -->
@@ -41,7 +41,7 @@
             {
                 <!-- 排序方式 -->
                 <div class="dropdown ms-md-auto">
-                    <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
+                    <select class="form-select" name="displayorder" id="displayorder" style="min-width:150px" aria-label="Floating label select example">
                         <option value="0">最新商品</option>
                         <option value="1">由舊到新</option>
                         <option value="2">熱門商品</option>
@@ -51,9 +51,6 @@
                 </div>
             }
         </div>
-        @*<div class="row" style="background-color:sandybrown">
-            @*預計用於RWD包覆搜尋欄，但產生了其他排版問題*@
-        @*</div>*@
 </nav>
 
 
@@ -96,6 +93,8 @@
                                     <input type="number" min="0" id="maxPrice" placeholder="最高價" style="width:75px; height:32px" />
                                     <br />
                                     <button type="button" id="sendPriceRange" class="btn btn-secondary my-2" style="float:right">查詢</button>
+                                    <br />
+                                    <button id="demo_price" class="btn btn-outline-secondary btn-sm mx-2" style="float:right">Demo 價格區間</button>
                                 </div>
                             </li>
 
@@ -125,16 +124,24 @@
                     <!-- 透過Ajax產生分頁標籤 -->
                 </ul>
             </nav>
-
         </div>
-
     </div>
-</div>
-<div>
-    <!---------------------------------------------------------- 推薦商品(未實裝) ---------------------------------------------------------->
 </div>
 
 @section Scripts{
+    <!-- DEMO按鈕 -->
+    <script>
+        $("#demo_keyword").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("鼠");
+        })
+        $("#demo_price").on("click", (e) => {
+            e.preventDefault();
+            $("#minPrice").val(250);
+            $("#maxPrice").val(1000);
+        })
+    </script>
+    <!-- 產生商城內容 -->
     <script>
         //給予初值
         let txtKeyword = "@ViewBag.txtKeyword";
@@ -158,10 +165,13 @@
         //搜尋所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {
             txtKeyword = "";
+            $("#search-input").val("");
             sideCategoryId = 0;
             pageindex = 1;
             minPrice = null;
             maxPrice = null;
+            $("#minPrice").val(null);
+            $("#maxPrice").val(null);
             tagId = 0;
             SearchProducts();
         });

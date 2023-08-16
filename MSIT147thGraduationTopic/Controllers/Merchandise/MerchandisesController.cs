@@ -193,7 +193,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
         // GET: Merchandises/Delete/5
         [Authorize(Roles = "管理員,經理")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)// todo 加上條件參數
         {
             if (_context.Specs.Where(s => s.MerchandiseId == id).Count() > 0)
                 return RedirectToAction(nameof(Index));

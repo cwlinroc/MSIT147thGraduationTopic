@@ -76,7 +76,7 @@
 </div>
 
 @section Scripts {
-    @*DEMO按鈕*@
+    <!-- DEMO按鈕 -->
     <script>
         let repeatContent = "";
         const demoDescription = "本產品的特色在於細緻的毛梳能夠有效梳理寵物的毛髮，將脫落的毛有效地聚集起來以便清潔；梳毛尖端的球狀結構也具有按摩的效果，以促進寵物皮膚、毛皮的健康。然而需要小心不要讓梳毛碰觸到寵物的眼睛，否則可能會造成刮傷，嚴重者可能道製寵物失明。";
@@ -95,9 +95,9 @@
             $("#inputname").val("貓用伸縮魔力廢毛梳");
             $("#descriptionarea").val(repeatContent);
             $("#countdiscription").text($("#descriptionarea").val().length);
-        })        
+        })
     </script>
-    @*產生下拉選項*@
+    <!-- 產生下拉選項 -->
     <script>
         const brand = document.querySelector("#inputbrandid");
         const category = document.querySelector("#inputcategoryid");
@@ -130,7 +130,7 @@
             })
         })
     </script>
-    @*產生圖片路徑、預覽*@
+    <!-- 產生圖片路徑、預覽 -->
     <script>
         const display = document.querySelector("#display");
         const imageClear = document.querySelector("#imageClear");
@@ -161,7 +161,7 @@
             })
         }
     </script>
-    @*錯誤提示訊息*@
+    <!-- 錯誤提示訊息 -->
     <script>
         const alertName = document.querySelector("#alertspanforname");
         const alertBrand = document.querySelector("#alertspanforbrand");
@@ -213,7 +213,7 @@
             }
         })
     </script>
-    @*計算商品描述字數*@
+    <!-- 計算商品描述字數 -->
     <script>
         const descriptionarea = document.querySelector("#descriptionarea")
         descriptionarea.addEventListener("keyup", () => {

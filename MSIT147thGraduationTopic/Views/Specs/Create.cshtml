@@ -100,7 +100,7 @@
 </div>
 
 @section Scripts {
-    @*DEMO按鈕*@
+    <!-- DEMO按鈕 -->
     <script>
         $("#demo_wrong").on("click", () => {
             $("#inputspecname").val("");
@@ -140,7 +140,7 @@
             $(`input[value="Rabbit"]`).attr("checked", true);
         })
     </script>
-    @*產生商品名稱*@
+    <!-- 產生商品名稱 -->
     <script>
         const merchandiseid = $("#showmerchandiseid").val();
 
@@ -157,7 +157,7 @@
             })
         });
     </script>
-    @*產生圖片路徑、預覽*@
+    <!-- 產生圖片路徑、預覽 -->
     <script>
         const display = document.querySelector("#display");
         const imageClear = document.querySelector("#imageClear");
@@ -189,7 +189,7 @@
             })
         }
     </script>
-    @*錯誤提示訊息*@
+    <!-- 錯誤提示訊息 -->
     <script>
         const alertName = document.querySelector("#alertspanforname");
         const alertPrice = document.querySelector("#alertspanforprice");

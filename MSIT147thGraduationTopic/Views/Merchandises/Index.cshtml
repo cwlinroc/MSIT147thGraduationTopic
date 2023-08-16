@@ -7,6 +7,10 @@
 
 <div class="container">
     <h1 class="title">商品列表檢視</h1>
+    <div style="float:right">
+        <button id="demo_keyword" class="btn btn-outline-secondary mx-2">Demo 關鍵字</button>
+        <button id="demo_noresult" class="btn btn-outline-secondary mx-2">Demo 無結果</button>
+    </div>
 
     <div class="bg-light rounded shadow p-5">
         <div>
@@ -146,7 +150,18 @@
 </div>
 
 @section Scripts {
-    @*搜尋商品*@
+    <!-- DEMO按鈕 -->
+    <script>
+        $("#demo_keyword").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("貓");
+        })
+        $("#demo_noresult").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("室外小屋");
+        })
+    </script>
+    <!-- 搜尋商品按鈕 -->
     <script>
         let txtKeyword = "@ViewBag.txtKeyword";
         let searchCondition = @ViewBag.searchCondition;
@@ -280,7 +295,7 @@
             }
         })
     </script>
-    @*刪除商品*@
+    <!-- 刪除商品 -->
     <script>
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除商品嗎？')) return;

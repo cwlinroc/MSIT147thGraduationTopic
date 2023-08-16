@@ -10,6 +10,10 @@
 
     <div class="bg-light rounded shadow p-5">
         <h4>輸入品牌資料</h4>
+        <div style="float:right">
+            <button id="demo_wrong" class="btn btn-outline-secondary mx-2">Demo 錯誤範例</button>
+            <button id="demo_right" class="btn btn-outline-secondary">Demo 正確範例</button>
+        </div>
         <hr />
         <div class="row">
             <div class="col-md-4">
@@ -32,6 +36,19 @@
 </div>
 
 @section Scripts {
+    <!-- DEMO按鈕 -->
+    <script>
+        $("#demo_right").on("click", () => {
+            $("#alertspan").text("");
+            $("#input").val("HappyPuppy");
+
+        })
+        $("#demo_wrong").on("click", () => {
+            $("#input").val("鼠來堡");
+            $("#submit").click();
+        })
+    </script>
+    <!-- 驗證輸入 -->
     <script>
         const alertspan = document.querySelector("#alertspan");
 
