@@ -1,8 +1,8 @@
 ﻿let orderData = null;
-getOrdersByMemberId();
+getOrders();
 
 //Ajax 得到訂單資料
-async function getOrdersByMemberId() {
+async function getOrders() {
 
     const response = await fetch(`${ROOT}/api/apiMember/ShoppingHistory`);
 

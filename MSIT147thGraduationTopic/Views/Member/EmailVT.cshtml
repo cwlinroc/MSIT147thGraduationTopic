@@ -32,8 +32,9 @@
                 <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
                     送出
                 </button>
+                <button type="button" id="demoMember" class="btn btn-outline-secondary btn-sm">demoMember</button>
             </div>
-        </form>
+        </form>        
         <div class="col-lg-6 offset-3 d-flex justify-content-center">
             <p class="fs-4">@ViewBag.ErrorMessage</p>
             <p class="fs-4">@ViewBag.SuccessMessage</p>
@@ -44,6 +45,13 @@
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
+        $('#demoMember').click(() => Demo('demoMember00'));
+
+        function Demo(demoAccount) {
+            $('#password').val(demoAccount);
+            $('#confirmPassword').val(demoAccount);
+        }
+
         const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
         function ChangePwdValidator() {

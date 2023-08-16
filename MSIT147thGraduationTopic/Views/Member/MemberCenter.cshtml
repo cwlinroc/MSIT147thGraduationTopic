@@ -9,20 +9,22 @@
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-2 offset-1">
         @await Component.InvokeAsync(nameof(SidebarVC))
-    </div>    
+    </div>
     <div class="col-lg-5 offset-1">
-        <form id="memberCenterForm" class="needs-validation" method="Post" 
-            enctype="multipart/form-data" novalidate>
+        <form id="memberCenterForm" class="needs-validation" method="Post"
+              enctype="multipart/form-data" novalidate>
             <!-- NickName input-->
             <div class="form mb-3">
                 <label for="nickname" class="form-label fw-bold">暱稱</label>
-                <input class="form-control" id="nickName" name="NickName" type="text"/>
-            </div>            
+                <input class="form-control" id="nickName" name="NickName" type="text" />
+            </div>
             <!-- Password input-->
             <div class="form mb-3">
                 <label for="password" class="form-label fw-bold">
                     密碼:需要6~32位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>
+                <input type="checkbox" class="btn-check passwordEditedChk" id="btn-check-outlined" autocomplete="off">
+                <label class="btn btn-sm btn-outline-danger" for="btn-check-outlined">修改密碼</label>
                 <input class="form-control" id="password" name="Password" type="password" readonly />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
@@ -37,17 +39,17 @@
             <!-- Email address input-->
             <div class="form mb-3">
                 <label for="email" class="form-label fw-bold">Email</label>
-                <input class="form-control" id="email" name="Email" type="email" required/>
+                <input class="form-control" id="email" name="Email" type="email" required />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
             </div>
             <!-- Phone number input-->
             <div class="form mb-3">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
-                <input class="form-control" id="phone" name="Phone" type="tel" required/>
+                <input class="form-control" id="phone" name="Phone" type="tel" required />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
-                
+
             </div>
             <!-- Address input-->
             <div class="form mb-3">
@@ -55,18 +57,18 @@
                 <div class="input-group">
                     <label class="input-group-text" for="city">縣市</label>
                     <select class="form-select" id="city" name="City">
-                    </select>                    
+                    </select>
                     <label class="input-group-text" for="district">區域</label>
                     <select class="form-select" id="district" name="District">
-                    </select>                    
-                    <input class="form-control" id="address" name="Address" type="text"/>
+                    </select>
+                    <input class="form-control" id="address" name="Address" type="text" />
                 </div>
             </div>
             <!-- Avatar input-->
             <div class="form mb-5">
                 <label class="form-label fw-bold">頭像</label>
                 <div class="input-group">
-                    <input type="file" id="avatar" name="Avatar" class="form-control"/>                    
+                    <input type="file" id="avatar" name="Avatar" class="form-control" />
                 </div>
             </div>
             <!-- Submit Button-->
@@ -74,49 +76,11 @@
                 <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
                     儲存修改
                 </button>
-                
+
                 @* <button type="button" id="demoMemberEdit">demoMember</button> *@
             </div>
-        </form>       
-    </div>
-    <div class="col-lg-1 ms-3">
-        <label class="form-label fw-bold">是否修改</label>
-        @* <div class="form-check mt-2">
-            <input class="form-check-input mx-auto" id="nickNameEditedChk" type="checkbox" />
-        </div> *@
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <div class="form-check mt-2">
-            <input class="form-check-input mx-auto" id="passwordEditedChk" type="checkbox" />
-        </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-       @*  <div class="form-check mt-2">
-            <input class="form-check-input mx-auto" id="emailEditedChk" type="checkbox" />
-        </div> *@
-        <br />
-        <br />        
-       @*  <div class="form-check mt-2">
-            <input class="form-check-input mx-auto" id="phoneEditedChk" type="checkbox" />
-        </div> *@
-        <br />
-        <br />
-        @* <div class="form-check mt-2">
-            <input class="form-check-input mx-auto" id="addressEditedChk" type="checkbox" />
-        </div> *@
-        <br />
-        <br />
-        @* <div class="form-check mt-3">
-            <input class="form-check-input mx-auto" id="avatarEditedChk" type="checkbox" />
-        </div> *@
-    </div>
+        </form>
+    </div>    
 </div>
 
 @section Styles{
@@ -127,11 +91,11 @@
 
         #district {
             max-width: 200px
-        }        
+        }
     </style>
 }
 
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
-    <script src="~/js/Member/memberCenter.js"></script>    
+    <script src="~/js/Member/memberCenter.js"></script>
 }
