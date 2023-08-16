@@ -32,8 +32,9 @@
                 <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
                     送出
                 </button>
+                <button type="button" id="demoMember" class="btn btn-outline-secondary btn-sm">demoMember</button>
             </div>
-        </form>
+        </form>        
         <div class="col-lg-6 offset-3 d-flex justify-content-center">
             <p class="fs-4">@ViewBag.ErrorMessage</p>
             <p class="fs-4">@ViewBag.SuccessMessage</p>
@@ -44,6 +45,13 @@
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
+        $('#demoMember').click(() => Demo('demoMember00'));
+
+        function Demo(demoAccount) {
+            $('#password').val(demoAccount);
+            $('#confirmPassword').val(demoAccount);
+        }
+
         const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
         function ChangePwdValidator() {
@@ -56,8 +64,8 @@
                 const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
                 const confirmPasswordValid = confirmPassword.value === password.value
                 password.setValidate(() => passwordHasValue, '請輸入密碼')
-                    .setValidate(() => passwordPatternValid, '密碼格式錯誤')
-                    .setValidate(() => confirmPasswordValid, '與密碼不符')
+                        .setValidate(() => passwordPatternValid, '密碼格式錯誤')
+                confirmPassword.setValidate(() => confirmPasswordValid, '與密碼不符')
 
                 return passwordHasValue && passwordPatternValid && confirmPasswordValid
             })

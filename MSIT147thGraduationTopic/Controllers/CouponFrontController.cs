@@ -27,11 +27,6 @@ namespace MSIT147thGraduationTopic.Controllers
 
             return View(couponData);
         }
-
-        [HttpPost]
-        public IActionResult CouponList(Member member)
-        {
-            return View();
-        }
+        
     }
 }

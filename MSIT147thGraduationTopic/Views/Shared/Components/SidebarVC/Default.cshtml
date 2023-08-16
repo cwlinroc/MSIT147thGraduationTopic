@@ -1,0 +1,19 @@
+﻿@model string;
+
+<div class="text-center mb-3">
+    <img class="img-fluid rounded-circle mb-4" id="sidebarAvatar"
+         src="@Url.Content($"~/uploads/Avatar/{Model}")" />
+    <br>
+    @*<div class="input-group">
+    <input type="file" id="avatar" class="form-control" aria-label="Select Avatar">
+    <button class="btn btn-primary mx-auto" type="button" id="changeSelfAvatar">更換頭像</button>
+    </div>*@
+</div>
+<br />
+<ul class="offset-3 fs-4" id="sidelist">
+    <li><a href="@Url.Action("MemberCenter","Member")" class="text-decoration-none">會員中心</a></li>
+    <li><a href="@Url.Action("ShoppingHistory","Member")" class="text-decoration-none">購物紀錄</a></li>
+    <li><a href="@Url.Action("CouponList","CouponFront")" class="text-decoration-none">優惠券列表</a></li>
+</ul>
+
+<link href="~/css/sidebar.css" rel="stylesheet" />

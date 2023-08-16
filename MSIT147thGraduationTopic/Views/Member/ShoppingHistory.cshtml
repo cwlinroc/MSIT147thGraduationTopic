@@ -1,4 +1,5 @@
-﻿@{
+﻿@using MSIT147thGraduationTopic.ViewComponents;
+@{
     ViewData["Title"] = "購物紀錄";
 }
 
@@ -7,7 +8,7 @@
 </div>
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-2 offset-1">
-        @await Html.PartialAsync("Partial/MemberSidebar")        
+        @await Component.InvokeAsync(nameof(SidebarVC))
     </div>
     <div class="col-lg-5 offset-1 fs-4">
         <div class="border px-4 py-2 mb-3">
@@ -34,9 +35,7 @@
 
 @section Styles{
     <style>
-        #sidelist {
-            list-style: none;
-        }
+        
     </style>
 }
 

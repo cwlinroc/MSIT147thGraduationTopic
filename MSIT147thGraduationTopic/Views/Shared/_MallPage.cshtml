@@ -72,8 +72,8 @@
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarHeaderContent" aria-controls="navbarHeaderContent" aria-expanded="false"
-                        aria-label="Toggle navigation">
+                        data-bs-target="#navbarHeaderContent" aria-controls="navbarHeaderContent" 
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -93,17 +93,25 @@
                                 <div class="navbar-nav ms-2">
                                     <span class="navbar-text me-3 text-white">@userName</span>
                                 </div>
-                                <li class="nav-item">
-                                    <a class="nav-link text-nowrap" href="#" id="btnLogOut">登出</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-nowrap" href="@Url.Action("MemberCenter","Member")">會員中心</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-nowrap" href="@Url.Action("ShoppingHistory","Member")">購物紀錄</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-nowrap" href="@Url.Action("CouponList","CouponFront")">優惠券列表</a>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        功能選單
+                                    </a>
+                                    <ul class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                                        <li class="dropdown-item">
+                                            <a class="nav-link text-nowrap" href="@Url.Action("MemberCenter","Member")">會員中心</a>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <a class="nav-link text-nowrap" href="@Url.Action("ShoppingHistory","Member")">購物紀錄</a>
+                                        </li>
+                                        <li class="dropdown-item">
+                                            <a class="nav-link text-nowrap" href="@Url.Action("CouponList","CouponFront")">優惠券列表</a>
+                                        </li>                                        
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li class="dropdown-item">
+                                            <a class="nav-link text-nowrap" href="#" id="btnLogOut">登出</a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="@Url.Content("~/cart")">
@@ -180,13 +188,13 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <div>
-                            <button type="button" id="demoMember88" class="mb-3">demoMember88</button>
-                            <button type="button" id="demoMember99" class="mb-3">demoMember99</button>
+                            <button type="button" id="demoMember88" class="mb-3 btn btn-outline-secondary btn-sm">demoMember88</button>
+                            <button type="button" id="demoMember99" class="mb-3 btn btn-outline-secondary btn-sm">demoMember99</button>
                         </div>
                         <div>
-                            <button type="button" id="demoAdmin" class="mb-3">demoAdmin</button>
-                            <button type="button" id="demoManager" class="mb-3">demoManager</button>
-                            <button type="button" id="demoEmployee" class="mb-3">demoEmployee</button>
+                            <button type="button" id="demoAdmin" class="mb-3 btn btn-outline-secondary btn-sm">demoAdmin</button>
+                            <!--<button type="button" id="demoManager" class="mb-3 btn btn-outline-secondary btn-sm">demoManager</button>
+                            <button type="button" id="demoEmployee" class="mb-3 btn btn-outline-secondary btn-sm">demoEmployee</button>-->
                         </div>
                     </div>
                 </div>
@@ -240,6 +248,23 @@
             </div>
         </div>
     </footer>
+
+    <!-- 讀取圖示start -->
+    <div class="loading-box position-fixed">
+        <div class="sk-cube-grid">
+            <div class="sk-cube sk-cube1"></div>
+            <div class="sk-cube sk-cube2"></div>
+            <div class="sk-cube sk-cube3"></div>
+            <div class="sk-cube sk-cube4"></div>
+            <div class="sk-cube sk-cube5"></div>
+            <div class="sk-cube sk-cube6"></div>
+            <div class="sk-cube sk-cube7"></div>
+            <div class="sk-cube sk-cube8"></div>
+            <div class="sk-cube sk-cube9"></div>
+        </div>
+    </div>
+    <!-- 讀取圖示end -->
+
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery -->

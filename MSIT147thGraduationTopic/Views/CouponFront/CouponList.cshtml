@@ -10,7 +10,7 @@
 </div>
 <div class="row" style="--bs-gutter-x:0;">
     <div class="col-lg-2 offset-1">
-        @await Html.PartialAsync("Partial/MemberSidebar")
+        @await Component.InvokeAsync(nameof(SidebarVC))
     </div>
     <div class="col-lg-5 offset-1">
         <div>
