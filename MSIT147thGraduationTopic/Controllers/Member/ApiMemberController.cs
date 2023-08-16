@@ -176,13 +176,15 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                             };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                    , new ClaimsPrincipal(claimsIdentity));
 
                 return Url.Content("~/employeebackstage/welcome");
             }
 
             var member = await _context.Members
-                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.NickName, o.Email, o.Avatar, o.MemberId, o.IsActivated })
+                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.NickName
+                                     , o.Email, o.Avatar, o.MemberId, o.IsActivated })
                 .FirstOrDefaultAsync(o => o.Account == record.Account);
 
             if (member != null && member.IsActivated)
@@ -201,7 +203,8 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                                 new Claim(ClaimTypes.Role, "會員")
                             };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                    , new ClaimsPrincipal(claimsIdentity));
                 HttpContext.Session.SetString("LoadCoupon", "Load");
                 return "reload";
             }
