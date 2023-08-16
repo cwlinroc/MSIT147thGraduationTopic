@@ -28,7 +28,8 @@
             <div class="d-grid col-lg-6 offset-3 my-4">
                 <button class="btn btn-primary btn-lg mb-3" id="btnSubmit" type="submit">
                     送出
-                </button>                
+                </button>
+                <button type="button" id="demoMember" class="btn btn-outline-secondary btn-sm">demoMember</button>
             </div>
         </form>
         <div class="col-lg-6 offset-3 d-flex justify-content-center">
@@ -41,6 +42,11 @@
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
+        $("#demoMember").click(() => {           
+            $('#account').val('demoMember99');            
+            $('#email').val('demoMember999@gmail.com');            
+        })
+
         const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
         function ForgetPwdValidator() {            

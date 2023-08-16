@@ -11,7 +11,7 @@ using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Interfaces;
 
-namespace MSIT147thGraduationTopic.Controllers
+namespace MSIT147thGraduationTopic.Controllers.Member
 {
     public class MemberController : Controller
     {
@@ -36,7 +36,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             return View();
         }
-        
+
         public IActionResult LogIn()
         {
             return View();
@@ -81,9 +81,9 @@ namespace MSIT147thGraduationTopic.Controllers
         public ActionResult EmailVerify(string token)
         {   // 在此查找資料庫中與此token相匹配的帳戶
             var member = _context.Members.FirstOrDefault(a => a.ConfirmGuid == token);
-                        
+
             if (member != null)
-            {                
+            {
                 // 轉到改密碼頁面
                 return RedirectToAction("EmailVT", new { account = member.Account });
             }
@@ -92,7 +92,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-        
+
         public ActionResult EmailVT(string account)
         {
             var member = _context.Members.FirstOrDefault(a => a.Account == account);
@@ -106,7 +106,7 @@ namespace MSIT147thGraduationTopic.Controllers
                 return RedirectToAction("CertificateBulletin", "Member");
             }
             return View();
-        }        
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -136,7 +136,7 @@ namespace MSIT147thGraduationTopic.Controllers
         public ActionResult CertificateBulletin()
         {
             return View();
-        }        
+        }
 
 
         [Authorize(Roles = "會員")]

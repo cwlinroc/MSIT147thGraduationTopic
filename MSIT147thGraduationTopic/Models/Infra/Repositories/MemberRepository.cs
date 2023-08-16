@@ -80,5 +80,10 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context.SaveChanges();
             return memberId;
         }
+
+        public async Task<string> GetAvatarName(int memberId)
+        {
+            return (await _context.Members.FindAsync(memberId))?.Avatar ?? string.Empty;
+        }
     }
 }
