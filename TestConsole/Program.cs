@@ -10,28 +10,28 @@ using System.Text;
 
 //RandomNumberGenerator.GetInt32(10)
 
-var service = new SimulationDataInsertService(null);
+//var service = new SimulationDataInsertService(null);
 
-service.AddRandomMembers(100);
-Console.WriteLine("AddRandomMembers Done!");
-/**
-service.AddRandomMerchandiseAndSpecs(90);
-Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
-**/
-service.AddRandomCart();
-Console.WriteLine("AddRandomCart Done!");
+//service.AddRandomMembers(100);
+//Console.WriteLine("AddRandomMembers Done!");
+///**
+//service.AddRandomMerchandiseAndSpecs(90);
+//Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
+//**/
+//service.AddRandomCart();
+//Console.WriteLine("AddRandomCart Done!");
 
-service.AddRandomOrders();
-Console.WriteLine("AddRandomOrders Done!");
-/**
-service.AddSpecTags();
-Console.WriteLine("AddSpecTags Done!");
+//service.AddRandomOrders();
+//Console.WriteLine("AddRandomOrders Done!");
+///**
+//service.AddSpecTags();
+//Console.WriteLine("AddSpecTags Done!");
 
-service.AddSpecPopularity();
-Console.WriteLine("AddSpecPopularity Done!");
-**/
-service.AddRandomEvaluations();
-Console.WriteLine("AddRandomEvaluations Done!");
+//service.AddSpecPopularity();
+//Console.WriteLine("AddSpecPopularity Done!");
+//**/
+//service.AddRandomEvaluations();
+//Console.WriteLine("AddRandomEvaluations Done!");
 
 
 //var generator = new RandomGenerator();
@@ -45,6 +45,15 @@ Console.WriteLine("AddRandomEvaluations Done!");
 
 
 /**test**/
+
+var repo = new CouponRepository(new MSIT147thGraduationTopic.EFModels.GraduationTopicContext());
+
+var result = repo.GetReceivableCoupon(1);
+
+foreach (var item in result)
+{
+    Console.WriteLine(item.CouponId +": "+  item.CouponName + " "+ item.UsedStatus);
+}
 
 
 /**test**/

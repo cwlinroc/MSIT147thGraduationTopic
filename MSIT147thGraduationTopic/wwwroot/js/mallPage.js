@@ -168,7 +168,7 @@ async function remindCoupon() {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            location.href = ROOT + '/CouponsReceive/Index'
+            location.href = ROOT + '/CouponFront/CouponList'
         }
     })
 }
