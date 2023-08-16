@@ -35,8 +35,13 @@ namespace MSIT147thGraduationTopic.Controllers
             HttpContext.Response.Cookies.Append("Mall_displayorder", displayorder.ToString());
             HttpContext.Response.Cookies.Append("Mall_pageSize", pageSize.ToString());
 
-            IEnumerable<MallDisplay> datas = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
+            IEnumerable<MallDisplayVM> datas = _context.MallDisplays
+                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0)
+                .Select(md => new MallDisplayVM {
+                    malldisplay = md,
+                    Score = (_context.Evaluations.Where(e => e.SpecId == md.SpecId).Any()) 
+                    ? _context.Evaluations.Where(e => e.SpecId == md.SpecId).Average(e => e.Score) : 0 
+                }).ToList();
 
             if (!string.IsNullOrEmpty(txtKeyword))
             {
