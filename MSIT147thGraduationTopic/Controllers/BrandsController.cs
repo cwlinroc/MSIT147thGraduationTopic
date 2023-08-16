@@ -46,7 +46,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Brands/Create
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Create()//todo DEMO
+        public IActionResult Create()
         {
             BrandVM brandvm = new BrandVM();
             return View(brandvm);

@@ -28,6 +28,13 @@ namespace MSIT147thGraduationTopic.Controllers
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
             int sideCategoryId, int? minPrice, int? maxPrice, int tagId = 0)
         {
+            //保存參數以供換頁時保留設定
+            if (!string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("Mall_txtKeyword", txtKeyword);
+            if (string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("Mall_txtKeyword", "");
+            HttpContext.Response.Cookies.Append("Mall_searchCondition", searchCondition.ToString());
+            HttpContext.Response.Cookies.Append("Mall_displayorder", displayorder.ToString());
+            HttpContext.Response.Cookies.Append("Mall_pageSize", pageSize.ToString());
+
             IEnumerable<MallDisplay> datas = _context.MallDisplays
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
 

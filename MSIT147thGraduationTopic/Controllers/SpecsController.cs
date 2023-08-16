@@ -27,7 +27,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(int merchandiseid)//todo 加上條件參數(用Cookie?)
+        public IActionResult Index(int merchandiseid)
         {
             ViewBag.MerchandiseId = merchandiseid;
 

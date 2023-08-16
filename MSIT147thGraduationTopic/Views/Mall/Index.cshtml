@@ -29,10 +29,11 @@
 
         <div class="dropdown ms-md-auto d-flex col-md-4">
             <!-- 每頁顯示筆數 -->
-            <div class="d-flex select-limit js-select-limit mx-5" style="white-space: nowrap; align-items: center;">
+            <div class="d-flex select-limit js-select-limit mx-5"
+                 style="white-space: nowrap; align-items: center; float:right; border:solid 1px #D0D0D0; border-radius:5px; padding:0 10px">
                 每頁顯示 :
                 <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
-                <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="50">50</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="50">50</button>
                 <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
                 筆
             </div>
@@ -152,14 +153,15 @@
         let pageindex = @ViewBag.PageIndex;
         let minPrice = @(ViewBag.minPrice ?? "null");
         let maxPrice = @(ViewBag.maxPrice ?? "null");
-        let tagId = @(ViewBag.tagId ?? "null");
+        let tagId = @ViewBag.tagId;
 
         //呈現初始頁面
         SearchProducts();
-        //設定下拉選單初值
+        //設定初值呈現
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
 
         //搜尋所有商品(重置搜尋條件)
@@ -199,6 +201,8 @@
         $(".pageSize").on("click", (e) => {
             pageSize = $(e.currentTarget).val();
             pageindex = 1;
+            $(`.pageSize`).attr("style", "margin: -5px")
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
             SearchProducts();
         });
         //價格區間

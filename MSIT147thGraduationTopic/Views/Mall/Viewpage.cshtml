@@ -3,6 +3,10 @@
 @{
     Layout = "_MallPage";
     ViewData["Title"] = "尋找商品";
+    string txtKeyword = Context.Request.Cookies["Mall_txtKeyword"];
+    int searchCondition = int.Parse(Context.Request.Cookies["Mall_searchCondition"]);
+    int displayorder = int.Parse(Context.Request.Cookies["Mall_displayorder"]);
+    int pageSize = int.Parse(Context.Request.Cookies["Mall_pageSize"]);
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
@@ -150,10 +154,15 @@
     <script src="~/js/recommend/partialview.js"></script>
     <script>
         //給予搜尋初值
-        let txtKeyword = "";
-        let searchCondition = 1;
+        let txtKeyword = "@txtKeyword";
+        let searchCondition = @searchCondition;
         let sideCategoryId = 0;
-        let tagId= 0;
+        let tagId = 0;
+        //設定初值呈現
+        $(() => {
+            $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
+            $("#search-input").val(txtKeyword);
+        })
 
         //搜尋條件
         $(".conditionname").on("change", (e) => {
@@ -168,12 +177,12 @@
 
         //回到所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {
-            window.location.href = `/Mall/Index`;
+            window.location.href = `/Mall/Index/?searchCondition=${searchCondition}&displayorder=@displayorder&pageSize=@pageSize`;
         });
         //搜尋
         function SearchProducts() {
             window.location.href = `/Mall/Index/?txtKeyword=${txtKeyword}&`
-                + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}&tagId=${tagId}`;
+                + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}&tagId=${tagId}&displayorder=@displayorder&pageSize=@pageSize`;
         };
 
         //呈現側邊商品類別選項

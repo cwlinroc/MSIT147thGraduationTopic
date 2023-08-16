@@ -38,10 +38,11 @@
                         </select>
                     </div>
                     <!-- 每頁顯示筆數 -->
-                    <div class="d-flex select-limit js-select-limit ml-3 mb-3" style="white-space: nowrap; align-items: center; width:150px; float:right">
+                    <div class="d-flex select-limit js-select-limit ml-3 mb-3"
+                         style="white-space: nowrap; align-items: center; width:150px; float:right; border:solid 1px #D0D0D0; min-width:220px; border-radius:5px">
                         每頁顯示 :
                         <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="10">10</button>
-                        <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="20">20</button>
+                        <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
                         <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="50">50</button>
                         筆
                     </div>
@@ -93,7 +94,7 @@
                             <td>
                                 @count
                             </td>
-                            <td>
+                            <td style="max-width:150px">
                                 @Html.DisplayFor(modelItem => item.MerchandiseName)
                             </td>
                             <td>
@@ -135,10 +136,6 @@
                 }
             </tbody>
         </table>
-        @*<div class="form-group">
-            @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" })
-            @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
-        </div>*@
 
         <!-- 分頁 -->
         <nav aria-label="Page navigation example ">
@@ -169,10 +166,11 @@
         let displayorder = @ViewBag.displayorder;
         let pageSize = @ViewBag.pageSize;
 
-        //設定下拉選單初值
+        //設定初值呈現
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
 
         //搜尋條件
