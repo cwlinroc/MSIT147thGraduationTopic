@@ -10,7 +10,7 @@
         <h2>交易金額：</h2>
         <h2><span>@ViewBag.Payment</span>元</h2>
         <h4>交易狀態：<span id="paymentStatus">待確認</span></h4>
-        <h4 class="d-none text-secondary" id="countDown"><span id="secondCount">5</span>秒後將跳轉回首頁</h4>
+        <h4 class="d-none text-secondary" id="countDown"><span id="secondCount">3</span>秒後將跳轉回首頁</h4>
         <div class="d-none" id="divToHomePage"><button id="btnToHomePage">回到首頁</button></div>
     </div>
 </div>
@@ -46,7 +46,7 @@
             $('#countDown').removeClass('d-none')
             $('#divToHomePage').removeClass('d-none')
 
-            for (let i = 5; i >= 0; i--) {
+            for (let i = 3; i >= 0; i--) {
                 await new Promise(resolve => setTimeout(resolve, 1000))
                 $('#secondCount').text(i)
             }

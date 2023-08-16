@@ -1,6 +1,5 @@
 ﻿import chartJs from 'https://cdn.jsdelivr.net/npm/chart.js@4.3.3/+esm'
 
-
 const ctxScore = document.getElementById('evaluationChart').getContext('2d');
 
 const evaluationChart = new Chart(ctxScore, {
@@ -72,7 +71,6 @@ const evaluationChart = new Chart(ctxScore, {
 })
 
 //evaluationChart
-console.log('test start')
 
 let chartMerchandiseId = $('#evaluationChart').attr('data-merchandiseid')
 
@@ -85,7 +83,6 @@ async function displayScores() {
 async function getEvaluationScores() {
     const response = await fetch(`${ROOT}/api/apistatistic/evaluationscores/${chartMerchandiseId}`)
     const data = await response.json()
-    console.log(data)
     return data
 }
 
