@@ -35,5 +35,12 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
         {
             return await _service.GetSalesTrend(measurement, classification, timeUnit, timeIntervals);
         }
+
+
+        [HttpGet("evaluationscores/{id}")]
+        public async Task<ActionResult<int[]?>> GetEvaluationScores(int id)
+        {
+            return await _service.GetEvaluationScores(id);
+        }
     }
 }

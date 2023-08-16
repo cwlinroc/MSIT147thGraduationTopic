@@ -74,5 +74,10 @@ namespace MSIT147thGraduationTopic.Models.Services
             return trendDto;
         }
 
+        public async Task<int[]?> GetEvaluationScores(int merchandiseId)
+        {
+            return await _repo.GetEvaluationScores(merchandiseId);
+        }
+
     }
 }

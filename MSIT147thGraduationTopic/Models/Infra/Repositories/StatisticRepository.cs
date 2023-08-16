@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.Statistic;
+using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -105,9 +106,9 @@ LEFT JOIN r1 ON r1.a = r2.a
 
 
         public async Task<IEnumerable<(string, long)>?> GetSalesTrendPeriod(
-            string measurement, 
-            string classification, 
-            DateTime startDate, 
+            string measurement,
+            string classification,
+            DateTime startDate,
             DateTime endDate)
         {
             var sum = classification switch
@@ -189,9 +190,30 @@ LEFT JOIN r1 ON r1.a = r2.a
             if (sum.IsNullOrEmpty() || sql.IsNullOrEmpty()) return null;
 
             var conn = _context.Database.GetDbConnection();
-            var result =  await conn.QueryAsync<(string Label, long Data)>(sql, new { StartTime = startDate, EndTime = endDate });
+            var result = await conn.QueryAsync<(string Label, long Data)>(sql, new { StartTime = startDate, EndTime = endDate });
             return result;
         }
 
+
+
+
+
+        public async Task<int[]?> GetEvaluationScores(int merchandiseId)
+        {
+            string sql = @"SELECT
+SUM(CASE WHEN Score = 5 THEN 1 ELSE 0 END) AS Five,
+SUM(CASE WHEN Score = 4 THEN 1 ELSE 0 END) AS Four,
+SUM(CASE WHEN Score = 3 THEN 1 ELSE 0 END) AS Three,
+SUM(CASE WHEN Score = 2 THEN 1 ELSE 0 END) AS Two,
+SUM(CASE WHEN Score = 1 THEN 1 ELSE 0 END) AS One
+FROM Evaluations
+WHERE MerchandiseId = @MerchandiseId";
+
+            var conn = _context.Database.GetDbConnection();
+            (int Five, int Four, int Three, int Two, int One) = await conn
+                .QuerySingleAsync<(int, int, int, int, int)>(sql, new { MerchandiseId = merchandiseId });
+
+            return new int[] { Five, Four, Three, Two, One };
+        }
     }
 }
