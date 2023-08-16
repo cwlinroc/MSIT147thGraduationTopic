@@ -3,6 +3,11 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "編輯商品資料";
+    string txtKeyword = Context.Request.Cookies["txtKeyword"];
+    int searchCondition = int.Parse(Context.Request.Cookies["searchCondition"]);
+    int PageIndex = int.Parse(Context.Request.Cookies["PageIndex"]);
+    int displayorder = int.Parse(Context.Request.Cookies["displayorder"]);
+    int pageSize = int.Parse(Context.Request.Cookies["pageSize"]);
 }
 
 <div class="container">
@@ -61,7 +66,8 @@
                     <hr />
                     <div class="form-group">
                         <input type="submit" value="儲存變更" class="btn btn-primary" id="submit" />
-                        @Html.ActionLink("取消", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+                        @Html.ActionLink("取消", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
+                            PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>
@@ -70,7 +76,7 @@
 </div>
 
 @section Scripts {
-    @*產生下拉選項*@
+    <!-- 產生下拉選項 -->
     <script>
         const brand = document.querySelector("#inputbrandid");
         const category = document.querySelector("#inputcategoryid");
@@ -103,7 +109,7 @@
             })
         })
     </script>
-    @*產生圖片路徑、預覽*@
+    <!-- 產生圖片路徑、預覽 -->
     <script>
         const originalImageUrl = $("#origimageurl").val();
         const originalImagePath = originalImageUrl
@@ -157,7 +163,7 @@
             })
         }
     </script>
-    @*錯誤提示訊息*@
+    <!-- 錯誤提示訊息 -->
     <script>
         const alertName = document.querySelector("#alertspanforname");
         const alertDescription = document.querySelector("#alertspanfordescription");
@@ -206,7 +212,7 @@
             }
         })
     </script>
-    @*計算商品描述字數*@
+    <!-- 計算商品描述字數 -->
     <script>
         $("#countdiscription").text($("#descriptionarea").val().length);
 
