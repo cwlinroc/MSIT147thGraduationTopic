@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
 
@@ -26,8 +27,18 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
         // GET: Merchandises
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1, int displayorder = 0, int pageSize = 10)
-        {//todo DEMO搜尋
+        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1
+                                                            , int displayorder = 0, int pageSize = 10)
+        {
+            //保存參數以供換頁時保留設定
+            if (!string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("txtKeyword", txtKeyword);
+            if (string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("txtKeyword", "");
+            HttpContext.Response.Cookies.Append("searchCondition", searchCondition.ToString());
+            HttpContext.Response.Cookies.Append("PageIndex", PageIndex.ToString());
+            HttpContext.Response.Cookies.Append("displayorder", displayorder.ToString());
+            HttpContext.Response.Cookies.Append("pageSize", pageSize.ToString());
+
+            //傳遞初值以供介面呈現
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.searchCondition = searchCondition;
             ViewBag.PageIndex = PageIndex;
@@ -35,9 +46,8 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             ViewBag.pageSize = pageSize;
 
             IEnumerable<MerchandiseSearch> datas;
-            //datas = from m in _context.MerchandiseSearches
-            //        select m;
-            datas = _context.MerchandiseSearches.OrderByDescending(m => m.MerchandiseId);
+            datas = from m in _context.MerchandiseSearches
+                    select m;
             if (!string.IsNullOrEmpty(txtKeyword))
             {
                 if (searchCondition == 1)
@@ -45,8 +55,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 if (searchCondition == 2)
                 {
                     IQueryable<int> merchandiseIdFormSpec = _context.Specs
-                        .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
-                   
+                        .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();                   
                     datas = datas.Where(ms => merchandiseIdFormSpec.Contains(ms.MerchandiseId));
                 }
                 if (searchCondition == 3)
@@ -108,7 +117,15 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
                 _context.Add(merchandisevm.merchandise);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Index", new
+                {
+                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"],
+                    searchCondition = int.Parse(HttpContext.Request.Cookies["searchCondition"]),
+                    PageIndex = int.Parse(HttpContext.Request.Cookies["PageIndex"]),
+                    displayorder = int.Parse(HttpContext.Request.Cookies["displayorder"]),
+                    pageSize = int.Parse(HttpContext.Request.Cookies["pageSize"])
+                });
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", merchandisevm.CategoryId);
@@ -184,7 +201,15 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                     if (!MerchandiseExists(merchandisevm.MerchandiseId)) return NotFound();
                     throw;
                 }
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Index", new
+                {
+                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"],
+                    searchCondition = int.Parse(HttpContext.Request.Cookies["searchCondition"]),
+                    PageIndex = int.Parse(HttpContext.Request.Cookies["PageIndex"]),
+                    displayorder = int.Parse(HttpContext.Request.Cookies["displayorder"]),
+                    pageSize = int.Parse(HttpContext.Request.Cookies["pageSize"])
+                });
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", merchandisevm.CategoryId);
@@ -209,7 +234,15 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 deleteMerchandiseImageFromUploads(merchandise.ImageUrl);
             _context.Merchandises.Remove(merchandise);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction("Index", new
+            {
+                txtKeyword = HttpContext.Request.Cookies["txtKeyword"],
+                searchCondition = int.Parse(HttpContext.Request.Cookies["searchCondition"]),
+                PageIndex = int.Parse(HttpContext.Request.Cookies["PageIndex"]),
+                displayorder = int.Parse(HttpContext.Request.Cookies["displayorder"]),
+                pageSize = int.Parse(HttpContext.Request.Cookies["pageSize"])
+            });
         }
 
         private bool MerchandiseExists(int id)
