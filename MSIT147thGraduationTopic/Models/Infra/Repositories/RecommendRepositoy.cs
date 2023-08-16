@@ -31,7 +31,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                 SpecId = o.SpecId,
                 MerchandiseId = o.MerchandiseId,
                 EvaluateCount = o.Evaluations.Count,
-                AverageScore = o.Evaluations.DefaultIfEmpty().Average(evaluation => evaluation.Score),
+                AverageScore = (o.Evaluations.Any()) ? o.Evaluations.Average(ev => ev.Score) : 0,
                 PurchasedAmount = o.OrderLists.Sum(o => o.Quantity),
                 CustomRating = 0.5
             });

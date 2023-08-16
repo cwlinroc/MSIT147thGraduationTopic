@@ -95,7 +95,6 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             var checkoutDto = await _repo.GetCheckoutInformation(cartItemIds);
 
-            //TODO-cw checkamount
             int? couponId = int.TryParse(record.CouponId, out int tempNum) ? tempNum : null;
             int totalPayment = await CalculateTotalPayment(checkoutDto, couponId);
 
@@ -139,6 +138,8 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             int cartItemsDeleted = _repo.ClearCartItems(cartItemIds);
             if (cartItemsDeleted <= 0) return (-1, -1, new());
+
+            //TODO-cw storage subtraction
 
             await _context.Database.CommitTransactionAsync();
             return (orderId, totalPayment, checkoutDto);
