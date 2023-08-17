@@ -87,7 +87,7 @@ namespace MSIT147thGraduationTopic.Controllers
             IEnumerable<MallDisplay> datas = _context.MallDisplays
                 .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
 
-            if (!string.IsNullOrEmpty(txtKeyword))
+            if (!string.IsNullOrEmpty(txtKeyword)) //todo 把共通項抓出來做Repository
             {
                 datas = searchCondition switch
                 {
