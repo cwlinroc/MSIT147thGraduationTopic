@@ -111,7 +111,6 @@ async function LogIn() {
     })
 }
 
-
 //Ajax 登出
 async function LogOut() {
 
@@ -195,6 +194,8 @@ async function displaySelfAvatar() {
 const loadingBox = document.querySelector('.loading-box')
 const showLoadingBox = () => loadingBox.style.display = "block";
 const hideLoadingBox = () => loadingBox.style.display = "none"
+
+
 
 
 

@@ -185,7 +185,7 @@ namespace MSIT147thGraduationTopic.Controllers.Member
             var member = await _context.Members
                     .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.NickName
                                      , o.Email, o.Avatar, o.MemberId, o.IsActivated })
-                .FirstOrDefaultAsync(o => o.Account == record.Account);
+                    .FirstOrDefaultAsync(o => o.Account == record.Account);
 
             if (member != null && member.IsActivated)
             {
