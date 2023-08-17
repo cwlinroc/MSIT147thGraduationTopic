@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -36,6 +38,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
         }
 
         [HttpGet("coupons")]
+        [Authorize(Roles = "會員")]
         public async Task<IEnumerable<BuyPageCouponVM>> GetAllCouponsAvalible()
         {
             if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
@@ -49,6 +52,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
 
         [HttpGet("cartitems")]
         [HttpGet("cartitems/{couponId}")]
+        [Authorize(Roles = "會員")]
         public async Task<BuyPageCartItemsListVM?> GetCalculatedCartItems(int? couponId)
         {
             string? json = HttpContext.Session.GetString("cartItemIds");
@@ -69,6 +73,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             string? Remark);
 
         [HttpPost("sendorder")]
+        [Authorize(Roles = "會員")]
         public async Task<ActionResult<OrderResponseDto>> SendOrder([FromForm] OrderRecord record)
         {
             //memberId
@@ -112,6 +117,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
         }
 
         [HttpGet("checkstockquantity")]
+        [Authorize(Roles = "會員")]
         public async Task<ActionResult<dynamic>> CheckStockQuantity()
         {
             //cartItemIds

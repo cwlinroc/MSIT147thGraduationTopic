@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.Statistic;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Services;
+using System.Data;
 
 namespace MSIT147thGraduationTopic.Controllers.Statistic
 {
@@ -21,12 +23,14 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
         }
 
         [HttpGet("salechart")]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<ActionResult<SaleChartDto?>> GetSaleChart(string measurement, string classification, int daysBefore)
         {
             return await _service.GetSaleChart(measurement, classification, daysBefore);
         }
 
         [HttpGet("saletrend")]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<ActionResult<SaleTrendDto?>> GetSalesTrend(
             string measurement,
             string classification,
@@ -38,6 +42,7 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
 
 
         [HttpGet("evaluationscores/{id}")]
+        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<ActionResult<int[]?>> GetEvaluationScores(int id)
         {
             return await _service.GetEvaluationScores(id);

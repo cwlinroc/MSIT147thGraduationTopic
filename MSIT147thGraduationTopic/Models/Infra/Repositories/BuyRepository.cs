@@ -1,7 +1,12 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Dapper;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
+using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Transactions;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -134,6 +139,26 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context.CartItems.RemoveRange(cartItems);
             return _context.SaveChanges();
         }
+
+        public async Task<int> ReduceSpecStorage(IEnumerable<OrderListDto> orderlists)
+        {
+            foreach (var item in orderlists)
+            {
+                var spec = await _context.Specs.FindAsync(item.SpecId);
+                if (spec == null) continue;
+
+                spec.Amount -= item.Quantity;
+                spec.Amount = Math.Max(0, spec.Amount);
+            }
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> MakeCouponUsed(int memberId, int couponId)
+        {
+            return await _context.Database
+                .ExecuteSqlAsync($"UPDATE CouponOwners SET CouponUsed = 1  WHERE CouponId = {couponId} AND MemberId = {memberId}");
+        }
+
 
         public async Task<int> ConfirmOrder(int orderId)
         {
