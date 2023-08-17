@@ -81,16 +81,17 @@
                         <div class="item">
                             <!-- 主圖 -->
                             <figure class="ViewWindow-image-container">
-                                <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" width="100%" height="100%" class="mainImage pb-3">
+                                <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage pb-3">
                             </figure>
                             <div class="image-container">
-                                <!-- 縮圖 -->
-                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage MerchandiseImage" width="20%" height="20%" style="border:solid #930000 3px" )>
+                                <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage mb-2" style="border:solid #930000 3px;" )>
                                 @{
                                     foreach (var item in Model)
                                     {
                                         string img = (item.ImageUrl == null) ? "default.png" : item.ImageUrl;
-                                        <img src="@Url.Content("~/uploads/specPicture/")@img" class="specImage" val-specId="@item.SpecId" width="20%">
+                                        <img src="@Url.Content("~/uploads/specPicture/")@img" class="specImage mb-2" val-specId="@item.SpecId" >
+                                        
                                     }
                                 }
                             </div>
@@ -148,20 +149,11 @@
                     @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)
                     @await Html.PartialAsync("Partial/PopularSpecs",Model.First().MerchandiseId)
                 </div>
-                <div class="tab-pane fade" id="nav-evaluation" role="tabpanel" aria-labelledby="nav-evaluation-tab">
+                <div class="tab-pane fade" id="nav-evaluation" role="tabpanel" aria-labelledby="nav-evaluation-tab" style="position: relative;">
                     @await Component.InvokeAsync(nameof(EvaluationVC),Model.First().MerchandiseId)
                     @*@await Html.PartialAsync("~/Views/Evaluation/_MerchandiseEvaluation.cshtml")*@
                 </div>                
-            </div>            
-           @* <!-- 商品評價 -->
-            <div>
-                @Html.PartialAsync("_MerchandiseEvaluation")
-            </div>*@
-           @* <!-- 推薦商品 -->
-            <div>
-                @await Html.PartialAsync("Partial/FavorSpecs",Model.First().MerchandiseId)
-                @await Html.PartialAsync("Partial/PopularSpecs",Model.First().MerchandiseId)
-            </div>*@
+            </div>                      
         </div>
     </div>
 </div>
@@ -426,7 +418,12 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                margin:auto;
             }
+
+        .image-container img {
+            margin: 5px 10px;
+        }
 
         .specImage {
             width: 100%;

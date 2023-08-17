@@ -115,7 +115,7 @@
                 </ol>
             </nav>
 
-            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3 justify-content-around" id="showThisPageMerchandise">
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3 mx-5" id="showThisPageMerchandise">
                 <!-- 透過Ajax產生商品櫥窗 -->
             </div>
 
@@ -446,7 +446,7 @@
                 const showscore = (Math.round(score * 10) / 10).toFixed(1);
                 const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${merchandiseId}&SpecId=${specId}`
                 return `
-                                   <div class="p-2 position-relative mx-1 my-1 displayedSpec gotoViewpage"
+                                   <div class="p-2 position-relative mx-4 my-3 displayedSpec gotoViewpage"
                                                                         data-specid="${specId}" data-merchandisid="${merchandiseId}">                                   
                                         <figure class="partial-image-container">
                                         <img src="${ROOT}/uploads/${imageUrl}" alt="...">                                           

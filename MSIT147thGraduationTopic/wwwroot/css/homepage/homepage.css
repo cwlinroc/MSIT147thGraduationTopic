@@ -3,6 +3,7 @@
     position: relative;
     padding-top: 100%;
     border: 4px solid #feb41c;
+    margin-bottom: -2px;
 }
 
     .recommend-image-container img {
@@ -15,6 +16,7 @@
 
 .custom-merchandise .card-body {
     padding: 0.3rem 0.3rem;
+    margin-bottom: -20px;
 }
 
 
