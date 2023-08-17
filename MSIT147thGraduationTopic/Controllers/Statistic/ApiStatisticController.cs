@@ -51,7 +51,6 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
 
 
         [HttpGet("evaluationscores/{id}")]
-        [Authorize(Roles = "管理員,經理,員工")]
         public async Task<ActionResult<int[]?>> GetEvaluationScores(int id)
         {
             return await _service.GetEvaluationScores(id);

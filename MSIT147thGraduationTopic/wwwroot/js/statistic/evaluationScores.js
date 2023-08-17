@@ -74,7 +74,7 @@ const evaluationChart = new Chart(ctxScore, {
 
 let chartMerchandiseId = document.getElementById('evaluationChart').dataset.merchandiseid
 
-displayScores()
+await displayScores()
 async function displayScores() {
     const scores = await getEvaluationScores()
     evaluationChart.data.datasets[0].data = scores
