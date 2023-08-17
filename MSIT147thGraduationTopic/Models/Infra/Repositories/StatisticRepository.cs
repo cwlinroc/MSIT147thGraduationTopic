@@ -1,10 +1,13 @@
 ﻿using Dapper;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.Statistic;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Data;
+using System.Text.RegularExpressions;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -195,9 +198,6 @@ LEFT JOIN r1 ON r1.a = r2.a
         }
 
 
-
-
-
         public async Task<int[]?> GetEvaluationScores(int merchandiseId)
         {
             string sql = @"SELECT
@@ -215,5 +215,160 @@ WHERE MerchandiseId = @MerchandiseId";
 
             return new int[] { Five, Four, Three, Two, One };
         }
+
+        public async Task<string?> GetNameById(int id, string measurement)
+        {
+            var condition = measurement switch
+            {
+                "merchandise" => _context.Merchandises.Where(o => o.MerchandiseId == id).Select(o => o.MerchandiseName),
+                "spec" => _context.Specs.Where(o => o.SpecId == id).Select(o => o.Merchandise.MerchandiseName + o.SpecName),
+                _ => null
+            };
+            if (condition == null) return null;
+            return await condition.FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<(DateTime, DateTime, long)>?> GetMerchandiseTrend(
+            string measurement,
+            string classification,
+            string timeUnit,
+            int intervalNum,
+            int id,
+            int intervalTimes = 36)
+        {
+            var sum = classification switch
+            {
+                "quantity" => "ol.Quantity",
+                "profit" => "ol.Quantity * ol.Price * ol.Discount / 100",
+                _ => string.Empty
+            };
+
+            string condition = measurement switch
+            {
+                "merchandise" => "m.MerchandiseId",
+                "spec" => "s.specId",
+                _ => string.Empty
+            };
+
+            string sqlTimeUnit = timeUnit switch
+            {
+                "day" => "DAY",
+                "month" => "MONTH",
+                _ => string.Empty
+            };
+
+            if (string.IsNullOrEmpty(sum) || string.IsNullOrEmpty(condition) || string.IsNullOrEmpty(sqlTimeUnit)) return null;
+
+            string sql = $@"
+WITH DateRangeCTE AS (
+    SELECT 
+        DATEADD({sqlTimeUnit}, @IntervalNum , @DateNow) AS StartDate,
+        DATEADD(MILLISECOND, -2, @DateNow) AS EndDate,
+		1 AS CountNum
+    UNION ALL
+    SELECT
+        DATEADD({sqlTimeUnit}, @IntervalNum, StartDate),
+        DATEADD({sqlTimeUnit}, @IntervalNum, EndDate),
+		CountNum + 1
+    FROM DateRangeCTE
+    WHERE CountNum < @IntervalTimes
+),
+Result AS (
+SELECT DateRangeCTE.StartDate ,DateRangeCTE.EndDate , SUM({sum}) AS Data 
+FROM Merchandises m 
+JOIN Specs s on m.MerchandiseID = s.MerchandiseId
+JOIN OrderLists ol on s.SpecId = ol.SpecId
+JOIN Orders o on ol.OrderId = ol.OrderId
+RIGHT JOIN  DateRangeCTE on DateRangeCTE.StartDate < o.PurchaseTime AND DateRangeCTE.EndDate > o.PurchaseTime
+WHERE {condition} = @Id
+GROUP BY DateRangeCTE.StartDate , DateRangeCTE.EndDate
+)
+SELECT DateRangeCTE.StartDate , DateRangeCTE.EndDate , Result.Data
+FROM Result
+RIGHT JOIN DateRangeCTE ON Result.StartDate = DateRangeCTE.StartDate
+ORDER BY DateRangeCTE.StartDate";
+
+            using var conn = _context.Database.GetDbConnection();
+
+            return await conn.QueryAsync<(DateTime, DateTime, long)>(sql, new
+            {
+                DateNow = DateTime.Now.Date,
+                IntervalNum = -intervalNum,
+                Id = id,
+                IntervalTimes = intervalTimes
+            });
+        }
+
+
+
+        public async Task<List<string>?> GetAutoCompleteNames(string queryCol, string keyword)
+        {
+            queryCol = queryCol.Trim().ToLower();
+            var queryName = queryCol switch
+            {
+                "merchandisename" => "MerchandiseName",
+                "merchandiseid" => "CAST( Merchandises.MerchandiseId AS NVARCHAR)",
+                "specname" => "MerchandiseName + SpecName",
+                "specid" => "CAST( SpecId AS NVARCHAR)",
+                _ => string.Empty,
+            };
+
+            var conditionCol = queryCol switch
+            {
+                "merchandisename" => "MerchandiseName",
+                "merchandiseid" => "Merchandises.MerchandiseId ",
+                "specname" => "MerchandiseName + SpecName",
+                "specid" => " SpecId ",
+                _ => string.Empty,
+            };
+            if (string.IsNullOrEmpty(keyword)
+                || string.IsNullOrEmpty(conditionCol)
+                || string.IsNullOrEmpty(queryName)) { return new(); }
+
+            string sql = $@"  
+SELECT DISTINCT TOP 20 {queryName}
+FROM Merchandises
+JOIN Specs ON Merchandises.MerchandiseId = Specs.MerchandiseId
+WHERE CAST( {conditionCol} AS NVARCHAR) LIKE '%' + @Keyword + '%' ";
+
+            using var conn = _context.Database.GetDbConnection();
+            return (await conn.QueryAsync<string>(sql, new { Keyword = keyword })).ToList();
+        }
+
+        public async Task<int?> GetSearchedId(string queryCol, string keyword)
+        {
+            queryCol = queryCol.Trim().ToLower();
+            var queryName = queryCol switch
+            {
+                "merchandisename" => "Merchandises.MerchandiseId",
+                "merchandiseid" => "Merchandises.MerchandiseId",
+                "specname" => "SpecId",
+                "specid" => "SpecId",
+                _ => string.Empty,
+            };
+
+            var conditionCol = queryCol switch
+            {
+                "merchandisename" => "MerchandiseName",
+                "merchandiseid" => "Merchandises.MerchandiseId ",
+                "specname" => "MerchandiseName + SpecName",
+                "specid" => " SpecId ",
+                _ => string.Empty,
+            };
+            if (string.IsNullOrEmpty(keyword)
+                || string.IsNullOrEmpty(conditionCol)
+                || string.IsNullOrEmpty(queryName)) { return new(); }
+
+            string sql = $@"  
+SELECT DISTINCT TOP 1 {queryName}
+FROM Merchandises
+JOIN Specs ON Merchandises.MerchandiseId = Specs.MerchandiseId
+WHERE CAST( {conditionCol} AS NVARCHAR) =  @Keyword  ";
+
+            using var conn = _context.Database.GetDbConnection();
+            return await conn.QueryFirstAsync<int>(sql, new { Keyword = keyword });
+        }
+
+
     }
 }

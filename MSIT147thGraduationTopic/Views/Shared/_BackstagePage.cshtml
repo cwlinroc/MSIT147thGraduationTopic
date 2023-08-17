@@ -140,24 +140,24 @@
             @*
             <div class="accordion-item">
 
-                <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        <i class="fa-solid fa-caret-down me-2"></i>會員管理
-                    </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse ps-3" aria-labelledby="headingTwo"
-                     data-bs-parent="#accordionExample">
+            <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fa-solid fa-caret-down me-2"></i>會員管理
+            </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse ps-3" aria-labelledby="headingTwo"
+            data-bs-parent="#accordionExample">
 
-                    <div class="accordion-body position-relative">
-                        <a href="@Url.Action("MemberList","MemberBackstage")" class="stretched-link text-light">會員檢視</a>
-                    </div>
+            <div class="accordion-body position-relative">
+            <a href="@Url.Action("MemberList","MemberBackstage")" class="stretched-link text-light">會員檢視</a>
+            </div>
 
-                    <div class="accordion-body position-relative">
-                        <a href="@Url.Action("Index","CouponsBackstageSettings")" class="stretched-link text-light">優惠劵設定</a>
-                    </div>
+            <div class="accordion-body position-relative">
+            <a href="@Url.Action("Index","CouponsBackstageSettings")" class="stretched-link text-light">優惠劵設定</a>
+            </div>
 
-                </div>
+            </div>
             </div>
             *@
 
@@ -222,7 +222,7 @@
                     <a class="accordion-button collapsed link-light stretched-link" href="~/recommendbackstage" id="linkRecommendRating">
                         熱門排序
                     </a>
-                </h2>                
+                </h2>
             </div>
 
 
@@ -265,7 +265,9 @@
     <!-- SweetAlert2 -->
     <script src="~/js/sweetalert2.min.js"></script>
     <!-- chart js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
+
     <!-- aos.js -->
     <script src="~/js/aos.js"></script>
     <script>AOS.init();</script>

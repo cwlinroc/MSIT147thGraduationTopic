@@ -47,5 +47,32 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
         {
             return await _service.GetEvaluationScores(id);
         }
+
+
+        [HttpGet("merchandisetrend")]
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<ActionResult<TimeTrendDto?>> GetMerchandiseTrend(
+            string measurement,
+            string classification,
+            string timeUnit,
+            int id)
+        {
+            return await _service.GetMerchandiseTrend(measurement, classification, timeUnit, id);
+        }
+
+        [HttpGet("GetAutoCompleteNames")]
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<ActionResult<IEnumerable<string>?>> GetAutoCompleteNames(string queryCol, string keyword)
+        {
+            return await _service.GetAutoCompleteNames(queryCol, keyword);
+        }
+
+        [HttpGet("GetSearchedId")]
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<ActionResult<int>> GetSearchedId(string queryCol, string keyword)
+        {
+            return await _service.GetSearchedId(queryCol, keyword);
+        }
+
     }
 }

@@ -209,6 +209,3 @@ const hideLoadingBox = () => loadingBox.style.display = "none"
 
 
 
-
-
-
