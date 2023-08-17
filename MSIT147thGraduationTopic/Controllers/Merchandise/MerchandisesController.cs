@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Controllers.Merchandise
@@ -18,11 +19,13 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
     {
         private readonly GraduationTopicContext _context;
         private readonly IWebHostEnvironment _host;
+        private readonly MerchandiseRepository _repo;
 
         public MerchandisesController(GraduationTopicContext context, IWebHostEnvironment host)
         {
             _context = context;
             _host = host;
+            _repo = new MerchandiseRepository(context);
         }
 
         // GET: Merchandises
@@ -45,25 +48,8 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             ViewBag.displayorder = displayorder;
             ViewBag.pageSize = pageSize;
 
-            IEnumerable<MerchandiseSearch> datas;
-            datas = from m in _context.MerchandiseSearches
-                    select m;
-            if (!string.IsNullOrEmpty(txtKeyword))
-            {
-                if (searchCondition == 1)
-                    datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
-                if (searchCondition == 2)
-                {
-                    IQueryable<int> merchandiseIdFormSpec = _context.Specs
-                        .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();                   
-                    datas = datas.Where(ms => merchandiseIdFormSpec.Contains(ms.MerchandiseId));
-                }
-                if (searchCondition == 3)
-                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
-                if (searchCondition == 4)
-                    datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
-            }
-
+            IEnumerable<MerchandiseSearch> datas = _repo.getBasicMerchandiseSearch(txtKeyword, searchCondition);
+            
             datas = displayorder switch
             {
                 1 => datas.OrderBy(ms => ms.MerchandiseId),                //由舊到新熱門商品
@@ -120,11 +106,11 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
                 return RedirectToAction("Index", new
                 {
-                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"],
-                    searchCondition = int.Parse(HttpContext.Request.Cookies["searchCondition"]),
-                    PageIndex = int.Parse(HttpContext.Request.Cookies["PageIndex"]),
-                    displayorder = int.Parse(HttpContext.Request.Cookies["displayorder"]),
-                    pageSize = int.Parse(HttpContext.Request.Cookies["pageSize"])
+                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
+                    searchCondition = int.TryParse(HttpContext.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1,
+                    PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0,
+                    pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10
                 });
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
@@ -204,11 +190,11 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
                 return RedirectToAction("Index", new
                 {
-                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"],
-                    searchCondition = int.Parse(HttpContext.Request.Cookies["searchCondition"]),
-                    PageIndex = int.Parse(HttpContext.Request.Cookies["PageIndex"]),
-                    displayorder = int.Parse(HttpContext.Request.Cookies["displayorder"]),
-                    pageSize = int.Parse(HttpContext.Request.Cookies["pageSize"])
+                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
+                    searchCondition = int.TryParse(HttpContext.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1,
+                    PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0,
+                    pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10
                 });
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
@@ -237,11 +223,11 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
             return RedirectToAction("Index", new
             {
-                txtKeyword = HttpContext.Request.Cookies["txtKeyword"],
-                searchCondition = int.Parse(HttpContext.Request.Cookies["searchCondition"]),
-                PageIndex = int.Parse(HttpContext.Request.Cookies["PageIndex"]),
-                displayorder = int.Parse(HttpContext.Request.Cookies["displayorder"]),
-                pageSize = int.Parse(HttpContext.Request.Cookies["pageSize"])
+                txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
+                searchCondition = int.TryParse(HttpContext.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1,
+                PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
+                displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0,
+                pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10
             });
         }
 
