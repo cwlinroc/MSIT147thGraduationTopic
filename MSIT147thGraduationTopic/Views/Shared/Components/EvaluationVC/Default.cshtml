@@ -2,60 +2,64 @@
 @{
     int merchandiseId = (int)ViewData["MerchandiseId"];
 }
-<div >
-<div id="commentContainer">
-    @if (Model.Count() > 0)
-    {
-        @for (int i = 0; i < Model.Count(); i++)
-        {
-            var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
-            <div class="clickloadMore" style="border-block-color:#FFDDAA;border-width: 2px">
-                <div class="mt-4 d-flex align-items-center">
-                    <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
-                        <div class="mx-1 mt-2">
-                            <h6 id="MerchandiseName_@(i)">@(item.MerchandiseName)</h6>
-                        </div>
-                        <div class="mt-2">
-                            <h6 id="SpecName_@(i)"> @(item.SpecName)</h6>
-                        </div>
-                    </div>
+<div class="row">
+    <div class="col-12 col-md-8">
+        <div id="commentContainer" >
+            @if (Model.Count() > 0)
+            {
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
+                    <div class="clickloadMore" style="border-block-color:#FFDDAA;border-width: 2px">
+                        <div class="mt-4 d-flex align-items-center">
+                            <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
+                                <div class="mx-1 mt-2">
+                                    <h6 id="MerchandiseName_@(i)">@(item.MerchandiseName)</h6>
+                                </div>
+                                <div class="mt-2">
+                                    <h6 id="SpecName_@(i)"> @(item.SpecName)</h6>
+                                </div>
+                            </div>
 
-                    <div class="d-flex ms-auto float-end">
-                        <div id="score_@(i)" name="Score" class="float-end mx-1 mt-3" itype="starDiv">
-                            <input id="inputscore_@(i)" name="comments[@(i)].Score" value="@(item.Score)" hidden>
-                            <img id="star@(i)_1" src=@(item.Score>=1?"/images/一星.png":"/images/空星.png") style="height:40px" />
-                            <img id="star@(i)_2" src=@(item.Score>=2?"/images/二星.png":"/images/空星.png") style="height:40px" />
-                            <img id="star@(i)_3" src=@(item.Score>=3?"/images/三星.png":"/images/空星.png") style="height:40px" />
-                            <img id="star@(i)_4" src=@(item.Score>=4?"/images/四星.png":"/images/空星.png") style="height:40px" />
-                            <img id="star@(i)_5" src=@(item.Score==5?"/images/五星.png":"/images/空星.png") style="height:40px" />
+                            <div class="d-flex ms-auto float-end">
+                                <div id="score_@(i)" name="Score" class="float-end mx-1 mt-3" itype="starDiv">
+                                    <input id="inputscore_@(i)" name="comments[@(i)].Score" value="@(item.Score)" hidden>
+                                    <img id="star@(i)_1" src=@(item.Score>=1?"/images/一星.png":"/images/空星.png") style="height:40px" />
+                                    <img id="star@(i)_2" src=@(item.Score>=2?"/images/二星.png":"/images/空星.png") style="height:40px" />
+                                    <img id="star@(i)_3" src=@(item.Score>=3?"/images/三星.png":"/images/空星.png") style="height:40px" />
+                                    <img id="star@(i)_4" src=@(item.Score>=4?"/images/四星.png":"/images/空星.png") style="height:40px" />
+                                    <img id="star@(i)_5" src=@(item.Score==5?"/images/五星.png":"/images/空星.png") style="height:40px" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-floating mx-2 mt-2 mb-4">
+                            <textarea id="commentText_@(i)" name="comments[@(i)].Comment" class="form-control" readonly="readonly"></textarea>
+                            <label for="floatingTextarea2" style="color:black; font-size: 20px;">@(item.Comment)</label>
                         </div>
                     </div>
-                </div>
-                <div class="form-floating mx-2 mt-2 mb-4">
-                    <textarea id="commentText_@(i)" name="comments[@(i)].Comment" class="form-control" readonly="readonly"></textarea>
-                    <label for="floatingTextarea2" style="color:black; font-size: 20px;">@(item.Comment)</label>
+                }
+       
+            }
+   
+        </div>
+        @if (Model.Count() >= 0)
+        {
+            <div id="loadMore" data-page="1" class="text-center my-3" style="cursor: pointer;"> 看更多..</div>
+        }
+        else
+        {
+            <div class="container">
+                <div class="row justify-content-center my-5 text-center">
+                    @ViewBag.noEvaluation
                 </div>
             </div>
         }
-       
-    }
    
+    </div>
+    <!--引入這個，並更改data-merchandiseid-->
+    <div style="width:300px;height:200px; position:sticky; top: 50px; right: 20px;" class="col-12 col-md-4 mt-3 mx-4 ">
+        <canvas id="evaluationChart" width="300" height="200" data-merchandiseid="@(Model.First().MerchandiseId)"></canvas>
+    </div>
 </div>
-    @if (Model.Count() > 0)
-    {
-        <div id="loadMore" data-page="1" class="text-center my-3" style="cursor: pointer;"> 看更多..</div>
-    }
-    else
-    {
-        <div class="container">
-            <div class="row justify-content-center my-5 text-center">
-                @ViewBag.noEvaluation
-            </div>
-        </div>
-    }
-   
-</div>
-
-
+<script type="module" src="~/js/statistic/evaluationScores.js"></script>
 <script defer src="~/js/evaluationvc.js"></script>
-

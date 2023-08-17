@@ -51,8 +51,8 @@ function loadMoreComments(page) {
                 $("#loadMore").hide();
             }
         },
-error: function () {
-    console.log("请求失败");
-}
-            });
-        }     
+        error: function () {
+            console.log("请求失败");
+        }
+    });
+}     

@@ -72,7 +72,7 @@ const evaluationChart = new Chart(ctxScore, {
 
 //evaluationChart
 
-let chartMerchandiseId = $('#evaluationChart').attr('data-merchandiseid')
+let chartMerchandiseId = document.getElementById('evaluationChart').dataset.merchandiseid
 
 displayScores()
 async function displayScores() {
