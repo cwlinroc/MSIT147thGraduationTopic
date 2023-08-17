@@ -4,6 +4,10 @@
 @{
     Layout = "_MallPage";
     ViewData["Title"] = "尋找商品";
+    string txtKeyword = Context.Request.Cookies["Mall_txtKeyword"];
+    int searchCondition = int.Parse(Context.Request.Cookies["Mall_searchCondition"]);
+    int displayorder = int.Parse(Context.Request.Cookies["Mall_displayorder"]);
+    int pageSize = int.Parse(Context.Request.Cookies["Mall_pageSize"]);
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
@@ -11,7 +15,7 @@
 <nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
-        <form class="bd-search position-relative me-auto mx-5 col-sm-5" id="keywordsearch">
+        <form class="bd-search position-relative me-auto col-md-6" id="keywordsearch">
             <div class="row">
                 <div class="form-group">
                     <div class="input-group">
@@ -122,7 +126,7 @@
                         <div>
                             <div class="input-group mx-1 mt-3">
                                 <button class="btn btn-outline-secondary" type="button" id="button_minus">  -  </button>
-                                <input id="buyAmount" type="number" class="form-control" aria-label="Example text with button addon" min="1" value="1" aria-describedby="button-addon1">
+                                <input id="buyAmount" type="number" step="1" class="form-control" aria-label="Example text with button addon" min="1" value="1" aria-describedby="button-addon1">
                                 <button class="btn btn-outline-secondary" type="button" id="button_plus">  +  </button>
                                 <button id="add_to_Cart" type="button" class="btn btn-outline-secondary mx-2">加入購物車</button>
                             </div>
@@ -167,10 +171,15 @@
     <script src="~/js/recommend/partialview.js"></script>
     <script>
         //給予搜尋初值
-        let txtKeyword = "";
-        let searchCondition = 1;
+        let txtKeyword = "@txtKeyword";
+        let searchCondition = @searchCondition;
         let sideCategoryId = 0;
-        let tagId= 0;
+        let tagId = 0;
+        //設定初值呈現
+        $(() => {
+            $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
+            $("#search-input").val(txtKeyword);
+        })
 
         //搜尋條件
         $(".conditionname").on("change", (e) => {
@@ -185,12 +194,12 @@
 
         //回到所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {
-            window.location.href = `/Mall/Index`;
+            window.location.href = `/Mall/Index/?searchCondition=${searchCondition}&displayorder=@displayorder&pageSize=@pageSize`;
         });
         //搜尋
         function SearchProducts() {
             window.location.href = `/Mall/Index/?txtKeyword=${txtKeyword}&`
-                + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}&tagId=${tagId}`;
+                + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}&tagId=${tagId}&displayorder=@displayorder&pageSize=@pageSize`;
         };
 
         //呈現側邊商品類別選項
@@ -265,7 +274,7 @@
 
         //規格按鈕功能
         $(".showSpec").on("click", (e) => {
-            //變更按鈕格式
+            //變更目前規格按鈕格式
             $(".showSpec").attr("class", "btn btn-outline-secondary mx-1 my-1 showSpec");
             $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
             //顯示評分
@@ -278,7 +287,6 @@
             const canceledPrice = (discountPercentage == 100) ? '' :
                 `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${originalPrice}</span></del>`;
             currentPrice = originalPrice * discountPercentage / 100;
-            console.log(currentPrice);
 
             maxAmount = $(e.currentTarget).attr("data-amount");
             showPrice.innerHTML = canceledPrice + " NTD$" + currentPrice;
@@ -320,6 +328,16 @@
                 $("#buyAmount").change();
             }
         })
+        //控制手動輸入數字(變數皆默認為字串，須注意比較前須轉型)
+        $("#buyAmount").on("input", () => {
+            const inputedNumber = $("#buyAmount").val();
+            purchaseAmount = (+inputedNumber < 1) ? 1 : 
+                             (+inputedNumber > +maxAmount) ? maxAmount : 
+                             (+inputedNumber % 1 !== 0) ? Math.round(+inputedNumber) : inputedNumber;
+            $("#buyAmount").val(purchaseAmount)
+            $("#buyAmount").change();
+        })
+
         //顯示總金額
         $("#buyAmount").on("change", () => {
             $("#totalPrice").text((purchaseAmount * currentPrice) + " 元");
@@ -327,7 +345,6 @@
 
         //叫出登入功能塊
         const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'))
-
         //加入購物車
         $("#add_to_Cart").on("click", async (e) => {
             if (ROLE != "會員") {
@@ -395,6 +412,22 @@
             height: 100%;
             max-height:100px;
             object-fit: cover;
+        }
+    </style>
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        textarea {
+            height: 200px;
         }
     </style>
 }

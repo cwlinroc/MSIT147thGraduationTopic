@@ -26,9 +26,21 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
             return await _service.GetSaleChart(measurement, classification, daysBefore);
         }
 
+        [HttpGet("saletrend")]
+        public async Task<ActionResult<SaleTrendDto?>> GetSalesTrend(
+            string measurement,
+            string classification,
+            string timeUnit,
+            int timeIntervals)
+        {
+            return await _service.GetSalesTrend(measurement, classification, timeUnit, timeIntervals);
+        }
 
 
-
-
+        [HttpGet("evaluationscores/{id}")]
+        public async Task<ActionResult<int[]?>> GetEvaluationScores(int id)
+        {
+            return await _service.GetEvaluationScores(id);
+        }
     }
 }

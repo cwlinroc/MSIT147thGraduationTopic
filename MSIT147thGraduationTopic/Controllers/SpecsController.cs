@@ -59,7 +59,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs/Create
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Create(int merchandiseId)   //todo Demo產品名稱、品牌、類別需有實際資料後才可決定
+        public IActionResult Create(int merchandiseId)
         {
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();

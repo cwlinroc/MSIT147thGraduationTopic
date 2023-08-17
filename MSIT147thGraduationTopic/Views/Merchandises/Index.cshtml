@@ -7,6 +7,10 @@
 
 <div class="container">
     <h1 class="title">商品列表檢視</h1>
+    <div style="float:right">
+        <button id="demo_keyword" class="btn btn-outline-secondary mx-2">Demo 關鍵字</button>
+        <button id="demo_noresult" class="btn btn-outline-secondary mx-2">Demo 無結果</button>
+    </div>
 
     <div class="bg-light rounded shadow p-5">
         <div>
@@ -32,6 +36,15 @@
                             <option value="0">由新到舊</option>
                             <option value="1">由舊到新</option>
                         </select>
+                    </div>
+                    <!-- 每頁顯示筆數 -->
+                    <div class="d-flex select-limit js-select-limit ml-3 mb-3"
+                         style="white-space: nowrap; align-items: center; width:150px; float:right; border:solid 1px #D0D0D0; min-width:220px; border-radius:5px">
+                        每頁顯示 :
+                        <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="10">10</button>
+                        <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
+                        <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="50">50</button>
+                        筆
                     </div>
                 </div>
             }
@@ -81,7 +94,7 @@
                             <td>
                                 @count
                             </td>
-                            <td>
+                            <td style="max-width:150px">
                                 @Html.DisplayFor(modelItem => item.MerchandiseName)
                             </td>
                             <td>
@@ -123,10 +136,6 @@
                 }
             </tbody>
         </table>
-        @*<div class="form-group">
-            @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" })
-            @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
-        </div>*@
 
         <!-- 分頁 -->
         <nav aria-label="Page navigation example ">
@@ -138,17 +147,30 @@
 </div>
 
 @section Scripts {
-    @*搜尋商品*@
+    <!-- DEMO按鈕 -->
+    <script>
+        $("#demo_keyword").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("貓");
+        })
+        $("#demo_noresult").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("室外小屋");
+        })
+    </script>
+    <!-- 搜尋商品按鈕 -->
     <script>
         let txtKeyword = "@ViewBag.txtKeyword";
         let searchCondition = @ViewBag.searchCondition;
         let pageindex = @ViewBag.PageIndex;
         let displayorder = @ViewBag.displayorder;
+        let pageSize = @ViewBag.pageSize;
 
-        //設定下拉選單初值
+        //設定初值呈現
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
 
         //搜尋條件
@@ -168,10 +190,16 @@
             pageindex = 1;
             SearchProducts();
         });
+        //每頁顯示筆數
+        $(".pageSize").on("click", (e) => {
+            pageSize = $(e.currentTarget).val();
+            pageindex = 1;
+            SearchProducts();
+        });
 
         //搜尋
         function SearchProducts() {
-            window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}&displayorder=${displayorder}`;
+            window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}&displayorder=${displayorder}&pageSize=${pageSize}`;
         };
 
         //產生分頁標籤
@@ -265,7 +293,7 @@
             }
         })
     </script>
-    @*刪除商品*@
+    <!-- 刪除商品 -->
     <script>
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除商品嗎？')) return;

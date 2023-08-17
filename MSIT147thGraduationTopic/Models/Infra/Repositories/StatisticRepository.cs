@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.Statistic;
+using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 {
@@ -29,6 +30,9 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             var sql = measurement switch
             {
                 "category" => $@" 
+WITH  
+r1(a,b) AS  
+(
 SELECT c.CategoryName AS Label , SUM({sum}) as Data
 FROM Categories c
 JOIN Merchandises m on c.CategoryId = m.CategoryID
@@ -37,8 +41,19 @@ JOIN OrderLists ol on s.SpecId = ol.SpecId
 JOIN Orders o on ol.OrderId = ol.OrderId
 WHERE o.PurchaseTime > @TimeBefore
 GROUP BY c.CategoryName
+),
+r2(a) AS 
+(
+SELECT c.CategoryName  
+FROM Categories c 
+)
+SELECT r2.a AS Label, COALESCE( b, 0) AS Data FROM r2
+LEFT JOIN r1 ON r1.a = r2.a
 ",
                 "animal" => $@"
+WITH  
+r1(a,b) AS  
+(
 SELECT t.TagName AS Label , SUM({sum}) as Data
 FROM Tags t
 JOIN SpecTags st ON t.TagId = st.TagId
@@ -48,6 +63,36 @@ JOIN Orders o ON ol.OrderId = ol.OrderId
 WHERE t.TagId <= 4
 AND o.PurchaseTime > @TimeBefore
 GROUP BY t.TagName
+),
+r2(a) AS 
+(
+SELECT t.TagName AS Label 
+FROM Tags t
+WHERE t.TagId <= 4
+)
+SELECT r2.a AS Label, COALESCE( b, 0) AS Data FROM r2
+LEFT JOIN r1 ON r1.a = r2.a
+",
+                "brand" => $@"
+WITH  
+r1(a,b) AS  
+(
+SELECT b.BrandName AS Label , SUM({sum}) as Data
+FROM Brands b
+JOIN Merchandises m ON m.BrandID = b.BrandId
+JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
+JOIN OrderLists ol ON s.SpecId = ol.SpecId
+JOIN Orders o ON ol.OrderId = ol.OrderId
+WHERE o.PurchaseTime > @TimeBefore
+GROUP BY b.BrandName
+),
+r2(a) AS 
+(
+SELECT b.BrandName 
+FROM Brands b
+)
+SELECT r2.a AS Label, COALESCE( b, 0) AS Data FROM r2
+LEFT JOIN r1 ON r1.a = r2.a
 ",
                 _ => string.Empty
             };
@@ -60,5 +105,115 @@ GROUP BY t.TagName
         }
 
 
+        public async Task<IEnumerable<(string, long)>?> GetSalesTrendPeriod(
+            string measurement,
+            string classification,
+            DateTime startDate,
+            DateTime endDate)
+        {
+            var sum = classification switch
+            {
+                "quantity" => "ol.Quantity",
+                "profit" => "ol.Quantity * ol.Price * ol.Discount / 100",
+                _ => string.Empty
+            };
+
+            var sql = measurement switch
+            {
+                "category" => $@"
+WITH  
+r1(a,b) AS  
+(
+SELECT c.CategoryName AS Label , SUM({sum}) AS Data 
+FROM Categories c
+JOIN Merchandises m on c.CategoryId = m.CategoryID
+JOIN Specs s on m.MerchandiseID = s.MerchandiseId
+JOIN OrderLists ol on s.SpecId = ol.SpecId
+JOIN Orders o on ol.OrderId = ol.OrderId
+WHERE o.PurchaseTime BETWEEN @StartTime AND @EndTime
+GROUP BY c.CategoryName
+),
+r2(a) AS 
+(
+SELECT c.CategoryName  
+FROM Categories c 
+)
+SELECT r2.a AS Label, COALESCE( b, 0) AS Data FROM r2
+LEFT JOIN r1 ON r1.a = r2.a
+",
+                "animal" => $@"
+WITH  
+r1(a,b) AS  
+(
+SELECT t.TagName AS Label , SUM({sum}) as Data
+FROM Tags t
+JOIN SpecTags st ON t.TagId = st.TagId
+JOIN Specs s ON st.SpecId = s.SpecId
+JOIN OrderLists ol ON s.SpecId = ol.SpecId
+JOIN Orders o ON ol.OrderId = ol.OrderId
+WHERE t.TagId <= 4
+AND o.PurchaseTime BETWEEN @StartTime AND @EndTime
+GROUP BY t.TagName
+),
+r2(a) AS 
+(
+SELECT t.TagName AS Label 
+FROM Tags t
+WHERE t.TagId <= 4
+)
+SELECT r2.a AS Label, COALESCE( b, 0) AS Data FROM r2
+LEFT JOIN r1 ON r1.a = r2.a
+",
+                "brand" => $@"
+WITH  
+r1(a,b) AS  
+(
+SELECT b.BrandName AS Label , SUM({sum}) as Data
+FROM Brands b
+JOIN Merchandises m ON m.BrandID = b.BrandId
+JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
+JOIN OrderLists ol ON s.SpecId = ol.SpecId
+JOIN Orders o ON ol.OrderId = ol.OrderId
+WHERE o.PurchaseTime BETWEEN @StartTime AND @EndTime
+GROUP BY b.BrandName
+),
+r2(a) AS 
+(
+SELECT b.BrandName 
+FROM Brands b
+)
+SELECT r2.a AS Label, COALESCE( b, 0) AS Data FROM r2
+LEFT JOIN r1 ON r1.a = r2.a
+",
+                _ => string.Empty
+            };
+            if (sum.IsNullOrEmpty() || sql.IsNullOrEmpty()) return null;
+
+            var conn = _context.Database.GetDbConnection();
+            var result = await conn.QueryAsync<(string Label, long Data)>(sql, new { StartTime = startDate, EndTime = endDate });
+            return result;
+        }
+
+
+
+
+
+        public async Task<int[]?> GetEvaluationScores(int merchandiseId)
+        {
+            string sql = @"SELECT
+SUM(CASE WHEN Score = 5 THEN 1 ELSE 0 END) AS Five,
+SUM(CASE WHEN Score = 4 THEN 1 ELSE 0 END) AS Four,
+SUM(CASE WHEN Score = 3 THEN 1 ELSE 0 END) AS Three,
+SUM(CASE WHEN Score = 2 THEN 1 ELSE 0 END) AS Two,
+SUM(CASE WHEN Score = 1 THEN 1 ELSE 0 END) AS One
+FROM Evaluations
+WHERE MerchandiseId = @MerchandiseId";
+
+            var conn = _context.Database.GetDbConnection();
+            (int Five, int Four, int Three, int Two, int One) = await conn
+                .QuerySingleAsync<(int, int, int, int, int)>(sql, new { MerchandiseId = merchandiseId });
+
+            return new int[] { Five, Four, Three, Two, One };
+        }
     }
 }

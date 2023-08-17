@@ -320,6 +320,8 @@ async function refreshPriceByCoupon(couponId) {
 
     displayItemsPrice(data)
     calculateTotalPrice()
+    sideBarTotal
+    document.querySelector('#sideBarTotal').customAnimate('flipInY')
 }
 
 //顯示商品價格
@@ -332,7 +334,7 @@ function displayItemsPrice(data) {
         const discountStr = item.discountPercentage != 100 ? `<div class="text-secondary" style = "font-size:5px;" >
                                 <del>$ <span> ${item.cartItemPrice * item.quantity}</span></del>
                                 </div>` : ''
-        const couponDiscountStr = !!item.couponDiscount ? `<div class="text-secondary" style = "font-size:5px;" >
+        const couponDiscountStr = !!item.couponDiscount ? `<div class="text-secondary animate__animated animate__backInLeft" style = "font-size:5px;" >
                                 <del>$ <span> ${originPrice}</span></del>
                                 </div>`: ''
         return ` <tr>
@@ -349,7 +351,7 @@ function displayItemsPrice(data) {
     const fixedAmountDiscount = !!data.couponDiscountAmount ? ` <tr>
                                     <td>優惠卷折抵</td>
                                     <td>
-                                    <div class="text-danger text-nowrap">
+                                    <div class="text-danger text-nowrap animate__animated animate__backInDown">
                                             $ <span class="price-sum">-${data.couponDiscountAmount}</span>
                                     </div>
                                     </td>

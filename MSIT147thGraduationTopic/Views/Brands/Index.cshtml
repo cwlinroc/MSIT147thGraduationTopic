@@ -3,10 +3,19 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "品牌列表檢視";
+    string txtKeyword = Context.Request.Cookies["txtKeyword"];
+    int searchCondition = int.Parse(Context.Request.Cookies["searchCondition"]);
+    int PageIndex = int.Parse(Context.Request.Cookies["PageIndex"]);
+    int displayorder = int.Parse(Context.Request.Cookies["displayorder"]);
+    int pageSize = int.Parse(Context.Request.Cookies["pageSize"]);
 }
 
 <div class="container">
     <h1 class="title">品牌列表檢視</h1>
+    <div style="float:right">
+        <button id="demo_keyword" class="btn btn-outline-secondary mx-2">Demo 關鍵字</button>
+        <button id="demo_noresult" class="btn btn-outline-secondary mx-2">Demo 無結果</button>
+    </div>
 
     <div class="bg-light rounded shadow p-5">
         <div>
@@ -24,7 +33,8 @@
             }
         </div>
         <div class="form-group" style="float:right">
-            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
+                                    PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
         </div>
         <br />
         <p>
@@ -65,9 +75,6 @@
                 }
             </tbody>
         </table>
-        @*<div class="form-group">
-            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
-        </div>*@
 
         <!-- 分頁 -->
         <nav aria-label="Page navigation example ">
@@ -79,7 +86,18 @@
 </div>
 
 @section Scripts {
-    @*搜尋商品*@
+    <!-- DEMO按鈕 -->
+    <script>
+        $("#demo_keyword").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("貓");
+        })
+        $("#demo_noresult").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("快樂GO");
+        })
+    </script>
+    <!-- 搜尋商品 -->
     <script>
         let txtKeyword = "@ViewBag.txtKeyword";
         let pageindex = @ViewBag.PageIndex;
@@ -188,7 +206,7 @@
             }
         })
     </script>
-    @*刪除品牌*@
+    <!-- 刪除品牌 -->
     <script>
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除品牌嗎？')) return;
