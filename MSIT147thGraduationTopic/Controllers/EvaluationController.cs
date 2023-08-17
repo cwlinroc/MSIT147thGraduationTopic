@@ -152,30 +152,6 @@ namespace MSIT147thGraduationTopic.Controllers
             return RedirectToAction("ShoppingHistory", "Member");
         }
 
-        public IActionResult MerchandiseEvaluation(int id)
-        {
-            var merchandiseEvaluation = _context.Evaluations.FirstOrDefault(e => e.SpecId == id);
-
-            if (merchandiseEvaluation != null)   //Evaluations有留言資料,帶出
-            {
-                var model = (from e in _context.EvaluationInputs
-                             join s in _context.Specs on e.SpecId equals s.SpecId
-                             join m in _context.Merchandises on new { e.MerchandiseId } equals new { m.MerchandiseId }
-                             where e.OrderId == id
-                             select new EvaluationVM
-                             {                                
-                                 MerchandiseName = m.MerchandiseName,
-                                 SpecName = s.SpecName,
-                                 Comment = e.Comment,
-                                 Score = e.Score,
-                             })
-                        .ToList();                
-                return PartialView();
-            }
-                return View();
-        }
-
-
         //public IActionResult Edit(int id)
         //{
 

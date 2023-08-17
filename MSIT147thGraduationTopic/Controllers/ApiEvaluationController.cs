@@ -6,17 +6,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
+using MSIT147thGraduationTopic.Models.ViewModels;
+using MSIT147thGraduationTopic.ViewComponents;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
     public class ApiEvaluationController : Controller
     {
         private readonly GraduationTopicContext _context;
-
-        public ApiEvaluationController(GraduationTopicContext context)
+        private readonly EvaluationRepository _repo;
+       public ApiEvaluationController(GraduationTopicContext context)
         {
             _context = context;
+            _repo = new EvaluationRepository(context);
         }
+        public async Task<IActionResult> ShowMoreEvaliation(int id, int evaluationPageCounts)
+        {
+            
+            var model = await _repo.ShowMoreEvaliation(id, evaluationPageCounts);
+            
+            return Json(model);
+        }
+
 
         // GET: ApiEvaluation
         public async Task<IActionResult> Index()
