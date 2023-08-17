@@ -107,6 +107,30 @@ LEFT JOIN r1 ON r1.a = r2.a
             return new SaleChartDto { Data = result.Select(x => x.Data).ToArray(), Labels = result.Select(o => o.Label).ToArray() };
         }
 
+        public async Task<List<(string, long)>> GetMostSalesMerchandises(string classification, DateTime timeBefore)
+        {
+            var sum = classification switch
+            {
+                "quantity" => "ol.Quantity",
+                "profit" => "ol.Quantity * ol.Price * ol.Discount / 100",
+                _ => string.Empty
+            };
+            if (string.IsNullOrEmpty(sum) || timeBefore > DateTime.Now) return new();
+
+            string sql = $@"
+SELECT TOP 5   m.MerchandiseName  , SUM({sum}) as Data
+FROM Merchandises m 
+JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
+JOIN OrderLists ol ON s.SpecId = ol.SpecId
+JOIN Orders o ON ol.OrderId = ol.OrderId
+WHERE o.PurchaseTime > @TimeBefore
+GROUP BY MerchandiseName
+ORDER BY SUM({sum}) DESC";
+
+            var conn = _context.Database.GetDbConnection();
+            return (await conn.QueryAsync<(string, long)>(sql, new { TimeBefore = timeBefore })).ToList();
+        }
+
 
         public async Task<IEnumerable<(string, long)>?> GetSalesTrendPeriod(
             string measurement,

@@ -29,6 +29,15 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
             return await _service.GetSaleChart(measurement, classification, daysBefore);
         }
 
+        [HttpGet("MostSalesMerchandises")]
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<ActionResult<IEnumerable<dynamic>>> GetMostSalesMerchandises(string classification, int daysBefore)
+        {
+            return (await _service.GetMostSalesMerchandises(classification, daysBefore))
+                .Select(o => new { o.label, o.data }).ToList();
+        }
+
+
         [HttpGet("saletrend")]
         [Authorize(Roles = "管理員,經理,員工")]
         public async Task<ActionResult<SaleTrendDto?>> GetSalesTrend(

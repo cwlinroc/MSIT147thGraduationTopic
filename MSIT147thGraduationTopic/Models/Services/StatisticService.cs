@@ -33,6 +33,14 @@ namespace MSIT147thGraduationTopic.Models.Services
             };
             return dto;
         }
+        public async Task<List<(string label, long data)>> GetMostSalesMerchandises(string classification, int daysBefore)
+        {
+            var timeBefore = DateTime.Now.AddDays(-daysBefore);
+            classification = classification.Trim().ToLower();
+
+            return await _repo.GetMostSalesMerchandises(classification, timeBefore);
+        }
+
 
 
         public async Task<SaleTrendDto?> GetSalesTrend(

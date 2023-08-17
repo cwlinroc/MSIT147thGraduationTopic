@@ -130,24 +130,26 @@
             measurement = 'brand'
             btnDisplay(e.currentTarget)
         })
-        function btnDisplay(element){
+        function btnDisplay(element) {
             $(element).addClass('btn-primary').removeClass('btn-outline-primary')
                 .siblings().removeClass('btn-primary').addClass('btn-outline-primary')
             updateChart()
         }
 
         //select change
-        $('#selectDaysBefore').change(e => {
+        $('#selectDaysBefore').change(async e => {
             const val = $(e.currentTarget).val()
             console.log(val)
             daysBefore = val
             updateChart()
+            updateDoughnut()
         })
-        $('#selectMeasureUnit').change(e => {
+        $('#selectMeasureUnit').change(async e => {
             const val = $(e.currentTarget).val()
             console.log(val)
             classification = val
             updateChart()
+            updateDoughnut()
         })
 
         //更新sales chart
@@ -169,7 +171,35 @@
             return data
         }
 
+        //更新doughnut data
+        updateDoughnut()
+        async function updateDoughnut() {
+            const data = await getDoughnutData()
+            doughnutChart.data.labels = data.map(o => o.label)
+            doughnutChart.data.datasets = []
+            doughnutChart.data.datasets.push({
+                label: '銷售紀錄',
+                data: data.map(o=>o.data),
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 205, 86)',
+                    'rgb(54, 248, 60)',
+                    'rgb(54, 162, 235)',
+                    'rgb(247, 67, 192)',
+                ],
+                hoverOffset: 4
+            })
+            doughnutChart.update()
+        }        
 
+        //取得doughnut data
+        async function getDoughnutData() {
+            const response = await fetch(`${ROOT}/api/apistatistic/MostSalesMerchandises?` +
+                `classification=${classification}&daysBefore=${daysBefore}`)
+            const data = await response.json()
+            console.log(data)
+            return data
+        }
 
     </script>
 }
