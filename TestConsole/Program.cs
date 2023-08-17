@@ -46,16 +46,16 @@ using System.Text;
 
 /**test**/
 
-var repo = new RecommendRepositoy(new());
+var repo = new StatisticRepository(new());
 
-var dtos = await repo.GetAllSpecsWithEvaluation();
-dtos = dtos.OrderByDescending(o => o.AverageScore).ToList();
+var dtos = await repo.GetMerchandiseTrend("merchandise", "quantity", "day" , 7 , 1 );
+
 int count = 0;
 
-foreach (var d in dtos)
+foreach (var item in dtos)
 {
     count++;
-    Console.WriteLine(count + " : " + d.SpecId + "," + d.AverageScore);
+    Console.WriteLine(item.Item1.ToString() + " , " + item.Item2.ToString() + " : " + item.Item3.ToString());
 }
 
 

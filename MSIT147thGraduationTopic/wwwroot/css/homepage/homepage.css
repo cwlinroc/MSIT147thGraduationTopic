@@ -49,7 +49,7 @@ div.custom-jumpout {
     position: relative;
 }
 
-@media (min-width: 1050px) {
+@media (min-width: 1350px) {
     div.custom-jumpout {
         position:absolute;
     }
