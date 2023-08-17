@@ -69,6 +69,15 @@ namespace MSIT147thGraduationTopic.Models.Dtos
         public bool CouponUsed { get; set; }
     }
 
+    public class CouponUsedStatus
+    {
+        public int CouponId { get; set; }
+        public string CouponName { get;set; }
+        public DateTime CouponStartDate { get;set; }
+        public DateTime CouponEndDate { get;set; }
+        public int UsedStatus { get; set; }
+    }
+
     static public class CouponConvert
     {
         static public CouponDto ToDto(this Coupon coupon)
@@ -103,6 +112,17 @@ namespace MSIT147thGraduationTopic.Models.Dtos
             };
         }
 
+        static public CouponUsedStatus toUsedStatusDto(this Coupon coupon)
+        {
+            return new CouponUsedStatus
+            {
+                CouponId = coupon.CouponId,
+                CouponName = coupon.CouponName,
+                CouponStartDate= coupon.CouponStartDate,
+                CouponEndDate = coupon.CouponEndDate,
+            };
+        }
+
         static public Coupon ToEF(this CouponDto couponDto)
         {
             return new Coupon
@@ -116,35 +136,6 @@ namespace MSIT147thGraduationTopic.Models.Dtos
                 CouponDiscount = couponDto.CouponDiscount,
                 CouponDiscountTypeId = couponDto.CouponDiscountTypeId,
             };
-        }
-
-        static public CouponReceive ToFrontEF(this CouponFrontDto couponFrontDto)
-        {
-            return new CouponReceive
-            {
-                MemberId = couponFrontDto.MemberId,
-                CouponId = couponFrontDto.CouponId,
-                CouponName = couponFrontDto.CouponName,
-                CouponStartDate = couponFrontDto.CouponStartDate,
-                CouponEndDate = couponFrontDto.CouponEndDate,
-                CouponCondition = couponFrontDto.CouponCondition,
-                CouponDiscount = couponFrontDto.CouponDiscount,
-                CouponDiscountTypeId = couponFrontDto.CouponDiscountTypeId,
-                CouponTagId = couponFrontDto.CouponTagId,
-                CouponUsed = couponFrontDto.CouponUsed,
-            };
-        }
-
-        static public void UpdateByEditDto(this Coupon coupon, CouponEditDto couponEditDto)
-        {
-            coupon.CouponId = couponEditDto.CouponId;
-            coupon.CouponTagId = couponEditDto.CouponTagId;
-            coupon.CouponName = couponEditDto.CouponName;
-            coupon.CouponStartDate = couponEditDto.CouponStartDate;
-            coupon.CouponEndDate = couponEditDto.CouponEndDate;
-            coupon.CouponDiscountTypeId = couponEditDto.CouponDiscountTypeId;
-            coupon.CouponCondition = couponEditDto.CouponCondition;
-            coupon.CouponDiscount = couponEditDto.CouponDiscount;
         }
     }
 }
