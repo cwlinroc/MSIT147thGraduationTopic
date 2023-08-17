@@ -2,14 +2,14 @@
 @{
     int merchandiseId = (int)ViewData["MerchandiseId"];
 }
-
-<div>
+<div >
+<div id="commentContainer">
     @if (Model.Count() > 0)
     {
-       @for (int i = 1; i < Model.Count(); i++)
-            {
+        @for (int i = 0; i < Model.Count(); i++)
+        {
             var item = Model.ElementAt(i);//ElementAt 將返回索引 n 的專案
-            <div style="border-block-color:#FFDDAA;border-width: 2px">
+            <div class="clickloadMore" style="border-block-color:#FFDDAA;border-width: 2px">
                 <div class="mt-4 d-flex align-items-center">
                     <div class="d-flex rounded-3 px-1 " style="background-color:#FFDDAA">
                         <div class="mx-1 mt-2">
@@ -32,62 +32,30 @@
                     </div>
                 </div>
                 <div class="form-floating mx-2 mt-2 mb-4">
-                    <textarea id="commentText_@(i)" name="comments[@(i)].Comment" class="form-control" placeholder="請輸入您的評價~" style="height: 100px">@(item.Comment)</textarea>
-                    <label for="floatingTextarea2">@(item.Comment)</label>
+                    <textarea id="commentText_@(i)" name="comments[@(i)].Comment" class="form-control" readonly="readonly"></textarea>
+                    <label for="floatingTextarea2" style="color:black; font-size: 20px;">@(item.Comment)</label>
                 </div>
             </div>
         }
-        <div id="loadMore" data-page="1" class="text-center my-3" style="cursor: pointer;">@((Model.Count()) > 5 ?"看更多..":" ")</div>
+       
     }
-    else{         
-         <div class="container">
-            <div class="row justify-content-center my-5 text-center"> 
+   
+</div>
+    @if (Model.Count() > 0)
+    {
+        <div id="loadMore" data-page="1" class="text-center my-3" style="cursor: pointer;"> 看更多..</div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row justify-content-center my-5 text-center">
                 @ViewBag.noEvaluation
-            </div >
+            </div>
         </div>
     }
-    
+   
 </div>
 
 
+<script defer src="~/js/evaluationvc.js"></script>
 
-@section InlineScripts{
-    <script>
-        var page = 1; 
-        var pageSize = 5; // 一次五筆
-        var maxPages = 3; // 最大加载次数
-
-        $("#loadMore").on("click", function () {
-            if (page <= maxPages) {
-                page++;
-                loadMoreComments();
-            }
-        });
-
-        function loadMoreComments() {
-            $.ajax({
-                url: "@Url.Action("LoadMoreComments", "InvokeAsync")", 
-                type: "GET",
-                data: { merchandiseId: @ViewData["MerchandiseId"], page: page, pageSize: pageSize },
-                success: function (data) {
-                if (data.length > 0 ) {
-                    for (var i = 0; i < data.length; i++) {
-                        // 创建新的留言元素
-                        var newComment = $('<div class="comment"></div>');
-
-                        // 填充留言元素的内容
-                        newComment.append('<h6>' + data[i].MerchandiseName + '</h6>');
-                        // 其他留言内容
-
-                        // 将新的留言元素添加到页面中
-                        $("#commentContainer").append(newComment);
-        }
-                } 
-                else {
-                    $("#loadMore").hide(); // 隐藏按钮，没有更多留言了
-                }},
-                    
-                });
-            }
-    </script>
-}
