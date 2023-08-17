@@ -99,6 +99,7 @@
     </script>
     <!-- 搜尋商品 -->
     <script>
+        // #region 搜尋相關功能
         let txtKeyword = "@ViewBag.txtKeyword";
         let pageindex = @ViewBag.PageIndex;
 
@@ -114,9 +115,10 @@
         function SearchBrands() {
             window.location.href = `/Brands/Index/?txtKeyword=${txtKeyword}&PageIndex=${pageindex}`;
         };
+        //#endregion
 
-        //產生分頁標籤
         $(async () => {
+            // #region 產生分頁標籤
             const responseforlength = await fetch(`@Url.Content("~/ApiBrand/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}`);
             const returnLengthBag = await responseforlength.text();
             const resultLength = JSON.parse(returnLengthBag);
@@ -178,7 +180,9 @@
                                                         </a>
                                                      </li>`;
             pagingContainer.innerHTML = indexRow;
+            //#endregion
 
+            // #region 分頁標籤按鈕
             //改變當前頁籤格式
             $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
             //分頁點選+點選後
@@ -199,15 +203,17 @@
                     SearchBrands();
                 }
             })
+            // #endregion
 
+            // #region 查無符合資料
             if (resultLength == 0) {
                 const showResult = document.querySelector("#showResult");
                 showResult.innerHTML = "<h4>找不到符合的品牌</h4>";
             }
+            // #endregion
         })
-    </script>
-    <!-- 刪除品牌 -->
-    <script>
+
+        // #region 刪除品牌
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除品牌嗎？')) return;
             Swal.fire({
@@ -256,6 +262,7 @@
                 }
             })
         })
+                    // #endregion
     </script>
 }
 
