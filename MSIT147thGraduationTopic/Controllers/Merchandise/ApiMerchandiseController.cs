@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.ViewModels;
 
 namespace MSIT147thGraduationTopic.Controllers.Merchandise
@@ -9,52 +10,18 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
     public class ApiMerchandiseController : Controller
     {
         private readonly GraduationTopicContext _context;
+        private readonly MerchandiseRepository _repo;
 
         public ApiMerchandiseController(GraduationTopicContext context)
         {
             _context = context;
+            _repo = new MerchandiseRepository(context);
         }
-
-        //public IActionResult Merchandises()//todo 確認是哪個Controller在使用 //todo 也改回AJAX搜尋
-        //{
-        //    var datas = _context.Merchandises.OrderBy(a => a.MerchandiseId);
-
-        //    return Json(datas);
-        //}
 
         [HttpGet]
         public IActionResult GetSearchResultLength(string txtKeyword, int searchCondition = 1)
         {
-            IEnumerable<MerchandiseSearch> datas = _context.MerchandiseSearches
-                .Where(ms => ms.Display == true);
-
-            if (!string.IsNullOrEmpty(txtKeyword))
-            {
-                if (searchCondition == 1)
-                    datas = datas.Where(ms => ms.MerchandiseName.Contains(txtKeyword));
-                if (searchCondition == 2)
-                {
-                    IQueryable<int> merchandiseIdFormSpec = _context.Specs
-                        .Where(s => s.SpecName.Contains(txtKeyword)).Select(s => s.MerchandiseId).Distinct();
-                    #region 建立新集合承接符合項(占版面&耗資源，有更好的寫法↓)
-                    //datas = null;
-
-                    //List<MerchandiseSearch> templist = new List<MerchandiseSearch>();
-                    //foreach (int id in merchandiseIdFormSpec)
-                    //{
-                    //    MerchandiseSearch unit = _context.MerchandiseSearches.Where(ms => ms.MerchandiseId == id).FirstOrDefault();
-                    //    if (unit != null)
-                    //        templist.Add(unit);
-                    //}
-                    //datas = templist;
-                    #endregion
-                    datas = datas.Where(ms => merchandiseIdFormSpec.Contains(ms.MerchandiseId));
-                }
-                if (searchCondition == 3)
-                    datas = datas.Where(ms => ms.BrandName.Contains(txtKeyword));
-                if (searchCondition == 4)
-                    datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
-            }
+            IEnumerable<MerchandiseSearch> datas = _repo.getBasicMerchandiseSearch(txtKeyword, searchCondition);
 
             var resultLength = datas.Count();
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.MallDisplay>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MallDisplayVM>
 
 @{
     Layout = "_MallPage";
@@ -33,8 +33,8 @@
                  style="white-space: nowrap; align-items: center; float:right; border:solid 1px #D0D0D0; border-radius:5px; padding:0 10px">
                 每頁顯示 :
                 <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
-                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="50">50</button>
-                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="40">40</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="60">60</button>
                 筆
             </div>
 
@@ -157,7 +157,7 @@
 
         //呈現初始頁面
         SearchProducts();
-        //設定初值呈現
+        //設定搜尋條件初值呈現
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
@@ -281,7 +281,7 @@
                 pagingContainer.innerHTML = indexRow;
 
                 //改變當前頁籤格式
-                $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
+                $(`.showIndex[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
                 //分頁點選+點選後
                 $(".showIndex").on("click", (e) => {
                     pageindex = $(e.currentTarget).attr("val-index");
@@ -312,30 +312,29 @@
                     const returnJsonBag = await response.text();
                     const searchResult = JSON.parse(returnJsonBag);
 
-                    //var windows = searchResult.map(window => {
-                    //    const { price, specId, merchandiseId, brandName } = window;
-                    //    const showName = (window.fullName.length > 11) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
-                    //    const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-                    //    return (
-                    //        `<div class="col">\
-                    //                            <div class="card my-3 mx-2 text-center border-light ">\
-                    //                                <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
-                    //                                                                + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
-                    //                                <div class="card-body ">\
-                    //                                    <h6 class="card-text ">《 ${brandName} 》</h6>\
-                    //                                    <h6 class="card-title ">${showName}</h6>\
-                    //                                    <h5 class="card-text ">${price} 元</h5>\
-                    //                                    <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
-                    //                                </div>\
-                    //                            </div>\
-                    //                        </div>`)
-                    //            })
-                    //pageContent.innerHTML = windows.join("");
-
+                    /*(改用方法生成商品卡片)
+                    var windows = searchResult.map(window => {
+                        const { price, specId, merchandiseId, brandName } = window;
+                        const showName = (window.fullName.length > 11) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
+                        const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
+                        return (
+                            `<div class="col">\
+                                                <div class="card my-3 mx-2 text-center border-light ">\
+                                                    <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
+                                                                                    + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
+                                                    <div class="card-body ">\
+                                                        <h6 class="card-text ">《 ${brandName} 》</h6>\
+                                                        <h6 class="card-title ">${showName}</h6>\
+                                                        <h5 class="card-text ">${price} 元</h5>\
+                                                        <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
+                                                    </div>\
+                                                </div>\
+                                            </div>`)
+                                })
+                    pageContent.innerHTML = windows.join("");*/
                     let thispageContent = generateProductCard(searchResult);
-
                     pageContent.innerHTML = thispageContent;
-                    bindHoverEvents();
+                    bindHoverEvents();  //叫用hover特效
 
                     //進入商品檢視頁
                     $(".gotoViewpage").on("click", (e) => {
@@ -344,7 +343,7 @@
                         window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetMerchandisid}&SpecId=${targetSpecid}`;
                     });
 
-                    //加入購物車
+                    /*加入購物車(已取消)
                     const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'));
                     $(".add_to_Cart").on("click", async (e) => {
                         if (ROLE != "會員") {
@@ -367,6 +366,7 @@
                                     timer: 600,
                                     allowOutsideClick: false
                                 })
+                                refreshNavbarCart();
                             }
                             if (!isSuccess) {
                                 Swal.fire({
@@ -377,7 +377,7 @@
                                 })
                             }
                         }
-                    })
+                    })*/
                 }
             })
 
@@ -399,6 +399,9 @@
                     sideCategoryId = $(e.currentTarget).attr("val-category");
                     SearchProducts();
                 })
+
+                //改變側邊選項格式
+                $(`.selectCategory[val-category="${sideCategoryId}"]`).attr("style", "color: #4B0091; font-weight: bold");
             })
 
             //呈現側邊寵物類別選項
@@ -419,18 +422,21 @@
                     tagId = $(e.currentTarget).attr("val-tag");
                     SearchProducts();
                 })
+
+                //改變側邊選項格式
+                $(`.selectTag[val-tag="${tagId}"]`).attr("style", "color: #4B0091; font-weight: bold");
             })
         }
 
         function generateProductCard(searchResult) {
             return searchResult.map(value => {
-                const { merchandiseImageUrl, specImageUrl, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName } = value;
+                const { merchandiseImageUrl, specImageUrl, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName, score } = value;
                 let imageUrl = 'specPicture/default.png'
                 if (!!merchandiseImageUrl) imageUrl = 'merchandisePicture/' + merchandiseImageUrl
                 if (!!specImageUrl) imageUrl = 'specPicture/' + specImageUrl
                 const canceledPrice = (discountPercentage == 100) ? '' :
                     `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${price}</span></del>`
-                const score = (Math.round(popularity * 10) / 10).toFixed(1);
+                const showscore = (Math.round(score * 10) / 10).toFixed(1);
                 const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${merchandiseId}&SpecId=${specId}`
                 return `
                                    <div class="p-2 position-relative mx-1 my-1 displayedSpec gotoViewpage"
@@ -446,7 +452,7 @@
                                         <div class="my-0 d-flex px-1">
                                             ${canceledPrice}
                                             <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
-                                            <span>${score}</span>
+                                            <span>${showscore}</span>
                                         </div>
                                         <div class="text-danger px-1">
                                             NTD$<span>${Math.round(price * discountPercentage / 100)}</span>
@@ -478,6 +484,14 @@
         select {
             max-width: 120px;
             min-width: 120px
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .pageSize {
+            text-decoration: none;
         }
     </style>
 }

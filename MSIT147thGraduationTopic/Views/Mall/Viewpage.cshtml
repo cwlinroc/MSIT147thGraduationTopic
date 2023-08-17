@@ -3,10 +3,10 @@
 @{
     Layout = "_MallPage";
     ViewData["Title"] = "尋找商品";
-    string txtKeyword = Context.Request.Cookies["Mall_txtKeyword"];
-    int searchCondition = int.Parse(Context.Request.Cookies["Mall_searchCondition"]);
-    int displayorder = int.Parse(Context.Request.Cookies["Mall_displayorder"]);
-    int pageSize = int.Parse(Context.Request.Cookies["Mall_pageSize"]);
+    string txtKeyword = Context.Request.Cookies["Mall_txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["Mall_searchCondition"], out int temp1) ? temp1 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["Mall_displayorder"], out int temp2) ? temp2 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["Mall_pageSize"], out int temp3) ? temp3 : 20;
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
@@ -53,18 +53,18 @@
                             <li>
                                 <div>商品類別</div>
                                 <ul id="categoryOptions" class="mx-4">
-                                    <li class="my-1 ">
-                                        <a href="#" class="selectCategory" val-category="類別ID">類別名稱</a>
-                                    </li>
+                                    @*<li class="my-1 ">
+                                    <a href="#" class="selectCategory" val-category="類別ID">類別名稱</a>
+                                    </li>*@
                                 </ul>
                             </li>
                             <!-- 摺疊選單 for 寵物類型 -->
                             <li>
                                 <div>寵物類型</div>
                                 <ul id="tagOptions" class="mx-4">
-                                    <li class="my-1">
-                                        <a href="#" class="selectTag" val-tag="標籤ID">寵物類別 (商品數)</a>
-                                    </li>
+                                    @*<li class="my-1">
+                                    <a href="#" class="selectTag" val-tag="標籤ID">寵物類別 (商品數)</a>
+                                    </li>*@
                                 </ul>
                             </li>
                         </ul>
@@ -79,13 +79,13 @@
                 <div class="row">
                     <div class="col-12 col-md-5 py-3">
                         <div class="item">
-                            <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
+                            <!-- 主圖 -->
                             <figure class="ViewWindow-image-container">
                                 <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" width="100%" height="100%" class="mainImage pb-3">
                             </figure>
                             <div class="image-container">
-                                <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
-                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage" width="20%" height="20%" style="border:solid #930000 3px" )>
+                                <!-- 縮圖 -->
+                                <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage MerchandiseImage" width="20%" height="20%" style="border:solid #930000 3px" )>
                                 @{
                                     foreach (var item in Model)
                                     {
@@ -104,7 +104,7 @@
                             </ol>
                         </nav>
                         <h5 id="showBrandName"></h5>
-                        <span >
+                        <span>
                             <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
                             <span id="score"></span>
                         </span>
@@ -118,7 +118,7 @@
                             @{
                                 foreach (var item in Model)
                                 {
-                                    <button type="button" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Score" class="btn btn-outline-secondary mx-1 my-1 showSpec">@item.SpecName</button>
+                                    <button type="button" class="btn btn-outline-secondary mx-1 my-1 showSpec" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Score">@item.SpecName</button>
                                 }
                             }
                         </div>
@@ -271,9 +271,10 @@
             const canceledPrice = (discountPercentage == 100) ? '' :
                 `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${originalPrice}</span></del>`;
             currentPrice = originalPrice * discountPercentage / 100;
+            let currentSinglePrice = Math.floor(currentPrice);
 
             maxAmount = $(e.currentTarget).attr("data-amount");
-            showPrice.innerHTML = canceledPrice + " NTD$" + currentPrice;
+            showPrice.innerHTML = canceledPrice + " NTD$" + currentSinglePrice;
             $("#showAmount").text(maxAmount);
             //設定購買數初值&最大值 + 重置總金額
             $("#buyAmount").attr("max", maxAmount);
@@ -283,18 +284,31 @@
             //紀錄規格ID
             currentSpecid = $(e.currentTarget).attr("data-specId");
             //變更主圖片
+            $(".MerchandiseImage").attr("style", "");
             $(".specImage").attr("style", "");
-            $(`[val-specId=${currentSpecid}]`).attr("style", "border:solid #930000 3px");
+            $(`.specImage[val-specId=${currentSpecid}]`).attr("style", "border:solid #930000 3px");
             const thisImg = $(e.currentTarget).attr("data-imageurl");
             $("#mainPicture").attr("src", `@Url.Content("~/uploads/specPicture/")${thisImg}`)
         });
-        //點選圖片變更主圖片
+        //點選規格縮圖變更主圖片
         $(".specImage").on("click", (e) => {
+            //變更縮圖外框
             const thisImgPath = $(e.currentTarget).attr("src");
-            console.log(thisImgPath);
+            $(".MerchandiseImage").attr("style", "");
             $(".specImage").attr("style", "");
             $(e.currentTarget).attr("style", "border:solid #930000 3px");
-            $("#mainPicture").attr("src", thisImgPath)
+            $("#mainPicture").attr("src", thisImgPath);
+            //變更按鈕
+            const imageSpecId = $(e.currentTarget).attr("val-specId");
+            $(`.showSpec[data-specId=${imageSpecId}]`).click();
+        });
+        //點選商品縮圖變更主圖片
+        $(".mainImage").on("click", (e) => {
+            //變更縮圖外框
+            const thisImgPath = $(e.currentTarget).attr("src");
+            $(".specImage").attr("style", "");
+            $(e.currentTarget).attr("style", "border:solid #930000 3px");
+            $("#mainPicture").attr("src", thisImgPath);
         });
 
         //增減選擇數
@@ -315,16 +329,17 @@
         //控制手動輸入數字(變數皆默認為字串，須注意比較前須轉型)
         $("#buyAmount").on("input", () => {
             const inputedNumber = $("#buyAmount").val();
-            purchaseAmount = (+inputedNumber < 1) ? 1 : 
-                             (+inputedNumber > +maxAmount) ? maxAmount : 
-                             (+inputedNumber % 1 !== 0) ? Math.round(+inputedNumber) : inputedNumber;
+            purchaseAmount = (+inputedNumber < 1) ? 1 :
+                (+inputedNumber > +maxAmount) ? maxAmount :
+                    (+inputedNumber % 1 !== 0) ? Math.round(+inputedNumber) : inputedNumber;
             $("#buyAmount").val(purchaseAmount)
             $("#buyAmount").change();
         })
 
         //顯示總金額
         $("#buyAmount").on("change", () => {
-            $("#totalPrice").text((purchaseAmount * currentPrice) + " 元");
+            let totalPrice = Math.floor(purchaseAmount * currentPrice);
+            $("#totalPrice").text(totalPrice + " 元");
         })
 
         //叫出登入功能塊
@@ -333,7 +348,7 @@
         $("#add_to_Cart").on("click", async (e) => {
             if (ROLE != "會員") {
                 await Swal.fire('請登入以使用購物車');
-                loginModal.show();
+                loginModal.show();   //使用js檔中的登入方法，登入成功則刷新原頁面//
             }
             if (ROLE == "會員") {  //傳送資料
                 const responseCart = await fetch(`@Url.Content("~/ApiMall/AddtoCart/")?SpecId=${currentSpecid}&Quantity=${purchaseAmount}`, {
@@ -350,6 +365,7 @@
                         timer: 500,
                         allowOutsideClick: false
                     })
+                    refreshNavbarCart();
                 }
                 if (!isSuccess) {
                     Swal.fire({
@@ -365,7 +381,7 @@
 }
 
 @section Styles{
-    <link rel="stylesheet" href="~/css/recommend/partialview.css" />    
+    <link rel="stylesheet" href="~/css/recommend/partialview.css" />
     <style>
         li {
             list-style: none;
@@ -394,8 +410,20 @@
             width: 100%;
             max-width: 100px;
             height: 100%;
-            max-height:100px;
+            max-height: 100px;
             object-fit: cover;
+        }
+
+        .MerchandiseImage {
+            width: 100%;
+            max-width: 100px;
+            height: 100%;
+            max-height: 100px;
+            object-fit: cover;
+        }
+
+        a {
+            text-decoration: none;
         }
     </style>
     <style>
