@@ -160,6 +160,7 @@
     </script>
     <!-- 搜尋商品按鈕 -->
     <script>
+        // #region 呈現初始頁面
         let txtKeyword = "@ViewBag.txtKeyword";
         let searchCondition = @ViewBag.searchCondition;
         let pageindex = @ViewBag.PageIndex;
@@ -172,7 +173,9 @@
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
             $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
+        // #endregion
 
+        // #region 設定搜尋參數
         //搜尋條件
         $(".conditionname").on("change", (e) => {
             searchCondition = $(".conditionname").val();
@@ -201,9 +204,10 @@
         function SearchProducts() {
             window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}&displayorder=${displayorder}&pageSize=${pageSize}`;
         };
+        // #endregion
 
-        //產生分頁標籤
         $(async () => {
+            // #region 產生分頁標籤
             const responseforlength = await fetch(`@Url.Content("~/ApiMerchandise/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}&searchCondition=${@ViewBag.searchCondition}`);
             const returnLengthBag = await responseforlength.text();
             const resultLength = JSON.parse(returnLengthBag);
@@ -265,7 +269,9 @@
                                                 </a>
                                              </li>`;
             pagingContainer.innerHTML = indexRow;
+            // #endregion
 
+            // #region 分頁標籤按鈕
             //改變當前頁籤格式
             $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
             //分頁點選+點選後
@@ -286,15 +292,17 @@
                     SearchProducts();
                 }
             })
+            // #endregion
 
+            // #region 查無符合資料
             if (resultLength == 0) {
                 const showResult = document.querySelector("#showResult");
                 showResult.innerHTML = "<h4>找不到符合的商品</h4>";
             }
+            // #endregion
         })
-    </script>
-    <!-- 刪除商品 -->
-    <script>
+
+        // #region 刪除商品
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除商品嗎？')) return;
             Swal.fire({
@@ -343,6 +351,7 @@
                 }
             })
         })
+                    // #endregion
     </script>
 }
 

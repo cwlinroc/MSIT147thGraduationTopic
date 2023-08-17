@@ -3,11 +3,11 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "商品規格檢視";
-    string txtKeyword = Context.Request.Cookies["txtKeyword"];
-    int searchCondition = int.Parse(Context.Request.Cookies["searchCondition"]);
-    int PageIndex = int.Parse(Context.Request.Cookies["PageIndex"]);
-    int displayorder = int.Parse(Context.Request.Cookies["displayorder"]);
-    int pageSize = int.Parse(Context.Request.Cookies["pageSize"]);
+    string txtKeyword = Context.Request.Cookies["txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
+    int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
 }
 
 <div class="container">
@@ -179,8 +179,9 @@
             $("#TagName").val("寵物美容");
         })
     </script>
-    <!-- 產生商品資料 -->
+    <!-- 管理規格 -->
     <script>
+        // #region 產生商品資料
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
         const mCategory = document.querySelector("#mCategory");
@@ -205,9 +206,9 @@
                         : "@Url.Content("~/uploads/merchandisePicture/default.png")";
             })
         })
-    </script>
-    <!-- 確認刪除 -->
-    <script>
+        // #endregion
+
+        // #region 確認刪除
         $(".fordelete").click((e) => {
             //if (!confirm('確定刪除規格嗎？')) return;
             Swal.fire({
@@ -250,9 +251,11 @@
                 }
             })
         })
+        // #endregion
     </script>
     <!-- 管理標籤 -->
     <script>
+        // #region 叫用標籤管理視窗 & AutoComplete功能
         const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
         let currentSpecId;
@@ -278,8 +281,9 @@
                 minLength: 1
             });
         })
+        // #endregion
 
-        //新增tag
+        // #region 新增標籤
         $("#btnAddTag").on("click", async (e) => {
             e.preventDefault();
             const tagName = $("#TagName").val();
@@ -311,8 +315,9 @@
                 $("#btnAddTag").click();
             }
         })
+        // #endregion
 
-        //產生快速標籤按鈕
+        // #region 產生快速標籤按鈕
         $(() => {
             const fastAddArea = document.querySelector("#fastAddArea");
             fastAddArea.innerHTML += `<span>快速標籤：</span>`;
@@ -331,8 +336,9 @@
                 ShowCurrentTag(currentSpecId);
             })
         })
-        
-        //陳列既有tag
+        // #endregion
+
+        // #region 陳列既有標籤 & 刪除功能
         async function ShowCurrentTag(currentSpecId) {
             const currentTag = document.querySelector("#currentTag");
             const response = await fetch(`@Url.Content("~/ApiTag/CurrentTags/")${currentSpecId}`);
@@ -377,6 +383,7 @@
                 })
             })
         }
+        // #endregion
     </script>
 }
 

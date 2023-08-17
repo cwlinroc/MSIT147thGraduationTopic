@@ -11,7 +11,6 @@
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
-@*****************************************響應式功能未完成*****************************************@
 <nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
@@ -170,12 +169,13 @@
 @section Scripts{
     <script src="~/js/recommend/partialview.js"></script>
     <script>
+        // #region 搜尋相關功能
         //給予搜尋初值
         let txtKeyword = "@txtKeyword";
         let searchCondition = @searchCondition;
         let sideCategoryId = 0;
         let tagId = 0;
-        //設定初值呈現
+        //設定搜尋條件呈現
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $("#search-input").val(txtKeyword);
@@ -191,7 +191,6 @@
             e.preventDefault();
             SearchProducts();
         });
-
         //回到所有商品(重置搜尋條件)
         $("#defaultSearch").on("click", () => {
             window.location.href = `/Mall/Index/?searchCondition=${searchCondition}&displayorder=@displayorder&pageSize=@pageSize`;
@@ -201,6 +200,7 @@
             window.location.href = `/Mall/Index/?txtKeyword=${txtKeyword}&`
                 + `searchCondition=${searchCondition}&sideCategoryId=${sideCategoryId}&tagId=${tagId}&displayorder=@displayorder&pageSize=@pageSize`;
         };
+        // #endregion
 
         //呈現側邊商品類別選項
         $(async () => {
@@ -306,6 +306,8 @@
             const thisImg = $(e.currentTarget).attr("data-imageurl");
             $("#mainPicture").attr("src", `@Url.Content("~/uploads/specPicture/")${thisImg}`)
         });
+
+        // #region 縮圖功能
         //點選規格縮圖變更主圖片
         $(".specImage").on("click", (e) => {
             //變更縮圖外框
@@ -326,7 +328,9 @@
             $(e.currentTarget).attr("style", "border:solid #930000 3px");
             $("#mainPicture").attr("src", thisImgPath);
         });
+        // #endregion
 
+        // #region 選擇購買數量
         //增減選擇數
         $("#button_minus").on("click", () => {
             if (purchaseAmount > 1) {
@@ -351,13 +355,14 @@
             $("#buyAmount").val(purchaseAmount)
             $("#buyAmount").change();
         })
-
         //顯示總金額
         $("#buyAmount").on("change", () => {
             let totalPrice = Math.floor(purchaseAmount * currentPrice);
             $("#totalPrice").text(totalPrice + " 元");
         })
+        // #endregion
 
+        // #region 加入購物車
         //叫出登入功能塊
         const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'))
         //加入購物車
@@ -393,6 +398,7 @@
                 }
             }
         })
+        // #endregion
     </script>
 }
 

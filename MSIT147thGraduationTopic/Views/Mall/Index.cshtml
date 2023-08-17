@@ -144,6 +144,7 @@
     </script>
     <!-- 產生商城內容 -->
     <script>
+        // #region 呈現初始頁面
         //給予初值
         let txtKeyword = "@ViewBag.txtKeyword";
         let searchCondition = @ViewBag.searchCondition;
@@ -154,7 +155,6 @@
         let minPrice = @(ViewBag.minPrice ?? "null");
         let maxPrice = @(ViewBag.maxPrice ?? "null");
         let tagId = @ViewBag.tagId;
-
         //呈現初始頁面
         SearchProducts();
         //設定搜尋條件初值呈現
@@ -163,21 +163,9 @@
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
             $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
+        // #endregion
 
-        //搜尋所有商品(重置搜尋條件)
-        $("#defaultSearch").on("click", () => {
-            txtKeyword = "";
-            $("#search-input").val("");
-            sideCategoryId = 0;
-            pageindex = 1;
-            minPrice = null;
-            maxPrice = null;
-            $("#minPrice").val(null);
-            $("#maxPrice").val(null);
-            tagId = 0;
-            SearchProducts();
-        });
-
+        // #region 設定搜尋參數
         //搜尋條件
         $(".conditionname").on("change", (e) => {
             searchCondition = $(".conditionname").val();
@@ -212,10 +200,24 @@
             pageindex = 1;
             SearchProducts();
         });
-
+        //搜尋所有商品(重置搜尋條件)
+        $("#defaultSearch").on("click", () => {
+            txtKeyword = "";
+            $("#search-input").val("");
+            sideCategoryId = 0;
+            pageindex = 1;
+            minPrice = null;
+            maxPrice = null;
+            $("#minPrice").val(null);
+            $("#maxPrice").val(null);
+            tagId = 0;
+            SearchProducts();
+        });
+        // #endregion
+        
         async function SearchProducts() {
             $(async () => {
-                //產生分頁標籤
+                // #region 產生分頁標籤
                 const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&`
                     + `searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&`
                     + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}&tagId=${tagId}`);
@@ -279,10 +281,12 @@
                                                     </a>
                                                   </li>`;
                 pagingContainer.innerHTML = indexRow;
+                // #endregion
 
+                // #region 分頁標籤按鈕
                 //改變當前頁籤格式
                 $(`.showIndex[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
-                //分頁點選+點選後
+                //點選分頁標籤
                 $(".showIndex").on("click", (e) => {
                     pageindex = $(e.currentTarget).attr("val-index");
                     SearchProducts();
@@ -300,8 +304,9 @@
                         SearchProducts();
                     }
                 })
+                // #endregion
 
-                //產生商品櫥窗
+                // #region 產生商品櫥窗
                 const pageContent = document.querySelector("#showThisPageMerchandise");
                 pageContent.innerHTML = "<h4>找不到符合的商品</h4>";
 
@@ -343,7 +348,7 @@
                         window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetMerchandisid}&SpecId=${targetSpecid}`;
                     });
 
-                    /*加入購物車(已取消)
+                    /*加入購物車功能(已取消)
                     const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'));
                     $(".add_to_Cart").on("click", async (e) => {
                         if (ROLE != "會員") {
@@ -379,6 +384,7 @@
                         }
                     })*/
                 }
+                // #endregion
             })
 
             //呈現側邊商品類別選項
@@ -428,6 +434,7 @@
             })
         }
 
+        //產生商品卡片
         function generateProductCard(searchResult) {
             return searchResult.map(value => {
                 const { merchandiseImageUrl, specImageUrl, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName, score } = value;
@@ -462,7 +469,7 @@
             }).join('')
         }
 
-        //hover事件
+        //商品卡片hover特效
         function bindHoverEvents() {
             $('.displayedSpec').hover(
                 e => {
