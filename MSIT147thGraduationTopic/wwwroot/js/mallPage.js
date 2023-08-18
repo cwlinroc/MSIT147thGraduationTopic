@@ -167,7 +167,7 @@ async function remindCoupon() {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            location.href = ROOT + '/CouponsReceive/Index'
+            location.href = ROOT + '/CouponFront/CouponList'
         }
     })
 }
@@ -194,11 +194,6 @@ async function displaySelfAvatar() {
 const loadingBox = document.querySelector('.loading-box')
 const showLoadingBox = () => loadingBox.style.display = "block";
 const hideLoadingBox = () => loadingBox.style.display = "none"
-
-
-
-
-
 
 
 

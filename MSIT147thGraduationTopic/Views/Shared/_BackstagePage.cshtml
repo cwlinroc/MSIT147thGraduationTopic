@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http;
+﻿ @using Microsoft.AspNetCore.Http;
 @using System.Security.Claims;
 @inject IHttpContextAccessor HttpContextAccessor;
 @{
@@ -140,24 +140,24 @@
             @*
             <div class="accordion-item">
 
-                <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        <i class="fa-solid fa-caret-down me-2"></i>會員管理
-                    </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse ps-3" aria-labelledby="headingTwo"
-                     data-bs-parent="#accordionExample">
+            <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <i class="fa-solid fa-caret-down me-2"></i>會員管理
+            </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse ps-3" aria-labelledby="headingTwo"
+            data-bs-parent="#accordionExample">
 
-                    <div class="accordion-body position-relative">
-                        <a href="@Url.Action("MemberList","MemberBackstage")" class="stretched-link text-light">會員檢視</a>
-                    </div>
+            <div class="accordion-body position-relative">
+            <a href="@Url.Action("MemberList","MemberBackstage")" class="stretched-link text-light">會員檢視</a>
+            </div>
 
-                    <div class="accordion-body position-relative">
-                        <a href="@Url.Action("Index","CouponsBackstageSettings")" class="stretched-link text-light">優惠劵設定</a>
-                    </div>
+            <div class="accordion-body position-relative">
+            <a href="@Url.Action("Index","CouponsBackstageSettings")" class="stretched-link text-light">優惠劵設定</a>
+            </div>
 
-                </div>
+            </div>
             </div>
             *@
 
@@ -176,25 +176,26 @@
                     </div>
 
                     <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">評論</a>
+                        <a href="~/Statistic/Trends" class="stretched-link text-light">趨勢</a>
                     </div>
 
                     <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">顧客</a>
+                        <a href="~/Statistic/Compare" class="stretched-link text-light">比較</a>
                     </div>
 
-                    <div class="accordion-body position-relative">
-                        <a href="#" class="stretched-link text-light">綜合</a>
-                    </div>
+                    <!--<div class="accordion-body position-relative">
+                        <a href="~/Statistic/Test" class="stretched-link text-light">測試</a>
+                    </div>-->
 
                 </div>
             </div>
 
 
+
             <div class="accordion-item">
                 <h2 class="accordion-header position-relative">
-                    <a class="accordion-button collapsed link-light stretched-link" href="~/CouponsBackstageSettings/index">
-                        優惠劵設定
+                    <a class="accordion-button collapsed link-light stretched-link" href="~/MemberBackstage/MemberList">
+                        會員檢視
                     </a>
                 </h2>
             </div>
@@ -202,8 +203,8 @@
 
             <div class="accordion-item">
                 <h2 class="accordion-header position-relative">
-                    <a class="accordion-button collapsed link-light stretched-link" href="~/MemberBackstage/MemberList">
-                        會員檢視
+                    <a class="accordion-button collapsed link-light stretched-link" href="~/CouponsBackstageSettings/index">
+                        優惠劵設定
                     </a>
                 </h2>
             </div>
@@ -220,21 +221,21 @@
             <div class="accordion-item">
                 <h2 class="accordion-header position-relative">
                     <a class="accordion-button collapsed link-light stretched-link" href="~/recommendbackstage" id="linkRecommendRating">
-                        熱門排序
+                        推薦排序
                     </a>
-                </h2>                
+                </h2>
             </div>
 
 
         </div>
 
-        <div class="mt-auto px-4 mb-3">
+        <div class="mt-auto px-4 pb-3">
             <a href="~/employeebackstage/login" class="text-light" id="btnReLogIn" btnLogOut">
                 <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>切換帳號登入
             </a>
         </div>
 
-        <div class="px-4 mb-3">
+        <div class="px-4 pb-3">
             <a href="#" class="text-light" id="btnLogOut" btnLogOut">
                 <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>登出並回到首頁
             </a>
@@ -265,7 +266,9 @@
     <!-- SweetAlert2 -->
     <script src="~/js/sweetalert2.min.js"></script>
     <!-- chart js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
+
     <!-- aos.js -->
     <script src="~/js/aos.js"></script>
     <script>AOS.init();</script>

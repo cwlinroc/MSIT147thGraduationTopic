@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using System.Security.Claims;
 
@@ -18,10 +19,13 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult CouponList()
         {
-            var couponlistA = _repo.ShowCouponsFront(0);
-            var couponlistB = _repo.ShowCouponsFront(1);
+            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            {
+                return BadRequest();
+            }
+            var couponData = _repo.GetReceivableCoupon(memberId);
 
-            return View((couponlistA, couponlistB));
+            return View(couponData);
         }
         
     }

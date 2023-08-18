@@ -31,9 +31,9 @@
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Score) 
-                            <span id="btnSort" data-sortOrder="asc" style="cursor: pointer;">
+                            @*<span id="btnSort" data-sortOrder="asc" style="cursor: pointer;">
                                 <img src="~/images/sort.png" style="height:20px;" />
-                            </span>
+                            </span>*@
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Comment)
@@ -98,6 +98,49 @@
                         </li>
                     </ul>
                 </nav>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo - 1) > 0 ? ViewBag.PageNo - 1 : ViewBag.PageNo, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount  })" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        @if (ViewBag.TotalPage > 7 && ViewBag.PageNo > 4)
+                        {
+                            <li class="page-item">
+                                <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = 1, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })">1</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <a class="page-link">...</a>
+                            </li>
+                        }
+                        @for (int i = ViewBag.PageNo - 3; i <= ViewBag.PageNo + 3; i++)
+                        {
+                            if (i >= 1 && i <= ViewBag.TotalPage)
+                            {
+                                <li class="page-item @(i == ViewBag.PageNo ? "active" : "")">
+                                    <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = i, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })">@i</a>
+                                </li>
+                            }
+                        }
+                        @if (ViewBag.TotalPage > 7 && ViewBag.PageNo < ViewBag.TotalPage - 3)
+                        {
+                            <li class="page-item disabled">
+                                <a class="page-link">...</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link pageclick" href="@Url.Action("EBIndex", new { pageNo = ViewBag.TotalPage, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })">@ViewBag.TotalPage</a>
+                            </li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) <= ViewBag.TotalPage ?ViewBag.PageNo + 1:ViewBag.PageNo , keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
             }            
         </div>
         <div class="col-1"></div>
@@ -123,17 +166,17 @@
         })
 
         //排序        
-            $('#btnSort').click(function () {
-                var sortOrder = $(this).data('sortOrder') || 'asc';
-            console.log(sortOrder)
-        //        sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
-        //        $(this).data('sortOrder', sortOrder);                
-        //        //var pageNo = @ViewBag.PageNo;
-        //        //var url = '@Url.Action("EBIndex", new { pageNo = "__pageNo__", sortOrder = "__sortOrder__" })';
-        //        //url = url.replace('__pageNo__', pageNo).replace('__sortOrder__', sortOrder);
+            //$('#btnSort').click(function () {
+            //    var sortOrder = $(this).data('sortOrder') || 'asc';
+            //console.log(sortOrder)
+            //sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
+            //$(this).data('sortOrder', sortOrder);                
+            //var pageNo = @ViewBag.PageNo;
+            //var url = '@Url.Action("EBIndex", new { pageNo = "__pageNo__", sortOrder = "__sortOrder__" })';
+            //url = url.replace('__pageNo__', pageNo).replace('__sortOrder__', sortOrder);
 
-        //        //window.location.href = url; //根據頁碼及排序重載畫面
-            });      
+            //window.location.href = url; //根據頁碼及排序重載畫面
+            //});      
 
     </script>
 

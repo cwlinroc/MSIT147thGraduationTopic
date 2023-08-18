@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MSIT147thGraduationTopic.EFModels.MallDisplay>
+﻿@model IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.MallDisplayVM>
 
 @{
     Layout = "_MallPage";
@@ -6,7 +6,6 @@
 }
 
 <!-- 搜尋列 / 分頁 / 排序(新舊.價格) -->
-@*****************************************響應式功能未完成*****************************************@
 <nav class="bd-subnavbar py-2 mt-5 mb-2" aria-label="Secondary navigation">
     <div class="container-xxl d-flex align-items-md-center">
         <!-- 關鍵字搜尋 -->
@@ -26,14 +25,16 @@
                 </div>
             </div>
         </form>
+        <button id="demo_keyword" class="btn btn-outline-secondary btn-sm mt-2" style="float:left">Demo 關鍵字</button>
 
         <div class="dropdown ms-md-auto d-flex col-md-4">
             <!-- 每頁顯示筆數 -->
-            <div class="d-flex select-limit js-select-limit mx-5" style="white-space: nowrap; align-items: center;">
+            <div class="d-flex select-limit js-select-limit mx-5"
+                 style="white-space: nowrap; align-items: center; float:right; border:solid 1px #D0D0D0; border-radius:5px; padding:0 10px">
                 每頁顯示 :
                 <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="20">20</button>
-                <button type="button" class="btn btn-link pageSize" style="margin: -10px" value="50">50</button>
-                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="70">70</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="40">40</button>
+                <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="60">60</button>
                 筆
             </div>
 
@@ -41,7 +42,7 @@
             {
                 <!-- 排序方式 -->
                 <div class="dropdown ms-md-auto">
-                    <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
+                    <select class="form-select" name="displayorder" id="displayorder" style="min-width:150px" aria-label="Floating label select example">
                         <option value="0">最新商品</option>
                         <option value="1">由舊到新</option>
                         <option value="2">熱門商品</option>
@@ -51,9 +52,6 @@
                 </div>
             }
         </div>
-        @*<div class="row" style="background-color:sandybrown">
-            @*預計用於RWD包覆搜尋欄，但產生了其他排版問題*@
-        @*</div>*@
 </nav>
 
 
@@ -96,6 +94,8 @@
                                     <input type="number" min="0" id="maxPrice" placeholder="最高價" style="width:75px; height:32px" />
                                     <br />
                                     <button type="button" id="sendPriceRange" class="btn btn-secondary my-2" style="float:right">查詢</button>
+                                    <br />
+                                    <button id="demo_price" class="btn btn-outline-secondary btn-sm mx-2" style="float:right">Demo 價格區間</button>
                                 </div>
                             </li>
 
@@ -115,7 +115,7 @@
                 </ol>
             </nav>
 
-            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3 justify-content-around" id="showThisPageMerchandise">
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-5 my-3 mx-5" id="showThisPageMerchandise">
                 <!-- 透過Ajax產生商品櫥窗 -->
             </div>
 
@@ -125,17 +125,26 @@
                     <!-- 透過Ajax產生分頁標籤 -->
                 </ul>
             </nav>
-
         </div>
-
     </div>
-</div>
-<div>
-    <!---------------------------------------------------------- 推薦商品(未實裝) ---------------------------------------------------------->
 </div>
 
 @section Scripts{
+    <!-- DEMO按鈕 -->
     <script>
+        $("#demo_keyword").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("鼠");
+        })
+        $("#demo_price").on("click", (e) => {
+            e.preventDefault();
+            $("#minPrice").val(250);
+            $("#maxPrice").val(1000);
+        })
+    </script>
+    <!-- 產生商城內容 -->
+    <script>
+        // #region 呈現初始頁面
         //給予初值
         let txtKeyword = "@ViewBag.txtKeyword";
         let searchCondition = @ViewBag.searchCondition;
@@ -145,27 +154,18 @@
         let pageindex = @ViewBag.PageIndex;
         let minPrice = @(ViewBag.minPrice ?? "null");
         let maxPrice = @(ViewBag.maxPrice ?? "null");
-        let tagId = @(ViewBag.tagId ?? "null");
-
+        let tagId = @ViewBag.tagId;
         //呈現初始頁面
         SearchProducts();
-        //設定下拉選單初值
+        //設定搜尋條件初值呈現
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
+        // #endregion
 
-        //搜尋所有商品(重置搜尋條件)
-        $("#defaultSearch").on("click", () => {
-            txtKeyword = "";
-            sideCategoryId = 0;
-            pageindex = 1;
-            minPrice = null;
-            maxPrice = null;
-            tagId = 0;
-            SearchProducts();
-        });
-
+        // #region 設定搜尋參數
         //搜尋條件
         $(".conditionname").on("change", (e) => {
             searchCondition = $(".conditionname").val();
@@ -189,6 +189,8 @@
         $(".pageSize").on("click", (e) => {
             pageSize = $(e.currentTarget).val();
             pageindex = 1;
+            $(`.pageSize`).attr("style", "margin: -5px")
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
             SearchProducts();
         });
         //價格區間
@@ -198,10 +200,24 @@
             pageindex = 1;
             SearchProducts();
         });
-
+        //搜尋所有商品(重置搜尋條件)
+        $("#defaultSearch").on("click", () => {
+            txtKeyword = "";
+            $("#search-input").val("");
+            sideCategoryId = 0;
+            pageindex = 1;
+            minPrice = null;
+            maxPrice = null;
+            $("#minPrice").val(null);
+            $("#maxPrice").val(null);
+            tagId = 0;
+            SearchProducts();
+        });
+        // #endregion
+        
         async function SearchProducts() {
             $(async () => {
-                //產生分頁標籤
+                // #region 產生分頁標籤
                 const responseforlength = await fetch(`@Url.Content("~/ApiMall/GetSearchResultLength/")?txtKeyword=${txtKeyword}&`
                     + `searchCondition=${searchCondition}&pageSize=${pageSize}&PageIndex=${pageindex}&`
                     + `sideCategoryId=${sideCategoryId}&minPrice=${minPrice}&maxPrice=${maxPrice}&tagId=${tagId}`);
@@ -265,10 +281,12 @@
                                                     </a>
                                                   </li>`;
                 pagingContainer.innerHTML = indexRow;
+                // #endregion
 
+                // #region 分頁標籤按鈕
                 //改變當前頁籤格式
-                $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
-                //分頁點選+點選後
+                $(`.showIndex[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
+                //點選分頁標籤
                 $(".showIndex").on("click", (e) => {
                     pageindex = $(e.currentTarget).attr("val-index");
                     SearchProducts();
@@ -286,8 +304,9 @@
                         SearchProducts();
                     }
                 })
+                // #endregion
 
-                //產生商品櫥窗
+                // #region 產生商品櫥窗
                 const pageContent = document.querySelector("#showThisPageMerchandise");
                 pageContent.innerHTML = "<h4>找不到符合的商品</h4>";
 
@@ -298,30 +317,29 @@
                     const returnJsonBag = await response.text();
                     const searchResult = JSON.parse(returnJsonBag);
 
-                    //var windows = searchResult.map(window => {
-                    //    const { price, specId, merchandiseId, brandName } = window;
-                    //    const showName = (window.fullName.length > 11) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
-                    //    const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
-                    //    return (
-                    //        `<div class="col">\
-                    //                            <div class="card my-3 mx-2 text-center border-light ">\
-                    //                                <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
-                    //                                                                + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
-                    //                                <div class="card-body ">\
-                    //                                    <h6 class="card-text ">《 ${brandName} 》</h6>\
-                    //                                    <h6 class="card-title ">${showName}</h6>\
-                    //                                    <h5 class="card-text ">${price} 元</h5>\
-                    //                                    <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
-                    //                                </div>\
-                    //                            </div>\
-                    //                        </div>`)
-                    //            })
-                    //pageContent.innerHTML = windows.join("");
-
+                    /*(改用方法生成商品卡片)
+                    var windows = searchResult.map(window => {
+                        const { price, specId, merchandiseId, brandName } = window;
+                        const showName = (window.fullName.length > 11) ? window.fullName.substring(0, 10) + "  ..." : window.fullName;
+                        const imageUrl = (window.imageUrl == null) ? "default.png" : window.imageUrl;
+                        return (
+                            `<div class="col">\
+                                                <div class="card my-3 mx-2 text-center border-light ">\
+                                                    <img src="@Url.Content("~/uploads/merchandisePicture/")${imageUrl}" data-specid="${specId}" data-merchandisid="${merchandiseId}"`
+                                                                                    + ` class="w-100 img-thumbnail hover-overlay gotoViewpage">\
+                                                    <div class="card-body ">\
+                                                        <h6 class="card-text ">《 ${brandName} 》</h6>\
+                                                        <h6 class="card-title ">${showName}</h6>\
+                                                        <h5 class="card-text ">${price} 元</h5>\
+                                                        <a href="#" class="btn btn-outline-secondary add_to_Cart" data-specid="${specId}" style="float:right"><i class="fa fa-shopping-cart"></i></a>\
+                                                    </div>\
+                                                </div>\
+                                            </div>`)
+                                })
+                    pageContent.innerHTML = windows.join("");*/
                     let thispageContent = generateProductCard(searchResult);
-
                     pageContent.innerHTML = thispageContent;
-                    bindHoverEvents();
+                    bindHoverEvents();  //叫用hover特效
 
                     //進入商品檢視頁
                     $(".gotoViewpage").on("click", (e) => {
@@ -330,7 +348,7 @@
                         window.location.href = `/Mall/Viewpage/?MerchandiseId=${targetMerchandisid}&SpecId=${targetSpecid}`;
                     });
 
-                    //加入購物車
+                    /*加入購物車功能(已取消)
                     const loginModal = new bootstrap.Modal(document.querySelector('#loginModal'));
                     $(".add_to_Cart").on("click", async (e) => {
                         if (ROLE != "會員") {
@@ -353,6 +371,7 @@
                                     timer: 600,
                                     allowOutsideClick: false
                                 })
+                                refreshNavbarCart();
                             }
                             if (!isSuccess) {
                                 Swal.fire({
@@ -363,8 +382,9 @@
                                 })
                             }
                         }
-                    })
+                    })*/
                 }
+                // #endregion
             })
 
             //呈現側邊商品類別選項
@@ -385,6 +405,9 @@
                     sideCategoryId = $(e.currentTarget).attr("val-category");
                     SearchProducts();
                 })
+
+                //改變側邊選項格式
+                $(`.selectCategory[val-category="${sideCategoryId}"]`).attr("style", "color: #4B0091; font-weight: bold");
             })
 
             //呈現側邊寵物類別選項
@@ -405,21 +428,25 @@
                     tagId = $(e.currentTarget).attr("val-tag");
                     SearchProducts();
                 })
+
+                //改變側邊選項格式
+                $(`.selectTag[val-tag="${tagId}"]`).attr("style", "color: #4B0091; font-weight: bold");
             })
         }
 
+        //產生商品卡片
         function generateProductCard(searchResult) {
             return searchResult.map(value => {
-                const { merchandiseImageUrl, specImageUrl, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName } = value;
+                const { merchandiseImageUrl, specImageUrl, discountPercentage, price, popularity, merchandiseId, specId, merchandiseName, specName, brandName, score } = value;
                 let imageUrl = 'specPicture/default.png'
                 if (!!merchandiseImageUrl) imageUrl = 'merchandisePicture/' + merchandiseImageUrl
                 if (!!specImageUrl) imageUrl = 'specPicture/' + specImageUrl
                 const canceledPrice = (discountPercentage == 100) ? '' :
                     `<del class="text-secondary mt-auto" style="font-size:3px">$<span>${price}</span></del>`
-                const score = (Math.round(popularity * 10) / 10).toFixed(1);
+                const showscore = (Math.round(score * 10) / 10).toFixed(1);
                 const href = `${ROOT}/Mall/Viewpage/?MerchandiseId=${merchandiseId}&SpecId=${specId}`
                 return `
-                                   <div class="p-2 position-relative mx-1 my-1 displayedSpec gotoViewpage"
+                                   <div class="p-2 position-relative mx-4 my-3 displayedSpec gotoViewpage"
                                                                         data-specid="${specId}" data-merchandisid="${merchandiseId}">                                   
                                         <figure class="partial-image-container">
                                         <img src="${ROOT}/uploads/${imageUrl}" alt="...">                                           
@@ -432,7 +459,7 @@
                                         <div class="my-0 d-flex px-1">
                                             ${canceledPrice}
                                             <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
-                                            <span>${score}</span>
+                                            <span>${showscore}</span>
                                         </div>
                                         <div class="text-danger px-1">
                                             NTD$<span>${Math.round(price * discountPercentage / 100)}</span>
@@ -442,7 +469,7 @@
             }).join('')
         }
 
-        //hover事件
+        //商品卡片hover特效
         function bindHoverEvents() {
             $('.displayedSpec').hover(
                 e => {
@@ -464,6 +491,14 @@
         select {
             max-width: 120px;
             min-width: 120px
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .pageSize {
+            text-decoration: none;
         }
     </style>
 }

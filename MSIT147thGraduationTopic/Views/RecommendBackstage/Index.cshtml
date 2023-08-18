@@ -8,7 +8,7 @@
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">推薦系統</li>
-            <li class="breadcrumb-item active" aria-current="page">熱門排序</li>
+            <li class="breadcrumb-item active" aria-current="page">推薦排序</li>
         </ol>
     </nav>
 </header>
@@ -21,7 +21,7 @@
 
             <div class=" bg-light rounded shadow p-4 mb-4">
                 <h4>
-                    熱門度更新
+                    推薦順序更新
                 </h4>
                 <p>
                     上次更新：<span id="lastExecuteTime"></span>
@@ -51,7 +51,7 @@
 
             <div class=" bg-light rounded shadow p-4 mb-4">
                 <h4>
-                    熱門度前10
+                    推薦排名前10
                 </h4>
                 <ol id="listPopularSpecs">
                 </ol>
@@ -66,7 +66,7 @@
             <div class="bg-light rounded shadow p-2 mb-5">
 
                 <div class="p-4">
-                    <h1 class="mb-4">熱門排序</h1>
+                    <h1 class="mb-4">推薦排序</h1>
 
 
                     <h5 class="mb-4">顧客評分計算</h5>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="col-lg-8 mb-5">
 
-                            <div class="input-group">
+                            <div class="input-group mt-2">
                                 <label for="spanEvaluationWeight" class="form-label">
                                     加權倍數：
                                     <span id="spanEvaluationWeight">@ViewBag.RatingData.EvaluationWeight</span>
@@ -106,7 +106,7 @@
                         </div>
                         <div class="col-lg-8 mb-5">
 
-                            <div class="input-group">
+                            <div class="input-group mt-2">
                                 <label for="rangePurchaseWeight" class="form-label">
                                     加權倍數：
                                     <span id="spanPurchaseWeight">@ViewBag.RatingData.PurchasedWeight</span>
@@ -217,8 +217,8 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
                 </div>
                 <div>
-                    <button id="demoCat">demo 貓</button>
-                    <button id="demoDog">demo 狗</button>
+                    <button class="btn btn-sm btn-outline-secondary mx-2" id="demoCat">demo 貓</button>
+                    <button class="btn btn-sm btn-outline-secondary mx-2" id="demoDog">demo 狗</button>
                 </div>
             </div>
         </div>

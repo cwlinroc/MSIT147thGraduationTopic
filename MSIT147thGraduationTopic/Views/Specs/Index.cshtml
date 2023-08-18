@@ -3,6 +3,11 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "商品規格檢視";
+    string txtKeyword = Context.Request.Cookies["txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
+    int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
 }
 
 <div class="container">
@@ -31,17 +36,45 @@
             </thead>
             <tbody>
                 <tr>
-                    <td id="mName"></td>
-                    <td id="mBrand"></td>
-                    <td id="mCategory"></td>
+                    <td id="mName" style="min-width:110px"></td>
+                    <td id="mBrand" style="min-width:100px"></td>
+                    <td id="mCategory" style="min-width:100px"></td>
                     <td id="mDescription"></td>
                     <td><img id="mImage" class="imgtumbnail" /></td>
                 </tr>
             </tbody>
         </table>
+        <!-- 排序方式 -->
+        @*<div class="input-group" style="display: flex; justify-content: flex-end;">
+            <label class="input-group-text" for="displayorder">排序依據</label>
+            <select class="form-select" name="displayorder" id="displayorder" style="max-width:150px" aria-label="Floating label select example">
+                <option value="0">由新到舊</option>
+                <option value="1">由舊到新</option>
+                <option value="2">依名稱遞增</option>
+                <option value="3">依名稱遞減</option>
+                <option value="4">熱門度高至低</option>
+                <option value="5">熱門度低至高</option>
+            </select>
+        </div>
         <p>
             @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseid = ViewBag.MerchandiseId}, new { @class = "btn btn-primary" })
-        </p>
+        </p>*@
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p>
+                @Html.ActionLink("新增商品規格", "Create", "Specs", new { merchandiseid = ViewBag.MerchandiseId }, new { @class = "btn btn-primary", style = "width: 130px" })
+            </p>
+            <div class="input-group" style="display: flex; justify-content: flex-end;">
+                <label class="input-group-text" for="displayorder">排序依據</label>
+                <select class="form-select" name="displayorder" id="displayorder" style="max-width:150px" aria-label="Floating label select example">
+                    <option value="0">由新到舊</option>
+                    <option value="1">由舊到新</option>
+                    <option value="2">依名稱遞增</option>
+                    <option value="3">依名稱遞減</option>
+                    <option value="4">熱門度高至低</option>
+                    <option value="5">熱門度低至高</option>
+                </select>
+            </div>
+        </div>
         <hr />
         <table class="table table-hover">
             <thead>
@@ -122,7 +155,8 @@
             </tbody>
         </table>
         <div class="form-group">
-            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
+                                PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
         </div>
     </div>
 </div>
@@ -142,10 +176,11 @@
                                 <!-- 輸入Tag名稱 + AutoComplete -->
                                 <div class="form-label mb-3">
                                     <label for="TagName" class="fw-bold">標籤名稱</label>
-                                    <input class="form-control" id="TagName" type="text" />
+                                    <input class="form-control" id="TagName" type="text"/>
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-primary me-2" id="btnAddTag">新增標籤</button>
+                                    <button id="demo" class="btn btn-outline-secondary btn-sm mx-2" style="float:right">Demo 新建標籤</button>
                                 </div>
                                 <div class="my-3" id="fastAddArea">
                                     
@@ -164,8 +199,37 @@
 </div>
 
 @section Scripts {
-    <!-- 產生商品資料 -->
+    <!-- DEMO按鈕 -->
     <script>
+        //新增標籤
+        $("#demo").on("click", (e) => {
+            e.preventDefault();
+            $("#TagName").val("寵物美容");
+        })
+    </script>
+    <!-- 管理規格 -->
+    <script>
+        // #region 排序功能
+        //設定初值呈現
+        let displayorder = @ViewBag.displayorder;
+        $(() => {
+            $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+        })
+
+        //變更排序方式
+        $("#displayorder").on("change", (e) => {
+            displayorder = $("#displayorder").val();
+            pageindex = 1;
+            SearchProducts();
+        });
+
+        //搜尋
+        function SearchProducts() {
+            window.location.href = `/Specs/Index/?merchandiseid=${merchandiseid}&displayorder=${displayorder}`;
+        };
+        // #endregion
+
+        // #region 產生商品資料
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
         const mCategory = document.querySelector("#mCategory");
@@ -190,10 +254,12 @@
                         : "@Url.Content("~/uploads/merchandisePicture/default.png")";
             })
         })
-    </script>
-    <!-- 確認刪除 -->
-    <script>
-        $(".fordelete").click((e) => {
+        // #endregion
+
+        // #region 確認刪除
+        $(".fordelete").click(async (e) => {
+            //權限驗證
+            if (!await validateRole('經理')) return
             //if (!confirm('確定刪除規格嗎？')) return;
             Swal.fire({
                 title: '確定刪除規格嗎？',
@@ -235,9 +301,11 @@
                 }
             })
         })
+        // #endregion
     </script>
     <!-- 管理標籤 -->
     <script>
+        // #region 叫用標籤管理視窗 & AutoComplete功能
         const merchandiseid = @ViewBag.MerchandiseId;
         const SpecTagModal = new bootstrap.Modal(document.querySelector('#SpecTagModal'));
         let currentSpecId;
@@ -263,8 +331,9 @@
                 minLength: 1
             });
         })
+        // #endregion
 
-        //新增tag
+        // #region 新增標籤
         $("#btnAddTag").on("click", async (e) => {
             e.preventDefault();
             const tagName = $("#TagName").val();
@@ -296,8 +365,9 @@
                 $("#btnAddTag").click();
             }
         })
+        // #endregion
 
-        //產生快速標籤按鈕
+        // #region 產生快速標籤按鈕
         $(() => {
             const fastAddArea = document.querySelector("#fastAddArea");
             fastAddArea.innerHTML += `<span>快速標籤：</span>`;
@@ -316,8 +386,9 @@
                 ShowCurrentTag(currentSpecId);
             })
         })
-        
-        //陳列既有tag
+        // #endregion
+
+        // #region 陳列既有標籤 & 刪除功能
         async function ShowCurrentTag(currentSpecId) {
             const currentTag = document.querySelector("#currentTag");
             const response = await fetch(`@Url.Content("~/ApiTag/CurrentTags/")${currentSpecId}`);
@@ -362,6 +433,7 @@
                 })
             })
         }
+        // #endregion
     </script>
 }
 

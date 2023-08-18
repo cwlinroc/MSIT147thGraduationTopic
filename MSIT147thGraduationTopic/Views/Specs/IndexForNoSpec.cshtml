@@ -31,9 +31,9 @@
             </thead>
             <tbody>
                 <tr>
-                    <td id="mName"></td>
-                    <td id="mBrand"></td>
-                    <td id="mCategory"></td>
+                    <td id="mName" style="min-width:110px"></td>
+                    <td id="mBrand" style="min-width:100px"></td>
+                    <td id="mCategory" style="min-width:100px"></td>
                     <td id="mDescription"></td>
                     <td><img id="mImage" class="imgtumbnail" /></td>
                 </tr>
@@ -57,6 +57,7 @@
 </div>
 
 @section Scripts {
+    <!-- 產生商品資料 -->
     <script>
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
@@ -64,7 +65,6 @@
         const mDescription = document.querySelector("#mDescription");
         const mImage = document.querySelector("#mImage");
         const merchandiseid = @ViewBag.MerchandiseId;
-        console.log("merchandiseid = "+merchandiseid);
 
         $(() => {
             const xhr = new XMLHttpRequest();
@@ -83,7 +83,6 @@
                     : "@Url.Content("~/uploads/merchandisePicture/default.png")";
             })
         })
-
     </script>
 }
 

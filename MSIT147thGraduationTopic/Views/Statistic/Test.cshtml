@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Test";
+    Layout = "_BackstagePage";
+}
+
+<div class="p-2 mt-2">
+    <!--引入這個，並更改data-merchandiseid-->
+    <div style="width:300px;height:200px;">
+        <canvas id="evaluationChart" width="300" height="200" data-merchandiseid="3"></canvas>
+    </div>
+
+
+</div>
+
+@section Scripts{
+    <script type="module" src="~/js/statistic/evaluationScores.js"></script>
+}
