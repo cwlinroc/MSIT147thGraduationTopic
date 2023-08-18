@@ -112,7 +112,7 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         public ActionResult<bool> AccountHasExist(string account)
         {
             if (_context.Members.Any(m => m.Account == account)
-                && _context.Employees.Any(m => m.EmployeeAccount == account))
+                || _context.Employees.Any(m => m.EmployeeAccount == account))
             {
                 return true;
             }

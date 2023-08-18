@@ -76,7 +76,9 @@ const myValid = new MyBootsrapValidator(document.querySelector('.needs-validatio
 
 async function accountExist(account) {
     const response = await fetch(`${ROOT}/api/apimember/accountexist?account=${account}`)
-    return await response.json()
+    const result = await response.json()
+    console.log(result)
+    return result
 }
 
 function createValidator() {
@@ -89,9 +91,10 @@ function createValidator() {
 
         const account = document.querySelector('#account')
         const accountHasValue = !!account.value
-        const accountHasExist = await accountExist(account)
+        const noDuplicateAccount = !(await accountExist(account.value))
         account.setValidate(() => accountHasValue, '請輸入帳號')
-            .setValidate(() => accountHasExist, '帳號名稱已存在!')
+            .setValidate(() => noDuplicateAccount, '帳號名稱已存在!')
+        console.log(noDuplicateAccount)    
         await new Promise(resolve => setTimeout(resolve, 300))
 
         const password = document.querySelector('#password')
@@ -120,7 +123,7 @@ function createValidator() {
         await new Promise(resolve => setTimeout(resolve, 300))
 
         return nameHasValue && phoneHasValue && phonePatternValid && emailHasValue && passwordValid
-            && accountHasValue && emailPatternValid && accountHasExist
+            && accountHasValue && emailPatternValid && noDuplicateAccount
     })
     return myValid.startValidate()
 }
