@@ -115,21 +115,32 @@
 
 
         stars.click(function () {
+            score = $(this).attr('id').split('_')[1];
+            //console.log($(this).parent().find('input').attr('id'));
             //若要改評分
             if (score > 0) {
                 $(this).parent().children().attr('src', starImages[0]);
                 $(this).parent().children().bind('mouseenter').bind('mouseleave');
+                   
+                if (score === '5' ) {
+                    var clickedStarIndex = parseInt($(this).attr('id').split('_')[1]);
+                    if (clickedStarIndex===5){
+                        $(this).addClass('rotate-animation')
+                        // 使用 setTimeout 在旋轉一圈後移除效果
+                        setTimeout(() => {
+                            $(this).removeClass('rotate-animation');
+                        }, 600)
+                    }
+                }
             }
             //else{} 直接執行再次評分
             lightingStar($(this));
             $(this).parent().children().unbind('mouseenter').unbind('mouseleave');
             //$(this).siblings("img").unbind('mouseenter').unbind('mouseleave');
 
-            score = $(this).attr('id').split('_')[1];
-            //console.log($(this).parent().find('input').attr('id'));
             $(this).parent().find('input').val(score);  //將score值放入input
             //console.log($(this).parent().find('input').val());
-        });
+        })
 
 
         let lightingStar = function (obj) {
@@ -151,7 +162,7 @@
             $("[id^='inputscore_']").each(function (index, score) {
                
                 console.log(score.value)
-                if (score.value == '') {
+                if (score.value == 0) {
                     isAllHaveScore = false;
                     return false;
                 }
@@ -177,6 +188,20 @@
             }
         })
     </script>
+    <style>
+    @@keyframes rotate360 {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .rotate-animation {
+        animation: rotate360 1s linear infinite;
+    }
+</style>
 }
 
 
