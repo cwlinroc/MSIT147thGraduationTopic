@@ -20,40 +20,44 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             return coupons.Select(c => c.ToDto());
         }
 
+        
+
+        public IEnumerable<CouponUsedStatus> GetReceivableCoupon(int memberId)
+        {
+            var activateCoupons = _context.Coupons.Where(c => c.CouponStartDate < DateTime.Now
+                && c.CouponEndDate > DateTime.Now).Select(c=>c.toUsedStatusDto()).ToList();
+            var hasReceive = _context.CouponOwners.Where(c => c.MemberId == memberId)
+                .Select(c => new CouponUsedStatus
+                {
+                    CouponId = c.CouponId,
+                    CouponName = c.Coupon.CouponName,
+                    CouponStartDate = c.Coupon.CouponStartDate,
+                    CouponEndDate =c.Coupon.CouponEndDate,
+                    UsedStatus = (c.CouponUsed) ? 3 : 2
+                }).ToList();
+
+            foreach (var coupon in activateCoupons)
+            {
+                if (hasReceive.Select(c => c.CouponId).Contains(coupon.CouponId))
+                {
+                    coupon.UsedStatus = 2;
+                }
+                else
+                {
+                    coupon.UsedStatus = 1;
+                }
+            }
+            var result = activateCoupons
+                .Where(c=>!hasReceive.Select(o=>o.CouponId).Contains(c.CouponId))
+                .Concat(hasReceive);
+            return result;
+        }
+
         public IEnumerable<CouponDto> ShowCoupons(int id)
         {
             var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == id);
 
             return coupons.ToList().Select(c => c.ToDto());
-        }
-
-        public IEnumerable<CouponDto> ShowReceivableCoupons(int typeId , int memberId)
-        {
-            var coupons = _context.Coupons.Where(c => c.CouponDiscountTypeId == typeId 
-                && c.CouponEndDate > DateTime.Now
-                && c.CouponStartDate < DateTime.Now).ToList();
-
-            foreach (var coupon in coupons.ToList())
-            {
-                if (_context.CouponOwners
-                    .Any(o => o.CouponId == coupon.CouponId && o.MemberId == memberId))
-                {
-                    coupons.Remove(coupon);
-                }
-            }
-
-            return coupons.Select(c => c.ToDto());
-        }
-
-
-
-        public IEnumerable<CouponFrontDto> ShowCouponsFront(int id)
-        {
-            var coupons = _context.CouponReceives.Where(c => c.CouponDiscountTypeId == id
-                && c.CouponStartDate < DateTime.Now
-                && c.CouponEndDate > DateTime.Now);
-            
-            return coupons.ToList().Select(c => c.ToFrontDto());
         }
 
         public int CreateCoupon(CouponDto cDto)

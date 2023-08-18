@@ -3,6 +3,7 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "商品列表檢視";
+    int specdisplayorder = int.TryParse(Context.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0;
 }
 
 <div class="container">
@@ -31,10 +32,13 @@
                         </div>
                     </div>
                     <!-- 排序方式 -->
-                    <div class="dropdown" style="width:150px;float:right">
+                    <div class="input-group" style="display: flex; justify-content: flex-end; max-width:250px">
+                        <label class="input-group-text" for="displayorder">排序依據</label>
                         <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
                             <option value="0">由新到舊</option>
                             <option value="1">由舊到新</option>
+                            <option value="2">依名稱遞增</option>
+                            <option value="3">依名稱遞減</option>
                         </select>
                     </div>
                     <!-- 每頁顯示筆數 -->
@@ -49,14 +53,15 @@
                 </div>
             }
         </div>
-        <div class="form-group" style="float:right">
-            @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" })
-            @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <p>
+                @Html.ActionLink("新增商品", "Create", "Merchandises", null, new { @class = "btn btn-primary" })
+            </p>
+            <div class="form-group">
+                @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" })
+                @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
+            </div>
         </div>
-        <br />
-        <p>
-            @Html.ActionLink("新增商品", "Create", "Merchandises", null, new { @class = "btn btn-primary" })
-        </p>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -92,15 +97,15 @@
                         count++;
                         <tr>
                             <td>
-                                @count
+                                @(count + ((ViewBag.PageIndex - 1) * ViewBag.pageSize))
                             </td>
                             <td style="max-width:150px">
                                 @Html.DisplayFor(modelItem => item.MerchandiseName)
                             </td>
-                            <td>
+                            <td style="width:150px">
                                 @Html.DisplayFor(modelItem => item.BrandName)
                             </td>
-                            <td>
+                            <td style="max-width:150px">
                                 @Html.DisplayFor(modelItem => item.CategoryName)
                             </td>
                             <td style="max-width:300px;">
@@ -127,7 +132,7 @@
                             </td>
                             <td>
                                 @Html.ActionLink("修改資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
-                                @Html.ActionLink("檢視規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("檢視規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId, displayorder=specdisplayorder }, new { @class = "btn btn-success" }) |
                                 <button class="btn btn-danger fordelete" data-merchandiseid="@item.MerchandiseId">刪除</button> |
                                 @Html.ActionLink("檢視評價", "Index", "Evaluations", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-info" })
                             </td>
@@ -160,6 +165,7 @@
     </script>
     <!-- 搜尋商品按鈕 -->
     <script>
+        // #region 呈現初始頁面
         let txtKeyword = "@ViewBag.txtKeyword";
         let searchCondition = @ViewBag.searchCondition;
         let pageindex = @ViewBag.PageIndex;
@@ -172,7 +178,9 @@
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
             $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
+        // #endregion
 
+        // #region 設定搜尋參數
         //搜尋條件
         $(".conditionname").on("change", (e) => {
             searchCondition = $(".conditionname").val();
@@ -201,13 +209,14 @@
         function SearchProducts() {
             window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}&displayorder=${displayorder}&pageSize=${pageSize}`;
         };
+        // #endregion
 
-        //產生分頁標籤
         $(async () => {
+            // #region 產生分頁標籤
             const responseforlength = await fetch(`@Url.Content("~/ApiMerchandise/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}&searchCondition=${@ViewBag.searchCondition}`);
             const returnLengthBag = await responseforlength.text();
             const resultLength = JSON.parse(returnLengthBag);
-            const totalpage = Math.ceil(resultLength / 20);
+            const totalpage = Math.ceil(resultLength / pageSize);
             const pagingContainer = document.querySelector("#pagingContainer");
 
             let indexRow = `<li class="page-item border-light toPrevious">\
@@ -265,7 +274,9 @@
                                                 </a>
                                              </li>`;
             pagingContainer.innerHTML = indexRow;
+            // #endregion
 
+            // #region 分頁標籤按鈕
             //改變當前頁籤格式
             $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
             //分頁點選+點選後
@@ -286,16 +297,20 @@
                     SearchProducts();
                 }
             })
+            // #endregion
 
+            // #region 查無符合資料
             if (resultLength == 0) {
                 const showResult = document.querySelector("#showResult");
                 showResult.innerHTML = "<h4>找不到符合的商品</h4>";
             }
+            // #endregion
         })
-    </script>
-    <!-- 刪除商品 -->
-    <script>
-        $(".fordelete").click((e) => {
+
+        // #region 刪除商品
+        $(".fordelete").click(async (e) => {
+            //權限驗證
+            if (!await validateRole('經理')) return
             //if (!confirm('確定刪除商品嗎？')) return;
             Swal.fire({
                 title: '確定刪除類別嗎？',
@@ -343,6 +358,7 @@
                 }
             })
         })
+                    // #endregion
     </script>
 }
 
@@ -361,6 +377,10 @@
         .imgtumbnail {
             max-width: 70px;
             min-width: 70px;
+        }
+
+        .pageSize {
+            text-decoration: none;
         }
     </style>
 }

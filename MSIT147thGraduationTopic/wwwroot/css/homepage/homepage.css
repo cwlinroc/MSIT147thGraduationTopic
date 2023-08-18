@@ -22,7 +22,7 @@
 
 .custom-home-carousel-1 {
     background-size: cover;
-    background-image: linear-gradient(to bottom, rgba(33, 37, 41, 1)5%, rgba(255, 245, 235, 0.7)95%), url("../../images/homepage/pexels-anastasia-shuraeva-5124967.jpg"); 
+    background-image: linear-gradient(to bottom, rgba(33, 37, 41, 1)5%, rgba(255, 245, 235, 0.7)95%), url("../../images/homepage/pexels-anastasia-shuraeva-5124967.jpg");
     height: 700px;
 }
 
@@ -51,15 +51,30 @@ div.custom-jumpout {
     position: relative;
 }
 
-@media (min-width: 1050px) {
+@media (min-width: 1400px) {
     div.custom-jumpout {
-        position:absolute;
+        position: absolute;
     }
-    div.custom-title{
-        height:500px;
+
+    div.custom-title {
+        height: 500px;
     }
 }
 
+div.merchandises-container {
+    width: 80%;
+    margin: 0 auto 0 auto;
+}
+@media (min-width: 700px) {
+    div.merchandises-container {
+        width: 70%;
+    }
+}
+@media (min-width: 1200px){
+    div.merchandises-container {
+        width: 100%;
+    }
+}
 
 
 div.custom-title2 {

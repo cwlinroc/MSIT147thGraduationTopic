@@ -1,10 +1,9 @@
 ﻿@using MSIT147thGraduationTopic.Models.Dtos
 @using MSIT147thGraduationTopic.ViewComponents;
-@model (IEnumerable<CouponFrontDto> listDiscount,IEnumerable<CouponFrontDto> listRebate)
+@model IEnumerable<CouponUsedStatus>
 @{
     ViewData["Title"] = "優惠券列表";
-    var listA = Model.Item1;
-    var listB = Model.Item2;
+    var data = Model;
 }
 
 <div class="text-center mb-4">
@@ -16,107 +15,50 @@
     </div>
     <div class="col-lg-5 offset-1">
         <div>
-            <div class="container px-5 my-5 ">
-                <div class="row justify-content-center">
-                    <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-Discount-tab" data-bs-toggle="pill" data-bs-target="#pills-Discount" type="button" role="tab" aria-controls="pills-Discount" aria-selected="true">打折券</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-Rebate-tab" data-bs-toggle="pill" data-bs-target="#pills-Rebate" type="button" role="tab" aria-controls="pills-Rebate" aria-selected="false">滿額送</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-Discount" role="tabpanel" aria-labelledby="pills-Discount-tab" tabindex="0">
-                    <div class="container px-5 my-5">
-                        <h2 class="text-center">折價優惠券</h2>
-                        <table class="table table-dark table-hover" id="tabDiscount">
-                            <thead>
+            <div class="container px-5 my-5">
+                <table class="table table-dark table-hover" id="tabDiscount">
+                    <thead>
+                        <tr>
+                            <th scope="col">序號</th>
+                            <th scope="col">優惠券名稱</th>
+                            <th scope="col">開始日期</th>
+                            <th scope="col">結束日期</th>
+                            <th scope="col">狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (var item in Model)
+                            {
                                 <tr>
-                                    <th scope="col">序號</th>
-                                    <th scope="col">優惠券名稱</th>
-                                    <th scope="col">適用對象</th>
-                                    <th scope="col">活動開始日期</th>
-                                    <th scope="col">活動結束日期</th>
-                                    <th scope="col">打折優惠</th>
-                                    <th scope="col">使用狀況</th>
+                                    <td id="CouponId" scope="col">@item.CouponId</td>
+                                    <td id="CouponName" scope="col">@item.CouponName</td>
+                                    <td id="StartDate" scope="col">@item.CouponStartDate</td>
+                                    <td id="EndDate" scope="col">@item.CouponEndDate</td>
+                                    <td id="btnReceive" scope="col">
+                                        @if (item.UsedStatus == 1)
+                                        {
+                                            <button class="btn btn-primary btnReceive" type="button">領取</button>
+                                        }
+                                        else if (item.UsedStatus == 2)
+                                        {
+                                            @:可使用
+                                        }
+                                        else
+                                        {
+                                            @:已使用
+                                        }
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @{
-                                    foreach (CouponFrontDto c in Model.listDiscount)
-                                    {
-                                        string used = c.CouponUsed ? "已使用" : "尚未使用";
-                                        <tr>
-                                            <td id="DiscountId" scope="col">@c.CouponId</td>
-                                            <td id="DiscountName" scope="col">@c.CouponName</td>
-                                            <td id="DiscountTagId" scope="col">@c.CouponTagId</td>
-                                            <td id="DiscountStartDate" scope="col">@c.CouponStartDate</td>
-                                            <td id="DiscountEndDate" scope="col">@c.CouponEndDate</td>
-                                            <td id="DiscountValue" scope="col">@c.CouponDiscount.ToString("#'%'")</td>
-                                            <td id="DiscountUsed" scope="col">@used</td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="pills-Rebate" role="tabpanel" aria-labelledby="pills-Rebate-tab" tabindex="0">
-                <div class="container px-5 my-5">
-                    <h2 class="text-center">滿額送優惠券</h2>
-                    <form id="listOfRebate" name="listOfRebate" data-index="-1" class="needs-validation" novalidate>
-                        <table class="table table-dark table-hover" id="tabRebate">
-                            <thead>
-                                <tr>
-                                    <th scope="col">序號</th>
-                                    <th scope="col">優惠券名稱</th>
-                                    <th scope="col">適用對象</th>
-                                    <th scope="col">活動開始日期</th>
-                                    <th scope="col">活動結束日期</th>
-                                    <th scope="col">額度門檻</th>
-                                    <th scope="col">折扣金額</th>
-                                    <th scope="col">使用狀況</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @{
-                                    foreach (CouponFrontDto c in Model.listRebate)
-                                    {
-                                        string used = c.CouponUsed ? "已使用" : "尚未使用";
-                                        <tr>
-                                            <td id="RebateId" scope="col">@c.CouponId</td>
-                                            <td id="RebateName" scope="col">@c.CouponName</td>
-                                            <td id="RebateTagId" scope="col">@c.CouponTagId</td>
-                                            <td id="RebateStartDate" scope="col">@c.CouponStartDate</td>
-                                            <td id="RebateEndDate" scope="col">@c.CouponEndDate</td>
-                                            <td id="RebateCondition" scope="col">@c.CouponCondition.GetValueOrDefault().ToString("#.##")</td>
-                                            <td id="RebateDiscount" scope="col">@c.CouponDiscount.ToString("#.##")</td>
-                                            <td id="DiscountUsed" scope="col">@used</td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </form>
-                </div>
+                            }
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
-        @*<nav aria-label="Page navigation">
-        <ul class="pagination pagination-lg justify-content-center">
-        <li class="page-item"><a class="page-link" href="#">上一頁</a></li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">下一頁</a></li>
-        </ul>
-        </nav>*@
     </div>
 </div>
+
 
 @section Styles{
     <style>
@@ -142,11 +84,31 @@
             margin: 5px;
         }
     </style>
-}
+        }
 
 @section Scripts{
     <script>
+        //#region 領取
+        $('.btnReceive').click(function () {
+            const couponId = $(this).closest("tr").find('#CouponId').text();
 
+            $.post({
+                url: "@Url.Content("~/api/apicoupon/couponreceive")",
+                dataType: "json",
+                data: JSON.stringify({ id: couponId }),
+                contentType: "application/json",
+                success: async result => {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '成功',
+                        text: '已領取優惠券',
+                    });
+                    window.location.reload();
+                },
+                error: err => { console.log(err) }
+            })
+        })
+        //#endregion
     </script>
 }
 

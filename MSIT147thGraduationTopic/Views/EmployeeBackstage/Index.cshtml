@@ -158,9 +158,9 @@
             </div>
             <!-- demo buttons -->
             <div class="px-2">
-                <button id="demoAddManager">demo新增經理</button>
-                <button id="demoAddEmployee">demo新增員工</button>
-                <button id="demoEditEmployee">demo修改員工</button>
+                <button class="btn btn-sm btn-outline-secondary mb-2" id="demoAddManager">demo新增經理</button>
+                <button class="btn btn-sm btn-outline-secondary mb-2" id="demoAddEmployee">demo新增員工</button>
+                <button class="btn btn-sm btn-outline-secondary mb-2" id="demoEditEmployee">demo修改員工</button>
             </div>
 
             <div class="modal-footer">
@@ -268,7 +268,9 @@
 
         //Ajax 新增員工
         async function submitAdd() {
-            if (!createValidator()) return;
+            myValid.endtValidate()
+
+            if (!await createValidator()) return;
 
             const formData = new FormData(document.createAndEdit)
 
@@ -330,6 +332,7 @@
         async function submitChangePermission() {
 
             permissionModal.hide()
+
             const confirm = await confirmWithPassword()
             if (!confirm) return
 
@@ -368,12 +371,21 @@
 
             if (!await validateRole('管理員')) return;
 
-            const confirm = await confirmWithPassword()
-            if (!confirm) return
-
             const formData = new FormData(document.createAndEdit)
             const index = event.currentTarget.closest('tr').dataset.index
             const id = employeeData[index].employeeId
+
+            if (id == 1) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: '錯誤',
+                    text: '無法刪除預設管理員',
+                })
+                return
+            }
+
+            const confirm = await confirmWithPassword()
+            if (!confirm) return
 
             showLoadingBox()
             const response = await fetch(`@Url.Content("~/api/apiemployee")/${id}`, { method: 'DELETE' })
@@ -402,15 +414,15 @@
             const trs = employeeData.map((element, index) => {
                 const imageName = (element.avatarName) ? element.avatarName : '_employeeDefault.jpg'
                 return `<tr data-index="${index}" >
-            <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
-            <td>${element.employeeName}</td>
-            <td>${element.employeeAccount}</td>
-            <td>${element.permission}</td>
-            <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
-            <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
-            <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
-            <td></td>
-            </tr>`
+                                                    <td class="ps-5"><img src="@Url.Content("~/uploads/employeeAvatar")/${imageName}" class="small-avatar"></td>
+                                                    <td>${element.employeeName}</td>
+                                                    <td>${element.employeeAccount}</td>
+                                                    <td>${element.permission}</td>
+                                                    <td  class="text-center"><button class="btn btn-primary edit-btn"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                                                    <td  class="text-center"><button class="btn btn-danger permission-btn"><i class="fa-solid fa-pen-nib"></i></button></td>
+                                                    <td class="text-center"><button class="btn btn-danger delete-btn"><i class="fa-solid fa-trash"></i></button></td>
+                                                    <td></td>
+                                                    </tr>`
             })
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.edit-btn').click(changeToEditForm)
@@ -432,6 +444,7 @@
             clearAllValidFeedBack()
             $('#createAndEdit').attr('data-index', '-1')
             showAddDemoButtons()
+            myValid.endtValidate()
             mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitAdd)
@@ -453,6 +466,7 @@
             $('#email').val(employeeData[index].employeeEmail)
             $('#phone').val(employeeData[index].employeePhone)
             showEditDemoButtons()
+            myValid.endtValidate()
             mainModal.show()
             $('#btnSubmit').off()
             $('#btnSubmit').click(submitEdit)
@@ -483,6 +497,15 @@
             if (!await validateRole('管理員')) return;
 
             const index = +$(event.currentTarget).closest('tr').attr('data-index')
+            if (employeeData[index].employeeId == 1) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: '錯誤',
+                    text: '無法更改預設管理員權限',
+                })
+                return
+            }
+
             $('#selectPermission').val(employeeData[index].permission)
                 .attr('data-employeeId', employeeData[index].employeeId)
             permissionModal.show()
@@ -490,7 +513,7 @@
 
 
         //demos
-        $('#demoAddManager').click(e=>{
+        $('#demoAddManager').click(e => {
             $('#name').val('學姐')
             $('#account').val('demoManager88')
             $('#password').val('demoManager88')
@@ -512,8 +535,8 @@
             $('#email').val('NewEmployee@@gmail.com')
         })
 
-        function showAddDemoButtons(){
-            $('#demoAddManager').css('display', 'inline')
+        function showAddDemoButtons() {
+            $('#demoAddManager').css('display', 'none')
             $('#demoAddEmployee').css('display', 'inline')
             $('#demoEditEmployee').css('display', 'none')
         }
@@ -531,7 +554,7 @@
         //新增員工表單驗證
         function createValidator() {
             //// 2. myValid.validateFunction( 回傳bool的函式 ) //自訂判斷整個表單是否格式正確，正確回傳true
-            myValid.validateFunction(() => {
+            myValid.validateFunction(async () => {
                 const name = document.querySelector('#name')
                 const nameValid = Boolean(name.value)
                 //// 3. input元素.setValidate( 回傳bool的函式 , [錯誤訊息字串] )  //自訂判斷這個input是否格式正確，如果有輸入錯誤字串會更改顯示的錯誤訊息
@@ -540,7 +563,8 @@
 
                 const account = document.querySelector('#account')
                 const accountValid = !!account.value
-                account.setValidate(() => accountValid)
+                const noneDuplicateAccount = !!account.value && !(await hasSameAccount(account.value))
+                account.setValidate(() => accountValid, "請輸入帳號").setValidate(() => noneDuplicateAccount, "已有重複的帳號")
 
                 const password = document.querySelector('#password')
                 const passwordValid = !!password.value
@@ -558,7 +582,7 @@
                 email.setValidate(() => emailValid, '請輸入Email').setValidate(() => emailPatternValid, 'Email格式錯誤')
                 //// 要全部都正確，才能送回true確認表單正確
                 return nameValid && phoneValid && emailValid && passwordValid
-                    && accountValid && passwordPatternValid && emailPatternValid
+                    && accountValid && noneDuplicateAccount && passwordPatternValid && emailPatternValid
             })
             //// 4. myValid.startValidate() //開始驗證表單，放在送出的按鈕上做驗證，如果有錯會回傳false
             return myValid.startValidate()
@@ -581,6 +605,11 @@
         function clearAllValidFeedBack() {
             //// 5. myValid.endtValidate() //結束驗證，順便清除顯示錯誤(如果送出表單後頁面會跳走，這個函式就用不到了)
             myValid.endtValidate()
+        }
+
+        async function hasSameAccount(account) {
+            const response = await fetch(`${ROOT}/api/apiemployee/hassamenameaccount?account=${account}`)
+            return await response.json()
         }
 
 

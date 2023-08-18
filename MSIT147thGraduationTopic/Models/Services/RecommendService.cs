@@ -14,7 +14,7 @@ namespace MSIT147thGraduationTopic.Models.Services
         private readonly RecommendRepositoy _repo;
 
         static private bool _inExecution = false;
-        static private TimeSpan _timeInterval = TimeSpan.FromMinutes(15);
+        static private TimeSpan _timeInterval = TimeSpan.FromMinutes(5);
         static private DateTime _lastExecuteTime = DateTime.MinValue;
 
         static public int TimeIntervalMinutes

@@ -91,7 +91,7 @@
                     <hr />
                     <div class="form-group">
                         <input type="submit" value="新增" class="btn btn-primary" id="submit" />
-                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId}, new { @class = "btn btn-secondary" })
+                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId, displayorder=ViewBag.displayorder}, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>
@@ -140,8 +140,8 @@
             $(`input[value="Rabbit"]`).attr("checked", true);
         })
     </script>
-    <!-- 產生商品名稱 -->
     <script>
+        // #region 產生商品名稱
         const merchandiseid = $("#showmerchandiseid").val();
 
         $(() => {
@@ -156,9 +156,9 @@
                 $("#merchandisename").val(merchandise);
             })
         });
-    </script>
-    <!-- 產生圖片路徑、預覽 -->
-    <script>
+        // #endregion
+
+        // #region 產生圖片路徑、預覽圖片
         const display = document.querySelector("#display");
         const imageClear = document.querySelector("#imageClear");
         const selectfile = document.querySelector("#selectfile");
@@ -188,9 +188,9 @@
                 }
             })
         }
-    </script>
-    <!-- 錯誤提示訊息 -->
-    <script>
+        // #endregion
+
+        // #region 錯誤提示訊息
         const alertName = document.querySelector("#alertspanforname");
         const alertPrice = document.querySelector("#alertspanforprice");
         const alertAmount = document.querySelector("#alertspanforamount");
@@ -243,6 +243,7 @@
                 })
             }
         })
+                // #endregion
     </script>
 
 }

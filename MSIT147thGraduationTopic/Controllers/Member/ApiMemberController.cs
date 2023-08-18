@@ -85,6 +85,9 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         {
             try
             {
+                if (_context.Members.Any(m => m.Account == vm.Account))
+                    return Content("帳號已存在");
+
                 var memberId = _service.CreateMember(vm.ToDto(), avatar);
                 string body = _mailService.CreateUrl(vm.Account, _url, "EmailVerify", "Member");
 
@@ -103,6 +106,17 @@ namespace MSIT147thGraduationTopic.Controllers.Member
             {
                 throw;
             }
+        }
+
+        [HttpGet("accountexist")]
+        public ActionResult<bool> AccountHasExist(string account)
+        {
+            if (_context.Members.Any(m => m.Account == account)
+                || _context.Employees.Any(m => m.EmployeeAccount == account))
+            {
+                return true;
+            }
+            return false;
         }
 
         [HttpPut("{id}")]
@@ -176,14 +190,16 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                             };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                    , new ClaimsPrincipal(claimsIdentity));
 
                 return Url.Content("~/employeebackstage/welcome");
             }
 
             var member = await _context.Members
-                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.NickName, o.Email, o.Avatar, o.MemberId, o.IsActivated })
-                .FirstOrDefaultAsync(o => o.Account == record.Account);
+                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.NickName
+                                     , o.Email, o.Avatar, o.MemberId, o.IsActivated })
+                    .FirstOrDefaultAsync(o => o.Account == record.Account);
 
             if (member != null && member.IsActivated)
             {
@@ -194,14 +210,15 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                             {
                                 new Claim(ClaimTypes.Name, member.Account),
                                 new Claim("UserName", member.MemberName),
-                                new Claim("NickName", member.NickName),
+                                new Claim("NickName", member.NickName??""),
                                 new Claim("AvatarName", member.Avatar??""),
                                 new Claim("MemberId", member.MemberId.ToString()),
                                 new Claim(ClaimTypes.Email, member.Email),
                                 new Claim(ClaimTypes.Role, "會員")
                             };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                    , new ClaimsPrincipal(claimsIdentity));
                 HttpContext.Session.SetString("LoadCoupon", "Load");
                 return "reload";
             }

@@ -104,7 +104,7 @@
         })
 
         //inputTimeInterval
-        inputTimeInterval.addEventListener('input', e => {
+        inputTimeInterval.addEventListener('blur', e => {
             e.currentTarget.value = Math.max(e.currentTarget.value, 2)
             e.currentTarget.value = Math.min(e.currentTarget.value, 36)
             timeIntervals = +e.currentTarget.value
@@ -152,6 +152,8 @@
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true

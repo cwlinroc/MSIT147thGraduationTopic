@@ -41,7 +41,9 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             return couponData.ToVM();
         }
+
         public record ReceiveCouponRecord(int id);
+
         [HttpPost("couponreceive")]
         public ActionResult<int> CouponReceive(ReceiveCouponRecord record)
         {

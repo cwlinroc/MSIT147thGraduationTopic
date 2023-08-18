@@ -24,7 +24,8 @@
                     <hr />
                     <div class="form-group">
                         <input type="submit" value="儲存變更" class="btn btn-primary" id="submit" />
-                        @Html.ActionLink("取消", "Index", "Brands", null, new { @class = "btn btn-secondary" })
+                        @Html.ActionLink("取消", "Index", "Brands", new { txtKeyword = ViewBag.txtKeyword,
+                        PageIndex = ViewBag.PageIndex, displayorder = ViewBag.displayorder }, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>
@@ -33,6 +34,7 @@
 </div>
 
 @section Scripts {
+    <!-- 驗證輸入 -->
     <script>
         const alertspan = document.querySelector("#alertspan");
 

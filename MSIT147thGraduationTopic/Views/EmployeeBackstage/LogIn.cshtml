@@ -16,18 +16,17 @@
                     <label for="inputPassword" class="form-label">密碼</label>
                     <input type="password" class="form-control" id="inputPassword" name="password">
                 </div>
-                <button type="button" class="btn btn-primary" id="btnChangeAccount">變更帳號並登入</button>
+                <button type="button" class="btn btn-primary mt-3" id="btnChangeAccount">變更帳號並登入</button>
             </form>
 
 
-            <div class="my-4">
-                <button type="button" id="demo0">demo admin</button>
-                <button type="button" id="demo1">demo demoAdmin99</button>
-                <button type="button" id="demo2">demo demoManager99</button>
-                <button type="button" id="demo3">demo demoEmployee99</button>
+            <div class="mt-auto">
+                <div class="my-4">
+                    <button type="button" class="btn btn-outline-secondary btn-sm mb-2" id="demo1">demo demoAdmin99</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm mb-2" id="demo2">demo demoManager99</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm mb-2" id="demo3">demo demoEmployee99</button>
+                </div>
             </div>
-
-
         </div>
         <div class="col-1 col-md-2 col-lg-3 col-xxl-4"> </div>
     </div>
@@ -41,7 +40,6 @@
     <script>
 
         //demo
-        $('#demo0').click(() => demoInput('admin'))
         $('#demo1').click(() => demoInput('demoAdmin99'))
         $('#demo2').click(() => demoInput('demoManager99'))
         $('#demo3').click(() => demoInput('demoEmployee99'))

@@ -3,11 +3,11 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "編輯商品資料";
-    string txtKeyword = Context.Request.Cookies["txtKeyword"];
-    int searchCondition = int.Parse(Context.Request.Cookies["searchCondition"]);
-    int PageIndex = int.Parse(Context.Request.Cookies["PageIndex"]);
-    int displayorder = int.Parse(Context.Request.Cookies["displayorder"]);
-    int pageSize = int.Parse(Context.Request.Cookies["pageSize"]);
+    string txtKeyword = Context.Request.Cookies["txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
+    int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
 }
 
 <div class="container">
@@ -78,6 +78,7 @@
 @section Scripts {
     <!-- 產生下拉選項 -->
     <script>
+        // #region 產生品牌、類別下拉選項
         const brand = document.querySelector("#inputbrandid");
         const category = document.querySelector("#inputcategoryid");
 
@@ -108,9 +109,9 @@
                 brand.innerHTML = categories.join("");
             })
         })
-    </script>
-    <!-- 產生圖片路徑、預覽 -->
-    <script>
+        // #endregion
+
+        // #region 產生圖片路徑、預覽圖片
         const originalImageUrl = $("#origimageurl").val();
         const originalImagePath = originalImageUrl
             ? "@Url.Content("~/uploads/merchandisePicture/")" + originalImageUrl
@@ -162,9 +163,9 @@
                 }
             })
         }
-    </script>
-    <!-- 錯誤提示訊息 -->
-    <script>
+        // #endregion
+
+        // #region 錯誤提示訊息
         const alertName = document.querySelector("#alertspanforname");
         const alertDescription = document.querySelector("#alertspanfordescription");
         const alertImage = document.querySelector("#alertspanforimage");
@@ -211,15 +212,16 @@
                 })
             }
         })
-    </script>
-    <!-- 計算商品描述字數 -->
-    <script>
+        // #endregion
+
+        // #region 計算商品描述字數
         $("#countdiscription").text($("#descriptionarea").val().length);
 
         const descriptionarea = document.querySelector("#descriptionarea")
         descriptionarea.addEventListener("keyup", () => {
             $("#countdiscription").text($("#descriptionarea").val().length);
         })
+                // #endregion
     </script>
 }
 

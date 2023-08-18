@@ -3,11 +3,11 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "商品類別檢視";
-    string txtKeyword = Context.Request.Cookies["txtKeyword"];
-    int searchCondition = int.Parse(Context.Request.Cookies["searchCondition"]);
-    int PageIndex = int.Parse(Context.Request.Cookies["PageIndex"]);
-    int displayorder = int.Parse(Context.Request.Cookies["displayorder"]);
-    int pageSize = int.Parse(Context.Request.Cookies["pageSize"]);
+    string txtKeyword = Context.Request.Cookies["txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
+    int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
 }
 
 <div class="container">
@@ -75,8 +75,11 @@
 </div>
 
 @section Scripts {
+    <!-- 刪除類別 -->
     <script>
-        $(".fordelete").click((e) => {
+        $(".fordelete").click(async (e) => {
+            //權限驗證
+            if (!await validateRole('經理')) return
             //if (!confirm('確定刪除類別嗎？')) return;
             Swal.fire({
                 title: '確定刪除類別嗎？',

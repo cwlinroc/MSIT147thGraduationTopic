@@ -11,4 +11,7 @@
         public string Label { get; set; }
         public List<long> Data { get; set; }
     }
+    
+
+
 }

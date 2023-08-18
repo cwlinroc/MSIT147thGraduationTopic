@@ -7,10 +7,13 @@ using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using Newtonsoft.Json.Linq;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
@@ -27,13 +30,25 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(int merchandiseid)
+        public IActionResult Index(int merchandiseid, int displayorder = 0)
         {
             ViewBag.MerchandiseId = merchandiseid;
+            ViewBag.displayorder = displayorder;
+            HttpContext.Response.Cookies.Append("Spec_displayorder", displayorder.ToString());
 
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
             if (datas.Count() == 0)
                 return RedirectToAction("IndexForNoSpec", new { merchandiseid });
+            datas = displayorder switch
+            {
+                0 => datas = datas.OrderByDescending(s => s.SpecId),    //由新到舊
+                1 => datas = datas.OrderBy(s => s.SpecId),    //由舊到新
+                2 => datas = datas.OrderBy(s => s.SpecName),    //依名稱遞增
+                3 => datas = datas.OrderByDescending(s => s.SpecName),    //依名稱遞減
+                4 => datas = datas.OrderByDescending(s => s.Popularity),    //熱門度高至低
+                5 => datas = datas.OrderBy(s => s.Popularity),    //熱門度低至高
+                _ => datas = datas.OrderByDescending(s => s.SpecId)
+            };
 
             List<SpecVM> list = new List<SpecVM>();
 
@@ -41,6 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 SpecVM specvm = new SpecVM();
                 specvm.spec = s;
+                specvm.Popularity = Math.Round((double)s.Popularity, 3);
                 list.Add(specvm);
             }
 
@@ -61,6 +77,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Create(int merchandiseId)
         {
+            ViewBag.displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0;
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName");
             SpecVM specvm = new SpecVM();
             specvm.MerchandiseId = merchandiseId;
@@ -82,8 +99,8 @@ namespace MSIT147thGraduationTopic.Controllers
                 if (specvm.photo != null)
                 {
                     int fileNameLangth = specvm.photo.FileName.Length;
-                    specvm.ImageUrl = fileNameLangth > 100
-                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 90, 90)
                         : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
@@ -101,7 +118,8 @@ namespace MSIT147thGraduationTopic.Controllers
                     if (specvm.selectTag.Contains("Rabbit")) addSpecTag(SpecId, 4);
                 }
 
-                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
+                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId, 
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0 });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
             return View(specvm);
@@ -111,6 +129,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [Authorize(Roles = "管理員,經理,員工")]
         public async Task<IActionResult> Edit(int merchandiseid, string merchandisename, int? id)
         {
+            ViewBag.displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0;
             if (id == null || _context.Specs == null) return NotFound();
 
             var spec = await _context.Specs.FindAsync(id);
@@ -140,8 +159,8 @@ namespace MSIT147thGraduationTopic.Controllers
                 if (specvm.ImageUrl == null && specvm.photo != null)
                 {
                     int fileNameLangth = specvm.photo.FileName.Length;
-                    specvm.ImageUrl = fileNameLangth > 100
-                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 90, 90)
                         : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
@@ -151,8 +170,8 @@ namespace MSIT147thGraduationTopic.Controllers
                     deleteSpecImageFromUploads(specvm.ImageUrl);
 
                     int fileNameLangth = specvm.photo.FileName.Length;
-                    specvm.ImageUrl = fileNameLangth > 100
-                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                    specvm.ImageUrl = (fileNameLangth > 100)
+                        ? Guid.NewGuid().ToString() + specvm.photo.FileName.Substring(fileNameLangth - 90, 90)
                         : Guid.NewGuid().ToString() + specvm.photo.FileName;
                     saveSpecImageToUploads(specvm.ImageUrl, specvm.photo);
                 }
@@ -179,7 +198,8 @@ namespace MSIT147thGraduationTopic.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
+                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId, 
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0 });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
             return View(specvm);
@@ -201,13 +221,15 @@ namespace MSIT147thGraduationTopic.Controllers
             var merchandiseid = _context.Specs
                 .Where(s => s.SpecId == id).Select(s => s.MerchandiseId).FirstOrDefault();
 
+            //刪除對應標籤資料
             using var conn = new SqlConnection(_context.Database.GetConnectionString());
             string str = "DELETE FROM SpecTags WHERE SpecId=@SpecId";
             conn.Execute(str, new { SpecId = id });
 
             _context.Specs.Remove(spec);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", new { merchandiseid });
+            return RedirectToAction("Index", new { merchandiseid, 
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0, });
         }
 
         public record TagRecord(string tagName, string specId, int merchandiseId);

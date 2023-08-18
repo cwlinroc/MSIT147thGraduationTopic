@@ -33,6 +33,14 @@ namespace MSIT147thGraduationTopic.Models.Services
             };
             return dto;
         }
+        public async Task<List<(string label, long data)>> GetMostSalesMerchandises(string classification, int daysBefore)
+        {
+            var timeBefore = DateTime.Now.AddDays(-daysBefore);
+            classification = classification.Trim().ToLower();
+
+            return await _repo.GetMostSalesMerchandises(classification, timeBefore);
+        }
+
 
 
         public async Task<SaleTrendDto?> GetSalesTrend(
@@ -78,6 +86,49 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             return await _repo.GetEvaluationScores(merchandiseId);
         }
+
+        public async Task<TimeTrendDto?> GetMerchandiseTrend(
+            string measurement,
+            string classification,
+            string timeUnit,
+            int id)
+        {
+            int intervalNum = timeUnit switch
+            {
+                "day" => 7,
+                "month" => 1,
+                _ => 1
+            };
+
+            string? name = await _repo.GetNameById(id, measurement);
+            if (name == null) return new();
+
+            IEnumerable<(DateTime start, DateTime end, long data)>? data = await _repo
+                .GetMerchandiseTrend(measurement, classification, timeUnit, intervalNum, id);
+
+            if (data == null) return new();
+
+            return new TimeTrendDto
+            {
+                DataTitle = name,
+                Labels = data.Select(o => o.start.ToString("M") + "~" + o.end.ToString("M")).ToArray(),
+                Datas = data.Select(o => o.data).ToArray(),
+            };
+
+        }
+
+        public async Task<List<string>?> GetAutoCompleteNames(string queryCol, string keyword)
+        {
+            return await _repo.GetAutoCompleteNames(queryCol, keyword);
+        }
+
+        public async Task<(int, string)> GetSearchedId(string queryCol, string keyword)
+        {
+            return await _repo.GetSearchedId(queryCol, keyword);
+        }
+
+
+
 
     }
 }
