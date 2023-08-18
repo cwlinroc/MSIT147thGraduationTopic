@@ -44,25 +44,11 @@
                 </tr>
             </tbody>
         </table>
-        <!-- 排序方式 -->
-        @*<div class="input-group" style="display: flex; justify-content: flex-end;">
-            <label class="input-group-text" for="displayorder">排序依據</label>
-            <select class="form-select" name="displayorder" id="displayorder" style="max-width:150px" aria-label="Floating label select example">
-                <option value="0">由新到舊</option>
-                <option value="1">由舊到新</option>
-                <option value="2">依名稱遞增</option>
-                <option value="3">依名稱遞減</option>
-                <option value="4">熱門度高至低</option>
-                <option value="5">熱門度低至高</option>
-            </select>
-        </div>
-        <p>
-            @Html.ActionLink("新增商品規格", "Create", "Specs", new {merchandiseid = ViewBag.MerchandiseId}, new { @class = "btn btn-primary" })
-        </p>*@
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <p>
                 @Html.ActionLink("新增商品規格", "Create", "Specs", new { merchandiseid = ViewBag.MerchandiseId }, new { @class = "btn btn-primary", style = "width: 130px" })
             </p>
+            <!-- 排序方式 -->
             <div class="input-group" style="display: flex; justify-content: flex-end;">
                 <label class="input-group-text" for="displayorder">排序依據</label>
                 <select class="form-select" name="displayorder" id="displayorder" style="max-width:150px" aria-label="Floating label select example">
