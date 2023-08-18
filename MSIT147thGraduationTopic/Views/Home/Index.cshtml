@@ -1,7 +1,7 @@
 ﻿@using MSIT147thGraduationTopic.Models.Dtos.Recommend;
 @model (IEnumerable<RecommendSpecDisplayDto>,IEnumerable<RecommendSpecDisplayDto>,IEnumerable<RecommendSpecDisplayDto>)
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "首頁";
     var popularSpecs = Model.Item1.ToArray();
     var favorableSpecs = Model.Item2.ToArray();
     var newSpecs = Model.Item3.ToArray();
