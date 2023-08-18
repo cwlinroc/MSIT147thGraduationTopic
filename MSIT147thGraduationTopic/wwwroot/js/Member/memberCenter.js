@@ -14,7 +14,7 @@ async function getMember() {
 }
 
 //列出會員資料
-function displayMember() {    
+function displayMember() {
     $('#nickName').val(memberData.nickName)
     $('#email').val(memberData.email)
     $('#phone').val(memberData.phone)
@@ -95,6 +95,7 @@ $('.passwordEditedChk').click(function () {
 const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
 function editValidator() {
+    myValid.endtValidate()
     myValid.validateFunction(() => {
         const password = document.querySelector('#password')
         const confirmPassword = document.querySelector('#confirmPassword')
@@ -135,63 +136,105 @@ function editValidator() {
     return myValid.startValidate()
 }
 
-function clearAllValidFeedBack() {    
-    myValid.endtValidate()
+
+$('#btnSubmit').click(async event => {
+    event.preventDefault()
+    event.stopPropagation()
+    const check = await editValidator()
+    if (!check) return
+
+    const result = await Swal.fire({
+        icon: 'question',
+        title: '確定要修改嗎?',
+        showCancelButton: true,
+        allowOutsideClick: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '確定',
+        cancelButtonText: '取消'
+    })
+    if (!result.isConfirmed) return
+    submitEvent()
+})
+
+async function submitEvent() {
+    const formData = new FormData(document.editForm)
+    const response = await fetch(`${ROOT}/api/ApiMember/memberCenter`, {
+        method: 'PUT',
+        body: formData
+    })
+    if (!response.ok) {
+        console.log('輸入失敗')
+        return
+    }
+
+    const memberId = await response.json()
+
+    if (memberId <= 0) {
+        console.log('沒有成功寫入資料庫')
+        return
+    }
+
+    await Swal.fire({
+        icon: 'success',
+        title: '修改成功!',
+        allowOutsideClick: false
+    })
+
+    window.location.reload();
 }
 
-$('#btnSubmit').click(editValidator)
+//const forms = document.querySelectorAll('.needs-validation')
 
-const forms = document.querySelectorAll('.needs-validation')
+//Array.from(forms).forEach(form => {
+//    form.addEventListener('submit', async event => {
+//        event.preventDefault()
+//        event.stopPropagation()
 
-Array.from(forms).forEach(form => {
-    form.addEventListener('submit', async event => {
-        event.preventDefault()
-        event.stopPropagation()
+//        await Swal.fire({
+//            icon: 'question',
+//            title: '確定要修改嗎?',
+//            showCancelButton: true,
+//            allowOutsideClick: false,
+//        })
 
-        //await Swal.fire({
-        //    icon: 'question',
-        //    title: '確定要修改嗎?',
-        //    showCancelButton: true,
-        //    allowOutsideClick: false,
-        //})
-        
 
-        //if (!form.checkValidity()) {
-        //    await Swal.fire({
-        //        icon: 'error',
-        //        title: '修改失敗!',
-        //        text: '資料有錯誤,請修改',
-        //        allowOutsideClick: false,
-        //    })            
-        //    return
-        //}
+//        if (!form.checkValidity()) {
+//            await Swal.fire({
+//                icon: 'error',
+//                title: '修改失敗!',
+//                text: '資料有錯誤,請修改',
+//                allowOutsideClick: false,
+//            })
+//            return
+//        }
 
-        const formData = new FormData(form)
+//        const formData = new FormData(form)
 
-        const response = await fetch(`${ROOT} /api/ApiMember/memberCenter`, {
-            body: formData,
-            method: 'put'
-        })
+//        const response = await fetch(`${ROOT} /api/ApiMember/memberCenter`, {
+//            body: formData,
+//            method: 'put'
+//        })
 
-        if (!response.ok) {
-            console.log('輸入失敗')
-            return
-        }
+//        if (!response.ok) {
+//            console.log('輸入失敗')
+//            return
+//        }
 
-        const memberId = await response.json()
+//        const memberId = await response.json()
 
-        if (memberId <= 0) {
-            console.log('沒有成功寫入資料庫')
-            return
-        }
+//        if (memberId <= 0) {
+//            console.log('沒有成功寫入資料庫')
+//            return
+//        }
 
-        await Swal.fire({
-            icon: 'success',
-            title: '修改成功!',
-            allowOutsideClick: false
-        })
+//        await Swal.fire({
+//            icon: 'success',
+//            title: '修改成功!',
+//            allowOutsideClick: false
+//        })
 
-        window.location.reload();
+//        window.location.reload();
 
-    }, false)
-})
+//    }, false)
+//})

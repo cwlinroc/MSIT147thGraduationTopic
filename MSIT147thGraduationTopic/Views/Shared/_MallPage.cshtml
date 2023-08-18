@@ -11,6 +11,8 @@
     if (isAuthorized ?? false)
     {
         userName = user?.Claims.FirstOrDefault(o => o.Type == "NickName")?.Value;
+        if (string.IsNullOrEmpty(userName))
+            userName = user?.Claims.FirstOrDefault(o => o.Type == "UserName")?.Value;
         roleName = user?.FindFirstValue(ClaimTypes.Role);
         avatarName = user?.FindFirstValue("AvatarName");
         if (string.IsNullOrEmpty(avatarName))
@@ -72,7 +74,7 @@
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarHeaderContent" aria-controls="navbarHeaderContent" 
+                        data-bs-target="#navbarHeaderContent" aria-controls="navbarHeaderContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -106,7 +108,7 @@
                                         </li>
                                         <li class="dropdown-item">
                                             <a class="nav-link text-nowrap" href="@Url.Action("CouponList","CouponFront")">優惠券列表</a>
-                                        </li>                                        
+                                        </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li class="dropdown-item">
                                             <a class="nav-link text-nowrap" href="#" id="btnLogOut">登出</a>
@@ -264,7 +266,6 @@
         </div>
     </div>
     <!-- 讀取圖示end -->
-
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery -->
