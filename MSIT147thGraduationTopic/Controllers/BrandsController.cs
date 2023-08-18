@@ -23,13 +23,22 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Brands
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(string txtKeyword, int PageIndex = 1)
+        public IActionResult Index(string txtKeyword, int PageIndex = 1, int displayorder = 0)//todo 加上COOKIE&VIEWBAG
         {
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.PageIndex = PageIndex;
+            ViewBag.displayorder = displayorder;
 
             IEnumerable<Brand> datas = string.IsNullOrEmpty(txtKeyword) ? from b in _context.Brands select b
                 : _context.Brands.Where(b => b.BrandName.Contains(txtKeyword));
+            datas = displayorder switch
+            {
+                0 => datas = datas.OrderByDescending(s => s.BrandId),    //由新到舊
+                1 => datas = datas.OrderBy(s => s.BrandId),    //由舊到新
+                2 => datas = datas.OrderBy(s => s.BrandName),    //依名稱遞增
+                3 => datas = datas.OrderByDescending(s => s.BrandName),    //依名稱遞減
+                _ => datas = datas.OrderByDescending(s => s.BrandId)
+            };
 
             datas = datas.Skip((PageIndex - 1) * 20).Take(20).ToList();
 

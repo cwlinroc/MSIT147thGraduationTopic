@@ -30,7 +30,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(int merchandiseid, int displayorder)
+        public IActionResult Index(int merchandiseid, int displayorder = 0)
         {
             ViewBag.MerchandiseId = merchandiseid;
             ViewBag.displayorder = displayorder;

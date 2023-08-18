@@ -97,15 +97,15 @@
                         count++;
                         <tr>
                             <td>
-                                @count
+                                @(count + ((ViewBag.PageIndex - 1) * ViewBag.pageSize))
                             </td>
                             <td style="max-width:150px">
                                 @Html.DisplayFor(modelItem => item.MerchandiseName)
                             </td>
-                            <td>
+                            <td style="width:150px">
                                 @Html.DisplayFor(modelItem => item.BrandName)
                             </td>
-                            <td>
+                            <td style="max-width:150px">
                                 @Html.DisplayFor(modelItem => item.CategoryName)
                             </td>
                             <td style="max-width:300px;">
@@ -216,7 +216,7 @@
             const responseforlength = await fetch(`@Url.Content("~/ApiMerchandise/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}&searchCondition=${@ViewBag.searchCondition}`);
             const returnLengthBag = await responseforlength.text();
             const resultLength = JSON.parse(returnLengthBag);
-            const totalpage = Math.ceil(resultLength / 20);
+            const totalpage = Math.ceil(resultLength / pageSize);
             const pagingContainer = document.querySelector("#pagingContainer");
 
             let indexRow = `<li class="page-item border-light toPrevious">\
