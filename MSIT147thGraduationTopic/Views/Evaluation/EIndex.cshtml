@@ -129,7 +129,7 @@
                         // 使用 setTimeout 在旋轉一圈後移除效果
                         setTimeout(() => {
                             $(this).removeClass('rotate-animation');
-                        }, 1000)
+                        }, 600)
                     }
                 }
             }
@@ -162,7 +162,7 @@
             $("[id^='inputscore_']").each(function (index, score) {
                
                 console.log(score.value)
-                if (score.value == '') {
+                if (score.value == 0) {
                     isAllHaveScore = false;
                     return false;
                 }
