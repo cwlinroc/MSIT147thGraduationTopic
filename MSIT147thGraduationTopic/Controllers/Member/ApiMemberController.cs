@@ -85,6 +85,9 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         {
             try
             {
+                if (_context.Members.Any(m => m.Account == vm.Account))
+                    return Content("帳號已存在");
+
                 var memberId = _service.CreateMember(vm.ToDto(), avatar);
                 string body = _mailService.CreateUrl(vm.Account, _url, "EmailVerify", "Member");
 
@@ -103,6 +106,17 @@ namespace MSIT147thGraduationTopic.Controllers.Member
             {
                 throw;
             }
+        }
+
+        [HttpGet("accountexist")]
+        public ActionResult<bool> AccountHasExist(string account)
+        {
+            if (_context.Members.Any(m => m.Account == account)
+                || _context.Employees.Any(m => m.EmployeeAccount == account))
+            {
+                return true;
+            }
+            return false;
         }
 
         [HttpPut("{id}")]
@@ -196,7 +210,7 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                             {
                                 new Claim(ClaimTypes.Name, member.Account),
                                 new Claim("UserName", member.MemberName),
-                                new Claim("NickName", member.NickName),
+                                new Claim("NickName", member.NickName??""),
                                 new Claim("AvatarName", member.Avatar??""),
                                 new Claim("MemberId", member.MemberId.ToString()),
                                 new Claim(ClaimTypes.Email, member.Email),

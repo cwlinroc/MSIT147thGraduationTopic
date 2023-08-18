@@ -121,7 +121,7 @@ async function LogOut() {
         if (url) {
             Swal.fire({
                 icon: 'success',
-                title: '登出成功!',
+                title: '您已登出!',
                 allowOutsideClick: false
             }).then(result => {
                 if (result.isConfirmed) {
