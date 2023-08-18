@@ -13,6 +13,8 @@ using System.Configuration;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
+using MSIT147thGraduationTopic.Models.Dtos.Paypal;
+using MSIT147thGraduationTopic.Models.Paypal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +40,14 @@ builder.Services.AddSingleton<AutoPopularityCalculationService>();
 builder.Services.AddHostedService(
     provider => provider.GetRequiredService<AutoPopularityCalculationService>());
 
-
+// paypal client configuration
+builder.Services.AddSingleton(x =>
+    new PaypalClient(
+        builder.Configuration["PayPalOptions:ClientId"],
+        builder.Configuration["PayPalOptions:ClientSecret"],
+        builder.Configuration["PayPalOptions:Mode"]
+    )
+);
 
 
 
