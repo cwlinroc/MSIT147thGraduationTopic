@@ -3,6 +3,7 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "商品列表檢視";
+    int specdisplayorder = int.TryParse(Context.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0;
 }
 
 <div class="container">
@@ -31,10 +32,13 @@
                         </div>
                     </div>
                     <!-- 排序方式 -->
-                    <div class="dropdown" style="width:150px;float:right">
+                    <div class="input-group" style="display: flex; justify-content: flex-end; max-width:250px">
+                        <label class="input-group-text" for="displayorder">排序依據</label>
                         <select class="form-select" name="displayorder" id="displayorder" aria-label="Floating label select example">
                             <option value="0">由新到舊</option>
                             <option value="1">由舊到新</option>
+                            <option value="2">依名稱遞增</option>
+                            <option value="3">依名稱遞減</option>
                         </select>
                     </div>
                     <!-- 每頁顯示筆數 -->
@@ -49,14 +53,15 @@
                 </div>
             }
         </div>
-        <div class="form-group" style="float:right">
-            @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" })
-            @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <p>
+                @Html.ActionLink("新增商品", "Create", "Merchandises", null, new { @class = "btn btn-primary" })
+            </p>
+            <div class="form-group">
+                @Html.ActionLink("檢視商品類別", "Index", "Categories", null, new { @class = "btn btn-warning" })
+                @Html.ActionLink("檢視品牌清單", "Index", "Brands", null, new { @class = "btn btn-success" })
+            </div>
         </div>
-        <br />
-        <p>
-            @Html.ActionLink("新增商品", "Create", "Merchandises", null, new { @class = "btn btn-primary" })
-        </p>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -127,7 +132,7 @@
                             </td>
                             <td>
                                 @Html.ActionLink("修改資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
-                                @Html.ActionLink("檢視規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("檢視規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId, displayorder=specdisplayorder }, new { @class = "btn btn-success" }) |
                                 <button class="btn btn-danger fordelete" data-merchandiseid="@item.MerchandiseId">刪除</button> |
                                 @Html.ActionLink("檢視評價", "Index", "Evaluations", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-info" })
                             </td>
@@ -303,7 +308,9 @@
         })
 
         // #region 刪除商品
-        $(".fordelete").click((e) => {
+        $(".fordelete").click(async (e) => {
+            //權限驗證
+            if (!await validateRole('經理')) return
             //if (!confirm('確定刪除商品嗎？')) return;
             Swal.fire({
                 title: '確定刪除類別嗎？',

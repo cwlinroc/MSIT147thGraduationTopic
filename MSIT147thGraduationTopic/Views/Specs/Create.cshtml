@@ -91,7 +91,7 @@
                     <hr />
                     <div class="form-group">
                         <input type="submit" value="新增" class="btn btn-primary" id="submit" />
-                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId}, new { @class = "btn btn-secondary" })
+                        @Html.ActionLink("取消", "Index", "Specs", new { merchandiseid = Model.MerchandiseId, displayorder=ViewBag.displayorder}, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>

@@ -77,7 +77,9 @@
 @section Scripts {
     <!-- 刪除類別 -->
     <script>
-        $(".fordelete").click((e) => {
+        $(".fordelete").click(async (e) => {
+            //權限驗證
+            if (!await validateRole('經理')) return
             //if (!confirm('確定刪除類別嗎？')) return;
             Swal.fire({
                 title: '確定刪除類別嗎？',

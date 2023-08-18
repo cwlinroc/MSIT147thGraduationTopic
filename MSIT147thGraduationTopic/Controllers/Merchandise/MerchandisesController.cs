@@ -53,6 +53,8 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             datas = displayorder switch
             {
                 1 => datas.OrderBy(ms => ms.MerchandiseId),                //由舊到新熱門商品
+                2 => datas.OrderBy(ms => ms.MerchandiseName),                //依名稱遞增
+                3 => datas.OrderByDescending(ms => ms.MerchandiseName),     //依名稱遞減
                 _ => datas.OrderByDescending(ms => ms.MerchandiseId)       //最新商品
             };
 
@@ -96,7 +98,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 {
                     int fileNameLangth = merchandisevm.photo.FileName.Length;                    
                     merchandisevm.ImageUrl = (fileNameLangth > 100) 
-                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50) 
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 90, 90) 
                         : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
@@ -155,7 +157,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 {
                     int fileNameLangth = merchandisevm.photo.FileName.Length;
                     merchandisevm.ImageUrl = (fileNameLangth > 100)
-                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 90, 90)
                         : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }
@@ -166,7 +168,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
                     int fileNameLangth = merchandisevm.photo.FileName.Length;
                     merchandisevm.ImageUrl = (fileNameLangth > 100)
-                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 50, 50)
+                        ? Guid.NewGuid().ToString() + merchandisevm.photo.FileName.Substring(fileNameLangth - 90, 90)
                         : Guid.NewGuid().ToString() + merchandisevm.photo.FileName;
                     saveMerchandiseImageToUploads(merchandisevm.ImageUrl, merchandisevm.photo);
                 }

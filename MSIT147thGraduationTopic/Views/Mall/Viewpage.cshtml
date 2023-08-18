@@ -270,7 +270,7 @@
             $(".showSpec").attr("class", "btn btn-outline-secondary mx-1 my-1 showSpec");
             $(e.currentTarget).attr("class", "btn btn-primary mx-1 my-1 showSpec");
             //顯示評分
-            score = $(e.currentTarget).attr("data-score");
+            score = (Math.round($(e.currentTarget).attr("data-score") * 10) / 10).toFixed(1);
             $("#score").text(score);
             //顯示價格&庫存
             const showPrice = document.querySelector("#showPrice");
