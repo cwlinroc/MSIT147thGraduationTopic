@@ -6,14 +6,10 @@
 <div class="container mt-5">
 
     <div class="p-4 bg-white rounded shadow ">
-        <h2 class="mt-2">商品比較圖</h2>
-        <div class="p-5  " style="position: relative; height:600px; width:100%">
-            <canvas id="trendChart" style="width:100% ; height:100%"></canvas>
-        </div>
-
-        <div class="mt-1 px-5 d-flex">
-            <label for="inputTimeInterval" class="fs-4 mb-2 text-nowrap mx-4">時間:</label>
-            <div class="input-group mb-3">
+        <dov class="d-flex align-content-center">
+            <h2 class="mt-3 ms-4" style="width:600px">商品比較圖</h2>
+            <label for="inputTimeInterval" class="fs-4 mb-2 text-nowrap mx-4 my-auto">時間:</label>
+            <div class="input-group my-auto">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">時間間隔：<span id="spanTimeUnit">星期</span></button>
                 <ul class="dropdown-menu">
                     <li><button type="button" class="dropdown-item" id="btnWeek">星期</button></li>
@@ -23,12 +19,23 @@
                 <input type="number" class="form-control text-center" value="12" id="inputTimeInterval">
                 <button class="btn btn-outline-secondary px-3" type="button" id="btnAddTime">+</button>
             </div>
-            <label for="selectMeasureUnit" class="fs-4 mb-2 text-nowrap mx-4">單位:</label>
-            <select class="form-select mb-3" id="selectMeasureUnit">
+
+            <label for="selectMeasureUnit" class="fs-4 mb-2 text-nowrap mx-4 my-auto">單位:</label>
+
+            <select class="form-select flex-fill my-auto" id="selectMeasureUnit">
                 <option value="quantity" selected>購買數</option>
                 <option value="profit">銷售額</option>
             </select>
+
+        </dov>
+        <div class="p-5  " style="position: relative; height:600px; width:100%">
+            <canvas id="trendChart" style="width:100% ; height:100%"></canvas>
         </div>
+        <div class="d-flex my-3">
+            <button class="btn btn-sm btn-outline-secondary ms-auto" id="demoBtn1">demo 組合1</button>
+            <button class="btn btn-sm btn-outline-secondary ms-2" id="demoBtn2">demo 組合2</button>
+        </div>
+
 
         <div class="row">
 
@@ -105,7 +112,34 @@
         let rightTrendData
 
 
+        //demoBtn1
+        $('#demoBtn1').click(async e => {
+            leftMeasurement = "merchandise"
+            leftId = 11
+            rightMeasurement = "merchandise"
+            rightId = 21
+            refreshTrendChart()
+            const left = await getIdAndName("merchandiseId", leftId)
+            $('#spanLeftName').text(left.name)
+            const right = await getIdAndName("merchandiseId", rightId)
+            $('#spanRightName').text(right.name)
+            
 
+        })
+        $('#demoBtn2').click(async e => {
+            leftMeasurement = "spec"
+            leftId = 15
+            rightMeasurement = "spec"
+            rightId = 30
+            refreshTrendChart()
+            const left = await getIdAndName("specId", leftId)
+            $('#spanLeftName').text(left.name)
+            const right = await getIdAndName("specId", rightId)
+            $('#spanRightName').text(right.name)
+        })
+
+        //const taskLeft = getTrendData(leftMeasurement, leftId)
+        //const taskRight = getTrendData(rightMeasurement, rightId)
 
         //trendChart
         const ctxTrend = document.getElementById('trendChart').getContext('2d');
@@ -154,7 +188,7 @@
         async function refreshTrendChart() {
             const taskLeft = getTrendData(leftMeasurement, leftId)
             const taskRight = getTrendData(rightMeasurement, rightId)
-            const [resultLeft,resultRight] = await Promise.all([taskLeft, taskRight])
+            const [resultLeft, resultRight] = await Promise.all([taskLeft, taskRight])
             leftTrendData = resultLeft
             rightTrendData = resultRight
             displayTrendChart()
@@ -189,7 +223,7 @@
             }
             trendChart.update()
         }
-        
+
 
         //取得對應ID
         async function getIdAndName(queryCol, keyword) {
