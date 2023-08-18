@@ -25,6 +25,11 @@ namespace MSIT147thGraduationTopic.Controllers
         [Authorize(Roles = "管理員,經理,員工")]
         public IActionResult Index(string txtKeyword, int PageIndex = 1, int displayorder = 0)//todo 加上COOKIE&VIEWBAG
         {
+            if (!string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("txtKeyword", txtKeyword);
+            if (string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("txtKeyword", "");
+            HttpContext.Response.Cookies.Append("PageIndex", PageIndex.ToString());
+            HttpContext.Response.Cookies.Append("displayorder", displayorder.ToString());
+
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.PageIndex = PageIndex;
             ViewBag.displayorder = displayorder;
@@ -73,7 +78,12 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 _context.Add(brandvm.brand);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new
+                {
+                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
+                    PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0
+                });
             }
             return View(brandvm);
         }
@@ -129,7 +139,12 @@ namespace MSIT147thGraduationTopic.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new
+                {
+                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
+                    PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0
+                });
             }
             return View(brandvm);
         }
@@ -148,8 +163,12 @@ namespace MSIT147thGraduationTopic.Controllers
             if (brand == null) return Problem("找不到品牌資料");
 
             _context.Brands.Remove(brand);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            await _context.SaveChangesAsync(); return RedirectToAction("Index", new
+            {
+                txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
+                PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
+                displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0
+            });
         }
 
         private bool BrandExists(int id)
