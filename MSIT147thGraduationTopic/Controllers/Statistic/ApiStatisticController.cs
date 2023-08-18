@@ -77,9 +77,10 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
 
         [HttpGet("GetSearchedId")]
         [Authorize(Roles = "管理員,經理,員工")]
-        public async Task<ActionResult<int>> GetSearchedId(string queryCol, string keyword)
+        public async Task<ActionResult<dynamic>> GetSearchedId(string queryCol, string keyword)
         {
-            return await _service.GetSearchedId(queryCol, keyword);
+            (int id, string name) = await _service.GetSearchedId(queryCol, keyword);
+            return new { id , name };
         }
 
     }
