@@ -40,7 +40,7 @@
 
     </div>
 
-
+    @await Html.PartialAsync("Partial/FavorSpecs")
 
 </div>
 
@@ -51,6 +51,7 @@
 
 
 @section Scripts{
+    <script src="~/js/recommend/partialview.js"></script>
     <script>
 
         getCartItems(@Model)
@@ -268,6 +269,7 @@
 }
 
 @section Styles{
+    <link rel="stylesheet" href="~/css/recommend/partialview.css" />
     <style>
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
