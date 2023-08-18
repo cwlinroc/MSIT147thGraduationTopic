@@ -14,6 +14,7 @@ using MSIT147thGraduationTopic.Models.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore;
 
 namespace MSIT147thGraduationTopic.Controllers.Employee
 {
@@ -66,6 +67,14 @@ namespace MSIT147thGraduationTopic.Controllers.Employee
             var employeeId = _service.EditEmployee(dto, id, avatar);
 
             return employeeId;
+        }
+
+        [HttpGet("hassamenameaccount")]
+        [Authorize(Roles = "管理員,經理")]
+        public async Task<ActionResult<bool>> HasSameNameAccount(string account)
+        {
+            return (await _context.Employees.AnyAsync(o => o.EmployeeAccount == account) 
+                || await _context.Members.AnyAsync(o => o.Account == account)) ;
         }
 
         public record Container([Required] string Permission);

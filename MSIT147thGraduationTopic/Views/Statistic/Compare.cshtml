@@ -36,7 +36,7 @@
                 <div class="m-1 border rounded p-4">
 
                     <div class="input-group">
-                        <span class="input-group-text bg-white">請選擇對比商品</span>
+                        <span class="input-group-text bg-white" id="spanLeftName">請選擇對比商品</span>
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">商品名稱</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item choose-type" onclick="leftMeasurement='merchandise'" data-search-type="merchandiseName">商品名稱</a></li>
@@ -60,7 +60,7 @@
                 <div class="m-1 border rounded p-4">
 
                     <div class="input-group">
-                        <span class="input-group-text bg-white">請選擇對比商品</span>
+                        <span class="input-group-text bg-white" id="spanRightName">請選擇對比商品</span>
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">商品名稱</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item choose-type" onclick="rightMeasurement='merchandise'" data-search-type="merchandiseName">商品名稱</a></li>
@@ -131,7 +131,9 @@
             const keyword = e.currentTarget.closest('div').querySelector('input[type=text]').value.trim()
             if (!keyword) return
             const searchType = e.currentTarget.closest('div').querySelector('input[type=text]').dataset.searchType
-            leftId = await getId(searchType, keyword)
+            const { id, name } = await getIdAndName(searchType, keyword)
+            $('#spanLeftName').text(name)
+            leftId = id
             leftTrendData = await getTrendData(leftMeasurement, leftId)
             console.log(leftTrendData)
             displayTrendChart()
@@ -140,7 +142,9 @@
             const keyword = e.currentTarget.closest('div').querySelector('input[type=text]').value.trim()
             if (!keyword) return
             const searchType = e.currentTarget.closest('div').querySelector('input[type=text]').dataset.searchType
-            rightId = await getId(searchType, keyword)
+            const { id, name } = await getIdAndName(searchType, keyword)
+            $('#spanRightName').text(name)
+            rightId = id
             rightTrendData = await getTrendData(rightMeasurement, rightId)
             console.log(rightTrendData)
             displayTrendChart()
@@ -188,7 +192,7 @@
         
 
         //取得對應ID
-        async function getId(queryCol, keyword) {
+        async function getIdAndName(queryCol, keyword) {
             const response = await fetch(`${ROOT}/api/apistatistic/GetSearchedId?` + new URLSearchParams({
                 "queryCol": queryCol,
                 "keyword": keyword,

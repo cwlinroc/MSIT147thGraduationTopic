@@ -122,7 +122,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             return await _repo.GetAutoCompleteNames(queryCol, keyword);
         }
 
-        public async Task<int?> GetSearchedId(string queryCol, string keyword)
+        public async Task<(int, string)> GetSearchedId(string queryCol, string keyword)
         {
             return await _repo.GetSearchedId(queryCol, keyword);
         }

@@ -359,15 +359,15 @@ WHERE CAST( {conditionCol} AS NVARCHAR) LIKE '%' + @Keyword + '%' ";
             return (await conn.QueryAsync<string>(sql, new { Keyword = keyword })).ToList();
         }
 
-        public async Task<int?> GetSearchedId(string queryCol, string keyword)
+        public async Task<(int, string)> GetSearchedId(string queryCol, string keyword)
         {
             queryCol = queryCol.Trim().ToLower();
             var queryName = queryCol switch
             {
-                "merchandisename" => "Merchandises.MerchandiseId",
-                "merchandiseid" => "Merchandises.MerchandiseId",
-                "specname" => "SpecId",
-                "specid" => "SpecId",
+                "merchandisename" => "Merchandises.MerchandiseId, MerchandiseName ",
+                "merchandiseid" => "Merchandises.MerchandiseId , MerchandiseName ",
+                "specname" => "SpecId , MerchandiseName + SpecName ",
+                "specid" => "SpecId , MerchandiseName + SpecName ",
                 _ => string.Empty,
             };
 
@@ -390,7 +390,7 @@ JOIN Specs ON Merchandises.MerchandiseId = Specs.MerchandiseId
 WHERE CAST( {conditionCol} AS NVARCHAR) =  @Keyword  ";
 
             using var conn = _context.Database.GetDbConnection();
-            return await conn.QueryFirstAsync<int>(sql, new { Keyword = keyword });
+            return await conn.QueryFirstAsync<(int, string)>(sql, new { Keyword = keyword });
         }
 
 

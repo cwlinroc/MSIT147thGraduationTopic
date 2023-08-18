@@ -6,7 +6,7 @@ namespace MSIT147thGraduationTopic.Models.BackGroundServiecs
     {
 
         private readonly ILogger<AutoPopularityCalculationService> _logger;
-        private readonly TimeSpan _period = TimeSpan.FromSeconds(30);
+        private readonly TimeSpan _period = TimeSpan.FromSeconds(20);
         private readonly IServiceScopeFactory _factory;
         private int _executionCount = 0;
 
@@ -36,12 +36,12 @@ namespace MSIT147thGraduationTopic.Models.BackGroundServiecs
                         await service.CalculatePopularities();
 
                         _executionCount++;
-                        string message = $"執行 AutoPopularityCalculationService - 次數: {_executionCount}";
+                        string message = $"執行 AutoPopularityCalculationService - 已執行次數: {_executionCount}";
                         _logger.LogInformation(message);
                     }
                     else
                     {
-                        string message = "跳過 AutoPopularityCalculationService";
+                        string message = $"跳過 AutoPopularityCalculationService - 已執行次數: {_executionCount}";
                         _logger.LogInformation(message);
                     }
 
