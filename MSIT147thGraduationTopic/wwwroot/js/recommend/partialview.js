@@ -71,14 +71,16 @@ function bindHoverEvents() {
 async function addCartEvent(event) {
     event.stopPropagation()
     if (ROLE != "會員") {
-        await Swal.fire('請登入以使用購物車');
-        loginModal.show();
+        await Swal.fire('請登入以使用購物車')
+        loginModal.show()
         return
     }
     const specId = event.currentTarget.dataset.specId
     const response = await fetch(`${ROOT}/api/apirecommendpartial/addincart/${specId}`)
     const result = await response.json()
     refreshNavbarCart()
+    if (!!cartpageMemberId) getCartItems(cartpageMemberId)
+    await Swal.fire('已加入購物車')
     console.log(result)
 }
 

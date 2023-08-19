@@ -29,6 +29,7 @@ namespace MSIT147thGraduationTopic.Models.Paypal
             var request = new CreateOrderRequest
             {
                 intent = "CAPTURE",
+                //訂單列表
                 purchase_units = new List<PurchaseUnit>
                 {
                     new()
