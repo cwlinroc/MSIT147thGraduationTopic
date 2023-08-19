@@ -31,11 +31,11 @@
                             <div class="col-8 mb-3">
                                 適用對象<select id="couponTag" name="CouponTagId" class="form-select form-control">
                                     <option value="none" class="" selected disabled hidden>請選擇適用對象</option>
-                                    <option></option>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
+                                    <option value="0">全部</option>
+                                    <option value="1">貓</option>
+                                    <option value="2">狗</option>
+                                    <option value="3">鼠</option>
+                                    <option value="4">兔</option>
                                 </select>
                             </div>
                             <br>
@@ -62,9 +62,20 @@
                             <button type="button" class="btn btn-primary" id="btnBack">返回</button>
 
                         </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoAnswer">demoAnswer</button>
                     </div>
                     <div class="my-3">
-                        <button id="demo">demo</button>
+                        <button class="btn btn-outline-secondary" id="demoName">demoName</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDate">demoDate</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDiscountNon">demoDiscountNon</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDiscountWrong">demoDiscountWrong</button>
                     </div>
                 </div>
             </div>
@@ -96,38 +107,10 @@
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
-        const conditionInput = $('input[name = "CouponCondition"]');
-        const conditionValue = parseFloat(conditionInput.val());
-        const discountInput = $('input[name = "CouponDiscount"]');
-        const discounValue = parseFloat(discountInput.val());
         const startDateInput = $('input[name="CouponStartDate"]');
         const endDateInput = $('input[name="CouponEndDate"]');
 
-        if (conditionValue < 0) {
-            conditionInput[0].setCustomValidity('額度門檻必須超過0');
-        }
-        else if (isNaN(conditionValue)) {
-            conditionInput[0].setCustomValidity('額度門檻為必填欄位');
-        }
-        else if (discounValue > conditionValue) {
-            conditionInput[0].setCustomValidity('額度門檻必須比折扣大');
-        }
-        else {
-            conditionInput[0].setCustomValidity('');
-        }
-
-        if (discounValue < 0) {
-            discountInput[0].setCustomValidity('折扣必須超過0');
-        }
-        else if (discounValue > conditionValue) {
-            discountInput[0].setCustomValidity('折扣必須比額度門檻小');
-        }
-        else if (isNaN(discounValue)) {
-            discountInput[0].setCustomValidity('折扣為必填欄位');
-        }
-        else {
-            discountInput[0].setCustomValidity('');
-        }
+        
 
         $('#btnBack').on('click', function () {
             Swal.fire({
@@ -160,26 +143,65 @@
 
         $('#btnCreate').on('click', function () {
             const formData = $("#create").serializeArray();
-            //datas = $("form").serializeArray()
-
             const startDate = new Date(startDateInput.val());
             const endDate = new Date(endDateInput.val());
+            const conditionInput = $('input[name = "CouponCondition"]');
+            const conditionValue = parseFloat(conditionInput.val());
+            const discountInput = $('input[name = "CouponDiscount"]');
+            const discounValue = parseFloat(discountInput.val());
 
 
             if (startDate > endDate) {
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：開始日期不得晚於結束日期',
+                    text: '請檢查日期格式是否正確',
                 });
                 return;
             }
 
-            if (endDate < startDate) {
+            if (conditionValue < discounValue){
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：結束日期不得早於開始日期',
+                    text: '請檢查消費額度是否小於折扣金額',
+                });
+                return;
+            }
+
+            if (!conditionValue){
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '消費額度為必填欄位',
+                });
+                return;
+            }
+
+            if (conditionValue<0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '消費額度必須為正',
+                });
+                return;
+            }
+
+
+            if (!discounValue) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '折扣為必填欄位',
+                });
+                return;
+            }
+
+            if (discounValue < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '折扣必須為正',
                 });
                 return;
             }
@@ -206,13 +228,51 @@
             $('#create').trigger("reset");
         })
 
-        //demo2
-        $('#demo').click(e => {
+        //demoAnswer
+        $('#demoAnswer').click(e => {
             $('#couponName').val('毛小孩幸福特別計畫');
             $('#startDate').val('2023-08-25');
             $('#endDate').val('2023-08-30');
             $('#condition').val('1000');
             $('#discount').val('100');
+        })
+
+        //demoName
+        $('#demoName').click(e => {
+            $('#couponName').val('');
+            $('#startDate').val('2023-08-25');
+            $('#endDate').val('2023-08-30');
+            $('#condition').val('1000');
+            $('#discount').val('100');
+        })
+
+        //demoDate
+        $('#demoDate').click(e => {
+            $('#couponName').val('毛小孩幸福特別計畫');
+            $('#startDate').val('2023-09-30');
+            $('#endDate').val('2023-08-30');
+            $('#condition').val('1000');
+            $('#discount').val('100');
+        })
+
+        //demoCondition
+        $('#demoDiscountNon').click(e => {
+            $('#couponName').val('毛小孩幸福特別計畫');
+            $('#startDate').val('2023-08-25');
+            $('#endDate').val('2023-08-30');
+            $('#condition').val('');
+            $('#discount').val('100');
+        })
+
+
+
+        //demoDiscountWrong
+        $('#demoDiscountWrong').click(e => {
+            $('#couponName').val('毛小孩幸福特別計畫');
+            $('#startDate').val('2023-08-25');
+            $('#endDate').val('2023-08-30');
+            $('#condition').val('1000');
+            $('#discount').val('2000');
         })
     </script>
 }

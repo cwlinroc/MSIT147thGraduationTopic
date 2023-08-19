@@ -31,11 +31,11 @@
                             <div class="col-8 mb-3">
                                 適用對象<select id="couponTag" name="CouponTagId" class="form-select form-control">
                                     <option value="none" class="" selected disabled hidden>請選擇適用對象</option>
-                                    <option></option>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
+                                    <option value="0">全部</option>
+                                    <option value="1">貓</option>
+                                    <option value="2">狗</option>
+                                    <option value="3">鼠</option>
+                                    <option value="4">兔</option>
                                 </select>
                             </div>
                             <br>
@@ -61,7 +61,19 @@
                         </div>
                     </div>
                     <div class="my-3">
-                        <button id="demo">demo</button>
+                        <button class="btn btn-outline-secondary" id="demoAnswer">demoAnswer</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoName">demoName</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDate">demoDate</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDiscountNon">demoDiscountNon</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDiscountOver">demoDiscountOver</button>
                     </div>
                 </div>
             </div>
@@ -93,23 +105,8 @@
 @section Scripts{
     <script src="~/js/MyBootstrapValidator.js"></script>
     <script>
-        const discountInput = $('input[name="CouponDiscount"]');
-        const discountValue = parseFloat(discountInput.val());
         const startDateInput = $('input[name="CouponStartDate"]');
         const endDateInput = $('input[name="CouponEndDate"]');
-
-
-
-        //驗證
-        if (discountValue < 0 || discountValue > 100) {
-            discountInput[0].setCustomValidity('折扣必須介於1到99');
-        }
-        else if (isNaN(discountValue)) {
-            discountInput[0].setCustomValidity('折扣為必填欄位');
-        }
-        else {
-            discountInput[0].setCustomValidity('');
-        }
 
         $('#btnBack').on('click', function () {
             Swal.fire({
@@ -144,28 +141,39 @@
             const formData = $("#create").serializeArray();
             const startDate = new Date(startDateInput.val());
             const endDate = new Date(endDateInput.val());
+            const discountInput = $('input[name="CouponDiscount"]');
+            const discountValue = parseFloat(discountInput.val());
 
             //datas = $("form").serializeArray()
 
+            //驗證
             if (startDate > endDate) {
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：開始日期不得晚於結束日期',
+                    text: '請檢查日期格式是否正確',
                 });
                 return;
             }
 
-
-            if (endDate < startDate) {
+            if (!discountValue) {
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：結束日期不得早於開始日期',
+                    text: '折扣為必填欄位',
                 });
                 return;
             }
-            
+
+            if (discountValue < 0 || discountValue > 100) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '折扣必須介於1到99',
+                });
+                return;
+            }
+
             $.ajax({
                 method: "POST",
                 url: "@Url.Content("~/api/ApiCoupon")",
@@ -189,13 +197,44 @@
             $('#create').trigger("reset");
         })
 
-        //demo
-        $('#demo').click(e => {
-            $('#couponName').val('夏日清涼一夏感謝祭');
+        //demoAnswer
+        $('#demoAnswer').click(e => {
+            $('#couponName').val('夏日清涼一夏感謝祭77好禮');
             $('#startDate').val('2023-08-25');
             $('#endDate').val('2023-08-30');
             $('#discount').val('77');
-            console.log('123');
+        })
+
+        //demoName
+        $('#demoName').click(e => {
+            $('#couponName').val('');
+            $('#startDate').val('2023-08-25');
+            $('#endDate').val('2023-08-30');
+            $('#discount').val('77');
+        })
+
+        //demoDate
+        $('#demoDate').click(e => {
+            $('#couponName').val('夏日清涼一夏感謝祭77好禮');
+            $('#startDate').val('2023-09-30');
+            $('#endDate').val('2023-08-30');
+            $('#discount').val('77');
+        })
+
+        //demoDiscount
+        $('#demoDiscountNon').click(e => {
+            $('#couponName').val('夏日清涼一夏感謝祭77好禮');
+            $('#startDate').val('2023-08-25');
+            $('#endDate').val('2023-08-30');
+            $('#discount').val('');
+        })
+
+        //demoDiscountOver
+        $('#demoDiscountOver').click(e => {
+            $('#couponName').val('夏日清涼一夏感謝祭77好禮');
+            $('#startDate').val('2023-08-25');
+            $('#endDate').val('2023-08-30');
+            $('#discount').val('1999');
         })
     </script>
 }

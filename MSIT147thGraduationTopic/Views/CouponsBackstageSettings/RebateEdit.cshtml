@@ -31,28 +31,28 @@
                             <input type="hidden" id="CouponId" name="CouponId" value="@Model.CouponId" class="form-control">
                         </div>
                         <div class="col-8 mb-3">
-                            優惠券名稱<input type="text" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
+                            優惠券名稱<input type="text" id="CouponName" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
                         </div>
                         <div class="col-8 mb-3">
-                            適用對象<select name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
-                                <option></option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
+                            適用對象<select id="CouponTagId" name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
+                                <option value="0">全部</option>
+                                <option value="1">貓</option>
+                                <option value="2">狗</option>
+                                <option value="3">鼠</option>
+                                <option value="4">兔</option>
                             </select>
                         </div>
                         <div class="col-8 mb-3">
-                            開始日期<input name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                            開始日期<input id="CouponStartDate" name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
                         <div class="col-8 mb-3">
-                            結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                            結束日期<input id="CouponEndDate" name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                         </div>
                         <div class="col-8 mb-3">
-                            折扣門檻<input name="CouponCondition" value="@Model.CouponCondition.GetValueOrDefault().ToString("#.##")" type="number" class="form-control" placeholder="請輸入折扣門檻" min="1">
+                            折扣門檻<input id="CouponCondition" name="CouponCondition" value="@Model.CouponCondition.GetValueOrDefault().ToString("#.##")" type="number" class="form-control" placeholder="請輸入折扣門檻" min="1">
                         </div>
                         <div class="col-8 mb-3">
-                            折扣金額<input name="CouponDiscount" value="@Model.CouponDiscount.ToString("#.##")" type="number" class="form-control" placeholder="請輸入折扣金額" min="1">
+                            折扣金額<input id="CouponDiscount" name="CouponDiscount" value="@Model.CouponDiscount.ToString("#.##")" type="number" class="form-control" placeholder="請輸入折扣金額" min="1">
                         </div>
                     </form>
                     <div class="row justify-content-center px-5 my-5">
@@ -60,6 +60,21 @@
                             <button type="button" class="btn btn-primary" id="btnEdit">修改</button>
                             <button type="button" class="btn btn-primary" id="btnBack">返回</button>
                         </div>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoAnswer">demoAnswer</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoName">demoName</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDate">demoDate</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDiscountNon">demoDiscountNon</button>
+                    </div>
+                    <div class="my-3">
+                        <button class="btn btn-outline-secondary" id="demoDiscountWrong">demoDiscountWrong</button>
                     </div>
                 </div>
             </div>
@@ -103,82 +118,93 @@
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：開始日期不得晚於結束日期'
+                    text: '請檢查日期格式是否正確',
                 });
                 return;
             }
 
-            if (endDate < startDate) {
+            if (conditionValue < discounValue) {
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：結束日期不得早於開始日期'
+                    text: '請檢查消費額度是否小於折扣金額',
                 });
                 return;
             }
 
-        if (conditionValue < 0) {
-            conditionInput[0].setCustomValidity('額度門檻必須超過0');
-        }
-        else if (isNaN(conditionValue)) {
-            conditionInput[0].setCustomValidity('額度門檻為必填欄位');
-        }
-        else if (discounValue > conditionValue) {
-            conditionInput[0].setCustomValidity('額度門檻必須比折扣大');
-        }
-        else {
-            conditionInput[0].setCustomValidity('');
-        }
-
-        if (discounValue < 0) {
-            discountInput[0].setCustomValidity('折扣必須超過0');
-        }
-        else if (discounValue > conditionValue) {
-            discountInput[0].setCustomValidity('折扣必須比額度門檻小');
-        }
-        else if (isNaN(discounValue)) {
-            discountInput[0].setCustomValidity('折扣為必填欄位');
-        }
-        else {
-            discountInput[0].setCustomValidity('');
-        }
-
-        const form = document.getElementById('edit');
-        if (form.checkValidity()) {
-            const formData = new FormData(form);
-            const couponId = $('#CouponId').val()
-            const editUrl = `@Url.Content($"~/api/apicoupon/")${couponId}`;
-            console.log(formData)
-
-            const response = await fetch(editUrl, {
-                body: formData,
-                method: 'PUT'
-            })
-
-
-            if (!response.ok) {
+            if (!conditionValue) {
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '優惠券更新失敗，請檢查資料及格式是否正確',
+                    text: '消費額度為必填欄位',
                 });
-                return
+                return;
             }
-            await Swal.fire({
-                icon: 'success',
-                title: '成功',
-                text: '優惠券更新成功',
-            });
 
-            const result = await response.json();
-            console.log(result);
+            if (conditionValue < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '消費額度必須為正',
+                });
+                return;
+            }
 
 
-        }
-        else {
-            form.reportValidity();
-        }
-                        });
+            if (!discounValue) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '折扣為必填欄位',
+                });
+                return;
+            }
+
+            if (discounValue < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '折扣必須為正',
+                });
+                return;
+            }
+
+            const form = document.getElementById('edit');
+            if (form.checkValidity()) {
+                const formData = new FormData(form);
+                const couponId = $('#CouponId').val()
+                const editUrl = `@Url.Content($"~/api/apicoupon/")${couponId}`;
+                console.log(formData)
+
+                const response = await fetch(editUrl, {
+                    body: formData,
+                    method: 'PUT'
+                })
+
+
+                if (!response.ok) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '失敗',
+                        text: '優惠券更新失敗，請檢查資料及格式是否正確',
+                    });
+                    return
+                }
+                await Swal.fire({
+                    icon: 'success',
+                    title: '成功',
+                    text: '優惠券更新成功',
+                });
+
+                const result = await response.json();
+                console.log(result);
+
+
+            }
+            else {
+                form.reportValidity();
+            }
+        });
 
         $('#btnBack').on('click', function () {
             Swal.fire({
@@ -206,6 +232,53 @@
                     location.href = `@Url.Content("~/CouponsBackstageSettings/Index")`;
                 }
             })
+        })
+
+        //demoAnswer
+        $('#demoAnswer').click(e => {
+            $('#CouponName').val('滿千送百毛小孩幸福特別計畫');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponCondition').val('1000');
+            $('#CouponDiscount').val('100');
+        })
+
+        //demoName
+        $('#demoName').click(e => {
+            $('#CouponName').val('');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponCondition').val('1000');
+            $('#CouponDiscount').val('100');
+        })
+
+        //demoDate
+        $('#demoDate').click(e => {
+            $('#CouponName').val('滿千送百毛小孩幸福特別計畫');
+            $('#CouponStartDate').val('2023-09-30');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponCondition').val('1000');
+            $('#CouponDiscount').val('100');
+        })
+
+        //demoCondition
+        $('#demoDiscountNon').click(e => {
+            $('#CouponName').val('滿千送百毛小孩幸福特別計畫');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponCondition').val('');
+            $('#CouponDiscount').val('100');
+        })
+
+
+
+        //demoDiscountWrong
+        $('#demoDiscountWrong').click(e => {
+            $('#CouponName').val('滿千送百毛小孩幸福特別計畫');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponCondition').val('1000');
+            $('#CouponDiscount').val('2000');
         })
     </script>
 }
