@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.LinePay;
 using MSIT147thGraduationTopic.Models.LinePay;
 using MSIT147thGraduationTopic.Models.Services;
+using System.Data;
 
 namespace MSIT147thGraduationTopic.Controllers.LinePay
 {
@@ -20,12 +22,14 @@ namespace MSIT147thGraduationTopic.Controllers.LinePay
         }
 
         [HttpPost("Create")]
+        [Authorize(Roles = "會員")]
         public async Task<PaymentResponseDto> CreatePayment(PaymentRequestDto dto)
         {
             return await _linePayService.SendPaymentRequest(dto);
         }
 
         [HttpPost("Confirm")]
+        [Authorize(Roles = "會員")]
         public async Task<PaymentConfirmResponseDto> ConfirmPayment([FromQuery] string transactionId, [FromQuery] string orderId, PaymentConfirmDto dto)
         {
             var response = await _linePayService.ConfirmPayment(transactionId, orderId, dto);
@@ -36,6 +40,7 @@ namespace MSIT147thGraduationTopic.Controllers.LinePay
         }
 
         [HttpGet("Cancel")]
+        [Authorize(Roles = "會員")]
         public async void CancelTransaction([FromQuery] string transactionId)
         {
             _linePayService.TransactionCancel(transactionId);

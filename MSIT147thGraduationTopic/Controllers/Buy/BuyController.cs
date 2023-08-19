@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Services;
 using NuGet.Packaging.Signing;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -21,6 +23,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
         }
 
         [HttpGet]
+        [Authorize(Roles = "會員")]
         public async Task<IActionResult> Index(params int[] ids)
         {
             string? json = HttpContext.Session.GetString("cartItemIds");
@@ -46,6 +49,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             return View(cartItems);
         }
 
+        [Authorize(Roles = "會員")]
         public IActionResult LinePayConfirm(long transactionId, string orderId)
         {
             ViewBag.BaseUrl = $"{Request.Scheme}://{Request.Host}";
@@ -56,8 +60,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             return View();
         }
 
-
-
+        [Authorize(Roles = "會員")]
         public IActionResult Succeed()
         {
             return View();
@@ -65,6 +68,7 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
 
 
         //TODO-cw 失敗頁面
+        [Authorize(Roles = "會員")]
         public IActionResult Failed()
         {
             return View();

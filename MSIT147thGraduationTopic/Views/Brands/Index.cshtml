@@ -3,33 +3,57 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "品牌列表檢視";
+    string txtKeyword = Context.Request.Cookies["txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
+    int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
 }
 
 <div class="container">
     <h1 class="title">品牌列表檢視</h1>
+    <div style="float:right">
+        <button id="demo_keyword" class="btn btn-outline-secondary mx-2">Demo 關鍵字</button>
+        <button id="demo_noresult" class="btn btn-outline-secondary mx-2">Demo 無結果</button>
+    </div>
 
     <div class="bg-light rounded shadow p-5">
         <div>
             @using (Html.BeginForm())
             {
-                <div class="row">
+                <div class="d-flex align-items-center">
+                    <!-- 關鍵字搜尋 -->
                     <div class="form-group col-sm-5">
                         <div class="input-group mb-3">
-                            <label class="input-group-text">關鍵字搜尋</label>
+                            <label class="input-group-text" for="search-input">關鍵字搜尋</label>
                             <input type="text" id="search-input" name="txtKeyword" class="form-control" aria-label="Text input with dropdown button">
                             <input type="submit" id="keywordsearch" value="Search" class="btn btn-secondary" />
                         </div>
                     </div>
+
+                    <!-- 排序方式 -->
+                    <div class="input-group mx-3">
+                        <label class="input-group-text" for="displayorder">排序依據</label>
+                        <select class="form-select" name="displayorder" id="displayorder" style="max-width:150px" aria-label="Floating label select example">
+                            <option value="0">由新到舊</option>
+                            <option value="1">由舊到新</option>
+                            <option value="2">依名稱遞增</option>
+                            <option value="3">依名稱遞減</option>
+                        </select>
+                    </div>
                 </div>
             }
         </div>
-        <div class="form-group" style="float:right">
-            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+        <!-- 按鈕 -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <p>
+                @Html.ActionLink("新增品牌", "Create", "Brands", null, new { @class = "btn btn-primary" })
+            </p>
+            <p>
+                @Html.ActionLink("回到商品檢視", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
+                PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
+            </p>
         </div>
-        <br />
-        <p>
-            @Html.ActionLink("新增品牌", "Create", "Brands", null, new { @class = "btn btn-primary" })
-        </p>
         <hr />
         <table class="table table-hover">
             <thead>
@@ -51,7 +75,7 @@
                         count++;
                         <tr>
                             <td>
-                                @count
+                                @(count + 20 * (ViewBag.PageIndex - 1))
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.BrandName)
@@ -65,9 +89,6 @@
                 }
             </tbody>
         </table>
-        @*<div class="form-group">
-            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
-        </div>*@
 
         <!-- 分頁 -->
         <nav aria-label="Page navigation example ">
@@ -79,10 +100,28 @@
 </div>
 
 @section Scripts {
-    @*搜尋商品*@
+    <!-- DEMO按鈕 -->
     <script>
+        $("#demo_keyword").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("貓");
+        })
+        $("#demo_noresult").on("click", (e) => {
+            e.preventDefault();
+            $("#search-input").val("Happy");
+        })
+    </script>
+    <!-- 搜尋商品 -->
+    <script>
+        // #region 搜尋相關功能
         let txtKeyword = "@ViewBag.txtKeyword";
         let pageindex = @ViewBag.PageIndex;
+        let displayorder = @ViewBag.displayorder;
+
+        //設定初值呈現
+        $(() => {
+            $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+        })
 
         //關鍵字
         $("#keywordsearch").on("click", (e) => {
@@ -91,14 +130,21 @@
             e.preventDefault();
             SearchBrands();
         });
+        //排序方式
+        $("#displayorder").on("change", (e) => {
+            displayorder = $("#displayorder").val();
+            pageindex = 1;
+            SearchBrands();
+        });
 
         //搜尋
         function SearchBrands() {
-            window.location.href = `/Brands/Index/?txtKeyword=${txtKeyword}&PageIndex=${pageindex}`;
+            window.location.href = `/Brands/Index/?txtKeyword=${txtKeyword}&PageIndex=${pageindex}&displayorder=${displayorder}`;
         };
+        //#endregion
 
-        //產生分頁標籤
         $(async () => {
+            // #region 產生分頁標籤
             const responseforlength = await fetch(`@Url.Content("~/ApiBrand/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}`);
             const returnLengthBag = await responseforlength.text();
             const resultLength = JSON.parse(returnLengthBag);
@@ -160,7 +206,9 @@
                                                         </a>
                                                      </li>`;
             pagingContainer.innerHTML = indexRow;
+            //#endregion
 
+            // #region 分頁標籤按鈕
             //改變當前頁籤格式
             $(`[val-index=${pageindex}]`).attr("class", "page-item showIndex active");
             //分頁點選+點選後
@@ -181,16 +229,20 @@
                     SearchBrands();
                 }
             })
+            // #endregion
 
+            // #region 查無符合資料
             if (resultLength == 0) {
                 const showResult = document.querySelector("#showResult");
                 showResult.innerHTML = "<h4>找不到符合的品牌</h4>";
             }
+            // #endregion
         })
-    </script>
-    @*刪除品牌*@
-    <script>
-        $(".fordelete").click((e) => {
+
+        // #region 刪除品牌
+        $(".fordelete").click(async (e) => {
+            //權限驗證
+            if (!await validateRole('經理')) return
             //if (!confirm('確定刪除品牌嗎？')) return;
             Swal.fire({
                 title: '確定刪除品牌嗎？',
@@ -238,6 +290,7 @@
                 }
             })
         })
+                    // #endregion
     </script>
 }
 

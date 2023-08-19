@@ -20,7 +20,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
             var specs = (from spec in _context.Specs
                          join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
-                         orderby spec.Popularity
+                         orderby spec.Popularity descending
                          select new RecommendSpecDisplayDto
                          {
                              SpecId = spec.SpecId,
@@ -39,7 +39,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                            select tag.TagName;
                 spec.Tags = tags.ToList();
                 var evaluations = _context.Evaluations
-                    .Where(o => o.MerchandiseId == spec.MerchandiseId).ToList();
+                    .Where(o => o.SpecId == spec.SpecId).ToList();
                 spec.EvaluationScore = !evaluations.IsNullOrEmpty() ? evaluations.Average(o => o.Score) : 4.0;
             }
             return specs;
@@ -48,23 +48,18 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         {
             if (top <= 0) return new List<RecommendSpecDisplayDto>();
 
-            var specs = (from spec in _context.Specs
-                         join merchandise in _context.Merchandises on spec.MerchandiseId equals merchandise.MerchandiseId
-                         join evaluation in _context.Evaluations on spec.MerchandiseId equals evaluation.MerchandiseId
-                         group new { spec, merchandise, evaluation } by merchandise.MerchandiseId into g
-                         orderby g.Average(o => o.evaluation.Score) descending
-                         where g.Count() > 2
-                         select new RecommendSpecDisplayDto
-                         {
-                             SpecId = g.First().spec.SpecId,
-                             MerchandiseId = g.First().spec.MerchandiseId,
-                             MerchandiseName = g.First().merchandise.MerchandiseName + g.First().spec.SpecName,
-                             SpecImageName = g.First().spec.ImageUrl,
-                             MerchandiseImageName = g.First().merchandise.ImageUrl,
-                             Price = g.First().spec.Price,
-                             DiscountPercentage = g.First().spec.DiscountPercentage,
-                             EvaluationScore = g.Average(o => o.evaluation.Score)
-                         }).Take(top).ToList();
+            var specs = _context.Specs.OrderByDescending(o => (o.Evaluations.Any()) ? o.Evaluations.Average(ev => ev.Score) : 0)
+                .Select(o => new RecommendSpecDisplayDto
+                {
+                    SpecId = o.SpecId,
+                    MerchandiseId = o.MerchandiseId,
+                    MerchandiseName = o.Merchandise.MerchandiseName + o.SpecName,
+                    SpecImageName = o.ImageUrl,
+                    MerchandiseImageName = o.Merchandise.ImageUrl,
+                    Price = o.Price,
+                    DiscountPercentage = o.DiscountPercentage,
+                    EvaluationScore = (o.Evaluations.Any()) ? o.Evaluations.Average(ev => ev.Score) : 0
+                }).Take(top).ToList();
 
             foreach (var spec in specs)
             {
@@ -101,11 +96,11 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                            select tag.TagName;
                 spec.Tags = tags.ToList();
                 var evaluations = _context.Evaluations
-                    .Where(o => o.MerchandiseId == spec.MerchandiseId).ToList();
+                    .Where(o => o.SpecId == spec.SpecId).ToList();
                 spec.EvaluationScore = !evaluations.IsNullOrEmpty() ? evaluations.Average(o => o.Score) : 4.0;
             }
             return specs;
         }
-
+                
     }
 }

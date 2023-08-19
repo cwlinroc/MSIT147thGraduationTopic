@@ -1,7 +1,7 @@
 ﻿@using MSIT147thGraduationTopic.Models.Dtos.Recommend;
 @model (IEnumerable<RecommendSpecDisplayDto>,IEnumerable<RecommendSpecDisplayDto>,IEnumerable<RecommendSpecDisplayDto>)
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "首頁";
     var popularSpecs = Model.Item1.ToArray();
     var favorableSpecs = Model.Item2.ToArray();
     var newSpecs = Model.Item3.ToArray();
@@ -124,7 +124,7 @@
     <div class="mt-5 me-5">
 
         <div class="row position-relative">
-            <div class="position-absolute">
+            <div class="custom-jumpout">
                 <div class="custom-title my-5 shadow-lg bg-dark" data-aos="flip-left" data-aos-anchor-placement="top-bottom">
                     <div class="custom-title2">
                         <div class="custom-title3 d-flex  align-items-center">
@@ -134,11 +134,11 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-xxl-4">
             </div>
 
-            <div class="col-lg-8">
-                <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center mx-2" >
+            <div class="col-xxl-8">
+                <div class="row row-cols-sm-2 row-cols-xl-4  justify-content-center merchandises-container">
 
                     @for (int i = 0; i < popularSpecs.Length; i++)
                     {
@@ -148,7 +148,7 @@
                         if (!string.IsNullOrEmpty(spec.MerchandiseImageName)) imageUrl = "/merchandisePicture/" + spec.MerchandiseImageName;
                         if (!string.IsNullOrEmpty(spec.SpecImageName)) imageUrl = "/specPicture/" + spec.SpecImageName;
 
-                        <div class="px-1">
+                        <div class="px-2">
                             <div class="bg-dark p-1 mb-4 rounded shadow" data-aos="zoom-out-up"
                                  data-aos-anchor-placement="center-bottom" data-aos-duration="@duration">
                                 <div class="card p-2 custom-merchandise bg-light rounded-0">
@@ -222,20 +222,22 @@
 
         <div class="row position-relative m-0">
 
-            <div class="position-absolute p-0">
+
+            <div class="custom-jumpout">
                 <div class="custom-title-reverse my-5 shadow-lg bg-dark ms-auto" data-aos="flip-right" data-aos-anchor-placement="top-bottom">
                     <div class="custom-title2-reverse">
                         <div class="custom-title3 d-flex align-items-center">
                             <p class="ms-auto text-light">好評商品</p>
                         </div>
                     </div>
+
                 </div>
             </div>
 
 
 
-            <div class="col-lg-8 ms-5">
-                <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center">
+            <div class="col-xxl-8 ms-5">
+                <div class="row row-cols-sm-2 row-cols-xl-4  justify-content-center  merchandises-container">
 
 
                     @for (int i = 0; i < favorableSpecs.Length; i++)
@@ -315,7 +317,7 @@
     <div class="mt-5 me-5">
 
         <div class="row position-relative">
-            <div class="position-absolute">
+            <div class="custom-jumpout">
                 <div class="custom-title my-5 shadow-lg bg-dark" data-aos="flip-left" data-aos-anchor-placement="top-bottom">
                     <div class="custom-title2">
                         <div class="custom-title3 d-flex  align-items-center">
@@ -325,12 +327,12 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="col-xxl-4">
             </div>
 
 
-            <div class="col-lg-8">
-                <div class="row row-cols-md-2 row-cols-xxl-4  justify-content-center ">
+            <div class="col-xxl-8">
+                <div class="row row-cols-sm-2 row-cols-xl-4  justify-content-center  merchandises-container">
 
 
                     @for (int i = 0; i < newSpecs.Length; i++)

@@ -1,0 +1,221 @@
+﻿@{
+    ViewData["Title"] = "趨勢統計";
+    Layout = "_BackstagePage";
+}
+
+
+<div class="container mt-5">
+    <div class="row">
+
+        <div class="px-3 col-lg-8">
+
+
+            <div class="p-4 bg-white rounded shadow ">
+                <h2 class="mt-2">商品銷售表</h2>
+                <div class="mt-3 ms-2">
+                    <button class="btn btn-sm btn-primary" id="btnAccordingToCategory">類別</button>
+                    <button class="btn btn-sm btn-outline-primary" id="btnAccordingToPet">動物</button>
+                    <button class="btn btn-sm btn-outline-primary" id="btnAccordingToBrand">品牌</button>
+                </div>
+                <div class="p-5" style="height:600px">
+                    <canvas id="trendChart" width="500" height="300"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="px-3 col-lg-4">
+            <div class="p-4 bg-white rounded shadow ">
+
+                <div class="mt-1 p-2">
+
+                    <label for="inputTimeInterval" class="fs-4 mb-2">時間:</label>
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">時間間隔：<span id="spanTimeUnit">星期</span></button>
+                        <ul class="dropdown-menu">
+                            <li><button type="button" class="dropdown-item" id="btnWeek">星期</button></li>
+                            <li><button type="button" class="dropdown-item" id="btnMonth">月</button></li>
+                        </ul>
+                        <button class="btn btn-outline-secondary px-3" type="button" id="btnSubTime">-</button>
+                        <input type="number" class="form-control text-center" value="12" id="inputTimeInterval">
+                        <button class="btn btn-outline-secondary px-3" type="button" id="btnAddTime">+</button>
+                    </div>
+
+
+                    <label for="selectMeasureUnit" class="fs-4 mb-2">單位:</label>
+                    <select class="form-select mb-3" id="selectMeasureUnit">
+                        <option value="quantity" selected>購買數</option>
+                        <option value="profit">銷售額</option>
+                    </select>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const inputTimeInterval = document.getElementById('inputTimeInterval')
+        let measurement = 'category' // category animal brand
+        let classification = 'quantity' // quantity profit
+        let timeUnit = 'week' // month week
+        let timeIntervals = 12
+        let trendData
+
+        $('#btnAccordingToCategory').click(e => {
+            measurement = 'category'
+            btnDisplay(e.currentTarget)
+        })
+        $('#btnAccordingToPet').click(e => {
+            measurement = 'animal'
+            btnDisplay(e.currentTarget)
+        })
+        $('#btnAccordingToBrand').click(e => {
+            measurement = 'brand'
+            btnDisplay(e.currentTarget)
+        })
+        function btnDisplay(element) {
+            $(element).addClass('btn-primary').removeClass('btn-outline-primary')
+                .siblings().removeClass('btn-primary').addClass('btn-outline-primary')
+            refreshTrendData()
+        }
+
+        //btnMonth
+        $('#btnMonth').click(e => {
+            timeUnit = 'month'
+            $('#spanTimeUnit').text('月')
+            refreshTrendData()
+        })
+        //btnWeek
+        $('#btnWeek').click(e => {
+            timeUnit = 'week'
+            $('#spanTimeUnit').text('星期')
+            refreshTrendData()
+        })
+
+        //inputTimeInterval
+        inputTimeInterval.addEventListener('blur', e => {
+            e.currentTarget.value = Math.max(e.currentTarget.value, 2)
+            e.currentTarget.value = Math.min(e.currentTarget.value, 36)
+            timeIntervals = +e.currentTarget.value
+            displayTrendData()
+        })
+        //btnSubTime
+        $('#btnSubTime').click(e => {
+            timeIntervals--
+            validTimeIntervals()
+            inputTimeInterval.value = timeIntervals
+            displayTrendData()
+        })
+        //btnAddTime
+        $('#btnAddTime').click(e => {
+            timeIntervals++
+            validTimeIntervals()
+            inputTimeInterval.value = timeIntervals
+            displayTrendData()
+        })
+
+        function validTimeIntervals() {
+            if (isNaN(+timeIntervals)) timeIntervals = 6
+            timeIntervals = Math.max(timeIntervals, 2)
+            timeIntervals = Math.min(timeIntervals, 36)
+        }
+
+        //selectMeasureUnit
+        $('#selectMeasureUnit').change(e => {
+            const val = $(e.currentTarget).val()
+            console.log(val)
+            classification = val
+            refreshTrendData()
+        })
+
+        //trendChart
+        const ctxTrend = document.getElementById('trendChart').getContext('2d');
+        const trendChart = new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '',
+                    data: [],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        })
+
+        //刷新趨勢data
+        refreshTrendData()
+        async function refreshTrendData() {
+            showLoadingBox()
+            await getTrendData()
+            const data = JSON.parse(JSON.stringify(trendData))
+            trendChart.data.datasets = data.dataSets.map(set => {
+                set.data = set.data.slice(36 - timeIntervals)
+                return set
+            })
+            trendChart.data.labels = data.labels.slice(36 - timeIntervals)
+            trendChart.update()
+            hideLoadingBox()
+        }
+
+        //顯示趨勢data
+        async function displayTrendData() {
+            const data = JSON.parse(JSON.stringify(trendData))
+            trendChart.data.datasets = data.dataSets.map(set => {
+                set.data = set.data.slice(36 - timeIntervals)
+                return set
+            })
+            trendChart.data.labels = data.labels.slice(36 - timeIntervals)
+            trendChart.update()
+        }
+
+        //取得趨勢data
+        getTrendData()
+        async function getTrendData() {
+            const response = await fetch(`${ROOT}/api/apistatistic/saletrend?` +
+                `measurement=${measurement}&classification=${classification}&timeUnit=${timeUnit}&timeIntervals=36`)
+            const data = await response.json()
+            console.log(data)
+            trendData = data
+        }
+
+
+    </script>
+}
+
+@section Styles{
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+}
+
+
+

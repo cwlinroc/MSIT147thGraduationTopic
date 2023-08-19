@@ -1,0 +1,343 @@
+﻿@{
+    ViewData["Title"] = "比較統計";
+    Layout = "_BackstagePage";
+}
+
+<div class="container mt-5">
+
+    <div class="p-4 bg-white rounded shadow ">
+        <dov class="d-flex align-content-center">
+            <h2 class="mt-3 ms-4" style="width:600px">商品比較圖</h2>
+            <label for="inputTimeInterval" class="fs-4 mb-2 text-nowrap mx-4 my-auto">時間:</label>
+            <div class="input-group my-auto">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">時間間隔：<span id="spanTimeUnit">星期</span></button>
+                <ul class="dropdown-menu">
+                    <li><button type="button" class="dropdown-item" id="btnWeek">星期</button></li>
+                    <li><button type="button" class="dropdown-item" id="btnMonth">月</button></li>
+                </ul>
+                <button class="btn btn-outline-secondary px-3" type="button" id="btnSubTime">-</button>
+                <input type="number" class="form-control text-center" value="12" id="inputTimeInterval">
+                <button class="btn btn-outline-secondary px-3" type="button" id="btnAddTime">+</button>
+            </div>
+
+            <label for="selectMeasureUnit" class="fs-4 mb-2 text-nowrap mx-4 my-auto">單位:</label>
+
+            <select class="form-select flex-fill my-auto" id="selectMeasureUnit">
+                <option value="quantity" selected>購買數</option>
+                <option value="profit">銷售額</option>
+            </select>
+
+        </dov>
+        <div class="p-5  " style="position: relative; height:600px; width:100%">
+            <canvas id="trendChart" style="width:100% ; height:100%"></canvas>
+        </div>
+        <div class="d-flex my-3">
+            <button class="btn btn-sm btn-outline-secondary ms-auto" id="demoBtn1">demo 組合1</button>
+            <button class="btn btn-sm btn-outline-secondary ms-2" id="demoBtn2">demo 組合2</button>
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-lg-6">
+                <div class="m-1 border rounded p-4">
+
+                    <div class="input-group">
+                        <span class="input-group-text bg-white" id="spanLeftName">請選擇對比商品</span>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">商品名稱</button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item choose-type" onclick="leftMeasurement='merchandise'" data-search-type="merchandiseName">商品名稱</a></li>
+                            <li><a class="dropdown-item choose-type" onclick="leftMeasurement='spec'" data-search-type="specName">規格名稱</a></li>
+                            <li><a class="dropdown-item choose-type" onclick="leftMeasurement='merchandise'" data-search-type="merchandiseId">商品ID</a></li>
+                            <li><a class="dropdown-item choose-type" onclick="leftMeasurement='spec'" data-search-type="specId">規格ID</a></li>
+                        </ul>
+                        <input type="text" class="form-control" data-search-type="merchandiseName" id="inputName1">
+                        <button class="btn btn-dark px-4" type="button" id="btnLeft">確認</button>
+                    </div>
+
+                    <div class="p-5  " style="position: relative; height:600px; width:100%">
+                        <canvas id="none"></canvas>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+                <div class="m-1 border rounded p-4">
+
+                    <div class="input-group">
+                        <span class="input-group-text bg-white" id="spanRightName">請選擇對比商品</span>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">商品名稱</button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item choose-type" onclick="rightMeasurement='merchandise'" data-search-type="merchandiseName">商品名稱</a></li>
+                            <li><a class="dropdown-item choose-type" onclick="rightMeasurement='spec'" data-search-type="specName">規格名稱</a></li>
+                            <li><a class="dropdown-item choose-type" onclick="rightMeasurement='merchandise'" data-search-type="merchandiseId">商品ID</a></li>
+                            <li><a class="dropdown-item choose-type" onclick="rightMeasurement='spec'" data-search-type="specId">規格ID</a></li>
+                        </ul>
+                        <input type="text" class="form-control" data-search-type="merchandiseName" id="inputName2">
+                        <button class="btn btn-dark px-4" type="button" id="btnRight">確認</button>
+                    </div>
+
+                    <div class="p-5 " style="position: relative; height:600px; width:100%">
+                        <canvas id="none"></canvas>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const inputTimeInterval = document.getElementById('inputTimeInterval')
+
+        let classification = 'quantity' // quantity profit
+        let timeUnit = 'day' // month day
+        let timeIntervals = 12
+
+        let leftId = 0
+        let leftMeasurement = "merchandise"
+        let leftTrendData
+
+        let rightId = 0
+        let rightMeasurement = "merchandise"
+        let rightTrendData
+
+
+        //demoBtn1
+        $('#demoBtn1').click(async e => {
+            leftMeasurement = "merchandise"
+            leftId = 11
+            rightMeasurement = "merchandise"
+            rightId = 21
+            refreshTrendChart()
+            const left = await getIdAndName("merchandiseId", leftId)
+            $('#spanLeftName').text(left.name)
+            const right = await getIdAndName("merchandiseId", rightId)
+            $('#spanRightName').text(right.name)
+            
+
+        })
+        $('#demoBtn2').click(async e => {
+            leftMeasurement = "spec"
+            leftId = 15
+            rightMeasurement = "spec"
+            rightId = 30
+            refreshTrendChart()
+            const left = await getIdAndName("specId", leftId)
+            $('#spanLeftName').text(left.name)
+            const right = await getIdAndName("specId", rightId)
+            $('#spanRightName').text(right.name)
+        })
+
+        //const taskLeft = getTrendData(leftMeasurement, leftId)
+        //const taskRight = getTrendData(rightMeasurement, rightId)
+
+        //trendChart
+        const ctxTrend = document.getElementById('trendChart').getContext('2d');
+        const trendChart = new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        })
+
+
+        $('#btnLeft').click(async e => {
+            const keyword = e.currentTarget.closest('div').querySelector('input[type=text]').value.trim()
+            if (!keyword) return
+            const searchType = e.currentTarget.closest('div').querySelector('input[type=text]').dataset.searchType
+            const { id, name } = await getIdAndName(searchType, keyword)
+            $('#spanLeftName').text(name)
+            leftId = id
+            leftTrendData = await getTrendData(leftMeasurement, leftId)
+            console.log(leftTrendData)
+            displayTrendChart()
+        })
+        $('#btnRight').click(async e => {
+            const keyword = e.currentTarget.closest('div').querySelector('input[type=text]').value.trim()
+            if (!keyword) return
+            const searchType = e.currentTarget.closest('div').querySelector('input[type=text]').dataset.searchType
+            const { id, name } = await getIdAndName(searchType, keyword)
+            $('#spanRightName').text(name)
+            rightId = id
+            rightTrendData = await getTrendData(rightMeasurement, rightId)
+            console.log(rightTrendData)
+            displayTrendChart()
+        })
+
+        //refreshTrendChart
+        async function refreshTrendChart() {
+            const taskLeft = getTrendData(leftMeasurement, leftId)
+            const taskRight = getTrendData(rightMeasurement, rightId)
+            const [resultLeft, resultRight] = await Promise.all([taskLeft, taskRight])
+            leftTrendData = resultLeft
+            rightTrendData = resultRight
+            displayTrendChart()
+        }
+
+
+        //displaytrendChart
+        async function displayTrendChart() {
+            const leftData = (!!leftTrendData) ? JSON.parse(JSON.stringify(leftTrendData)) : null
+            const rightData = (!!rightTrendData) ? JSON.parse(JSON.stringify(rightTrendData)) : null
+            trendChart.data.labels = []
+            trendChart.data.datasets = []
+            if (!!leftData) {
+                trendChart.data.labels = leftData.labels.slice(36 - timeIntervals)
+                trendChart.data.datasets.push({
+                    label: leftData.dataTitle,
+                    data: leftData.datas.slice(36 - timeIntervals),
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                })
+            }
+            if (!!rightData) {
+                trendChart.data.labels = rightData.labels.slice(36 - timeIntervals)
+                trendChart.data.datasets.push({
+                    label: rightData.dataTitle,
+                    data: rightData.datas.slice(36 - timeIntervals),
+                    fill: false,
+                    borderColor: 'rgb(192, 75, 192)',
+                    tension: 0.1
+                })
+            }
+            trendChart.update()
+        }
+
+
+        //取得對應ID
+        async function getIdAndName(queryCol, keyword) {
+            const response = await fetch(`${ROOT}/api/apistatistic/GetSearchedId?` + new URLSearchParams({
+                "queryCol": queryCol,
+                "keyword": keyword,
+            }))
+            if (response.ok) return await response.json()
+            return -1
+        }
+
+
+        //取得趨勢data
+        async function getTrendData(measurement, id) {
+            const response = await fetch(`${ROOT}/api/apistatistic/merchandisetrend?` +
+                `measurement=${measurement}&classification=${classification}&timeUnit=${timeUnit}&id=${id}`)
+            const data = await response.json()
+            console.log(data)
+            return data
+        }
+
+        //選擇搜尋型別
+        $('a.choose-type').click(e => {
+            const searchType = e.currentTarget.dataset.searchType
+            const searchTypeName = e.currentTarget.innerText
+            $(e.currentTarget).closest('.input-group').find('button.dropdown-toggle').text(searchTypeName)
+            $(e.currentTarget).closest('.input-group').find('input[type=text]').attr('data-search-type', searchType)
+        })
+
+        //auto complete
+        $('#inputName1,#inputName2').keyup(async e => {
+            const thisInput = e.currentTarget
+            const inputText = thisInput.value.trim()
+            if (inputText.length < 1) return
+            const searchType = thisInput.dataset.searchType
+            console.log(searchType)
+            const response = await fetch(`${ROOT}/api/apistatistic/GetAutoCompleteNames?` + new URLSearchParams({
+                "queryCol": searchType,
+                "keyword": inputText,
+            }))
+            const data = await response.json()
+            $(thisInput).autocomplete({
+                source: data,
+                minLength: 1
+            })
+        })
+
+
+        //conditions
+        //selectMeasureUnit
+        $('#selectMeasureUnit').change(e => {
+            const val = $(e.currentTarget).val()
+            console.log(val)
+            classification = val
+            refreshTrendChart()
+        })
+
+        //btnMonth
+        $('#btnMonth').click(e => {
+            timeUnit = 'month'
+            $('#spanTimeUnit').text('月')
+            refreshTrendChart()
+        })
+        //btnWeek
+        $('#btnWeek').click(e => {
+            timeUnit = 'day'
+            $('#spanTimeUnit').text('星期')
+            refreshTrendChart()
+        })
+
+
+        //inputTimeInterval
+        inputTimeInterval.addEventListener('blur', e => {
+            e.currentTarget.value = Math.max(e.currentTarget.value, 2)
+            e.currentTarget.value = Math.min(e.currentTarget.value, 36)
+            timeIntervals = +e.currentTarget.value
+            displayTrendChart()
+        })
+        //btnSubTime
+        $('#btnSubTime').click(e => {
+            timeIntervals--
+            validTimeIntervals()
+            inputTimeInterval.value = timeIntervals
+            displayTrendChart()
+        })
+        //btnAddTime
+        $('#btnAddTime').click(e => {
+            timeIntervals++
+            validTimeIntervals()
+            inputTimeInterval.value = timeIntervals
+            displayTrendChart()
+        })
+
+        function validTimeIntervals() {
+            if (isNaN(+timeIntervals)) timeIntervals = 6
+            timeIntervals = Math.max(timeIntervals, 2)
+            timeIntervals = Math.min(timeIntervals, 36)
+        }
+
+    </script>
+}
+
+@section Styles{
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+    </style>
+}
+

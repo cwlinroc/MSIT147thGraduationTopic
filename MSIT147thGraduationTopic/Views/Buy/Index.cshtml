@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<MSIT147thGraduationTopic.Models.Dtos.CartItemDisplayDto>;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "訂單生成";
     var coupons = ViewBag.Coupons as IEnumerable<MSIT147thGraduationTopic.Models.ViewModels.BuyPageCouponVM>;
 }
 
@@ -285,7 +285,7 @@
 
         <diV class="col-xl-3 col-lg-6">
             <!-- 右側訂單列表 -->
-            <div class="container p-4 bg-white rounded shadow">
+            <div class="container p-4 bg-white rounded shadow mb-5">
 
                 <h2>訂單</h2>
 
@@ -329,7 +329,7 @@
                 <div class="mt-5">
                     <hr>
                     <div class="d-flex">
-                        <div class="ms-auto me-3">
+                        <div class="ms-auto me-3" id="sideBarTotal">
                             <span>金額總計:</span>
                             <span class="mx-3 price-total text-danger">0</span>
                         </div>

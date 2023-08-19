@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
 
-//RandomNumberGenerator.GetInt32(10)
+////RandomNumberGenerator.GetInt32(10)
 
 //var service = new SimulationDataInsertService(null);
 
@@ -46,14 +46,18 @@ using System.Text;
 
 /**test**/
 
-var repo = new CouponRepository(new MSIT147thGraduationTopic.EFModels.GraduationTopicContext());
+var repo = new StatisticRepository(new());
 
-var result = repo.GetReceivableCoupon(1);
+var dtos = await repo.GetMerchandiseTrend("merchandise", "quantity", "day" , 7 , 1 );
 
-foreach (var item in result)
+int count = 0;
+
+foreach (var item in dtos)
 {
-    Console.WriteLine(item.CouponId +": "+  item.CouponName + " "+ item.UsedStatus);
+    count++;
+    Console.WriteLine(item.Item1.ToString() + " , " + item.Item2.ToString() + " : " + item.Item3.ToString());
 }
+
 
 
 /**test**/

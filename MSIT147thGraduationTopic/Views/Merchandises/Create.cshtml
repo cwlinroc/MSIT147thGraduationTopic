@@ -3,13 +3,22 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "新增商品";
+    string txtKeyword = Context.Request.Cookies["txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
+    int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
 }
 
 <div class="container">
     <h1 class="container">新增商品</h1>
 
     <div class="bg-light rounded shadow p-5">
-        <h4>輸入商品資料</h4><button id="demo_right">Demo 正確輸入</button><button id="demo_wrong" class="mx-2">Demo 錯誤輸入</button>
+        <h4>輸入商品資料</h4>
+        <div style="float:right">
+            <button id="demo_wrong" class="btn btn-outline-secondary mx-2">Demo 錯誤範例</button>
+            <button id="demo_right" class="btn btn-outline-secondary">Demo 正確範例</button>
+        </div>
         <hr />
         <div class="row">
             <div class="col-md-4">
@@ -63,7 +72,8 @@
                     <hr />
                     <div class="form-group">
                         <input type="submit" value="新增" class="btn btn-primary" id="submit" />
-                        @Html.ActionLink("取消", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+                        @Html.ActionLink("取消", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
+                            PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
                     </div>
                 </form>
             </div>
@@ -72,7 +82,7 @@
 </div>
 
 @section Scripts {
-    @*DEMO*@
+    <!-- DEMO按鈕 -->
     <script>
         let repeatContent = "";
         const demoDescription = "本產品的特色在於細緻的毛梳能夠有效梳理寵物的毛髮，將脫落的毛有效地聚集起來以便清潔；梳毛尖端的球狀結構也具有按摩的效果，以促進寵物皮膚、毛皮的健康。然而需要小心不要讓梳毛碰觸到寵物的眼睛，否則可能會造成刮傷，嚴重者可能道製寵物失明。";
@@ -82,16 +92,19 @@
 
         $("#demo_right").on("click", () => {
             $("#inputname").val("寵物專用毛梳");
+            $("#inputbrandid").val(11);
             $("#inputcategoryid").val(5);
             $("#descriptionarea").val(demoDescription);
+            $("#countdiscription").text($("#descriptionarea").val().length);
         })
         $("#demo_wrong").on("click", () => {
-            $("#inputname").val("狗狗專用牽繩");
+            $("#inputname").val("貓用伸縮魔力廢毛梳");
             $("#descriptionarea").val(repeatContent);
-        })        
+            $("#countdiscription").text($("#descriptionarea").val().length);
+        })
     </script>
-    @*產生下拉選項*@
     <script>
+        // #region 產生品牌、類別下拉選項
         const brand = document.querySelector("#inputbrandid");
         const category = document.querySelector("#inputcategoryid");
 
@@ -122,9 +135,9 @@
                 brand.innerHTML = categories.join("");
             })
         })
-    </script>
-    @*產生圖片路徑、預覽*@
-    <script>
+        // #endregion
+
+        // #region 產生圖片路徑、預覽圖片
         const display = document.querySelector("#display");
         const imageClear = document.querySelector("#imageClear");
 
@@ -153,9 +166,9 @@
                 }
             })
         }
-    </script>
-    @*錯誤提示訊息*@
-    <script>
+        // #endregion
+    
+        // #region 錯誤提示訊息
         const alertName = document.querySelector("#alertspanforname");
         const alertBrand = document.querySelector("#alertspanforbrand");
         const alertCategory = document.querySelector("#alertspanforcategory");
@@ -205,13 +218,14 @@
                 })
             }
         })
-    </script>
-    @*計算商品描述字數*@
-    <script>
+        // #endregion
+
+        // #region 計算商品描述字數
         const descriptionarea = document.querySelector("#descriptionarea")
         descriptionarea.addEventListener("keyup", () => {
             $("#countdiscription").text($("#descriptionarea").val().length);
         })
+        // #endregion
     </script>
 }
 

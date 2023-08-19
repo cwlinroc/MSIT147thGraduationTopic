@@ -111,7 +111,6 @@ async function LogIn() {
     })
 }
 
-
 //Ajax 登出
 async function LogOut() {
 
@@ -122,7 +121,7 @@ async function LogOut() {
         if (url) {
             Swal.fire({
                 icon: 'success',
-                title: '登出成功!',
+                title: '您已登出!',
                 allowOutsideClick: false
             }).then(result => {
                 if (result.isConfirmed) {
@@ -195,9 +194,6 @@ async function displaySelfAvatar() {
 const loadingBox = document.querySelector('.loading-box')
 const showLoadingBox = () => loadingBox.style.display = "block";
 const hideLoadingBox = () => loadingBox.style.display = "none"
-
-
-
 
 
 

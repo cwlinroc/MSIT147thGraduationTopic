@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,7 @@ namespace MSIT147thGraduationTopic.Controllers.Cart
 
         [HttpGet]
         [HttpGet("{id}")]
+        [Authorize(Roles = "會員")]
         public async Task<ActionResult<IEnumerable<CartItemDisplayDto>>> GetCartItem(int id = 5)
         {
             if (id <= 0)
@@ -46,6 +49,7 @@ namespace MSIT147thGraduationTopic.Controllers.Cart
         // PUT: api/ApiCart
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
+        [Authorize(Roles = "會員")]
         public async Task<IActionResult> PutCartItem(CartItemDto cartItem)
         {
             try
@@ -63,6 +67,7 @@ namespace MSIT147thGraduationTopic.Controllers.Cart
         //POST: api/ApiCart
         //To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "會員")]
         public async Task<ActionResult<CartItem>> PostCartItem(CartVM vm)
         {
             //HttpContext.Session.Set<object>(key, value);
@@ -75,6 +80,7 @@ namespace MSIT147thGraduationTopic.Controllers.Cart
 
         // DELETE: api/ApiCart/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "會員")]
         public async Task<IActionResult> DeleteCartItem(int id)
         {
             await _service.DeleteCartItem(id);
@@ -83,6 +89,7 @@ namespace MSIT147thGraduationTopic.Controllers.Cart
         }
 
         [HttpGet("cartcount")]
+        [Authorize(Roles = "會員")]
         public async Task<ActionResult<int>> GetCartCount()
         {
             if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
@@ -95,6 +102,7 @@ namespace MSIT147thGraduationTopic.Controllers.Cart
 
 
         [HttpGet("checkstockquantity")]
+        [Authorize(Roles = "會員")]
         public async Task<ActionResult<dynamic>> CheckStockQuantity([FromQuery] int[]? ids)
         {
             (bool enough, string message) = await new CartService(_context).CheckStockQuantity(ids);

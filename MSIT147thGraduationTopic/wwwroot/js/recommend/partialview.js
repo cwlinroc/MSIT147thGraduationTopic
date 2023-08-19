@@ -17,6 +17,7 @@ async function showRecommendSpecs(container,route) {
     const htmlStr = getRecommendItemsHtml(data)
     container.innerHTML = htmlStr
     bindHoverEvents()
+    $('.add-cart-btn').off().click(addCartEvent)
 }
 //ajax取得推薦商品
 async function getRecommendSpecs(route) {
@@ -40,15 +41,16 @@ function getRecommendItemsHtml(data) {
                     <img src="${ROOT}/uploads/${imageUrl}" alt="...">
                 </figure>
                 <div class="px-1 my-0" style="height:50px;overflow:hidden">
-                    <a class="stretched-link link-dark" href="${href}">${value.name}</a>
+                    <a class="stretched-link link-dark" href="${href}"  style="z-index: 200;">${value.name}</a>
                 </div>
                 <div class="my-0 d-flex px-1">
                     ${canceledPrice}
                     <i class="fa-solid fa-star text-warning me-1 ms-auto my-auto"></i>
                     <span>${score}</span>
                 </div>
-                <div class="text-danger px-1">                    
-                    NTD$<span>${Math.round(value.price * value.discountPercentage / 100)}</span>
+                <div class="px-1 d-flex">
+                    <div class="text-danger ">NTD$<span>${Math.round(value.price * value.discountPercentage / 100)}</span></div>
+                    <div class="ms-auto"><a data-spec-id="${value.specId}" class="btn btn-sm btn-outline-secondary add-cart-btn" style="z-index: 289;position: relative;"><i class="fa-solid fa-cart-shopping"></i></a></div>
                 </div>
             </div>
         `
@@ -63,6 +65,21 @@ function bindHoverEvents() {
             e.currentTarget.customAnimate('headShake')
         }
         , e => $(e.currentTarget).find('figure').removeClass('border-danger'))
+}
+
+//add-cart-btn
+async function addCartEvent(event) {
+    event.stopPropagation()
+    if (ROLE != "會員") {
+        await Swal.fire('請登入以使用購物車');
+        loginModal.show();
+        return
+    }
+    const specId = event.currentTarget.dataset.specId
+    const response = await fetch(`${ROOT}/api/apirecommendpartial/addincart/${specId}`)
+    const result = await response.json()
+    refreshNavbarCart()
+    console.log(result)
 }
 
 

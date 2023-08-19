@@ -123,6 +123,7 @@ $('#btnChooseSpec').click(e => {
 
 //搜尋keyup
 $('#inputSearch').keyup(searchItems)
+//document.getElementById('inputSearch').addEventListener('compositionend', searchItems)
 async function searchItems() {
     const table = document.querySelector('#tableSearchedItems')
     $(table).find('tbody').html('')

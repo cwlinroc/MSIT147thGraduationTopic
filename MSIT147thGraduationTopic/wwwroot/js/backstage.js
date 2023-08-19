@@ -125,7 +125,7 @@ async function validateRole(role) {
     if (!isValid) {
         Swal.fire(
             '權限不足!',
-            '您無權訪問此頁面',
+            '無法執行此功能',
             'error')
     }
     return isValid

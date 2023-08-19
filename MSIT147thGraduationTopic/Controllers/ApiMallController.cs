@@ -12,15 +12,18 @@ using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Azure;
+using MSIT147thGraduationTopic.Models.Infra.Repositories;
 
 namespace MSIT147thGraduationTopic.Controllers
 {
     public class ApiMallController : Controller
     {
         private readonly GraduationTopicContext _context;
+        private readonly MallRepository _repo;
         public ApiMallController(GraduationTopicContext context)
         {
             _context = context;
+            _repo = new MallRepository(context);
         }
 
         [HttpGet]
@@ -28,23 +31,21 @@ namespace MSIT147thGraduationTopic.Controllers
             string txtKeyword, int searchCondition, int displayorder, int pageSize, int PageIndex,
             int sideCategoryId, int? minPrice, int? maxPrice, int tagId = 0)
         {
-            IEnumerable<MallDisplay> datas = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
+            //保存參數以供換頁時保留設定
+            if (!string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("Mall_txtKeyword", txtKeyword);
+            if (string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("Mall_txtKeyword", "");
+            HttpContext.Response.Cookies.Append("Mall_searchCondition", searchCondition.ToString());
+            HttpContext.Response.Cookies.Append("Mall_displayorder", displayorder.ToString());
+            HttpContext.Response.Cookies.Append("Mall_pageSize", pageSize.ToString());
 
-            if (!string.IsNullOrEmpty(txtKeyword))
-            {
-                datas = searchCondition switch
-                {
-                    1 => datas.Where(md => md.FullName.Contains(txtKeyword)),
-                    2 => datas.Where(md => md.BrandName.Contains(txtKeyword)),
-                    3 => datas.Where(md => md.CategoryName.Contains(txtKeyword)),
-                    _ => datas
-                };
-            }
+            IEnumerable<MallDisplay> datas = _repo.getBasicMallDisplay(txtKeyword, searchCondition, minPrice, maxPrice);
 
             datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
-            datas = (minPrice.HasValue) ? datas.Where(sp => sp.Price >= minPrice) : datas;
-            datas = (maxPrice.HasValue) ? datas.Where(sp => sp.Price <= maxPrice) : datas;
+            if (tagId != 0)
+            {
+                IQueryable<int> thisTag = _context.SpecTags.Where(st => st.TagId == tagId).Select(st => st.SpecId);
+                datas = datas.Where(md => thisTag.Contains(md.SpecId));
+            }
 
             datas = displayorder switch
             {
@@ -56,40 +57,27 @@ namespace MSIT147thGraduationTopic.Controllers
                 _ => datas.OrderByDescending(md => md.SpecId)
             };
 
-            //tag篩選
-            if (tagId != 0)
-            {
-                IQueryable<int> thisTag = _context.SpecTags.Where(st => st.TagId == tagId).Select(st => st.SpecId);
-                datas = datas.Where(md => thisTag.Contains(md.SpecId));
-            }
-
             var contentofThisPage = datas.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToList();
 
-            return Json(contentofThisPage);
+            IEnumerable<MallDisplayVM> datasWithScore = contentofThisPage
+                            .Select(md => new MallDisplayVM
+                            {
+                                malldisplay = md,
+                                Score = (_context.Evaluations.Where(e => e.SpecId == md.SpecId).Any())
+                                ? _context.Evaluations.Where(e => e.SpecId == md.SpecId).Average(e => e.Score) : 0
+                            }).ToList();
+
+            return Json(datasWithScore);
         }
 
         [HttpGet]
         public IActionResult GetSearchResultLength(
-            string txtKeyword, int searchCondition, int sideCategoryId, int? minPrice, int? maxPrice, int tagId = 0)
+            string txtKeyword, int searchCondition, int? minPrice, int? maxPrice, int sideCategoryId = 0, int tagId = 0)
         {
-            IEnumerable<MallDisplay> datas = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
-
-            if (!string.IsNullOrEmpty(txtKeyword))
-            {
-                datas = searchCondition switch
-                {
-                    1 => datas.Where(md => md.FullName.Contains(txtKeyword)),
-                    2 => datas.Where(md => md.BrandName.Contains(txtKeyword)),
-                    3 => datas.Where(md => md.CategoryName.Contains(txtKeyword)),
-                    _ => datas
-                };
-            }
-
+            IEnumerable<MallDisplay> datas = _repo.getBasicMallDisplay(txtKeyword, searchCondition, minPrice, maxPrice);
+            
             datas = (sideCategoryId == 0) ? datas : datas.Where(md => md.CategoryId == sideCategoryId);
-            datas = (minPrice.HasValue)?datas.Where(sp => sp.Price >= minPrice):datas;
-            datas = (maxPrice.HasValue)?datas.Where(sp => sp.Price <= maxPrice):datas;
-
+            
             if (tagId != 0)
             {
                 IQueryable<int> thisTag = _context.SpecTags.Where(st => st.TagId == tagId).Select(st => st.SpecId);
@@ -107,22 +95,8 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             var categoriesFromEF = _context.Categories.OrderBy(c => c.CategoryId);
 
-            IEnumerable<MallDisplay> selectedProducts = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
-
-            if (!string.IsNullOrEmpty(txtKeyword))
-            {
-                selectedProducts = searchCondition switch
-                {
-                    1 => selectedProducts.Where(sp => sp.FullName.Contains(txtKeyword)),
-                    2 => selectedProducts.Where(sp => sp.BrandName.Contains(txtKeyword)),
-                    3 => selectedProducts.Where(sp => sp.CategoryName.Contains(txtKeyword)),
-                    _ => selectedProducts
-                };
-            }
-            if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
-            if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
-
+            IEnumerable<MallDisplay> selectedProducts = _repo.getBasicMallDisplay(txtKeyword, searchCondition, minPrice, maxPrice);
+            
             if (tagId != 0)
             {
                 IQueryable<int> thisTag = _context.SpecTags.Where(st => st.TagId == tagId).Select(st => st.SpecId);
@@ -156,22 +130,9 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             var tagsFromEF = _context.Tags.OrderBy(c => c.TagId);
 
-            IEnumerable<MallDisplay> selectedProducts = _context.MallDisplays
-                .Where(md => md.Display == true).Where(md => md.OnShelf == true).Where(md => md.Amount > 0);
+            IEnumerable<MallDisplay> selectedProducts = _repo.getBasicMallDisplay(txtKeyword, searchCondition, minPrice, maxPrice);
 
-            if (!string.IsNullOrEmpty(txtKeyword))
-            {
-                selectedProducts = searchCondition switch
-                {
-                    1 => selectedProducts.Where(sp => sp.FullName.Contains(txtKeyword)),
-                    2 => selectedProducts.Where(sp => sp.BrandName.Contains(txtKeyword)),
-                    3 => selectedProducts.Where(sp => sp.CategoryName.Contains(txtKeyword)),
-                    _ => selectedProducts
-                };
-            }
             selectedProducts = (sideCategoryId == 0) ? selectedProducts : selectedProducts.Where(md => md.CategoryId == sideCategoryId);
-            if (minPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price >= minPrice);
-            if (maxPrice.HasValue) selectedProducts = selectedProducts.Where(sp => sp.Price <= maxPrice);
 
             List<TagVM> tags = new List<TagVM>();
             TagVM tag_0 = new TagVM()
