@@ -47,30 +47,30 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         /// 驗證 Google 登入授權
         /// </summary>
         /// <returns></returns>
-        //public IActionResult ValidGoogleLogin()
-        //{
-        //    string? formCredential = Request.Form["credential"]; //回傳憑證
-        //    string? formToken = Request.Form["g_csrf_token"]; //回傳令牌
-        //    string? cookiesToken = Request.Cookies["g_csrf_token"]; //Cookie 令牌
+        public IActionResult ValidGoogleLogin()
+        {
+            string? formCredential = Request.Form["credential"]; //回傳憑證
+            string? formToken = Request.Form["g_csrf_token"]; //回傳令牌
+            string? cookiesToken = Request.Cookies["g_csrf_token"]; //Cookie 令牌
 
-        //    // 驗證 Google Token
-        //    GoogleJsonWebSignature.Payload? payload = VerifyGoogleToken(formCredential, formToken, cookiesToken).Result;
-        //    if (payload == null)
-        //    {
-        //        // 驗證失敗
-        //        ViewData["Msg"] = "驗證 Google 授權失敗";
-        //    }
-        //    else
-        //    {
-        //        //驗證成功，取使用者資訊內容
-        //        ViewData["Msg"] = "驗證 Google 授權成功" + "<br>";
-        //        ViewData["Msg"] += "Email:" + payload.Email + "<br>";
-        //        ViewData["Msg"] += "Name:" + payload.Name + "<br>";
-        //        ViewData["Msg"] += "Picture:" + payload.Picture;
-        //    }
+            // 驗證 Google Token
+            GoogleJsonWebSignature.Payload? payload = VerifyGoogleToken(formCredential, formToken, cookiesToken).Result;
+            if (payload == null)
+            {
+                // 驗證失敗
+                ViewData["Msg"] = "驗證 Google 授權失敗";
+            }
+            else
+            {
+                //驗證成功，取使用者資訊內容
+                ViewData["Msg"] = "驗證 Google 授權成功" + "<br>";
+                ViewData["Msg"] += "Email:" + payload.Email + "<br>";
+                ViewData["Msg"] += "Name:" + payload.Name + "<br>";
+                ViewData["Msg"] += "Picture:" + payload.Picture;
+            }
 
-        //    return View();
-        //}
+            return View();
+        }
 
         /// <summary>
         /// 驗證 Google Token
