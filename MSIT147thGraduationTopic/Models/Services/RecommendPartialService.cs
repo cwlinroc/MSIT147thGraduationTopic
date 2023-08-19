@@ -29,8 +29,7 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             int[] visitedMerchandiseIds = GetVisitedMerchandiseIds(merchandiseId);
             var visitedTagIds = await _repo.GetVisitedTagIds(visitedMerchandiseIds);
-            //扣掉動物類別
-            //visitedTagIds = visitedTagIds.Where(o => o > 4).ToArray();
+            
             bool logIn = int.TryParse(_accessor.HttpContext!.User.FindFirstValue("MemberId"), out int parseNumber);
             int? memberId = logIn ? parseNumber : null;
             var inCartTagIds = await _repo.GetInCartTagIds(memberId);
@@ -49,9 +48,16 @@ namespace MSIT147thGraduationTopic.Models.Services
             var recommendByCartSpecIds = !inCartTagIds.IsNullOrEmpty() ?
                 await _repo.GetRecommendSpecIds(inCartTagIds, recommendByVisitSpecIds.Concat(conflictSpecIds)) : new();
 
-            var recSpecIds = recommendByVisitSpecIds.Concat(recommendByCartSpecIds).Distinct();
-            recSpecIds = generator.RandomCollectionFrom(recSpecIds, 8);
-            return await _repo.GetSpecDisplayDtos(recSpecIds);
+            var recSpecIds = recommendByVisitSpecIds
+                .Concat(recommendByCartSpecIds.Distinct().OrderBy(o=>Guid.NewGuid()).Take(8));
+            var choosendIds = generator.RandomCollectionFrom(recSpecIds, 8);
+
+            while (choosendIds.Distinct().Count() < 8)
+            {
+                choosendIds = choosendIds.Distinct().Append(generator.RandomFrom(recSpecIds));
+            }
+
+            return await _repo.GetSpecDisplayDtos(choosendIds);
         }
 
         private int[] GetVisitedMerchandiseIds(int? merchandiseId)
@@ -60,7 +66,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             int? last2 = _accessor.HttpContext.Session.GetInt32("Last_2");
             //int? last3 = _accessor.HttpContext.Session.GetInt32("Last_3");
             int? last3 = null;
-            return new int?[] { last1, last2, last3 , merchandiseId }
+            return new int?[] { last1, last2, last3, merchandiseId }
                 .Where(o => o != null).Select(o => o!.Value).ToArray();
         }
 

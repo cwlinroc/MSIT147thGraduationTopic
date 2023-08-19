@@ -47,14 +47,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
 
         public async Task<List<int>> GetRecommendSpecIds(IEnumerable<int>? tagIds, IEnumerable<int>? collisionSpecIds = null, int amount = 20)
         {
-            var specs = _context.SpecTags.Where(o => tagIds.IsNullOrEmpty() || tagIds!.Contains(o.TagId))
-                .Select(o => o.Spec).Distinct().Where(o => o.OnShelf && o.Amount > 0 && o.Merchandise.Display);
-            //.OrderBy(o => SqlFunctions.Rand())
+            var specs = (tagIds.IsNullOrEmpty()) ? _context.SpecTags.OrderBy(x => Guid.NewGuid()).Take(amount) : tagIds!
+                .Select(tagId => _context.SpecTags.Where(x => x.TagId == tagId).OrderBy(x => Guid.NewGuid()).Take(10))
+                .Aggregate((accum, next) => accum.Concat(next));
+            
             if (!collisionSpecIds.IsNullOrEmpty())
             {
                 specs = specs.Where(o => !collisionSpecIds!.Contains(o.SpecId));
             }
-            return await specs.Select(o => o.SpecId).Take(amount).ToListAsync();
+            return await specs.Select(o => o.SpecId).ToListAsync();
         }
 
 

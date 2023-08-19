@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MathNet.Numerics.Random;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
@@ -6,6 +7,7 @@ using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Security.Cryptography;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {
@@ -128,7 +130,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             }
         }
 
-        public async Task AddRandomOrders(int MonthsBefore = 12)
+        public async Task AddRandomOrders(int monthsBefore = 12)
         {
             var allMembers = await _context.Members.ToListAsync();
 
@@ -137,12 +139,12 @@ namespace MSIT147thGraduationTopic.Models.Services
             int allMembersCount = allMembers.Count;
             int allSpecsCount = allSpecs.Count;
 
-            for (int i = 0; i < MonthsBefore; i++)
+            for (int i = 0; i < monthsBefore; i++)
             {
-                int minDaysBefore = (MonthsBefore - i - 1) * 30;
+                int minDaysBefore = (monthsBefore - i - 1) * 30;
                 int maxDaysBefore = minDaysBefore + 30;
-                int memberPeriod = (allMembersCount / (MonthsBefore + 8)) * (i + 8);
-                int specPeriod = (allSpecsCount / (MonthsBefore + 8)) * (i + 8);
+                int memberPeriod = (allMembersCount / (monthsBefore + 8)) * (i + 8);
+                int specPeriod = (allSpecsCount / (monthsBefore + 8)) * (i + 8);
 
                 await GenerateOrders(
                     allMembers.Take(memberPeriod).ToList(),
@@ -221,7 +223,7 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             foreach (var spec in boughtSpecs.ToList())
             {
-                var buyChance = ((spec.FullName! + salt).GetHashedInt() % 100 / 100.0).InvCSND(0.5,0.15);
+                var buyChance = ((spec.FullName! + salt).GetHashedInt() % 100 / 100.0).InvCSND(0.5, 0.15);
                 if (buyChance < _generator.RandomDouble()) boughtSpecs.Remove(spec);
             }
 
@@ -290,5 +292,35 @@ namespace MSIT147thGraduationTopic.Models.Services
                 new string[]{ "總的來說，這是一個不錯的產品，如果折扣再多就更好了", "還不錯ㄟ!比預期中的好很多~", "依這樣價格買到這商品，我覺得很不錯了", "下一波特價的時候會再回購", "表現可圈可點~滿意!", "這次的購物體驗很不錯，之後需要會再來", "如果可以再更多選擇就好了", "使用時需要謹慎，確保寵物的舒適和幸福。", "商品比別家便宜，但希望包裝再細心一點", "這次等待時間較長，希望流程上注意，但商品是好的", "實體跟照片有點差距", "毛寶感覺蠻喜歡", "優惠劵折扣划算", "買了很多，但品質偶爾會不在標準內", "整體還可以啦", "商品常常缺貨，但也可能是太便宜了~快點補貨啦"},
                 new string[]{ "出乎意料的好!!接下來一定會成為你們的VIP", "天啊~~這價格超划算，馬上再度下單", "搶到賺到，還好我有追蹤你們網站", "包裝很用心，非常愉快的購物經驗", "現在想要買東西都會優先打開你們網頁，超級滿意!", "超快到貨~下次一定還來買", "對這次服務的經驗感到超級滿意", "服務的靈活性和可信賴性也讓我非常滿意", "非常幸運能夠找到這樣一個優質的購物網，我絕對會推薦給其他寵物愛好者", "不多說，真心推薦大家買", "良心店家，目前家裡用的都跟你們買", "絕對是我目前買過最好的商品", "體驗十分良好，必須推薦", "一不小心買滿購物車，但也太便宜了吧", "這CP值不得不推", "怎麼只有五星，我想給十顆星星阿", "這好東西不能只有我看到，馬上轉推給朋友", "太誇張了，這價格也太佛", "我家寵物真的不能沒有你們，好賣家", "優惠劵很實用，我需要多幾張!!太好買了", "看到一堆都想買，大推", "每一次買起來都好划算" },
             };
+
+        public async Task AddSpecifySpecOrders(bool incremment, int specId, int times)
+        {
+            int[] boughtTrend = incremment ?
+                new int[] { 1, 1, 2, 2, 1, 2, 3, 3, 4, 5, 20, 45 }
+                : new int[] { 7, 13, 18, 20, 17, 16, 8 , 7, 3, 2, 1, 0 };
+            var spec = await _context.Specs.FindAsync(specId);
+            for (int i = 0; i < 10; i++)
+            {
+                int minDaysBefore = (10 - i - 1) * 30;
+                DateTime maxDate = DateTime.Now.AddDays(-minDaysBefore);
+                int maxDaysBefore = minDaysBefore + 30;
+                DateTime minDate = DateTime.Now.AddDays(-maxDaysBefore);
+                int amount = boughtTrend[i] * times;
+                var orderIds = await _context.Orders.Where(o => o.PurchaseTime > minDate && o.PurchaseTime < maxDate)
+                    .OrderBy(o => Guid.NewGuid()).Take(amount).Select(o => o.OrderId).ToListAsync();
+                orderIds = orderIds.Where(o => _generator.RandomBool()).ToList();
+                var orderlists = orderIds.Select(o => new OrderList
+                {
+                    OrderId = o,
+                    Price = spec!.Price,
+                    Discount = spec.DiscountPercentage,
+                    SpecId = spec.SpecId,
+                    Quantity = _generator.RandomIntBetween(1, 5)
+                });
+                _context.OrderLists.AddRange(orderlists);
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }

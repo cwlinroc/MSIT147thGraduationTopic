@@ -10,7 +10,7 @@ using System.Text;
 
 //////RandomNumberGenerator.GetInt32(10)
 
-//var service = new SimulationDataInsertService(null);
+var service = new SimulationDataInsertService(null);
 
 //service.AddRandomMembers(500);
 //Console.WriteLine("AddRandomMembers Done!");
@@ -33,6 +33,8 @@ using System.Text;
 //service.AddRandomEvaluations();
 //Console.WriteLine("AddRandomEvaluations Done!");
 
+await service.AddSpecifySpecOrders(false, 15, 10);
+await service.AddSpecifySpecOrders(true, 30, 10);
 
 //var generator = new RandomGenerator();
 

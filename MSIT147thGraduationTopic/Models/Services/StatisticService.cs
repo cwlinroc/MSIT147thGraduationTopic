@@ -64,7 +64,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             {
                 var result = await _repo.GetSalesTrendPeriod(measurement, classification, startDate, endDate);
                 fullData.Add(result.ToList());
-            }
+            }           
 
             var trendDto = new SaleTrendDto() { DataSets = new List<SaleTrendDataSetDto>() };
 
