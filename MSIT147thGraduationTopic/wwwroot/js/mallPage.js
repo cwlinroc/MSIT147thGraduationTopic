@@ -35,7 +35,7 @@ function DemoLogin(demoAccount) {
 
 //記住我
 $(function () {
-    if (localStorage.chkRemember && localStorage.chkRemember != '') {
+    if (localStorage.chkRemember && localStorage.chkRemember !== '') {
         $('#chkRemember').attr('checked', 'checked');
         $('#loginAccount').val(localStorage.loginAccount);
         $('#loginPassword').val(localStorage.loginPassword);
@@ -124,9 +124,8 @@ async function LogOut() {
                 title: '您已登出!',
                 allowOutsideClick: false
             }).then(result => {
-                if (result.isConfirmed) {
+                if (result.isConfirmed) 
                     window.location.href = ROOT + '/home/index'
-                }
             })
         }
     }

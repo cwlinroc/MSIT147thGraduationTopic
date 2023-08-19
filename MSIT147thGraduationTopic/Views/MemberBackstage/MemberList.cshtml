@@ -22,24 +22,16 @@
                 <div class="p-4">
                     <h2>會員檢視</h2>
                     <div class="d-flex" style="display:inline">
-                        <input type="text" id="query" name="query">
+                        @* <input type="text" id="query" name="query">
                         <button type="button" id="btnQuery">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                        <!-- 每頁顯示筆數 -->
-                        @*<div class="btn-group fs-5 ms-auto" role="group">
-                            每頁顯示
-                            <button type="button" class="btn btn-primary pageSize" value="10">10</button>
-                            <button type="button" class="btn btn-primary pageSize" value="20">20</button>
-                            <button type="button" class="btn btn-primary pageSize" value="50">50</button>
-                            筆
-                        </div>*@
+                        </button> *@                        
                     </div>
 
                 </div>
                 <form id="memberPermission">
                     <div class="tablebox">
-                        <table class="table table-light table-striped table-hover" id="myTable">
+                        <table class="table table-light table-striped table-hover px-2" id="myTable">
                             <thead>
                                 <tr>
                                     <th>姓名</th>
@@ -99,20 +91,20 @@
         </div>
         <!-- 分頁 -->
         @* <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-                </li>
-                <div class="pagination ">
-                    @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
-                    {
-                    <li class="page-item"><a class="page-link" href="@Url.Action("MemberList", new { pageIndex = i })">@i</a></li>
-                    }
-                </div>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-                </li>
-            </ul>
+        <ul class="pagination justify-content-center">
+        <li class="page-item">
+        <a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+        </li>
+        <div class="pagination ">
+        @for (int i = 1; i <= ViewBag.TotalCount / ViewBag.PageSize + 1; i++)
+        {
+        <li class="page-item"><a class="page-link" href="@Url.Action("MemberList", new { pageIndex = i })">@i</a></li>
+        }
+        </div>
+        <li class="page-item">
+        <a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+        </li>
+        </ul>
         </nav> *@
     </div>
 </div>
@@ -122,17 +114,16 @@
     <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.js"></script>
     <script>
         //會員資料
-        let memberData        
+        let memberData
         //抓取會員資料
         getMembers();
         //搜尋按鈕
-        $('#btnQuery').click(e => getMembers($('#query').val()))
+        //$('#btnQuery').click(e => getMembers($('#query').val()))
         //修改權限按鈕
         $('#btnChangePermission').click(memberDeactivate)
 
         //Ajax 得到會員資料
         async function getMembers(query) {
-            //showLoadingBox()
             let str = ''
             if (query) str = '/' + query
             const response = await fetch('@Url.Content("~/api/apimember")' + str)
@@ -142,7 +133,6 @@
 
             memberData = data
             displayMembers()
-            //hideLoadingBox()
         }
 
         //會員停權
@@ -172,7 +162,6 @@
             console.log(isConfirmed)
             if (!isConfirmed) return;
 
-            //showLoadingBox();
             const response = await fetch(`@Url.Content("~/api/apimember")/${id}`, {
                 body: formData,
                 method: 'PUT',
@@ -189,7 +178,7 @@
                 'success'
             )
             window.location.reload();
-            //hideLoadingBox();
+
         }
 
         //列出會員
@@ -211,7 +200,8 @@
             $('.tablebox').find('tbody').html(trs.join(''))
             $('.tablebox').find('.permission-btn').click(memberDeactivate)
             $('.tablebox').find('tbody').find('tr').click(displayMemberDataInRow)
-            displayMemberData(0)
+            //displayMemberData(0)
+            loadDataTable()
         }
 
         //顯示點選tr的會員資料
@@ -233,44 +223,15 @@
             $('#displayDistrict').text(memberData[index].district)
             $('#displayAddress').text(memberData[index].address)
         }
-        
+
         //datatable套件
-        // $(function () {
-        //     $('#myTable').DataTable({
-        //         searching: false,
-        //         pageLength: 10, // 每頁顯示10筆資料
-        //         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        //         autoWidth: true,
-        //         columnDefs: [{                    
-        //             targets: [3]  // 替換 [0] 為你希望套用這種排序的柱子索引值。例如：0，如果你希望在第一列上使用這個排序。
-        //         }],
-        //         language: {
-        //             search: "搜尋：",
-        //             paginate: {
-        //                 first: "首頁",
-        //                 last: "尾頁",
-        //                 next: "下一頁",
-        //                 previous: "上一頁"
-        //             },
-        //             info: "顯示 START 到 END 的 TOTAL 筆資料",
-        //             //最下面顯示
-        //             infoEmpty: "顯示 0 到 0 的 0 筆資料",
-        //             //下拉選單
-        //             lengthMenu: "顯示 MENU 筆資料",
-        //         }
-        //     });
-        // });
-
-        //每頁顯示筆數
-        //let pageSize = 10;
-        //$(".pageSize").on("click", (e) => {
-        //    pageSize = $(e.currentTarget).val();
-        //})
-        //會員總數
-        //let numMembers = $('.memberInList').length;
-        //需要頁數
-        //let pageCount = Math.ceil(numMembers / pageSize);
-
+        function loadDataTable() {
+            $('#myTable').DataTable({                
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                },
+            });
+        }
     </script>
 }
 
@@ -278,22 +239,8 @@
     <!--DataTables CSS BS5版本-->
     <link href="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.css" rel="stylesheet">
     <style>
-        .contentbox {
-            height: 670px;
-            overflow: auto;
+        .tablebox td, th {
+            vertical-align: middle;
         }
-
-        .tablebox {
-            height: 500px;
-            overflow: auto;
-        }
-
-            .tablebox td img {
-                height: 50px;
-            }
-
-            .tablebox td, th {
-                vertical-align: middle;
-            }
     </style>
 }
