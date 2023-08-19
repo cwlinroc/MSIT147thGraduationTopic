@@ -49,12 +49,12 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         {
             var specs = _context.SpecTags.Where(o => tagIds.IsNullOrEmpty() || tagIds!.Contains(o.TagId))
                 .Select(o => o.Spec).Distinct().Where(o => o.OnShelf && o.Amount > 0 && o.Merchandise.Display);
-
+            //.OrderBy(o => SqlFunctions.Rand())
             if (!collisionSpecIds.IsNullOrEmpty())
             {
                 specs = specs.Where(o => !collisionSpecIds!.Contains(o.SpecId));
             }
-            return await specs.OrderByDescending(o => o.Popularity).Select(o => o.SpecId).Take(amount).ToListAsync();
+            return await specs.Select(o => o.SpecId).Take(amount).ToListAsync();
         }
 
 

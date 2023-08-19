@@ -79,9 +79,8 @@ async function addCartEvent(event) {
     const response = await fetch(`${ROOT}/api/apirecommendpartial/addincart/${specId}`)
     const result = await response.json()
     refreshNavbarCart()
-    if (!!cartpageMemberId) getCartItems(cartpageMemberId)
     await Swal.fire('已加入購物車')
-    console.log(result)
+    if (!!cartpageMemberId) getCartItems(cartpageMemberId)
 }
 
 

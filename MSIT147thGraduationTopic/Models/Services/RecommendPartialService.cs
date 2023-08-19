@@ -27,11 +27,14 @@ namespace MSIT147thGraduationTopic.Models.Services
         {
             var generator = new RandomGenerator();
 
-            int[] visitedMerchandiseIds = GetVisitedMerchandiseIds();
+            int[] visitedMerchandiseIds = GetVisitedMerchandiseIds(merchandiseId);
             var visitedTagIds = await _repo.GetVisitedTagIds(visitedMerchandiseIds);
+            //扣掉動物類別
+            //visitedTagIds = visitedTagIds.Where(o => o > 4).ToArray();
             bool logIn = int.TryParse(_accessor.HttpContext!.User.FindFirstValue("MemberId"), out int parseNumber);
             int? memberId = logIn ? parseNumber : null;
             var inCartTagIds = await _repo.GetInCartTagIds(memberId);
+            inCartTagIds = inCartTagIds.Where(o => o > 4).ToArray();
             int[] conflictSpecIds = await _repo.GetMerchandiseSpecIds(merchandiseId);
 
             if (visitedTagIds.IsNullOrEmpty() && inCartTagIds.IsNullOrEmpty())
@@ -51,12 +54,13 @@ namespace MSIT147thGraduationTopic.Models.Services
             return await _repo.GetSpecDisplayDtos(recSpecIds);
         }
 
-        private int[] GetVisitedMerchandiseIds()
+        private int[] GetVisitedMerchandiseIds(int? merchandiseId)
         {
             int? last1 = _accessor.HttpContext!.Session.GetInt32("Last_1");
             int? last2 = _accessor.HttpContext.Session.GetInt32("Last_2");
-            int? last3 = _accessor.HttpContext.Session.GetInt32("Last_3");
-            return new int?[] { last1, last2, last3 }
+            //int? last3 = _accessor.HttpContext.Session.GetInt32("Last_3");
+            int? last3 = null;
+            return new int?[] { last1, last2, last3 , merchandiseId }
                 .Where(o => o != null).Select(o => o!.Value).ToArray();
         }
 

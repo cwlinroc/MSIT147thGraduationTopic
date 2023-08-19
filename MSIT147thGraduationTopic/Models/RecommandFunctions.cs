@@ -31,6 +31,19 @@ namespace MSIT147thGraduationTopic.Models
                 }
             };
         }
+        static public Action<IEnumerable<RecommendationSpecsDto>> RateEvaluationByRanking
+        {
+            get => specs =>
+            {
+                int length = specs.Count();
+                double period = 1.0 / length;
+                var specList = specs.OrderBy(o => o.AverageScore).ToList();
+                for (int i = 0; i < length; i++)
+                {
+                    specList[i].EvaluationRating = period * i;
+                }
+            };
+        }
 
         static public Action<IEnumerable<RecommendationSpecsDto>> RatePurchasedWithLogTransform
         {
@@ -57,6 +70,21 @@ namespace MSIT147thGraduationTopic.Models
                 }
             };
         }
+
+        static public Action<IEnumerable<RecommendationSpecsDto>> RatePurchasedByRanking
+        {
+            get => specs =>
+            {
+                int length = specs.Count();
+                double period = 1.0 / length;
+                var specList = specs.OrderBy(o => o.PurchasedAmount).ToList();
+                for (int i = 0; i < length; i++)
+                {
+                    specList[i].PurchasedRating = period * i;
+                }
+            };
+        }
+
 
         static public Action<IEnumerable<RecommendationSpecsDto>, int, int, int> CalculatePopularity
         {
