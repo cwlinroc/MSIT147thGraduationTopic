@@ -21,6 +21,22 @@ namespace MSIT147thGraduationTopic.Controllers
             return Json(datas);
         }
 
+        [HttpGet]
+        public IActionResult GetSearchResultLength(int merchandiseid, int displaymode = 1)
+        {
+            IEnumerable<Spec> datas = datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
+            datas = displaymode switch
+            {
+                0 => datas = datas.Where(s => s.OnShelf == true),
+                2 => datas = datas.Where(s => s.OnShelf == false),
+                _ => datas = datas.Select(s => s)
+            };
+
+            int resultLength = datas.Count();
+
+            return Json(resultLength);
+        }
+
         [HttpPost]
         public IActionResult CheckforCreateSpec(SpecVM specvm)
         {
@@ -77,5 +93,5 @@ namespace MSIT147thGraduationTopic.Controllers
 
 額外功能：
 商品檢視:規格數、僅顯示上/下架
-規格檢視:排序、僅顯示上/下架
+規格檢視:僅顯示上/下架
 */

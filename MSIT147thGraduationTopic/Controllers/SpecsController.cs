@@ -30,24 +30,31 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(int merchandiseid, int displayorder = 0)
+        public IActionResult Index(int merchandiseid, int displaymode = 1, int displayorder = 0)
         {
             ViewBag.MerchandiseId = merchandiseid;
+            ViewBag.displaymode = displaymode;
             ViewBag.displayorder = displayorder;
             HttpContext.Response.Cookies.Append("Spec_displayorder", displayorder.ToString());
 
             var datas = _context.Specs.Where(s => s.MerchandiseId == merchandiseid);
             if (datas.Count() == 0)
                 return RedirectToAction("IndexForNoSpec", new { merchandiseid });
+
+            datas = displaymode switch
+            {
+                0 => datas = datas.Where(s => s.OnShelf == true),     //上架規格
+                2 => datas = datas.Where(s => s.OnShelf == false),    //下架規格
+                _ => datas = datas.Select(s => s)                     //全部規格
+            };
             datas = displayorder switch
             {
-                0 => datas = datas.OrderByDescending(s => s.SpecId),    //由新到舊
-                1 => datas = datas.OrderBy(s => s.SpecId),    //由舊到新
-                2 => datas = datas.OrderBy(s => s.SpecName),    //依名稱遞增
-                3 => datas = datas.OrderByDescending(s => s.SpecName),    //依名稱遞減
-                4 => datas = datas.OrderByDescending(s => s.Popularity),    //熱門度高至低
-                5 => datas = datas.OrderBy(s => s.Popularity),    //熱門度低至高
-                _ => datas = datas.OrderByDescending(s => s.SpecId)
+                1 => datas = datas.OrderBy(s => s.SpecId),                   //由舊到新
+                2 => datas = datas.OrderBy(s => s.SpecName),                 //依名稱遞增
+                3 => datas = datas.OrderByDescending(s => s.SpecName),       //依名稱遞減
+                4 => datas = datas.OrderByDescending(s => s.Popularity),     //熱門度高至低
+                5 => datas = datas.OrderBy(s => s.Popularity),               //熱門度低至高
+                _ => datas = datas.OrderByDescending(s => s.SpecId)          //由新到舊
             };
 
             List<SpecVM> list = new List<SpecVM>();

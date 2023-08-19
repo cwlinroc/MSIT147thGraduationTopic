@@ -49,7 +49,9 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             ViewBag.pageSize = pageSize;
 
             IEnumerable<MerchandiseSearch> datas = _repo.getBasicMerchandiseSearch(txtKeyword, searchCondition);
-            
+
+            //todo 增加上架篩選
+
             datas = displayorder switch
             {
                 1 => datas.OrderBy(ms => ms.MerchandiseId),                //由舊到新熱門商品
