@@ -41,7 +41,7 @@ FROM Categories c
 JOIN Merchandises m on c.CategoryId = m.CategoryID
 JOIN Specs s on m.MerchandiseID = s.MerchandiseId
 JOIN OrderLists ol on s.SpecId = ol.SpecId
-JOIN Orders o on ol.OrderId = ol.OrderId
+JOIN Orders o on ol.OrderId = o.OrderId
 WHERE o.PurchaseTime > @TimeBefore
 GROUP BY c.CategoryName
 ),
@@ -62,7 +62,7 @@ FROM Tags t
 JOIN SpecTags st ON t.TagId = st.TagId
 JOIN Specs s ON st.SpecId = s.SpecId
 JOIN OrderLists ol ON s.SpecId = ol.SpecId
-JOIN Orders o ON ol.OrderId = ol.OrderId
+JOIN Orders o ON ol.OrderId = o.OrderId
 WHERE t.TagId <= 4
 AND o.PurchaseTime > @TimeBefore
 GROUP BY t.TagName
@@ -85,7 +85,7 @@ FROM Brands b
 JOIN Merchandises m ON m.BrandID = b.BrandId
 JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
 JOIN OrderLists ol ON s.SpecId = ol.SpecId
-JOIN Orders o ON ol.OrderId = ol.OrderId
+JOIN Orders o ON ol.OrderId = o.OrderId
 WHERE o.PurchaseTime > @TimeBefore
 GROUP BY b.BrandName
 ),
@@ -122,7 +122,7 @@ SELECT TOP 5   m.MerchandiseName  , SUM({sum}) as Data
 FROM Merchandises m 
 JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
 JOIN OrderLists ol ON s.SpecId = ol.SpecId
-JOIN Orders o ON ol.OrderId = ol.OrderId
+JOIN Orders o ON ol.OrderId = o.OrderId
 WHERE o.PurchaseTime > @TimeBefore
 GROUP BY MerchandiseName
 ORDER BY SUM({sum}) DESC";
@@ -156,7 +156,7 @@ FROM Categories c
 JOIN Merchandises m on c.CategoryId = m.CategoryID
 JOIN Specs s on m.MerchandiseID = s.MerchandiseId
 JOIN OrderLists ol on s.SpecId = ol.SpecId
-JOIN Orders o on ol.OrderId = ol.OrderId
+JOIN Orders o on ol.OrderId = o.OrderId
 WHERE o.PurchaseTime BETWEEN @StartTime AND @EndTime
 GROUP BY c.CategoryName
 ),
@@ -177,7 +177,7 @@ FROM Tags t
 JOIN SpecTags st ON t.TagId = st.TagId
 JOIN Specs s ON st.SpecId = s.SpecId
 JOIN OrderLists ol ON s.SpecId = ol.SpecId
-JOIN Orders o ON ol.OrderId = ol.OrderId
+JOIN Orders o ON ol.OrderId = o.OrderId
 WHERE t.TagId <= 4
 AND o.PurchaseTime BETWEEN @StartTime AND @EndTime
 GROUP BY t.TagName
@@ -200,7 +200,7 @@ FROM Brands b
 JOIN Merchandises m ON m.BrandID = b.BrandId
 JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
 JOIN OrderLists ol ON s.SpecId = ol.SpecId
-JOIN Orders o ON ol.OrderId = ol.OrderId
+JOIN Orders o ON ol.OrderId = o.OrderId
 WHERE o.PurchaseTime BETWEEN @StartTime AND @EndTime
 GROUP BY b.BrandName
 ),
@@ -302,7 +302,7 @@ SELECT DateRangeCTE.StartDate ,DateRangeCTE.EndDate , SUM({sum}) AS Data
 FROM Merchandises m 
 JOIN Specs s on m.MerchandiseID = s.MerchandiseId
 JOIN OrderLists ol on s.SpecId = ol.SpecId
-JOIN Orders o on ol.OrderId = ol.OrderId
+JOIN Orders o on ol.OrderId = o.OrderId
 RIGHT JOIN  DateRangeCTE on DateRangeCTE.StartDate < o.PurchaseTime AND DateRangeCTE.EndDate > o.PurchaseTime
 WHERE {condition} = @Id
 GROUP BY DateRangeCTE.StartDate , DateRangeCTE.EndDate
@@ -322,6 +322,9 @@ ORDER BY DateRangeCTE.StartDate";
                 IntervalTimes = intervalTimes
             });
         }
+
+
+
 
 
 
@@ -392,6 +395,78 @@ WHERE CAST( {conditionCol} AS NVARCHAR) =  @Keyword  ";
             using var conn = _context.Database.GetDbConnection();
             return await conn.QueryFirstAsync<(int, string)>(sql, new { Keyword = keyword });
         }
+
+
+
+
+        public async Task<MerchandiseRadarDto?> GetMerchandiseRadar(string measurement, int id)
+        {
+            string condition = measurement switch
+            {
+                "merchandise" => "m.MerchandiseId",
+                "spec" => "s.specId",
+                _ => string.Empty
+            };
+
+            if (string.IsNullOrEmpty(condition)) return null;
+
+            string sql = $@"
+WITH cte1(a,b,c,d) AS
+(
+SELECT 
+{condition} 
+,PERCENT_RANK() OVER (ORDER BY SUM(ol.quantity)) 
+,PERCENT_RANK() OVER (ORDER BY AVG(CAST(e.Score AS float))) 
+,PERCENT_RANK() OVER (ORDER BY sum(c.Quantity)) 
+FROM Merchandises m 
+JOIN Specs s on m.MerchandiseID = s.MerchandiseId
+JOIN OrderLists ol on s.SpecId = ol.SpecId
+JOIN Orders o on ol.OrderId = o.OrderId
+JOIN EvaluationInput e on e.SpecId = s.SpecId
+JOIN CartItems c on c.SpecId = s.SpecId
+Group by {condition}
+),
+cte2(a,b,c) AS
+(
+SELECT 
+{condition}
+,PERCENT_RANK() OVER (ORDER BY SUM(ol.quantity)) 
+,PERCENT_RANK() OVER (ORDER BY AVG(CAST(e.Score AS float))) 
+FROM Merchandises m 
+JOIN Specs s on m.MerchandiseID = s.MerchandiseId
+JOIN OrderLists ol on s.SpecId = ol.SpecId
+JOIN Orders o on ol.OrderId = o.OrderId
+JOIN EvaluationInput e on e.SpecId = s.SpecId
+WHERE o.PurchaseTime > DATEADD ( DAY , -30 , GETDATE() )
+GROUP BY {condition}
+)
+SELECT 
+cte1.b AS BoughtRank
+, cte2.b AS RecentBoughtRank
+, cte1.c AS EvaluationRank
+, cte2.c AS RecentEvaluationRank
+, cte1.d AS InCartRank
+FROM cte1
+JOIN cte2 ON cte1.a = cte2.a
+WHERE cte1.a = @Id
+";
+            using var conn = _context.Database.GetDbConnection();
+            (double BoughtRank, double RecentBoughtRank, double EvaluationRank, double RecentEvaluationRank, double InCartRank)
+                = await conn.QuerySingleAsync<(double, double, double, double, double)>(sql, new { Id = id });
+
+            return new MerchandiseRadarDto
+            {
+                BoughtRank = Convert.ToInt32(BoughtRank * 100),
+                RecentBoughtRank = Convert.ToInt32(RecentBoughtRank * 100),
+                EvaluationRank = Convert.ToInt32(EvaluationRank * 100),
+                RecentEvaluationRank = Convert.ToInt32(RecentEvaluationRank * 100),
+                InCartRank = Convert.ToInt32(InCartRank * 100),
+            };
+
+        }
+
+
+
 
 
     }

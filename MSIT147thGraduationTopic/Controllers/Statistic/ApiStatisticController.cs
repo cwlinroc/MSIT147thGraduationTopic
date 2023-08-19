@@ -80,8 +80,17 @@ namespace MSIT147thGraduationTopic.Controllers.Statistic
         public async Task<ActionResult<dynamic>> GetSearchedId(string queryCol, string keyword)
         {
             (int id, string name) = await _service.GetSearchedId(queryCol, keyword);
-            return new { id , name };
+            return new { id, name };
         }
+
+        [HttpGet("GetMerchandiseRadar")]
+        [Authorize(Roles = "管理員,經理,員工")]
+        public async Task<ActionResult<MerchandiseRadarDto?>> GetMerchandiseRadar(string measurement, int id)
+        {
+            return await _service.GetMerchandiseRadar(measurement, id);
+        }
+
+
 
     }
 }

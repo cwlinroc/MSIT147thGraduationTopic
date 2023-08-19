@@ -127,8 +127,9 @@ namespace MSIT147thGraduationTopic.Models.Services
             return await _repo.GetSearchedId(queryCol, keyword);
         }
 
-
-
-
+        public async Task<MerchandiseRadarDto?> GetMerchandiseRadar(string measurement, int id)
+        {
+            return await _repo.GetMerchandiseRadar(measurement, id);
+        }
     }
 }
