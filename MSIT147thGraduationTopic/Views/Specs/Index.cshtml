@@ -7,7 +7,8 @@
     int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
     int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
     int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
-    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
+    int displaymode = int.TryParse(Context.Request.Cookies["displaymode"], out int temp4) ? temp4 : 1;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp5) ? temp5 : 10;
 }
 
 <div class="container">
@@ -60,11 +61,12 @@
                     <option value="5">熱門度低至高</option>
                 </select>
             </div>
+            <!-- 顯示是否上架 -->
             <div class="btn-group" id="selectDisplayMode" style="width:400px" role="group" aria-label="Basic radio toggle button group">
                 <input type="radio" value="0" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
                 <label class="btn btn-outline-secondary" for="btnradio1">上架規格</label>
 
-                <input type="radio" value="1" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" checked>
+                <input type="radio" value="1" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
                 <label class="btn btn-outline-secondary" for="btnradio2">全部規格</label>
 
                 <input type="radio" value="2" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
@@ -152,7 +154,7 @@
         </table>
         <div class="form-group">
             @Html.ActionLink("回到商品檢視", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
-                                PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
+            PageIndex = PageIndex, displayorder = displayorder, displaymode = displaymode, pageSize = pageSize }, new { @class = "btn btn-secondary" })
         </div>
     </div>
 </div>
@@ -244,17 +246,19 @@
         //變更排序方式
         $("#displayorder").on("change", (e) => {
             displayorder = $("#displayorder").val();
+            pageindex = 1;
             SearchProducts();
         });
         //變更篩選
         $('#selectDisplayMode > input').on("click", (e) => {
             displaymode = $(e.currentTarget).val();
+            pageindex = 1;
             SearchProducts();
         });
 
         //搜尋
         function SearchProducts() {
-            window.location.href = `/Specs/Index/?merchandiseid=${merchandiseid}&displaymode=${displaymode}&displayorder=${displayorder}`;
+            window.location.href = `/Specs/Index/?merchandiseid=${merchandiseid}&displayorder=${displayorder}&displaymode=${displaymode}`;
         };
         // #endregion
 

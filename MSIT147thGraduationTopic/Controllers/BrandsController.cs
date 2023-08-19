@@ -23,12 +23,12 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Brands
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(string txtKeyword, int PageIndex = 1, int displayorder = 0)//todo 加上COOKIE&VIEWBAG
+        public IActionResult Index(string txtKeyword, int PageIndex = 1, int displayorder = 0)
         {
-            if (!string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("txtKeyword", txtKeyword);
-            if (string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("txtKeyword", "");
-            HttpContext.Response.Cookies.Append("PageIndex", PageIndex.ToString());
-            HttpContext.Response.Cookies.Append("displayorder", displayorder.ToString());
+            if (!string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("brand_txtKeyword", txtKeyword);
+            if (string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("brand_txtKeyword", "");
+            HttpContext.Response.Cookies.Append("brand_PageIndex", PageIndex.ToString());
+            HttpContext.Response.Cookies.Append("brand_displayorder", displayorder.ToString());
 
             ViewBag.txtKeyword = txtKeyword;
             ViewBag.PageIndex = PageIndex;
@@ -80,9 +80,9 @@ namespace MSIT147thGraduationTopic.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", new
                 {
-                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
-                    PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
-                    displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0
+                    txtKeyword = HttpContext.Request.Cookies["brand_txtKeyword"] ?? "",
+                    PageIndex = int.TryParse(HttpContext.Request.Cookies["brand_PageIndex"], out int temp2) ? temp2 : 1,
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["brand_displayorder"], out int temp3) ? temp3 : 0
                 });
             }
             return View(brandvm);
@@ -141,9 +141,9 @@ namespace MSIT147thGraduationTopic.Controllers
                 }
                 return RedirectToAction("Index", new
                 {
-                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
-                    PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
-                    displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0
+                    txtKeyword = HttpContext.Request.Cookies["brand_txtKeyword"] ?? "",
+                    PageIndex = int.TryParse(HttpContext.Request.Cookies["brand_PageIndex"], out int temp2) ? temp2 : 1,
+                    displayorder = int.TryParse(HttpContext.Request.Cookies["brand_displayorder"], out int temp3) ? temp3 : 0
                 });
             }
             return View(brandvm);
@@ -165,9 +165,9 @@ namespace MSIT147thGraduationTopic.Controllers
             _context.Brands.Remove(brand);
             await _context.SaveChangesAsync(); return RedirectToAction("Index", new
             {
-                txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
-                PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
-                displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0
+                txtKeyword = HttpContext.Request.Cookies["brand_txtKeyword"] ?? "",
+                PageIndex = int.TryParse(HttpContext.Request.Cookies["brand_PageIndex"], out int temp2) ? temp2 : 1,
+                displayorder = int.TryParse(HttpContext.Request.Cookies["brand_displayorder"], out int temp3) ? temp3 : 0
             });
         }
 

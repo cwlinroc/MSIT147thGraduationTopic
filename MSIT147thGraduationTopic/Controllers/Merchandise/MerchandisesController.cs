@@ -26,12 +26,12 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             _context = context;
             _host = host;
             _repo = new MerchandiseRepository(context);
-        }
+        }//todo 記得各CONTROLLER&VIEW加上Cookies
 
         // GET: Merchandises
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1
-                                                            , int displayorder = 0, int pageSize = 10)
+        public IActionResult Index(string txtKeyword, int searchCondition = 1, int PageIndex = 1, 
+                                      int displayorder = 0, int displaymode = 1, int pageSize = 10)
         {
             //保存參數以供換頁時保留設定
             if (!string.IsNullOrEmpty(txtKeyword)) HttpContext.Response.Cookies.Append("txtKeyword", txtKeyword);
@@ -39,6 +39,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             HttpContext.Response.Cookies.Append("searchCondition", searchCondition.ToString());
             HttpContext.Response.Cookies.Append("PageIndex", PageIndex.ToString());
             HttpContext.Response.Cookies.Append("displayorder", displayorder.ToString());
+            HttpContext.Response.Cookies.Append("displaymode", displaymode.ToString());
             HttpContext.Response.Cookies.Append("pageSize", pageSize.ToString());
 
             //傳遞初值以供介面呈現
@@ -46,11 +47,10 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             ViewBag.searchCondition = searchCondition;
             ViewBag.PageIndex = PageIndex;
             ViewBag.displayorder = displayorder;
+            ViewBag.displaymode = displaymode;
             ViewBag.pageSize = pageSize;
 
-            IEnumerable<MerchandiseSearch> datas = _repo.getBasicMerchandiseSearch(txtKeyword, searchCondition);
-
-            //todo 增加上架篩選
+            IEnumerable<MerchandiseSearch> datas = _repo.getBasicMerchandiseSearch(txtKeyword, searchCondition, displaymode);
 
             datas = displayorder switch
             {
@@ -114,7 +114,8 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                     searchCondition = int.TryParse(HttpContext.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1,
                     PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
                     displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0,
-                    pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10
+                    displaymode = int.TryParse(HttpContext.Request.Cookies["displaymode"], out int temp4) ? temp4 : 1,
+                    pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp5) ? temp5 : 10
                 });
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
@@ -198,7 +199,8 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                     searchCondition = int.TryParse(HttpContext.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1,
                     PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
                     displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0,
-                    pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10
+                    displaymode = int.TryParse(HttpContext.Request.Cookies["displaymode"], out int temp4) ? temp4 : 1,
+                    pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp5) ? temp5 : 10
                 });
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandName", merchandisevm.BrandId);
@@ -231,7 +233,8 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
                 searchCondition = int.TryParse(HttpContext.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1,
                 PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
                 displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0,
-                pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10
+                displaymode = int.TryParse(HttpContext.Request.Cookies["displaymode"], out int temp4) ? temp4 : 1,
+                pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp5) ? temp5 : 10
             });
         }
 
