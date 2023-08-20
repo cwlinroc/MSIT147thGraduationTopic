@@ -10,7 +10,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
             _context = context;
         }
 
-        public IEnumerable<MerchandiseSearch> getBasicMerchandiseSearch(string txtKeyword, int searchCondition)
+        public IEnumerable<MerchandiseSearch> getBasicMerchandiseSearch(string txtKeyword, int searchCondition, int displaymode)
         {
             IEnumerable<MerchandiseSearch> datas = datas = _context.MerchandiseSearches;
 
@@ -41,6 +41,12 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                 if (searchCondition == 4)
                     datas = datas.Where(ms => ms.CategoryName.Contains(txtKeyword));
             }
+            datas = displaymode switch
+            {
+                0 => datas = datas.Where(s => s.Display == true),     //在商城顯示
+                2 => datas = datas.Where(s => s.Display == false),    //在商城隱藏
+                _ => datas = datas.Select(s => s)                     //全部商品
+            };
 
             return datas;
         }

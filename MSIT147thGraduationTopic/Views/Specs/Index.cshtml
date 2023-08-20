@@ -7,7 +7,8 @@
     int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
     int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
     int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
-    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
+    int displaymode = int.TryParse(Context.Request.Cookies["displaymode"], out int temp4) ? temp4 : 1;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp5) ? temp5 : 10;
 }
 
 <div class="container">
@@ -49,7 +50,7 @@
                 @Html.ActionLink("新增商品規格", "Create", "Specs", new { merchandiseid = ViewBag.MerchandiseId }, new { @class = "btn btn-primary", style = "width: 130px" })
             </p>
             <!-- 排序方式 -->
-            <div class="input-group" style="display: flex; justify-content: flex-end;">
+            <div class="input-group mx-2" style="display: flex; justify-content: flex-end;">
                 <label class="input-group-text" for="displayorder">排序依據</label>
                 <select class="form-select" name="displayorder" id="displayorder" style="max-width:150px" aria-label="Floating label select example">
                     <option value="0">由新到舊</option>
@@ -59,6 +60,17 @@
                     <option value="4">熱門度高至低</option>
                     <option value="5">熱門度低至高</option>
                 </select>
+            </div>
+            <!-- 顯示是否上架 -->
+            <div class="btn-group" id="selectDisplayMode" style="width:400px" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" value="0" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btnradio1">上架規格</label>
+
+                <input type="radio" value="1" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btnradio2">全部規格</label>
+
+                <input type="radio" value="2" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="btnradio3">下架規格</label>
             </div>
         </div>
         <hr />
@@ -95,7 +107,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="showResult">
                 @{
                     int count = 0;
                     foreach (var item in Model)
@@ -142,7 +154,7 @@
         </table>
         <div class="form-group">
             @Html.ActionLink("回到商品檢視", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
-                                PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
+            PageIndex = PageIndex, displayorder = displayorder, displaymode = displaymode, pageSize = pageSize }, new { @class = "btn btn-secondary" })
         </div>
     </div>
 </div>
@@ -195,26 +207,6 @@
     </script>
     <!-- 管理規格 -->
     <script>
-        // #region 排序功能
-        //設定初值呈現
-        let displayorder = @ViewBag.displayorder;
-        $(() => {
-            $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
-        })
-
-        //變更排序方式
-        $("#displayorder").on("change", (e) => {
-            displayorder = $("#displayorder").val();
-            pageindex = 1;
-            SearchProducts();
-        });
-
-        //搜尋
-        function SearchProducts() {
-            window.location.href = `/Specs/Index/?merchandiseid=${merchandiseid}&displayorder=${displayorder}`;
-        };
-        // #endregion
-
         // #region 產生商品資料
         const mName = document.querySelector("#mName");
         const mBrand = document.querySelector("#mBrand");
@@ -236,9 +228,51 @@
                 mCategory.innerHTML = merchandise.categoryName;
                 mDescription.innerHTML = merchandise.description;
                 mImage.src = (merchandise.imageUrl != null)
-                        ? "@Url.Content("~/uploads/merchandisePicture/")" + merchandise.imageUrl
-                        : "@Url.Content("~/uploads/merchandisePicture/default.png")";
+                    ? "@Url.Content("~/uploads/merchandisePicture/")" + merchandise.imageUrl
+                    : "@Url.Content("~/uploads/merchandisePicture/default.png")";
             })
+        })
+        // #endregion
+
+        // #region 排序 & 篩選功能
+        //設定初值呈現
+        let displayorder = @ViewBag.displayorder;
+        let displaymode = @ViewBag.displaymode;
+        $(() => {
+            $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+            $(`#selectDisplayMode > input[value=${displaymode}]`).attr("checked", true);
+        })
+
+        //變更排序方式
+        $("#displayorder").on("change", (e) => {
+            displayorder = $("#displayorder").val();
+            pageindex = 1;
+            SearchProducts();
+        });
+        //變更篩選
+        $('#selectDisplayMode > input').on("click", (e) => {
+            displaymode = $(e.currentTarget).val();
+            pageindex = 1;
+            SearchProducts();
+        });
+
+        //搜尋
+        function SearchProducts() {
+            window.location.href = `/Specs/Index/?merchandiseid=${merchandiseid}&displayorder=${displayorder}&displaymode=${displaymode}`;
+        };
+        // #endregion
+
+        // #region 檢查符合資料數
+        $(async () => {
+            // #region 產生分頁標籤
+            const responseforlength = await fetch(`@Url.Content("~/ApiSpec/GetSearchResultLength/")?merchandiseid=${@ViewBag.MerchandiseId}&displaymode=${@ViewBag.displaymode}`);
+            const returnLengthBag = await responseforlength.text();
+            const resultLength = JSON.parse(returnLengthBag);
+            console.log(resultLength);
+            if (resultLength == 0) {
+                const showResult = document.querySelector("#showResult");
+                showResult.innerHTML = '<h4 class="mt-4">找不到符合的規格</h4>';
+            }
         })
         // #endregion
 
