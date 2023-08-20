@@ -12,5 +12,9 @@ namespace MSIT147thGraduationTopic.EFModels
         public int ManuallyWeight { get; set; }
         public int RateEvaluationFunc { get; set; }
         public int RatePurchaseFunc { get; set; }
+        public int? RecentEvaluationDays { get; set; }
+        public int? RecentEvaluationTimes { get; set; }
+        public int? RecentPurchasedDays { get; set; }
+        public int? RecentPurchasedTimes { get; set; }
     }
 }

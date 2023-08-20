@@ -120,14 +120,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                 .Any(o => o.OrderId == orderId && o.MerchandiseId == merchandiseId);
         }
 
-        public int AddEvaluation(int orderId, int specId, int merchandiseId, int score)
+        public int AddEvaluation(int orderId, int specId, int merchandiseId, int score, string? comment)
         {
             var evaluation = new Evaluation
             {
                 SpecId = specId,
                 MerchandiseId = merchandiseId,
                 Score = score,
-                OrderId = orderId
+                OrderId = orderId,
+                Comment = comment
             };
 
             _context.Evaluations.Add(evaluation);

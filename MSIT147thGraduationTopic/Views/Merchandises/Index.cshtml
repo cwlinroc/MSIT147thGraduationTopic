@@ -18,7 +18,7 @@
             @using (Html.BeginForm())
             {
                 <div class="row">
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-5">
                         <div class="input-group mb-3">
                             <label class="input-group-text" for="searchCondition">選擇搜尋條件</label>
                             <select class="form-select conditionname" name="searchCondition">
@@ -41,8 +41,19 @@
                             <option value="3">依名稱遞減</option>
                         </select>
                     </div>
+                    <!-- 顯示是否上架 -->
+                    <div class="btn-group" id="selectDisplayMode" style="width:260px" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" value="0" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+                        <label class="btn btn-outline-secondary" for="btnradio1">顯示中</label>
+
+                        <input type="radio" value="1" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                        <label class="btn btn-outline-secondary" for="btnradio2">全部商品</label>
+
+                        <input type="radio" value="2" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                        <label class="btn btn-outline-secondary" for="btnradio3">隱藏中</label>
+                    </div>
                     <!-- 每頁顯示筆數 -->
-                    <div class="d-flex select-limit js-select-limit ml-3 mb-3"
+                    <div class="d-flex select-limit js-select-limit mx-2 mb-3"
                          style="white-space: nowrap; align-items: center; width:150px; float:right; border:solid 1px #D0D0D0; min-width:220px; border-radius:5px">
                         每頁顯示 :
                         <button type="button" class="btn btn-link pageSize" style="margin: -5px" value="10">10</button>
@@ -170,12 +181,14 @@
         let searchCondition = @ViewBag.searchCondition;
         let pageindex = @ViewBag.PageIndex;
         let displayorder = @ViewBag.displayorder;
+        let displaymode = @ViewBag.displaymode;
         let pageSize = @ViewBag.pageSize;
 
         //設定初值呈現
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
+            $(`#selectDisplayMode > input[value=${displaymode}]`).attr("checked", true);
             $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
         })
         // #endregion
@@ -198,6 +211,12 @@
             pageindex = 1;
             SearchProducts();
         });
+        //篩選顯示/隱藏
+        $('#selectDisplayMode > input').on("click", (e) => {
+            displaymode = $(e.currentTarget).val();
+            pageindex = 1;
+            SearchProducts();
+        });
         //每頁顯示筆數
         $(".pageSize").on("click", (e) => {
             pageSize = $(e.currentTarget).val();
@@ -207,13 +226,13 @@
 
         //搜尋
         function SearchProducts() {
-            window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}&displayorder=${displayorder}&pageSize=${pageSize}`;
+            window.location.href = `/Merchandises/Index/?txtKeyword=${txtKeyword}&searchCondition=${searchCondition}&PageIndex=${pageindex}&displayorder=${displayorder}&displaymode=${displaymode}&pageSize=${pageSize}`;
         };
         // #endregion
 
         $(async () => {
             // #region 產生分頁標籤
-            const responseforlength = await fetch(`@Url.Content("~/ApiMerchandise/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}&searchCondition=${@ViewBag.searchCondition}`);
+            const responseforlength = await fetch(`@Url.Content("~/ApiMerchandise/GetSearchResultLength/")?txtKeyword=${"@ViewBag.txtKeyword"}&searchCondition=${@ViewBag.searchCondition}&displaymode=${@ViewBag.displaymode}`);
             const returnLengthBag = await responseforlength.text();
             const resultLength = JSON.parse(returnLengthBag);
             const totalpage = Math.ceil(resultLength / pageSize);

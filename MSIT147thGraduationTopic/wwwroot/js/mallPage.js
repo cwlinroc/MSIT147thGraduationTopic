@@ -35,7 +35,7 @@ function DemoLogin(demoAccount) {
 
 //記住我
 $(function () {
-    if (localStorage.chkRemember && localStorage.chkRemember != '') {
+    if (localStorage.chkRemember && localStorage.chkRemember !== '') {
         $('#chkRemember').attr('checked', 'checked');
         $('#loginAccount').val(localStorage.loginAccount);
         $('#loginPassword').val(localStorage.loginPassword);
@@ -95,7 +95,6 @@ async function LogIn() {
         })
         return;
     }
-    
 
     Swal.fire({
         icon: 'success',
@@ -124,9 +123,8 @@ async function LogOut() {
                 title: '您已登出!',
                 allowOutsideClick: false
             }).then(result => {
-                if (result.isConfirmed) {
+                if (result.isConfirmed) 
                     window.location.href = ROOT + '/home/index'
-                }
             })
         }
     }
@@ -193,7 +191,62 @@ async function displaySelfAvatar() {
 //讀取動畫
 const loadingBox = document.querySelector('.loading-box')
 const showLoadingBox = () => loadingBox.style.display = "block";
-const hideLoadingBox = () => loadingBox.style.display = "none"
+const hideLoadingBox = () => loadingBox.style.display = "none";
+
+function onSignIn1(response) {
+    const credential = response.credential,
+        profile = JSON.parse(decodeURIComponent(escape(window.atob
+            (credential.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))))); // 對 JWT 進行解碼
+    GoogleLogIn(profile.email);    
+}
+
+async function GoogleLogIn(email) {
+    const response = await fetch(ROOT + '/api/apimember/googlelogin', {
+        body: JSON.stringify({ 'Email': email}),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+    })
+
+    
+    if (!response.ok) {
+        console.log('request failed')
+        return
+    }
+
+    const url = await response.text()
+
+    if (!url) {
+        Swal.fire({
+            icon: 'error',
+            title: '登入失敗',
+            text: '帳號或密碼錯誤',
+            allowOutsideClick: false
+        })
+        return;
+    } else if (url === 'Member/NoRole') {
+        Swal.fire({
+            icon: 'error',
+            title: '沒有授權',
+            text: '您未開通或已遭停權',
+            allowOutsideClick: false
+        })
+        return;
+    }
+
+    Swal.fire({
+        icon: 'success',
+        title: '登入成功!',
+        allowOutsideClick: false
+    }).then(() => {
+        if (url === 'reload') {
+            window.location.reload()
+        }
+        else {
+            window.location.href = url
+        }
+    })
+}
+
 
 
 

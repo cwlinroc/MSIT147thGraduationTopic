@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Paypal付款";
+    Layout = "_MallPage";
+}
+<div class="container"></div>
+<div class="mt-3 p-5">
+    <div class="d-flex justify-content-center">
+        <div class="text-center  border border-secondary rounded p-3" style="min-width:700px; min-height:400px;">
+            <div class="mt-3" id="paypal-button-container"></div>
+        </div>
+    </div>    
+</div>
+
+
+@section Scripts {
+    @*Use ViewBag.ClientId to load Paypal Javascript SDK*@
+    <script src="https://www.paypal.com/sdk/js?client-id=@ViewBag.ClientId&currency=TWD"></script>
+
+    <script>
+        paypal.Buttons({
+            style: {
+                layout: 'vertical',
+                color: 'silver',
+                tagline: 'false'
+            },
+            createOrder: (data, actions) => {
+                return fetch("@Url.Content("~/Paypal/CreateOrder?orderId")=@(ViewBag.OrderId)"
+                ).then((response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => { throw error; });
+                    }
+
+                    return response.json();
+                }).then((order) => order.id)
+                    .catch(error => alert(error.message));
+            },
+            onApprove: (data, actions) => {
+                return fetch(`@Url.Action("Capture","Paypal")?orderId=${data.orderID}`, {
+                    method: "post",
+                }).then((response) => {
+                    if (!response.ok) {
+                        return response.json().then(error => { throw error; });
+                    }
+
+                    window.location.href = "@Url.Action("PaypalSuccess")";
+                }).catch(error => alert(error.message));
+            }
+        }).render('#paypal-button-container');
+    </script>
+}
+
+@section Styles{
+    <style>
+        :root {
+            --bs-body-bg-rgb: 255, 255, 255;
+        }
+    </style>
+}
+
+

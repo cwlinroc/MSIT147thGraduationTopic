@@ -106,6 +106,16 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
                 };
             }
 
+            if (record.Payment == "3")
+            {
+                return new OrderResponseDto
+                {
+                    Succeed = true,
+                    Message = "it works anyway",
+                    Web = baseUrl + "/buy/PaypalPayment?orderId=" + orderId
+                };
+            }
+
             //??
             return new OrderResponseDto
             {

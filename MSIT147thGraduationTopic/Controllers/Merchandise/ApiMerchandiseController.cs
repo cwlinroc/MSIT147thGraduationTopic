@@ -19,11 +19,9 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
         }
 
         [HttpGet]
-        public IActionResult GetSearchResultLength(string txtKeyword, int searchCondition = 1)
+        public IActionResult GetSearchResultLength(string txtKeyword, int searchCondition = 1, int displaymode = 1)
         {
-            IEnumerable<MerchandiseSearch> datas = _repo.getBasicMerchandiseSearch(txtKeyword, searchCondition);
-
-            var resultLength = datas.Count();
+            int resultLength = _repo.getBasicMerchandiseSearch(txtKeyword, searchCondition, displaymode).Count();
 
             return Json(resultLength);
         }
@@ -48,14 +46,12 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             bool[] package = new bool[2];
 
             package[0] = _context.Merchandises.Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
-
             package[1] = false;
+
             if (merchandisevm.photo != null)
             {
                 if (!merchandisevm.photo.ContentType.Contains("image")) package[1] = true;
             }
-            //↓ photo為null時會造成photo.ContentType.Contains("image")有NullReference錯誤，因此無法使用三元運算
-            //package[1] = (photo.ContentType != null && !photo.ContentType.Contains("image")) ? true : false;
 
             return Json(package);
         }
@@ -68,8 +64,8 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             package[0] = _context.Merchandises
                 .Where(m => m.MerchandiseId != merchandisevm.MerchandiseId)
                 .Any(m => m.MerchandiseName == merchandisevm.MerchandiseName);
-
             package[1] = false;
+
             if (merchandisevm.photo != null)
             {
                 if (!merchandisevm.photo.ContentType.Contains("image")) package[1] = true;

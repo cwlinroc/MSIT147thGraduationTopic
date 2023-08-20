@@ -44,6 +44,10 @@ namespace MSIT147thGraduationTopic.Controllers.Recommend
                 "manuallyweight" => "[ManuallyWeight]",
                 "rateevaluationfunc" => "[RateEvaluationFunc]",
                 "ratepurchasefunc" => "[RatePurchaseFunc]",
+                "recentevaluationdays" => "[RecentEvaluationDays]",
+                "recentevaluationtimes" => "[RecentEvaluationTimes]",
+                "recentpurchaseddays" => "[RecentPurchasedDays]",
+                "recentpurchasedtimes" => "[RecentPurchasedTimes]",
                 _ => "",
             };
             if (string.IsNullOrEmpty(col) || record.Num < 0) return -1;

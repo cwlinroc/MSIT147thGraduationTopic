@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewData["Title"] = "PaypalSuccess";
+    Layout = "_MallPage";
+}
+
+
+<div class="container d-flex justify-content-center">
+    <div class="bg-white p-4 my-5 rounded shadow text-center">
+        <figure>
+            <img src="~/images/buypage/Paypal.png" style="width:300px;object-fit:cover" />
+        </figure>
+        <h2>交易完成</h2>
+        <h2>銘謝您的惠顧</h2>
+        <h4 class="d-none text-secondary" id="countDown"><span id="secondCount">5</span>秒後將跳轉回首頁</h4>
+        <div class="d-none" id="divToHomePage"><button id="btnToHomePage">回到首頁</button></div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        
+        $('#btnToHomePage').click(() => window.location.href = `${ROOT}/home/index`)
+
+        confirmPayment()
+        async function confirmPayment() {
+            
+            $('#countDown').removeClass('d-none')
+            $('#divToHomePage').removeClass('d-none')
+
+            for (let i = 5; i >= 0; i--) {
+                await new Promise(resolve => setTimeout(resolve, 1000))
+                $('#secondCount').text(i)
+            }
+            window.location.href = `${ROOT}/home/index`
+        }
+    </script>
+
+}
+
+

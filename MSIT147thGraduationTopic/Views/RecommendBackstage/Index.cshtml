@@ -77,6 +77,31 @@
                                 <select class="form-select" id="rateEvaluationFunc">
                                     <option value="1">一般平均</option>
                                     <option value="2">貝葉斯平均值</option>
+                                    <option value="3">分布排序</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3"></div>
+                        <div class="col-lg-4 mb-3 mt-3">
+                            <div class=" input-group">
+                                <label class="input-group-text" for="recentEvaluationTimes">近期加權</label>
+                                <select class="form-select" id="recentEvaluationTimes">
+                                    <option value="0">不進行</option>
+                                    <option value="1">1倍</option>
+                                    <option value="2">2倍</option>
+                                    <option value="3">3倍</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 mt-3">
+                            <div class=" input-group">
+                                <label class="input-group-text" for="recentEvaluationDays">加權時間</label>
+                                <select class="form-select" id="recentEvaluationDays">
+                                    <option value="0" selected disabled hidden>未選擇</option>
+                                    <option value="7">7天內</option>
+                                    <option value="30">30天內</option>
+                                    <option value="60">60天內</option>
+                                    <option value="90">90天內</option>
                                 </select>
                             </div>
                         </div>
@@ -84,7 +109,7 @@
 
                             <div class="input-group mt-2">
                                 <label for="spanEvaluationWeight" class="form-label">
-                                    加權倍數：
+                                    顧客評分加權倍數：
                                     <span id="spanEvaluationWeight">@ViewBag.RatingData.EvaluationWeight</span>
                                 </label>
                                 <input type="range" class="form-range" min="0" max="20" step="1"
@@ -101,6 +126,31 @@
                                 <select class="form-select" id="ratePurchaseFunc">
                                     <option value="1">一般平均</option>
                                     <option value="2">log平均值</option>
+                                    <option value="3">分布排序</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3"></div>
+                        <div class="col-lg-4 mb-3 mt-3">
+                            <div class=" input-group">
+                                <label class="input-group-text" for="recentPurchaseTimes">近期加權</label>
+                                <select class="form-select" id="recentPurchaseTimes">
+                                    <option value="0">不進行</option>
+                                    <option value="1">1倍</option>
+                                    <option value="2">2倍</option>
+                                    <option value="3">3倍</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 mt-3">
+                            <div class=" input-group">
+                                <label class="input-group-text" for="recentPurchaseDays">加權時間</label>
+                                <select class="form-select" id="recentPurchaseDays">
+                                    <option value="0" selected disabled hidden>未選擇</option>
+                                    <option value="7">7天內</option>
+                                    <option value="30">30天內</option>
+                                    <option value="60">60天內</option>
+                                    <option value="90">90天內</option>
                                 </select>
                             </div>
                         </div>
@@ -108,7 +158,7 @@
 
                             <div class="input-group mt-2">
                                 <label for="rangePurchaseWeight" class="form-label">
-                                    加權倍數：
+                                    購買數量加權倍數：
                                     <span id="spanPurchaseWeight">@ViewBag.RatingData.PurchasedWeight</span>
                                 </label>
                                 <input type="range" class="form-range" min="0" max="20" step="1"
@@ -232,6 +282,10 @@
 
         $('#rateEvaluationFunc').val('@ViewBag.RatingData.RateEvaluationFunc')
         $('#ratePurchaseFunc').val('@ViewBag.RatingData.RatePurchaseFunc')
+        $('#recentEvaluationTimes').val('@(ViewBag.RatingData.RecentEvaluationTimes ?? 0)')
+        $('#recentEvaluationDays').val('@(ViewBag.RatingData.RecentEvaluationDays ?? 0)')
+        $('#recentPurchaseTimes').val('@(ViewBag.RatingData.RecentPurchasedTimes ?? 0)')
+        $('#recentPurchaseDays').val('@(ViewBag.RatingData.RecentPurchasedDays ?? 0)')
 
 
     </script>

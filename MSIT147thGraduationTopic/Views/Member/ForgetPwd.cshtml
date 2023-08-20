@@ -49,7 +49,8 @@
 
         const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
-        function ForgetPwdValidator() {            
+        function ForgetPwdValidator() {
+            myValid.endtValidate()
             myValid.validateFunction(() => {
                 const account = document.querySelector('#account')
                 const accountHasValue = !!account.value
@@ -63,11 +64,7 @@
                 return accountHasValue && emailHasValue && emailPatternValid
             })            
             return myValid.startValidate()
-        }
-
-        function clearAllValidFeedBack() {            
-            myValid.endtValidate()
-        }
+        }       
 
         $('#btnSubmit').click(ForgetPwdValidator)
     </script>

@@ -3,6 +3,11 @@
 @{
     Layout = "_BackstagePage";
     ViewData["Title"] = "商品規格檢視";
+    string txtKeyword = Context.Request.Cookies["txtKeyword"] ?? "";
+    int searchCondition = int.TryParse(Context.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1;
+    int PageIndex = int.TryParse(Context.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1;
+    int displayorder = int.TryParse(Context.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0;
+    int pageSize = int.TryParse(Context.Request.Cookies["pageSize"], out int temp4) ? temp4 : 10;
 }
 
 <div class="container">
@@ -51,7 +56,8 @@
             </tr>
         </table>
         <div class="form-group">
-            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", null, new { @class = "btn btn-secondary" })
+            @Html.ActionLink("回到商品檢視", "Index", "Merchandises", new { txtKeyword = txtKeyword, searchCondition = searchCondition,
+            PageIndex = PageIndex, displayorder = displayorder, pageSize = pageSize }, new { @class = "btn btn-secondary" })
         </div>
     </div>
 </div>

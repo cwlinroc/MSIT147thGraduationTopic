@@ -8,11 +8,11 @@ using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
 
-////RandomNumberGenerator.GetInt32(10)
+//////RandomNumberGenerator.GetInt32(10)
 
-//var service = new SimulationDataInsertService(null);
+var service = new SimulationDataInsertService(null);
 
-//service.AddRandomMembers(100);
+//service.AddRandomMembers(500);
 //Console.WriteLine("AddRandomMembers Done!");
 ///**
 //service.AddRandomMerchandiseAndSpecs(90);
@@ -21,7 +21,7 @@ using System.Text;
 //service.AddRandomCart();
 //Console.WriteLine("AddRandomCart Done!");
 
-//service.AddRandomOrders();
+//await service.AddRandomOrders();
 //Console.WriteLine("AddRandomOrders Done!");
 ///**
 //service.AddSpecTags();
@@ -33,6 +33,8 @@ using System.Text;
 //service.AddRandomEvaluations();
 //Console.WriteLine("AddRandomEvaluations Done!");
 
+await service.AddSpecifySpecOrders(false, 15, 10);
+await service.AddSpecifySpecOrders(true, 30, 10);
 
 //var generator = new RandomGenerator();
 
@@ -45,19 +47,6 @@ using System.Text;
 
 
 /**test**/
-
-var repo = new StatisticRepository(new());
-
-var dtos = await repo.GetMerchandiseTrend("merchandise", "quantity", "day" , 7 , 1 );
-
-int count = 0;
-
-foreach (var item in dtos)
-{
-    count++;
-    Console.WriteLine(item.Item1.ToString() + " , " + item.Item2.ToString() + " : " + item.Item3.ToString());
-}
-
 
 
 /**test**/

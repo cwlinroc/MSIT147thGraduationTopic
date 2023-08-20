@@ -43,7 +43,7 @@
                 <div class="m-1 border rounded p-4">
 
                     <div class="input-group">
-                        <span class="input-group-text bg-white" id="spanLeftName">請選擇對比商品</span>
+                        
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">商品名稱</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item choose-type" onclick="leftMeasurement='merchandise'" data-search-type="merchandiseName">商品名稱</a></li>
@@ -54,9 +54,9 @@
                         <input type="text" class="form-control" data-search-type="merchandiseName" id="inputName1">
                         <button class="btn btn-dark px-4" type="button" id="btnLeft">確認</button>
                     </div>
-
+                    <h4 class="mt-3"><span id="spanLeftName">請選擇對比商品</span>：</h4>
                     <div class="p-5  " style="position: relative; height:600px; width:100%">
-                        <canvas id="none"></canvas>
+                        <canvas id="leftRadar" style="width:100% ; height:100%"></canvas>
                     </div>
 
                 </div>
@@ -67,7 +67,6 @@
                 <div class="m-1 border rounded p-4">
 
                     <div class="input-group">
-                        <span class="input-group-text bg-white" id="spanRightName">請選擇對比商品</span>
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">商品名稱</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item choose-type" onclick="rightMeasurement='merchandise'" data-search-type="merchandiseName">商品名稱</a></li>
@@ -78,9 +77,9 @@
                         <input type="text" class="form-control" data-search-type="merchandiseName" id="inputName2">
                         <button class="btn btn-dark px-4" type="button" id="btnRight">確認</button>
                     </div>
-
+                    <h4 class="mt-3"><span id="spanRightName">請選擇對比商品</span>：</h4>
                     <div class="p-5 " style="position: relative; height:600px; width:100%">
-                        <canvas id="none"></canvas>
+                        <canvas id="rightRadar" style="width:100% ; height:100%"></canvas>
                     </div>
 
                 </div>
@@ -106,24 +105,27 @@
         let leftId = 0
         let leftMeasurement = "merchandise"
         let leftTrendData
+        let leftRadarData
 
         let rightId = 0
         let rightMeasurement = "merchandise"
         let rightTrendData
+        let rightRadarData
 
 
-        //demoBtn1
+        //demoBtn1,2
         $('#demoBtn1').click(async e => {
             leftMeasurement = "merchandise"
             leftId = 11
             rightMeasurement = "merchandise"
             rightId = 21
             refreshTrendChart()
+            refreshRadarData()
             const left = await getIdAndName("merchandiseId", leftId)
             $('#spanLeftName').text(left.name)
             const right = await getIdAndName("merchandiseId", rightId)
             $('#spanRightName').text(right.name)
-            
+
 
         })
         $('#demoBtn2').click(async e => {
@@ -132,14 +134,13 @@
             rightMeasurement = "spec"
             rightId = 30
             refreshTrendChart()
+            refreshRadarData()
             const left = await getIdAndName("specId", leftId)
             $('#spanLeftName').text(left.name)
             const right = await getIdAndName("specId", rightId)
             $('#spanRightName').text(right.name)
         })
 
-        //const taskLeft = getTrendData(leftMeasurement, leftId)
-        //const taskRight = getTrendData(rightMeasurement, rightId)
 
         //trendChart
         const ctxTrend = document.getElementById('trendChart').getContext('2d');
@@ -161,27 +162,101 @@
         })
 
 
+        //leftRadar
+        const ctxLeftRadar = document.getElementById('leftRadar').getContext('2d');
+        const leftRadar = new Chart(ctxLeftRadar, {
+            type: 'radar',
+            data: {
+                labels: ['歷史購買排名', '最近購買排名', '歷史評價排名', '最近評價排名', '購物車清單排名'],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+                scale: {
+                    min: 0,
+                    max: 100,
+                },
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                }
+            }
+        })
+
+        //rightRadar
+        const ctxRightRadar = document.getElementById('rightRadar').getContext('2d');
+        const rightRadar = new Chart(ctxRightRadar, {
+            type: 'radar',
+            data: {
+                labels: ['歷史購買排名', '最近購買排名', '歷史評價排名', '最近評價排名', '購物車清單排名'],
+                datasets: []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+                scale: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                    },
+                },
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                }
+            }
+        })
+
+
+        //buttons
         $('#btnLeft').click(async e => {
             const keyword = e.currentTarget.closest('div').querySelector('input[type=text]').value.trim()
             if (!keyword) return
             const searchType = e.currentTarget.closest('div').querySelector('input[type=text]').dataset.searchType
             const { id, name } = await getIdAndName(searchType, keyword)
+            if (!+id) return
+
             $('#spanLeftName').text(name)
             leftId = id
-            leftTrendData = await getTrendData(leftMeasurement, leftId)
-            console.log(leftTrendData)
+
+            leftTrendDataTask = getTrendData(leftMeasurement, leftId)
+            leftRadarDataTask = getRadarData(leftMeasurement, leftId)
+            const [res1, res2] = await Promise.all([leftTrendDataTask, leftRadarDataTask])
+            leftTrendData = res1
+            leftRadarData = res2
+
             displayTrendChart()
+            displayRadarData()
         })
         $('#btnRight').click(async e => {
             const keyword = e.currentTarget.closest('div').querySelector('input[type=text]').value.trim()
             if (!keyword) return
             const searchType = e.currentTarget.closest('div').querySelector('input[type=text]').dataset.searchType
             const { id, name } = await getIdAndName(searchType, keyword)
+            if (!+id) return
             $('#spanRightName').text(name)
             rightId = id
-            rightTrendData = await getTrendData(rightMeasurement, rightId)
-            console.log(rightTrendData)
+            rightTrendDataTask = getTrendData(rightMeasurement, rightId)
+            rightRadarDataTask = getRadarData(rightMeasurement, rightId)
+            const [res1, res2] = await Promise.all([rightTrendDataTask, rightRadarDataTask])
+            rightTrendData = res1
+            rightRadarData = res2
+
             displayTrendChart()
+            displayRadarData()
         })
 
         //refreshTrendChart
@@ -207,7 +282,7 @@
                     label: leftData.dataTitle,
                     data: leftData.datas.slice(36 - timeIntervals),
                     fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
+                    borderColor: 'rgb(255, 99, 132)',
                     tension: 0.1
                 })
             }
@@ -217,11 +292,58 @@
                     label: rightData.dataTitle,
                     data: rightData.datas.slice(36 - timeIntervals),
                     fill: false,
-                    borderColor: 'rgb(192, 75, 192)',
+                    borderColor: 'rgb(132, 132, 255)',
                     tension: 0.1
                 })
             }
             trendChart.update()
+        }
+
+        //refreshRadarData
+        async function refreshRadarData() {
+            leftRadarDataTask = getRadarData(leftMeasurement, leftId)
+            rightRadarDataTask = getRadarData(rightMeasurement, rightId)
+            const [res1, res2] = await Promise.all([leftRadarDataTask, rightRadarDataTask])
+            leftRadarData = res1
+            rightRadarData = res2
+            displayRadarData()
+        }
+
+        //displayRadarData
+        async function displayRadarData() {
+            const leftData = (!!leftRadarData) ? JSON.parse(JSON.stringify(leftRadarData)) : null
+            const rightData = (!!rightTrendData) ? JSON.parse(JSON.stringify(rightRadarData)) : null
+            //trendChart.data.labels = []
+            leftRadar.data.datasets = []
+            rightRadar.data.datasets = []
+            if (!!leftData) {
+                leftRadar.data.datasets.push({
+                    label: '',
+                    data: [leftData.boughtRank, leftData.recentBoughtRank, leftData.evaluationRank, leftData.recentEvaluationRank, leftData.inCartRank],
+                    fill: true,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    pointBackgroundColor: 'rgb(255, 99, 132)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(255, 99, 132)'
+                })
+            }
+            if (!!rightData) {
+                rightRadar.data.datasets.push({
+                    label: '',
+                    data: [rightData.boughtRank, rightData.recentBoughtRank, rightData.evaluationRank, rightData.recentEvaluationRank, rightData.inCartRank],
+                    fill: true,
+                    backgroundColor: 'rgba(132, 132, 255, 0.2)',
+                    borderColor: 'rgb(132, 132, 255)',
+                    pointBackgroundColor: 'rgb(132, 132, 255)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(132, 132, 255)'
+                })
+            }
+            leftRadar.update()
+            rightRadar.update()
         }
 
 
@@ -238,12 +360,21 @@
 
         //取得趨勢data
         async function getTrendData(measurement, id) {
+            if (!+id) return
             const response = await fetch(`${ROOT}/api/apistatistic/merchandisetrend?` +
                 `measurement=${measurement}&classification=${classification}&timeUnit=${timeUnit}&id=${id}`)
             const data = await response.json()
-            console.log(data)
             return data
         }
+        //取得雷達data
+        async function getRadarData(measurement, id) {
+            if (!+id) return
+            const response = await fetch(`${ROOT}/api/apistatistic/GetMerchandiseRadar?` +
+                `measurement=${measurement}&id=${id}`)
+            const data = await response.json()
+            return data
+        }
+
 
         //選擇搜尋型別
         $('a.choose-type').click(e => {
@@ -276,7 +407,6 @@
         //selectMeasureUnit
         $('#selectMeasureUnit').change(e => {
             const val = $(e.currentTarget).val()
-            console.log(val)
             classification = val
             refreshTrendChart()
         })

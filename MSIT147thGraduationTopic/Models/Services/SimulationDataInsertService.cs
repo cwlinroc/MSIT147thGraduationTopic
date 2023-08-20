@@ -1,9 +1,13 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using MathNet.Numerics.Random;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos;
 using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Infra.Repositories;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
+using MSIT147thGraduationTopic.Models.ViewModels;
+using System.Security.Cryptography;
 
 namespace MSIT147thGraduationTopic.Models.Services
 {
@@ -126,17 +130,44 @@ namespace MSIT147thGraduationTopic.Models.Services
             }
         }
 
-        public void AddRandomOrders(int maxDaysBefore = 180, int minDaysBefore = 3)
+        public async Task AddRandomOrders(int monthsBefore = 12)
         {
-            var members = _context.Members.ToArray();
-            //用隨機(?)tag取得spec
-            var specs = _repo.GetAllSpecs();
+            var allMembers = await _context.Members.ToListAsync();
 
+            var allSpecs = _generator.OrderByRandom(_repo.GetAllSpecs().ToList());
+
+            int allMembersCount = allMembers.Count;
+            int allSpecsCount = allSpecs.Count;
+
+            for (int i = 0; i < monthsBefore; i++)
+            {
+                int minDaysBefore = (monthsBefore - i - 1) * 30;
+                int maxDaysBefore = minDaysBefore + 30;
+                int memberPeriod = (allMembersCount / (monthsBefore + 8)) * (i + 8);
+                int specPeriod = (allSpecsCount / (monthsBefore + 8)) * (i + 8);
+
+                await GenerateOrders(
+                    allMembers.Take(memberPeriod).ToList(),
+                    allSpecs.Take(specPeriod),
+                    maxDaysBefore,
+                    minDaysBefore);
+            }
+
+
+        }
+
+        private async Task GenerateOrders(
+            List<Member> members,
+            IEnumerable<RandomInsertedSpecDto>? specs,
+            int maxDaysBefore,
+            int minDaysBefore
+            )
+        {
+            string salt = maxDaysBefore.ToString().GetSaltedSha256();
             foreach (var member in members)
             {
-                int orderAmount = (int)(_generator.RandomDouble().InvCSND(0.3) * 30);
+                int orderAmount = (int)(_generator.RandomDouble().InvCSND(0.3) * 5);
                 int paymentMethod = member.MemberName.GetHashedInt() % 3 + 1;
-                int record = paymentMethod;
 
                 for (int i = 0; i < orderAmount; i++)
                 {
@@ -153,17 +184,18 @@ namespace MSIT147thGraduationTopic.Models.Services
                     };
 
                     _context.Orders.Add(order);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
 
-                    int maxItemAmount = (int)(_generator.RandomDouble().InvCSND(0.2, 0.2) * 20);
+                    int maxItemAmount = (int)(_generator.RandomDouble().InvCSND(0.2, 0.2) * 30);
                     maxItemAmount = Math.Max(maxItemAmount, 1);
-                    var boughtSpecs = GetBoughtSpecs(specs, maxItemAmount);
+                    var boughtSpecs = GetBoughtSpecs(specs!, maxItemAmount, salt);
 
                     int totalPrice = 0;
 
                     foreach (var spec in boughtSpecs)
                     {
-                        int quantity = (int)((spec.FullName!.GetHashedInt() / 100 % 100 / 100.0).InvCSND(0.1, 0.2) * 20);
+                        int quantity = (int)((spec.FullName!
+                            .GetHashedInt() / 100 % 100 / 100.0).InvCSND(0.1, 0.2) * 20);
                         quantity = Math.Max(quantity, 1);
 
                         var orderlist = new OrderList
@@ -179,19 +211,19 @@ namespace MSIT147thGraduationTopic.Models.Services
                         totalPrice += sum;
                     }
                     order.PaymentAmount = totalPrice;
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
         }
 
 
-        private List<RandomInsertedSpecDto> GetBoughtSpecs(IEnumerable<RandomInsertedSpecDto> specs, int maxItemAmount)
+        private List<RandomInsertedSpecDto> GetBoughtSpecs(IEnumerable<RandomInsertedSpecDto> specs, int maxItemAmount, string salt)
         {
             var boughtSpecs = _generator.RandomCollectionFrom(specs, maxItemAmount).ToList();
 
             foreach (var spec in boughtSpecs.ToList())
             {
-                var buyChance = (spec.FullName!.GetHashedInt() % 100 / 100.0).InvCSND();
+                var buyChance = ((spec.FullName! + salt).GetHashedInt() % 100 / 100.0).InvCSND(0.5, 0.15);
                 if (buyChance < _generator.RandomDouble()) boughtSpecs.Remove(spec);
             }
 
@@ -229,7 +261,7 @@ namespace MSIT147thGraduationTopic.Models.Services
             foreach (var order in orders) foreach (var spec in order.specs)
                 {
                     if (_repo.CheckEvaluated(order.orderId, spec.specId)) continue;
-                    if (_generator.RandomChance(60)) continue;
+                    if (_generator.RandomChance(85)) continue;
                     //int favor = 
                     int hasedInt = spec.specName.GetHashedInt();
                     int favor = (hasedInt % 100 + hasedInt / 100 % 100 + hasedInt / 10000 % 100) / 3 + 1;
@@ -240,10 +272,55 @@ namespace MSIT147thGraduationTopic.Models.Services
                         (25 - favor / 4) / 5,  //  0  5
                         favor * 30 / 100 + 20,  // 50   20
                         favor * (favor + 10) / 100 + 20);  // 130 20
-                    _repo.AddEvaluation(order.orderId, spec.specId, spec.merchandiseId ,score);
+                    string? comment = _generator.RandomChance(70) ? null : GetComment(score);
+
+                    _repo.AddEvaluation(order.orderId, spec.specId, spec.merchandiseId, score, comment);
                 }
         }
 
+
+        private string GetComment(int score)
+        {
+            return _comments[score - 1][_generator.RandomIntBetween(0, _comments[score - 1].Length - 1)];
+        }
+
+        private readonly string[][] _comments =
+            {
+                new string[]{ "它的描述聽起來相當吸引人。然而，收到商品後我立即感到失望。", "包裝外觀看起來還不錯，但打開後感覺到這個產品的質量很差。", "不建議購買。", "根本無法達到預期的效果", "購物送達後令人感到失望", "浪費了我的錢，不推薦給任何人。", "我真的對這種購物體驗感到非常失望。", "實際上使用起來非常麻煩。品質也很差", "沒有達到我的期望。", "這次的購買對我來說完全是一場災難。", "選購前一定要注意評價和評論的重要性。"},
+                new string[]{ "整體表現還算可以，但我認為還有些地方可以改", "有些優點，但也存在改進的空間。", "總之，不值這個價錢。", "沒有達到預期的效果", "CP值不高", "超市更便宜", "質量卻差強人意，我覺得不值這個價格", "質量遠遠不如我預期的那麼好"},
+                new string[]{ "不如我預期的那麼好，但這價格可以了", "整體而言還算堪用", "總體來說，這是一個中規中矩的選擇。", "商品還可以，但應該不會再回購", "大致上表現不錯", "如果可以再更便宜就好了", "是一款可以考慮的選擇，但還有些改進的空間。", "表現得還可以，但還有一些小問題需要解決。", "整體來說,毛孩可以接受", "大量購買的話可能不會考慮", "實際送來的商品讓我有些失望", "如果有其他選擇的話我應該會多方考慮"},
+                new string[]{ "總的來說，這是一個不錯的產品，如果折扣再多就更好了", "還不錯ㄟ!比預期中的好很多~", "依這樣價格買到這商品，我覺得很不錯了", "下一波特價的時候會再回購", "表現可圈可點~滿意!", "這次的購物體驗很不錯，之後需要會再來", "如果可以再更多選擇就好了", "使用時需要謹慎，確保寵物的舒適和幸福。", "商品比別家便宜，但希望包裝再細心一點", "這次等待時間較長，希望流程上注意，但商品是好的", "實體跟照片有點差距", "毛寶感覺蠻喜歡", "優惠劵折扣划算", "買了很多，但品質偶爾會不在標準內", "整體還可以啦", "商品常常缺貨，但也可能是太便宜了~快點補貨啦"},
+                new string[]{ "出乎意料的好!!接下來一定會成為你們的VIP", "天啊~~這價格超划算，馬上再度下單", "搶到賺到，還好我有追蹤你們網站", "包裝很用心，非常愉快的購物經驗", "現在想要買東西都會優先打開你們網頁，超級滿意!", "超快到貨~下次一定還來買", "對這次服務的經驗感到超級滿意", "服務的靈活性和可信賴性也讓我非常滿意", "非常幸運能夠找到這樣一個優質的購物網，我絕對會推薦給其他寵物愛好者", "不多說，真心推薦大家買", "良心店家，目前家裡用的都跟你們買", "絕對是我目前買過最好的商品", "體驗十分良好，必須推薦", "一不小心買滿購物車，但也太便宜了吧", "這CP值不得不推", "怎麼只有五星，我想給十顆星星阿", "這好東西不能只有我看到，馬上轉推給朋友", "太誇張了，這價格也太佛", "我家寵物真的不能沒有你們，好賣家", "優惠劵很實用，我需要多幾張!!太好買了", "看到一堆都想買，大推", "每一次買起來都好划算" },
+            };
+
+        public async Task AddSpecifySpecOrders(bool incremment, int specId, int times)
+        {
+            int[] boughtTrend = incremment ?
+                new int[] { 1, 1, 2, 2, 1, 2, 3, 3, 4, 5, 20, 45 }
+                : new int[] { 7, 13, 18, 20, 17, 16, 8 , 7, 3, 2, 1, 0 };
+            var spec = await _context.Specs.FindAsync(specId);
+            for (int i = 0; i < 10; i++)
+            {
+                int minDaysBefore = (10 - i - 1) * 30;
+                DateTime maxDate = DateTime.Now.AddDays(-minDaysBefore);
+                int maxDaysBefore = minDaysBefore + 30;
+                DateTime minDate = DateTime.Now.AddDays(-maxDaysBefore);
+                int amount = boughtTrend[i] * times;
+                var orderIds = await _context.Orders.Where(o => o.PurchaseTime > minDate && o.PurchaseTime < maxDate)
+                    .OrderBy(o => Guid.NewGuid()).Take(amount).Select(o => o.OrderId).ToListAsync();
+                orderIds = orderIds.Where(o => _generator.RandomBool()).ToList();
+                var orderlists = orderIds.Select(o => new OrderList
+                {
+                    OrderId = o,
+                    Price = spec!.Price,
+                    Discount = spec.DiscountPercentage,
+                    SpecId = spec.SpecId,
+                    Quantity = _generator.RandomIntBetween(1, 5)
+                });
+                _context.OrderLists.AddRange(orderlists);
+                await _context.SaveChangesAsync();
+            }
+        }
 
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace MSIT147thGraduationTopic.Models.Infra.Utility
+﻿using System.Collections.Generic;
+
+namespace MSIT147thGraduationTopic.Models.Infra.Utility
 {
     public class RandomGenerator
     {
@@ -171,6 +173,24 @@
                 }
             }
             return newlist;
+        }
+
+        public List<T> OrderByRandom<T>(IEnumerable<T> objs)
+        {
+            if (objs == null)
+            {
+                throw new ArgumentOutOfRangeException("傳入集合為null");
+            }
+            int count = objs.Count();
+            var list = objs.ToList();
+
+            while (count > 1)
+            {
+                count--;
+                int k = _rand.Next(count + 1);
+                (list[count], list[k]) = (list[k], list[count]);
+            }
+            return list;
         }
 
 

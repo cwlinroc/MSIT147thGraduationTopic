@@ -109,7 +109,7 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         }
 
         [HttpGet("accountexist")]
-        public ActionResult<bool> AccountHasExist(string account)
+        public ActionResult<bool> AccountExist(string account)
         {
             if (_context.Members.Any(m => m.Account == account)
                 || _context.Employees.Any(m => m.EmployeeAccount == account))
@@ -159,11 +159,18 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         [Authorize(Roles = "會員")]
         public async Task<ActionResult<string>> GetSelfAvatar()
         {
-            if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+            try
             {
-                return BadRequest("找不到對應ID");
+                if (!int.TryParse(HttpContext.User.FindFirstValue("MemberId"), out int memberId))
+                {
+                    return BadRequest("找不到對應ID");
+                }
+                return await _service.GetAvatarName(memberId);
             }
-            return await _service.GetAvatarName(memberId);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 
@@ -171,15 +178,17 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         [HttpPost("login")]
         public async Task<ActionResult<string>> LogIn(LoginRecord record)
         {
-            var emp = await _context.Employees
-                                .FirstOrDefaultAsync(o => o.EmployeeAccount == record.Account);
-
-            if (emp != null)
+            try
             {
-                string saltedPassword = record.Password.GetSaltedSha256(emp.Salt);
-                if (emp.EmployeePassword != saltedPassword) return string.Empty;
+                var emp = await _context.Employees
+                                               .FirstOrDefaultAsync(o => o.EmployeeAccount == record.Account);
 
-                var claims = new List<Claim>
+                if (emp != null)
+                {
+                    string saltedPassword = record.Password.GetSaltedSha256(emp.Salt);
+                    if (emp.EmployeePassword != saltedPassword) return string.Empty;
+
+                    var claims = new List<Claim>
                             {
                                 new Claim(ClaimTypes.Name, emp.EmployeeAccount),
                                 new Claim("UserName", emp.EmployeeName),
@@ -189,24 +198,32 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                                 new Claim(ClaimTypes.Role, _employeeRoles[emp.Permission-1])
                             };
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                    , new ClaimsPrincipal(claimsIdentity));
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                        , new ClaimsPrincipal(claimsIdentity));
 
-                return Url.Content("~/employeebackstage/welcome");
-            }
+                    return Url.Content("~/employeebackstage/welcome");
+                }
 
-            var member = await _context.Members
-                    .Select(o => new { o.Account, o.Password, o.Salt, o.MemberName, o.NickName
-                                     , o.Email, o.Avatar, o.MemberId, o.IsActivated })
-                    .FirstOrDefaultAsync(o => o.Account == record.Account);
+                var member = await _context.Members.Select(o => new
+                {
+                    o.Account,
+                    o.Password,
+                    o.Salt,
+                    o.MemberName,
+                    o.NickName,
+                    o.Email,
+                    o.Avatar,
+                    o.MemberId,
+                    o.IsActivated
+                }).FirstOrDefaultAsync(o => o.Account == record.Account);
 
-            if (member != null && member.IsActivated)
-            {
-                string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
-                if (member.Password != saltedPassword) return string.Empty;
+                if (member != null && member.IsActivated)
+                {
+                    string saltedPassword = record.Password.GetSaltedSha256(member.Salt);
+                    if (member.Password != saltedPassword) return string.Empty;
 
-                var claims = new List<Claim>
+                    var claims = new List<Claim>
                             {
                                 new Claim(ClaimTypes.Name, member.Account),
                                 new Claim("UserName", member.MemberName),
@@ -216,17 +233,22 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                                 new Claim(ClaimTypes.Email, member.Email),
                                 new Claim(ClaimTypes.Role, "會員")
                             };
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
-                    , new ClaimsPrincipal(claimsIdentity));
-                HttpContext.Session.SetString("LoadCoupon", "Load");
-                return "reload";
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                        , new ClaimsPrincipal(claimsIdentity));
+                    HttpContext.Session.SetString("LoadCoupon", "Load");
+                    return "reload";
+                }
+                else if (member != null && !member.IsActivated)
+                {
+                    return "Member/NoRole";
+                }
+                return string.Empty;
             }
-            else if (!member.IsActivated)
+            catch (Exception)
             {
-                return "Member/NoRole";
+                throw;
             }
-            return string.Empty;
         }
 
 
@@ -235,6 +257,77 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Url.Content("~/home/index");
+        }
+
+        public record GoogleLoginRecord([Required] string Email);
+        [HttpPost("googlelogin")]
+        public async Task<ActionResult<string>> GoogleLogIn(GoogleLoginRecord record)
+        {
+            try
+            {
+                var emp = await _context.Employees
+                          .FirstOrDefaultAsync(o => o.EmployeeEmail == record.Email);
+
+                if (emp != null)
+                {
+                    var claims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Name, emp.EmployeeAccount),
+                                new Claim("UserName", emp.EmployeeName),
+                                new Claim("AvatarName", emp.AvatarName??""),
+                                new Claim("EmployeeId", emp.EmployeeId.ToString()),
+                                new Claim(ClaimTypes.Email, emp.EmployeeEmail),
+                                new Claim(ClaimTypes.Role, _employeeRoles[emp.Permission-1])
+                            };
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                        , new ClaimsPrincipal(claimsIdentity));
+
+                    return Url.Content("~/employeebackstage/welcome");
+                }
+
+                var member = await _context.Members.Select(o => new
+                {
+                    o.Account,
+                    o.Password,
+                    o.Salt,
+                    o.MemberName,
+                    o.NickName,
+                    o.Email,
+                    o.Avatar,
+                    o.MemberId,
+                    o.IsActivated
+                }).FirstOrDefaultAsync(o => o.Email == record.Email);
+
+                if (member != null && member.IsActivated)
+                {
+                    var claims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Name, member.Account),
+                                new Claim("UserName", member.MemberName),
+                                new Claim("NickName", member.NickName??""),
+                                new Claim("AvatarName", member.Avatar??""),
+                                new Claim("MemberId", member.MemberId.ToString()),
+                                new Claim(ClaimTypes.Email, member.Email),
+                                new Claim(ClaimTypes.Role, "會員")
+                            };
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme
+                        , new ClaimsPrincipal(claimsIdentity));
+                    HttpContext.Session.SetString("LoadCoupon", "Load");
+                    return "reload";
+                }
+                else if (member != null && !member.IsActivated)
+                {
+                    return "Member/NoRole";
+                }
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
     }

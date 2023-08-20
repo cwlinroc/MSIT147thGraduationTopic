@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MSIT147thGraduationTopic.EFModels;
 using MSIT147thGraduationTopic.Models.Dtos.Recommend;
 using NuGet.Protocol;
@@ -24,8 +25,17 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         {
             return await _context.Evaluations.CountAsync();
         }
-        public async Task<List<RecommendationSpecsDto>> GetAllSpecsWithEvaluation()
+        public async Task<List<RecommendationSpecsDto>> GetAllSpecsWithEvaluation(RatingDataDto ratingData)
         {
+            bool getRecentEvaluation = ratingData.RecentEvaluationTimes.HasValue 
+                && ratingData.RecentEvaluationDays.HasValue && ratingData.RecentEvaluationTimes !=0;
+            bool getRecentPurchased = ratingData.RecentPurchasedTimes.HasValue 
+                && ratingData.RecentPurchasedDays.HasValue && ratingData.RecentPurchasedTimes != 0;
+            DateTime? evaluationMinDate = ratingData.RecentEvaluationDays.HasValue ?
+                DateTime.Now.AddDays((double)-ratingData.RecentEvaluationDays) : null;
+            DateTime? purchasedMinDate = ratingData.RecentPurchasedDays.HasValue ?
+                DateTime.Now.AddDays((double)-ratingData.RecentPurchasedDays) : null;
+
             var specs = _context.Specs.Select(o => new RecommendationSpecsDto
             {
                 SpecId = o.SpecId,
@@ -33,7 +43,15 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
                 EvaluateCount = o.Evaluations.Count,
                 AverageScore = (o.Evaluations.Any()) ? o.Evaluations.Average(ev => ev.Score) : 0,
                 PurchasedAmount = o.OrderLists.Sum(o => o.Quantity),
-                CustomRating = 0.5
+                CustomRating = 0.5,
+                RecentAverageScore = getRecentEvaluation ?
+                    (o.Evaluations.Where(x => x.Order.PurchaseTime > evaluationMinDate).Any()) ?
+                    o.Evaluations.Where(x => x.Order.PurchaseTime > evaluationMinDate).Average(ev => ev.Score)
+                    : 0 : null,
+                RecentEvaluateCount = getRecentEvaluation ?
+                    o.Evaluations.Where(x => x.Order.PurchaseTime > evaluationMinDate).Count() : null,
+                RecentPurchasedAmount = getRecentPurchased ?
+                    o.OrderLists.Where(x => x.Order.PurchaseTime > purchasedMinDate).Sum(o => o.Quantity) : null,
             });
             return await specs.ToListAsync();
         }
@@ -97,7 +115,7 @@ namespace MSIT147thGraduationTopic.Models.Infra.Repositories
         }
 
         public async Task<int> UpdateRatingData(int number, string col)
-        {
+        {            
             using var conn = _context.Database.GetDbConnection();
             string sql = $"UPDATE RatingDatas SET {col} = @number";
             return await conn.ExecuteAsync(sql, new { number });

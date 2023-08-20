@@ -53,8 +53,9 @@
 @section Scripts{
     <script src="~/js/recommend/partialview.js"></script>
     <script>
+        const cartpageMemberId = @Model;
 
-        getCartItems(@Model)
+        getCartItems(cartpageMemberId)
 
         $('#btnSendOrder').click(sendOrder)
 
@@ -73,25 +74,25 @@
 
             const htmls = items.map(o => {
                 return `<tr>
-                                                    <td>
-                                                        <input type="hidden" value="${o.cartItemId}"/>
-                                                        <input type="checkbox" class="form-check-input">
-                                                    </td>
-                                                        <td>${o.cartItemName}</td>
-                                                        <td>$<span class="cartItemPrice">${o.cartItemPrice}</span></td>
-                                                    <td>
-                                                            <div class="input-group d-flex justify-content-center">
-                                                                    <button class="btn btn-outline-secondary cart-item-sub d-none d-lg-inline" type="button">-</button>
-                                                                            <input type="number" value="${o.quantity}" class="text-center cart-item-number"
-                                                                     min="1" oninput="this.value = Math.abs(this.value)">
-                                                                    <button class="btn btn-outline-secondary cart-item-add d-none d-lg-inline" type="button">+</button>
-                                                        </div>
-                                                   </td>
-                                                          <td  class=" d-none d-lg-table-cell">$<span class="ItemTotalPrice">${o.cartItemPrice * o.quantity}</span></td>
-                                                    <td>
-                                                                <btn class="btn btn-danger cart-item-delete text-nowrap">刪除</btn>
-                                                    </td>
-                                                </tr>`
+                        <td>
+                            <input type="hidden" value="${o.cartItemId}"/>
+                            <input type="checkbox" class="form-check-input">
+                        </td>
+                            <td>${o.cartItemName}</td>
+                            <td>$<span class="cartItemPrice">${o.cartItemPrice}</span></td>
+                        <td>
+                                <div class="input-group d-flex justify-content-center">
+                                        <button class="btn btn-outline-secondary cart-item-sub d-none d-lg-inline" type="button">-</button>
+                                                <input type="number" value="${o.quantity}" class="text-center cart-item-number"
+                                            min="1" oninput="this.value = Math.abs(this.value)">
+                                        <button class="btn btn-outline-secondary cart-item-add d-none d-lg-inline" type="button">+</button>
+                            </div>
+                        </td>
+                                <td  class=" d-none d-lg-table-cell">$<span class="ItemTotalPrice">${o.cartItemPrice * o.quantity}</span></td>
+                        <td>
+                                    <btn class="btn btn-danger cart-item-delete text-nowrap">刪除</btn>
+                        </td>
+                    </tr>`
             })
             document.querySelector('tbody').innerHTML = htmls.join('')
             changeNumberEvent()
@@ -295,9 +296,7 @@
             .cart-item-number {
                 width: 100px;
             }
-
         }
-
 
     </style>
 }

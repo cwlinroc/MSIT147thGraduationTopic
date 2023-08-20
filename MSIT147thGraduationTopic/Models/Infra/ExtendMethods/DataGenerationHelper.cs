@@ -28,7 +28,8 @@ namespace MSIT147thGraduationTopic.Models.Infra.ExtendMethods
         static public int GetHashedInt(this string str)
         {
             using MD5 md5Hasher = MD5.Create();
-            var hashed = md5Hasher.ComputeHash(Encoding.Default.GetBytes(str));
+            string newStr = str.GetSaltedSha256("idn", str);
+            var hashed = md5Hasher.ComputeHash(Encoding.Default.GetBytes(newStr));
             return Math.Abs(BitConverter.ToInt32(hashed, 0));
         }
 

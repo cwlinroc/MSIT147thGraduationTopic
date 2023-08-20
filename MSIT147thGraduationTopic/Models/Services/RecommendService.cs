@@ -50,16 +50,16 @@ namespace MSIT147thGraduationTopic.Models.Services
             var rateData = await _repo.GetRatingData();
             RecommendCalculateBo bo = GetCalculateBO(rateData);
 
-            var specs = await _repo.GetAllSpecsWithEvaluation();
+            var specs = await _repo.GetAllSpecsWithEvaluation(rateData);
 
             //自訂評分
             var taskWeightedEntries = _repo.GetAllManuallyWeightedEntries();
             var taskConvertedEntries = ConvertEntries(taskWeightedEntries);
 
             //顧客評價轉換分數
-            bo.RateEvaluationFunc?.Invoke(specs);
+            bo.RateEvaluationFunc?.Invoke(specs, rateData);
             //購買數量轉換分數
-            bo.RatePurchased?.Invoke(specs);
+            bo.RatePurchased?.Invoke(specs, rateData);
 
             //將自訂評分對應到spec
             var weightedEntries = await taskConvertedEntries;
@@ -87,12 +87,14 @@ namespace MSIT147thGraduationTopic.Models.Services
                 {
                     1 => RecommandFunctions.RateEvaluationWithMathematicaMean,//數理平均
                     2 => RecommandFunctions.RateEvaluationWithBayesianAverage,//貝葉森平均
+                    3 => RecommandFunctions.RateEvaluationByRanking,//由排名
                     _ => RecommandFunctions.RateEvaluationWithMathematicaMean
                 },
                 RatePurchased = dto.RatePurchaseFunc switch
                 {
                     1 => RecommandFunctions.RatePurchasedWithProportion,//線性比例轉換
                     2 => RecommandFunctions.RatePurchasedWithLogTransform,//log2對數轉換
+                    3 => RecommandFunctions.RatePurchasedByRanking,//由排名
                     _ => RecommandFunctions.RatePurchasedWithProportion
                 }
             };
