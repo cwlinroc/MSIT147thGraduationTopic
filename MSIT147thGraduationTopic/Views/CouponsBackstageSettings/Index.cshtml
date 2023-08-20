@@ -79,7 +79,7 @@
                                     {
                                         <tr>
                                             <td id="DiscountId" class="DiscountId" scope="col">@c.CouponId</td>
-                                            <td id="DiscountName" scope="col">@c.CouponName</td>
+                                            <td id="DiscountName" class="DiscountId" scope="col">@c.CouponName</td>
                                             <td id="DiscountTagId" class="DiscountTagId" scope="col">@c.CouponTagId</td>
                                             <td id="DiscountStartDate" scope="col">@c.CouponStartDate</td>
                                             <td id="DiscountEndDate" scope="col">@c.CouponEndDate</td>
@@ -155,7 +155,7 @@
                                         foreach (CouponDto c in Model.listRebateAll)
                                         {
                                             <tr>
-                                                <td id="RebateId" scope="col">@c.CouponId</td>
+                                                <td id="RebateId" class="RebateId" scope="col">@c.CouponId</td>
                                                 <td id="RebateName" scope="col">@c.CouponName</td>
                                                 <td id="RebateTagId" scope="col">@c.CouponTagId</td>
                                                 <td id="RebateStartDate" scope="col">@c.CouponStartDate</td>
@@ -187,9 +187,9 @@
             <div class="my-3">
                 <button class="btn btn-outline-secondary" id="demoID">demo</button>
             </div>
-            <div class="my-3">
+            @*<div class="my-3">
                 <button class="btn btn-outline-secondary" id="demoName">demo</button>
-            </div>
+            </div>*@
         </section>
         @*<section class="py-5 bg-light">
         <div class="container px-5 my-5">
@@ -377,83 +377,77 @@
                 });
             }
 
-            //console.log('1')
-            //const discountIDs = [...document.querySelectorAll('.DiscountID')]
+            const discountIDs = [...document.querySelectorAll('.DiscountId')]
 
-            //let comparedId
+            let comparedId
 
-            //for (let i = 0; i < discountIDs.length; i++) {
-            //    if (discountIDs[i].textContent == couponDiscountId) {
-            //        comparedId = discountIDs[i]
-            //        console.log(discountIDs[i].textContent)
-
-            //        console.log(couponDiscountId)
-            //        break
-            //    }
-            //}
-            //console.log('2')
-            //if (!comparedId) {
-            //    NoIdDataSweetAlert();
-            //}
-
-
-            //let couponInfo = '';
-            //comparedId.each((index, element) => {
-            //    const couponId = $(element).text();
-            //    const couponName = $(element).closest('tr').find('#DiscountName').text();
-            //    const couponTagId = $(element).closest('tr').find('#DiscountTagId').text();
-            //    const couponStartDate = $(element).closest('tr').find('#DiscountStartDate').text();
-            //    const couponEndDate = $(element).closest('tr').find('#DiscountEndDate').text();
-            //    const couponDiscount = $(element).closest('tr').find('#DiscountValue').text();
-
-            //    couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
-            //        `<b>優惠券名稱：</b> ${couponName}<br>` +
-            //        `<b>適用對象：</b> ${couponTagId}<br>` +
-            //        `<b>開始日期：</b> ${couponStartDate}<br>` +
-            //        `<b>結束日期：</b> ${couponEndDate}<br>` +
-            //        `<b>折扣：</b> ${couponDiscount}<br><br>`;
-            //});
-
-            //Swal.fire({
-            //    title: '匹配的打折優惠券資訊',
-            //    html: couponInfo,
-            //    icon: 'info',
-            //});
-
-
-
-            const couponNameElements = $('#tabDiscount #DiscountName');
-            const matchingCoupons = couponNameElements.filter((index, element) =>
-                $(element).text().match(searchKeyword)
-            );
-
-            if (matchingCoupons.length === 0) {
-                NoNameDataSweetAlert();
+            for (let i = 0; i < discountIDs.length; i++) {
+                if (discountIDs[i].textContent == couponDiscountId) {
+                    comparedId = discountIDs[i]
+                    break
+                }
             }
-            else {
-                let couponInfo = '';
-                matchingCoupons.each((index, element) => {
-                    const couponId = $(element).closest('tr').find('#DiscountId').text();
-                    const couponName = $(element).text();
-                    const couponTagId = $(element).closest('tr').find('#DiscountTagId').text();
-                    const couponStartDate = $(element).closest('tr').find('#DiscountStartDate').text();
-                    const couponEndDate = $(element).closest('tr').find('#DiscountEndDate').text();
-                    const couponDiscount = $(element).closest('tr').find('#DiscountValue').text();
 
-                    couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
-                        `<b>優惠券名稱：</b> ${couponName}<br>` +
-                        `<b>適用對象：</b> ${couponTagId}<br>` +
-                        `<b>開始日期：</b> ${couponStartDate}<br>` +
-                        `<b>結束日期：</b> ${couponEndDate}<br>` +
-                        `<b>折扣：</b> ${couponDiscount}<br><br>`;
-                });
-
-                Swal.fire({
-                    title: '匹配的打折優惠券資訊',
-                    html: couponInfo,
-                    icon: 'info',
-                });
+            if (!comparedId && couponDiscountId) {
+                NoIdDataSweetAlert();
+                return; 
             }
+
+            if (!comparedId) {
+                NoIdDataSweetAlert();
+            }
+
+            const couponId = $(comparedId).text();
+            const couponName = $(comparedId).closest('tr').find('#DiscountName').text();
+            const couponTagId = $(comparedId).closest('tr').find('#DiscountTagId').text();
+            const couponStartDate = $(comparedId).closest('tr').find('#DiscountStartDate').text();
+            const couponEndDate = $(comparedId).closest('tr').find('#DiscountEndDate').text();
+            const couponDiscount = $(comparedId).closest('tr').find('#DiscountValue').text();
+
+            couponInfo = `<b>ID序號：</b> ${couponId}<br>` +
+                `<b>優惠券名稱：</b> ${couponName}<br>` +
+                `<b>適用對象：</b> ${couponTagId}<br>` +
+                `<b>開始日期：</b> ${couponStartDate}<br>` +
+                `<b>結束日期：</b> ${couponEndDate}<br>` +
+                `<b>折扣：</b> ${couponDiscount}<br><br>`;
+
+
+            Swal.fire({
+                title: '匹配的打折優惠券資訊',
+                html: couponInfo,
+                icon: 'info',
+            });
+
+            //const matchingCoupons = $('#tabDiscount #DiscountName').filter((index, element) =>
+            //    $(element).text().toLowerCase().includes(searchKeyword)
+            //);
+
+            //if (matchingCoupons.length === 0) {
+            //    NoNameDataSweetAlert();
+            //} else {
+            //    let couponInfo = ''; 
+            //    matchingCoupons.each((index, element) => {
+            //        const couponId = $(element).closest('tr').find('#DiscountId').text();
+            //        const couponName = $(element).text();
+            //        const couponTagId = $(element).closest('tr').find('#DiscountTagId').text();
+            //        const couponStartDate = $(element).closest('tr').find('#DiscountStartDate').text();
+            //        const couponEndDate = $(element).closest('tr').find('#DiscountEndDate').text();
+            //        const couponDiscount = $(element).closest('tr').find('#DiscountValue').text();
+
+            //        couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
+            //            `<b>優惠券名稱：</b> ${couponName}<br>` +
+            //            `<b>適用對象：</b> ${couponTagId}<br>` +
+            //            `<b>開始日期：</b> ${couponStartDate}<br>` +
+            //            `<b>結束日期：</b> ${couponEndDate}<br>` +
+            //            `<b>折扣：</b> ${couponDiscount}<br><br>`;
+            //    });
+
+            //    Swal.fire({
+            //        title: '匹配的打折優惠券資訊',
+            //        html: couponInfo,
+            //        icon: 'info',
+            //    });
+            //}
         });
         //#endregion
 
@@ -474,45 +468,79 @@
                 });
             }
 
-            if (couponRebateId) {
-                if (couponRebateId != rebateIdValue) {
-                    NoIdDataSweetAlert();
-                }
-                else {
-                    ShowRabateDataSweetAlert();
-                }
-            }
+            const rebateIDs = [...document.querySelectorAll('.RebateId')]
 
-            if (searchKeyword) {
-                if (matchingCoupons.length === 0) {
-                    NoNameDataSweetAlert();
-                } else {
-                    let couponInfo = '';
-                    matchingCoupons.each((index, element) => {
-                        const couponId = $(element).closest('tr').find('#RebateId').text();
-                        const couponName = $(element).text();
-                        const couponTagId = $(element).closest('tr').find('#RebateTagId').text();
-                        const couponStartDate = $(element).closest('tr').find('#RebateStartDate').text();
-                        const couponEndDate = $(element).closest('tr').find('#RebateEndDate').text();
-                        const couponCondition = $(element).closest('tr').find('#RebateCondition').text();
-                        const couponDiscount = $(element).closest('tr').find('#RebateDiscount').text();
+            let comparedId
 
-                        couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
-                            `<b>優惠券名稱：</b> ${couponName}<br>` +
-                            `<b>適用對象：</b> ${couponTagId}<br>` +
-                            `<b>開始日期：</b> ${couponStartDate}<br>` +
-                            `<b>結束日期：</b> ${couponEndDate}<br>` +
-                            `<b>消費門檻：</b> ${couponCondition}<br>` +
-                            `<b>折扣金額：</b> ${couponDiscount}<br><br>`;
-                    });
-
-                    Swal.fire({
-                        title: '匹配的打折優惠券資訊',
-                        html: couponInfo,
-                        icon: 'info',
-                    });
+            for (let i = 0; i < rebateIDs.length; i++) {
+                if (rebateIDs[i].textContent == couponRebateId) {
+                    comparedId = rebateIDs[i]
+                    break
                 }
             }
+
+            if (!comparedId && couponRebateId) {
+                NoIdDataSweetAlert();
+                return;
+            }
+
+            if (!comparedId) {
+                NoIdDataSweetAlert();
+            }
+
+            const couponId = $(comparedId).text();
+            const couponName = $(comparedId).closest('tr').find('#RebateName').text();
+            const couponTagId = $(comparedId).closest('tr').find('#RebateTagId').text();
+            const couponStartDate = $(comparedId).closest('tr').find('#RebateStartDate').text();
+            const couponEndDate = $(comparedId).closest('tr').find('#RebateEndDate').text();
+            const couponCondition = $(comparedId).closest('tr').find('#RebateCondition').text();
+            const couponDiscount = $(comparedId).closest('tr').find('#RebateDiscount').text();
+
+            couponInfo = `<b>ID序號：</b> ${couponId}<br>` +
+                `<b>優惠券名稱：</b> ${couponName}<br>` +
+                `<b>適用對象：</b> ${couponTagId}<br>` +
+                `<b>開始日期：</b> ${couponStartDate}<br>` +
+                `<b>結束日期：</b> ${couponEndDate}<br>` +
+                `<b>消費門檻：</b> ${couponCondition}<br>` +
+                `<b>折扣：</b> ${couponDiscount}<br><br>`;
+
+
+            Swal.fire({
+                title: '匹配的打折優惠券資訊',
+                html: couponInfo,
+                icon: 'info',
+            });
+
+            //if (searchKeyword) {
+            //    if (matchingCoupons.length === 0) {
+            //        NoNameDataSweetAlert();
+            //    } else {
+            //        let couponInfo = '';
+            //        matchingCoupons.each((index, element) => {
+            //            const couponId = $(element).closest('tr').find('#RebateId').text();
+            //            const couponName = $(element).text();
+            //            const couponTagId = $(element).closest('tr').find('#RebateTagId').text();
+            //            const couponStartDate = $(element).closest('tr').find('#RebateStartDate').text();
+            //            const couponEndDate = $(element).closest('tr').find('#RebateEndDate').text();
+            //            const couponCondition = $(element).closest('tr').find('#RebateCondition').text();
+            //            const couponDiscount = $(element).closest('tr').find('#RebateDiscount').text();
+
+            //            couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
+            //                `<b>優惠券名稱：</b> ${couponName}<br>` +
+            //                `<b>適用對象：</b> ${couponTagId}<br>` +
+            //                `<b>開始日期：</b> ${couponStartDate}<br>` +
+            //                `<b>結束日期：</b> ${couponEndDate}<br>` +
+            //                `<b>消費門檻：</b> ${couponCondition}<br>` +
+            //                `<b>折扣金額：</b> ${couponDiscount}<br><br>`;
+            //        });
+
+            //        Swal.fire({
+            //            title: '匹配的打折優惠券資訊',
+            //            html: couponInfo,
+            //            icon: 'info',
+            //        });
+            //    }
+            //}
         });
         //#endregion
 
@@ -592,6 +620,6 @@
                 }
             });
         })
-                                        //#endregion
+                                                                //#endregion
     </script>
 }
