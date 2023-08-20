@@ -26,7 +26,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
             _context = context;
             _host = host;
             _repo = new MerchandiseRepository(context);
-        }//todo 記得各CONTROLLER&VIEW加上Cookies
+        }
 
         // GET: Merchandises
         [Authorize(Roles = "管理員,經理,員工")]
