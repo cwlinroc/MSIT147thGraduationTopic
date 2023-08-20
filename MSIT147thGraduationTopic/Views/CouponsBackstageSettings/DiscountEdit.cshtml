@@ -32,22 +32,22 @@
                                 <input type="hidden" id="CouponId" name="CouponId" value="@Model.CouponId" class="form-control">
                             </div>
                             <div class="col-8 mb-3">
-                                優惠券名稱<input type="text" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
+                                優惠券名稱<input type="text" id="CouponName" name="CouponName" value="@Model.CouponName" class="form-control" placeholder="請輸入優惠券名稱">
                             </div>
                             <div class="col-8 mb-3">
-                                適用對象<select name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
-                                    <option></option>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
+                                適用對象<select id="CouponTagId" name="CouponTagId" value="@Model.CouponTagId" class="form-select form-control" placeholder="請選擇適用對象">
+                                    <option value="0">全部</option>
+                                    <option value="1">貓</option>
+                                    <option value="2">狗</option>
+                                    <option value="3">鼠</option>
+                                    <option value="4">兔</option>
                                 </select>
                             </div>
                             <div class="col-8 mb-3">
-                                開始日期<input name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                                開始日期<input id="CouponStartDate" name="CouponStartDate" value="@Model.CouponStartDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                             </div>
                             <div class="col-8 mb-3">
-                                結束日期<input name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
+                                結束日期<input id="CouponEndDate" name="CouponEndDate" value="@Model.CouponEndDate.ToString("yyyy-MM-dd")" type="date" class="form-control" placeholder="請輸入使用期限">
                             </div>
                             <div class="col-8 mb-3">
                                 折扣百分比<input id="CouponDiscount" name="CouponDiscount" value="@Model.CouponDiscount.ToString("#'%'")" type="number" class="form-control" placeholder="請輸入折扣百分比" min="1" max="99">
@@ -58,6 +58,21 @@
                         <div class="col-auto">
                             <button type="button" class="btn btn-primary" id="btnEdit">修改</button>
                             <button type="button" class="btn btn-primary" id="btnBack">返回</button>
+                        </div>
+                        <div class="my-3">
+                            <button class="btn btn-outline-secondary" id="demoAnswer">demoAnswer</button>
+                        </div>
+                        <div class="my-3">
+                            <button class="btn btn-outline-secondary" id="demoName">demoName</button>
+                        </div>
+                        <div class="my-3">
+                            <button class="btn btn-outline-secondary" id="demoDate">demoDate</button>
+                        </div>
+                        <div class="my-3">
+                            <button class="btn btn-outline-secondary" id="demoDiscountNon">demoDiscountNon</button>
+                        </div>
+                        <div class="my-3">
+                            <button class="btn btn-outline-secondary" id="demoDiscountOver">demoDiscountOver</button>
                         </div>
                     </div>
                 </div>
@@ -98,35 +113,32 @@
             const startDate = new Date(startDateInput.val());
             const endDate = new Date(endDateInput.val());
 
-            console.log('123')
-
+            //驗證
             if (startDate > endDate) {
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：開始日期不得晚於結束日期'
+                    text: '請檢查日期格式是否正確',
                 });
                 return;
             }
 
-            if (endDate < startDate) {
+            if (!discountValue) {
                 Swal.fire({
                     icon: 'error',
                     title: '失敗',
-                    text: '請檢查日期格式是否正確：結束日期不得早於開始日期'
+                    text: '折扣為必填欄位',
                 });
                 return;
             }
 
-            //驗證
-            if ( discountValue < 0 || discountValue > 100) {
-                discountInput[0].setCustomValidity('折扣必須介於1到99');
-            }
-            else if (isNaN(discountValue) ){
-                discountInput[0].setCustomValidity('折扣為必填欄位');
-            }
-            else {
-                discountInput[0].setCustomValidity('');
+            if (discountValue < 0 || discountValue > 100) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '失敗',
+                    text: '折扣必須介於1到99',
+                });
+                return;
             }
 
             const form = document.getElementById('edit');
@@ -194,13 +206,44 @@
             })
         })
 
-        //demo
-        $('#demo').click(e => {
-            $('#couponName').val('456');
-            $('#startDate').val('2023-08-25');
-            $('#endDate').val('2023-08-30');
-            $('#discount').val('79');
-            console.log('456');
+        //demoAnswer
+        $('#demoAnswer').click(e => {
+            $('#CouponName').val('夏日清涼一夏感謝祭77好禮');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponDiscount').val('77');
+        })
+
+        //demoName
+        $('#demoName').click(e => {
+            $('#CouponName').val('');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponDiscount').val('77');
+        })
+
+        //demoDate
+        $('#demoDate').click(e => {
+            $('#CouponName').val('夏日清涼一夏感謝祭77好禮');
+            $('#CouponStartDate').val('2023-09-30');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponDiscount').val('77');
+        })
+
+        //demoDiscount
+        $('#demoDiscountNon').click(e => {
+            $('#couponName').val('夏日清涼一夏感謝祭77好禮');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponDiscount').val('');
+        })
+
+        //demoDiscountOver
+        $('#demoDiscountOver').click(e => {
+            $('#CouponName').val('夏日清涼一夏感謝祭77好禮');
+            $('#CouponStartDate').val('2023-08-25');
+            $('#CouponEndDate').val('2023-08-30');
+            $('#CouponDiscount').val('1999');
         })
     </script>
 }

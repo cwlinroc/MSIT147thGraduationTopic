@@ -38,14 +38,14 @@
                                 <input type="text" id="txtDiscountNameSearch" name="txtDiscountNameSearch" class="form-control" placeholder="請輸入名稱關鍵字" />
                             </div>
                             @*<div class="col-md-3 mb-3">
-                                <label for="selectDiscountStatus">優惠券狀態</label>
-                                <select id="selectDiscountStatus" name="selectDiscountStatus" class="form-select">
-                                    <option></option>
-                                    <option value="" selected>全部</option>
-                                    <option value="upcoming">未開始</option>
-                                    <option value="active">進行中</option>
-                                    <option value="expired">已結束</option>
-                                </select>
+                            <label for="selectDiscountStatus">優惠券狀態</label>
+                            <select id="selectDiscountStatus" name="selectDiscountStatus" class="form-select">
+                            <option></option>
+                            <option value="" selected>全部</option>
+                            <option value="upcoming">未開始</option>
+                            <option value="active">進行中</option>
+                            <option value="expired">已結束</option>
+                            </select>
                             </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
@@ -78,9 +78,9 @@
                                     foreach (CouponDto c in Model.listDiscountAll)
                                     {
                                         <tr>
-                                            <td id="DiscountId" scope="col">@c.CouponId</td>
+                                            <td id="DiscountId" class="DiscountId" scope="col">@c.CouponId</td>
                                             <td id="DiscountName" scope="col">@c.CouponName</td>
-                                            <td id="DiscountTagId" scope="col">@c.CouponTagId</td>
+                                            <td id="DiscountTagId" class="DiscountTagId" scope="col">@c.CouponTagId</td>
                                             <td id="DiscountStartDate" scope="col">@c.CouponStartDate</td>
                                             <td id="DiscountEndDate" scope="col">@c.CouponEndDate</td>
                                             <td id="DiscountValue" scope="col">@c.CouponDiscount.ToString("#'%'")</td>
@@ -106,21 +106,21 @@
                         <div class="row justify-content-center">
                             <div class="col-md-3 mb-3">
                                 <label for="txtDiscountIdSearch">打折券ID搜尋</label>
-                                <input type="text" id="txtDiscountIdSearch" name="txtDiscountIdSearch" class="form-control" placeholder="請輸入ID" />
+                                <input type="text" id="txtRebateIdSearch" name="txtRebateIdSearch" class="form-control" placeholder="請輸入ID" />
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label for="txtDiscountNameSearch">打折優惠券名稱關鍵字</label>
-                                <input type="text" id="txtDiscountNameSearch" name="txtDiscountNameSearch" class="form-control" placeholder="請輸入名稱關鍵字" />
+                                <input type="text" id="txtRebateNameSearch" name="txtRebateNameSearch" class="form-control" placeholder="請輸入名稱關鍵字" />
                             </div>
                             @*<div class="col-md-3 mb-3">
-                                <label for="selectRebateStatus">優惠券狀態</label>
-                                <select id="selectRebateStatus" name="selectRebateStatus" class="form-select">
-                                    <option></option>
-                                    <option value="" selected>全部</option>
-                                    <option value="upcoming">未開始</option>
-                                    <option value="active">進行中</option>
-                                    <option value="expired">已結束</option>
-                                </select>
+                            <label for="selectRebateStatus">優惠券狀態</label>
+                            <select id="selectRebateStatus" name="selectRebateStatus" class="form-select">
+                            <option></option>
+                            <option value="" selected>全部</option>
+                            <option value="upcoming">未開始</option>
+                            <option value="active">進行中</option>
+                            <option value="expired">已結束</option>
+                            </select>
                             </div>*@
                             <div class="col-md-1 mb-3">
                                 <label>&nbsp;</label>
@@ -184,15 +184,21 @@
             <div class="container px-5 my-5 text-center">
                 <button class="btn btn-primary" id="btnCreate">新增</button>
             </div>
+            <div class="my-3">
+                <button class="btn btn-outline-secondary" id="demoID">demo</button>
+            </div>
+            <div class="my-3">
+                <button class="btn btn-outline-secondary" id="demoName">demo</button>
+            </div>
         </section>
         @*<section class="py-5 bg-light">
-            <div class="container px-5 my-5">
-                <div class="row">
-                    <div class="col">
-                        <span class="text-muted">目前資料筆數:0/0</span>
-                    </div>
-                </div>
-            </div>
+        <div class="container px-5 my-5">
+        <div class="row">
+        <div class="col">
+        <span class="text-muted">目前資料筆數:0/0</span>
+        </div>
+        </div>
+        </div>
         </section>*@
     </main>
     <!-- Footer-->
@@ -256,35 +262,30 @@
 
 @section Scripts{
     <script>
-        //#region ShowDiscountDataSweetAlert
-        function ShowDiscountDataSweetAlert() {
-            const couponDiscountId = $('#txtDiscountIdSearch').val();
-            const couponName = $('#DiscountName').text();
-            const couponTagId = $('#DiscountTagId').text();
-            const couponStartDate = $('#DiscountStartDate').text();
-            const couponEndDate = $('#DiscountEndDate').text();
-            const couponDiscount = $('#DiscountValue').text();
+        //#region TagId
+        const tagIdMap = {
+            0: "全部",
+            1: "貓",
+            2: "狗",
+            3: "鼠",
+            4: "兔"
+        };
 
-            Swal.fire({
-                title: '打折優惠券資訊',
-                html:
-                    `<b>ID序號：</b> ${couponDiscountId}<br>` +
-                    `<b>優惠券名稱：</b> ${couponName}<br>` +
-                    `<b>適用對象：</b> ${couponTagId}<br>` +
-                    `<b>開始日期：</b> ${couponStartDate}<br>` +
-                    `<b>結束日期：</b> ${couponEndDate}<br>` +
-                    `<b>折扣：</b> ${couponDiscount}`,
-                icon: 'info',
-                showDenyButton: true,
-                denyButtonText: `修改`,
-            }).then((result) => {
-                if (result.isDenied) {
-                    const editUrl = `@Url.Content("~/CouponsBackstageSettings/DiscountEdit/")${couponDiscountId}`;
-                    console.log(couponDiscountId);
-                    location.href = editUrl;
-                }
-            })
-        }
+        $("#tabDiscount tbody tr").each(function () {
+            const tagIdCell = $(this).find("#DiscountTagId");
+            const numericTagId = tagIdCell.text().trim();
+            const stringTagId = tagIdMap[numericTagId];
+
+            tagIdCell.text(stringTagId);
+        });
+
+        $("#tabRebate tbody tr").each(function () {
+            const tagIdCell = $(this).find("#RebateTagId");
+            const numericTagId = tagIdCell.text().trim();
+            const stringTagId = tagIdMap[numericTagId];
+
+            tagIdCell.text(stringTagId);
+        });
         //#endregion
 
         //#region ShowRabateDataSweetAlert
@@ -364,13 +365,10 @@
 
         //#region 打折搜尋按鈕
         $('#btnDiscountSearch').click(function () {
+
+            console.log('test')
             const couponDiscountId = $('#txtDiscountIdSearch').val();
-            const discountIdValue = $('#DiscountId').text();
             const searchKeyword = $('#txtDiscountNameSearch').val().trim().toLowerCase();
-            const couponNameElements = $('#tabDiscount #DiscountName');
-            const matchingCoupons = couponNameElements.filter((index, element) =>
-                $(element).text().match(searchKeyword)
-            );
 
             if (!couponDiscountId && !searchKeyword) {
                 Swal.fire({
@@ -379,54 +377,82 @@
                 });
             }
 
-            if (couponDiscountId) {
-                if (couponDiscountId != discountIdValue) {
-                    NoIdDataSweetAlert();
-                }
-                if (couponDiscountId === discountIdValue) {
-                    ShowDiscountDataSweetAlert();
-                }
-                return;
+            //console.log('1')
+            //const discountIDs = [...document.querySelectorAll('.DiscountID')]
+
+            //let comparedId
+
+            //for (let i = 0; i < discountIDs.length; i++) {
+            //    if (discountIDs[i].textContent == couponDiscountId) {
+            //        comparedId = discountIDs[i]
+            //        console.log(discountIDs[i].textContent)
+
+            //        console.log(couponDiscountId)
+            //        break
+            //    }
+            //}
+            //console.log('2')
+            //if (!comparedId) {
+            //    NoIdDataSweetAlert();
+            //}
+
+
+            //let couponInfo = '';
+            //comparedId.each((index, element) => {
+            //    const couponId = $(element).text();
+            //    const couponName = $(element).closest('tr').find('#DiscountName').text();
+            //    const couponTagId = $(element).closest('tr').find('#DiscountTagId').text();
+            //    const couponStartDate = $(element).closest('tr').find('#DiscountStartDate').text();
+            //    const couponEndDate = $(element).closest('tr').find('#DiscountEndDate').text();
+            //    const couponDiscount = $(element).closest('tr').find('#DiscountValue').text();
+
+            //    couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
+            //        `<b>優惠券名稱：</b> ${couponName}<br>` +
+            //        `<b>適用對象：</b> ${couponTagId}<br>` +
+            //        `<b>開始日期：</b> ${couponStartDate}<br>` +
+            //        `<b>結束日期：</b> ${couponEndDate}<br>` +
+            //        `<b>折扣：</b> ${couponDiscount}<br><br>`;
+            //});
+
+            //Swal.fire({
+            //    title: '匹配的打折優惠券資訊',
+            //    html: couponInfo,
+            //    icon: 'info',
+            //});
+
+
+
+            const couponNameElements = $('#tabDiscount #DiscountName');
+            const matchingCoupons = couponNameElements.filter((index, element) =>
+                $(element).text().match(searchKeyword)
+            );
+
+            if (matchingCoupons.length === 0) {
+                NoNameDataSweetAlert();
             }
+            else {
+                let couponInfo = '';
+                matchingCoupons.each((index, element) => {
+                    const couponId = $(element).closest('tr').find('#DiscountId').text();
+                    const couponName = $(element).text();
+                    const couponTagId = $(element).closest('tr').find('#DiscountTagId').text();
+                    const couponStartDate = $(element).closest('tr').find('#DiscountStartDate').text();
+                    const couponEndDate = $(element).closest('tr').find('#DiscountEndDate').text();
+                    const couponDiscount = $(element).closest('tr').find('#DiscountValue').text();
 
-            if (searchKeyword) {
-                if (matchingCoupons.length === 0) {
-                    NoNameDataSweetAlert();
-                }
-                else if (matchingCoupons.length === 0) {
-                    ConditionSweetAlert();
-                }
-                else {
-                    let couponInfo = '';
-                    matchingCoupons.each((index, element) => {
-                        const couponId = $(element).closest('tr').find('#DiscountId').text();
-                        const couponName = $(element).text();
-                        const couponTagId = $(element).closest('tr').find('#DiscountTagId').text();
-                        const couponStartDate = $(element).closest('tr').find('#DiscountStartDate').text();
-                        const couponEndDate = $(element).closest('tr').find('#DiscountEndDate').text();
-                        const couponDiscount = $(element).closest('tr').find('#DiscountValue').text();
+                    couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
+                        `<b>優惠券名稱：</b> ${couponName}<br>` +
+                        `<b>適用對象：</b> ${couponTagId}<br>` +
+                        `<b>開始日期：</b> ${couponStartDate}<br>` +
+                        `<b>結束日期：</b> ${couponEndDate}<br>` +
+                        `<b>折扣：</b> ${couponDiscount}<br><br>`;
+                });
 
-                        console.log(couponId)
-                        console.log(couponName)
-                        console.log(couponTagId)
-                        console.log(couponStartDate)
-                        console.log(couponEndDate)
-                        console.log(couponDiscount)
-
-                        couponInfo += `<b>ID序號：</b> ${couponId}<br>` +
-                            `<b>優惠券名稱：</b> ${couponName}<br>` +
-                            `<b>適用對象：</b> ${couponTagId}<br>` +
-                            `<b>開始日期：</b> ${couponStartDate}<br>` +
-                            `<b>結束日期：</b> ${couponEndDate}<br>` +
-                            `<b>折扣：</b> ${couponDiscount}<br><br>`;
-                    });
-
-                    Swal.fire({
-                        title: '匹配的打折優惠券資訊',
-                        html: couponInfo,
-                        icon: 'info',
-                    });
-                }
+                Swal.fire({
+                    title: '匹配的打折優惠券資訊',
+                    html: couponInfo,
+                    icon: 'info',
+                });
             }
         });
         //#endregion
@@ -452,7 +478,7 @@
                 if (couponRebateId != rebateIdValue) {
                     NoIdDataSweetAlert();
                 }
-                else if (couponRebateId === rebateIdValue) {
+                else {
                     ShowRabateDataSweetAlert();
                 }
             }
@@ -566,6 +592,6 @@
                 }
             });
         })
-        //#endregion
+                                        //#endregion
     </script>
 }
