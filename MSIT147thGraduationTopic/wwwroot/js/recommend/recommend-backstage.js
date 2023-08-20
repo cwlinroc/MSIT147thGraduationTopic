@@ -24,6 +24,23 @@ $('#ratePurchaseFunc').change(async e => {
     const func = e.currentTarget.value
     await updateRateData(func, 'ratePurchaseFunc')
 })
+$('#recentEvaluationTimes').change(async e => {
+    const func = e.currentTarget.value
+    await updateRateData(func, 'recentevaluationtimes')
+})
+$('#recentEvaluationDays').change(async e => {
+    const func = e.currentTarget.value
+    await updateRateData(func, 'recentevaluationdays')
+})
+$('#recentPurchaseTimes').change(async e => {
+    const func = e.currentTarget.value
+    await updateRateData(func, 'recentpurchasedtimes')
+})
+$('#recentPurchaseDays').change(async e => {
+    const func = e.currentTarget.value
+    await updateRateData(func, 'recentpurchaseddays')
+})
+
 
 async function updateRateData(num, data) {
     const response = await fetch(`${ROOT}/api/apirecommend/ratedata`, {
