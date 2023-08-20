@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MSIT147thGraduationTopic.EFModels;
+using MSIT147thGraduationTopic.Models.Paypal;
 using MSIT147thGraduationTopic.Models.Services;
 using NuGet.Packaging.Signing;
 using System.ComponentModel.DataAnnotations;
@@ -15,11 +16,13 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
 
         private readonly GraduationTopicContext _context;
         private readonly BuyServices _service;
+        private readonly PaypalClient _paypalClient;
 
-        public BuyController(GraduationTopicContext context)
+        public BuyController(GraduationTopicContext context, PaypalClient paypalClient)
         {
             _context = context;
             _service = new BuyServices(context);
+            _paypalClient = paypalClient;
         }
 
         [HttpGet]
@@ -47,6 +50,21 @@ namespace MSIT147thGraduationTopic.Controllers.Buy
             var coupons = await _service.GetAllCouponsAvalible(member.MemberId);
             ViewBag.Coupons = coupons;
             return View(cartItems);
+        }
+
+        [Authorize(Roles = "會員")]
+        public IActionResult PaypalPayment(int orderId)
+        {
+            ViewBag.ClientId = _paypalClient.ClientId;
+            ViewBag.OrderId = orderId;
+
+            return View();
+        }
+
+        [Authorize(Roles = "會員")]
+        public IActionResult PaypalSuccess()
+        {
+            return View();
         }
 
         [Authorize(Roles = "會員")]

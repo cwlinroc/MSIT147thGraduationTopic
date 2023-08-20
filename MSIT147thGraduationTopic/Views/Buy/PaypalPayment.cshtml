@@ -1,9 +1,10 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Paypal付款";
+    Layout = "_MallPage";
 }
-<h2>paypal</h2>
-<h4>@ViewBag.ClientId</h4>
+
+
+<h2>paypal付款</h2>
 <div class="text-center">
     <div id="paypal-button-container"></div>
 </div>
@@ -20,9 +21,8 @@
                 tagline: 'false'
             },
             createOrder: (data, actions) => {
-                return fetch("@Url.Action("Order")", {
-                    method: "post",
-                }).then((response) => {
+                return fetch("@Url.Content("~/Paypal/CreateOrder?orderId")=@(ViewBag.OrderId)"
+                ).then((response) => {
                     if (!response.ok) {
                         return response.json().then(error => { throw error; });
                     }
@@ -32,16 +32,18 @@
                     .catch(error => alert(error.message));
             },
             onApprove: (data, actions) => {
-                return fetch(`@Url.Action("Capture")?orderId=${data.orderID}`, {
+                return fetch(`@Url.Action("Capture","Paypal")?orderId=${data.orderID}`, {
                     method: "post",
                 }).then((response) => {
                     if (!response.ok) {
                         return response.json().then(error => { throw error; });
                     }
 
-                    window.location.href = "@Url.Action("Success")";
+                    window.location.href = "@Url.Action("PaypalSuccess")";
                 }).catch(error => alert(error.message));
             }
         }).render('#paypal-button-container');
     </script>
 }
+
+
