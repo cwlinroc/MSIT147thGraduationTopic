@@ -63,7 +63,7 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         //    }));
         //}
 
-        //private List<Member> PerformSqlQuery(int pageSize, int pageIndex)
+        //private List<EFModels.Member> PerformSqlQuery(int pageSize, int pageIndex)
         //{
         //    var sql = @"
         //                DECLARE @pageSize INT, @pageIndex INT;

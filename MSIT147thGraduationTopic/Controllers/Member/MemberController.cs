@@ -10,6 +10,7 @@ using static MSIT147thGraduationTopic.Models.Infra.Utility.MailSetting;
 using MSIT147thGraduationTopic.Models.Infra.Utility;
 using MSIT147thGraduationTopic.Models.Infra.ExtendMethods;
 using MSIT147thGraduationTopic.Models.Interfaces;
+using Google.Apis.Auth;
 
 namespace MSIT147thGraduationTopic.Controllers.Member
 {
@@ -41,6 +42,7 @@ namespace MSIT147thGraduationTopic.Controllers.Member
         {
             return View();
         }
+
 
         public IActionResult ForgetPwd()
         {
@@ -123,10 +125,10 @@ namespace MSIT147thGraduationTopic.Controllers.Member
                 member.Salt = salt;
                 member.Password = password.GetSaltedSha256(salt);
                 _context.SaveChanges();
-
-                ViewBag.SuccessMessage = "儲存成功！將在三秒後跳轉到首頁";
+                
                 Thread.Sleep(3000);
                 return RedirectToAction("Index", "Home");
+                //return View();
             }
 
             ViewBag.ErrorMessage = "存取失敗，請重新操作。";

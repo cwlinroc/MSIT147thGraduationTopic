@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "修改密碼";
 }
 
@@ -16,14 +15,14 @@
                 <label for="password" class="form-label fw-bold">
                     密碼:需要6~32位英文字母及數字組合，包含至少一個大寫字母及小寫字母
                 </label>
-                <input class="form-control" id="password" name="Password" type="password"/>
+                <input class="form-control" id="password" name="Password" type="password" />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
             </div>
             <!-- Password confirm input-->
             <div class="form mb-3">
                 <label for="confirmPassword" class="form-label fw-bold">確認密碼</label>
-                <input class="form-control" id="confirmPassword" type="password"/>
+                <input class="form-control" id="confirmPassword" type="password" />
                 <div class="valid-feedback"></div>
                 <div class="invalid-feedback"></div>
             </div>
@@ -34,11 +33,11 @@
                 </button>
                 <button type="button" id="demoMember" class="btn btn-outline-secondary btn-sm">demoMember</button>
             </div>
-        </form>        
+        </form>
         <div class="col-lg-6 offset-3 d-flex justify-content-center">
             <p class="fs-4">@ViewBag.ErrorMessage</p>
             <p class="fs-4">@ViewBag.SuccessMessage</p>
-        </div>        
+        </div>
     </div>
 </div>
 
@@ -55,6 +54,7 @@
         const myValid = new MyBootsrapValidator(document.querySelector('.needs-validation'))
 
         function ChangePwdValidator() {
+            myValid.endtValidate()
             myValid.validateFunction(() => {
                 const password = document.querySelector('#password')
                 const confirmPassword = document.querySelector('#confirmPassword')
@@ -64,7 +64,7 @@
                 const passwordPatternValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/.test(password.value)
                 const confirmPasswordValid = confirmPassword.value === password.value
                 password.setValidate(() => passwordHasValue, '請輸入密碼')
-                        .setValidate(() => passwordPatternValid, '密碼格式錯誤')
+                    .setValidate(() => passwordPatternValid, '密碼格式錯誤')
                 confirmPassword.setValidate(() => confirmPasswordValid, '與密碼不符')
 
                 return passwordHasValue && passwordPatternValid && confirmPasswordValid
@@ -73,6 +73,51 @@
         }
 
         $('#btnSubmit').click(ChangePwdValidator)
+
+        @*$('#btnSubmit').click(async event => {
+            event.preventDefault()
+            event.stopPropagation()
+            const check = await ChangePwdValidator()
+            if (!check) return
+            submitEvent()
+        })
+
+        async function submitEvent() {
+            const formData = new FormData(document.ChangePwdForm)
+            const response = await fetch(`${ROOT}/Member/EmailVT`, {
+                method: 'PUT',
+                body: formData
+            })
+            if (!response.ok) {
+                console.log('輸入失敗')
+                return
+            }
+
+            const data = await response.text()
+
+            if (data === 'fail') {
+                console.log('沒有成功寫入資料庫')
+                await Swal.fire({
+                    icon: 'error',
+                    title: '存取失敗，請重新操作!',
+                    allowOutsideClick: false
+                })
+                return
+            }
+
+            const result = await Swal.fire({
+                icon: 'success',
+                title: '儲存成功！將在3秒後跳轉到首頁',
+                allowOutsideClick: false
+            })
+            if (result.isConfirmed) {
+                for (let i = 3; i >= 0; i--) {
+                    await new Promise(resolve => setTimeout(resolve, 1000))
+                }
+                window.location.href = ROOT + '/home/index'
+            }
+        }*@
+
     </script>
 }
 
