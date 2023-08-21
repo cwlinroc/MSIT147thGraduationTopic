@@ -25,7 +25,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         public IActionResult EBIndex(string keyword, int pageSize, int pageNo,int totalCount)
         {
-            pageSize = 5;
+            pageSize = 10;
             if (keyword == null)
                 return View();
 
@@ -52,7 +52,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         public IActionResult EBIndex(string keyword)
         {
-            var pageSize = 5; 
+            var pageSize = 10; 
             var pageNo = 1;
             keyword = !string.IsNullOrEmpty(keyword) ? keyword : "NULL";
             var model = from e in _context.EvaluationInputs
