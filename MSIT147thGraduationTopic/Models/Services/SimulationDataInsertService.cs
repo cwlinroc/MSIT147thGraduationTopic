@@ -272,7 +272,8 @@ namespace MSIT147thGraduationTopic.Models.Services
                         (25 - favor / 4) / 5,  //  0  5
                         favor * 30 / 100 + 20,  // 50   20
                         favor * (favor + 10) / 100 + 20);  // 130 20
-                    string? comment = _generator.RandomChance(70) ? null : GetComment(score);
+                    //string? comment = _generator.RandomChance(70) ? null : GetComment(score);
+                    string? comment = GetComment(score);
 
                     _repo.AddEvaluation(order.orderId, spec.specId, spec.merchandiseId, score, comment);
                 }
