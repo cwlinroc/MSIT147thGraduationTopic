@@ -23,17 +23,17 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult EBIndex(string keyword, int pageSize = 10, int pageNo = 1)
+        public IActionResult EBIndex(
+            string keyword, 
+            int pageSize, 
+            int pageNo,
+            int totalCount ,
+            string searchtype)
         {
             if (keyword == null)
                 return View();
 
-            // 獲取帶出資料總記錄數
-            int totalCount = _context.EvaluationInputs
-                .Where(x => x.OrderId.ToString().Contains(keyword) || x.MerchandiseName.Contains(keyword) || x.Comment.Contains(keyword))
-                .Count();
-
-            var query = PerformSqlQuery(pageSize, pageNo, keyword);
+            var query = PerformSqlQuery(pageSize, pageNo, keyword, searchtype);
 
             // 獲取帶出資料總記錄數
             ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
@@ -42,6 +42,7 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.keyword = keyword;
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
+            ViewBag.Searchtype = searchtype;
 
             return View(query.Select(e => new EvaluationVM
             {
@@ -54,25 +55,39 @@ namespace MSIT147thGraduationTopic.Controllers
         }
         
         [HttpPost]
-        public IActionResult EBIndex(string keyword)
+        public IActionResult EBIndex(string keyword, string searchtype)
         {
             var pageSize = 10; 
             var pageNo = 1;
             keyword = !string.IsNullOrEmpty(keyword) ? keyword : "NULL";
-            var model = from e in _context.EvaluationInputs
-                        where e.OrderId.ToString().Contains(keyword) ||
-                              e.MerchandiseName.Contains(keyword) ||
-                              e.Comment.Contains(keyword)
+            //var model = from e in _context.EvaluationInputs
+            //            where e.OrderId.ToString().Contains(keyword) ||
+            //                  e.MerchandiseName.Contains(keyword) ||
+            //                  e.Comment.Contains(keyword)
 
-                        select new EvaluationVM
-                        {
-                            EvaluationId = e.EvaluationId,
-                            OrderId = e.OrderId,
-                            MerchandiseName = e.MerchandiseName,
-                            Score = e.Score,
-                            Comment = e.Comment,
-                        };
-            model = model.OrderByDescending(e => e.EvaluationId);
+            //            select new EvaluationVM
+            //            {
+            //                EvaluationId = e.EvaluationId,
+            //                OrderId = e.OrderId,
+            //                MerchandiseName = e.MerchandiseName,
+            //                Score = e.Score,
+            //                Comment = e.Comment,
+            //            };
+            //var model = from e in _context.EvaluationInputs
+            //            select new EvaluationVM
+            //            {
+            //                EvaluationId = e.EvaluationId,
+            //                OrderId = e.OrderId,
+            //                MerchandiseName = e.MerchandiseName,
+            //                Score = e.Score,
+            //                Comment = e.Comment,
+            //            };
+            //string formatedSearchtype = searchtype.Trim().ToLower();
+
+            
+
+
+            //model = model.OrderByDescending(e => e.EvaluationId);
 
             ////var model = _context.Evaluations
             ////            .Where(x => string.IsNullOrEmpty(keyword) || x.Merchandise.MerchandiseName.Contains(keyword))
@@ -84,15 +99,21 @@ namespace MSIT147thGraduationTopic.Controllers
             ////                Comment = x.Comment,
             ////            }).ToList();
 
-            var query = PerformSqlQuery(pageSize, pageNo, keyword);
+            var query = PerformSqlQuery(pageSize, pageNo, keyword, searchtype);
 
             // 獲取帶出資料總記錄數
             //var totalCount = model.Count();
-            var totalCount = _context.EvaluationInputs
-                .Where(x=> x.OrderId.ToString().Contains(keyword)|| x.MerchandiseName.Contains(keyword)||x.Comment.Contains(keyword) )
-                .Count();
+            var model = _context.EvaluationInputs.Select(o=>o);
+            string formatedSearchtype = searchtype.Trim().ToLower();
+            if (formatedSearchtype == "orderid") model = model.Where(e => e.OrderId.ToString().Contains(keyword));
+            if (formatedSearchtype == "merchandisename") model = model.Where(e => e.MerchandiseName.Contains(keyword));
+            if (formatedSearchtype == "score") model = model.Where(e => e.Score.ToString().Contains(keyword));
+            if (formatedSearchtype == "comment") model = model.Where(e => e.Comment.Contains(keyword));
+
+            var totalCount = model.Count();
 
             // 傳遞查詢結果和總記錄數到View中
+            ViewBag.Searchtype = searchtype;
             ViewBag.keyword = keyword;
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
@@ -125,8 +146,26 @@ namespace MSIT147thGraduationTopic.Controllers
             }
             return RedirectToAction("EBIndex");
         }
-        private List<EvaluationInput> PerformSqlQuery(int pageSize, int pageNo, string keyword)
+        private List<EvaluationInput> PerformSqlQuery(int pageSize, int pageNo, string keyword, string searchtype)
         {
+            string conditionSql = searchtype.Trim().ToLower() switch
+            {
+                "orderid" => "e.OrderId LIKE  @keyword ",
+                "merchandisename" => "e.MerchandiseName LIKE '%' + @keyword + '%' ",
+                "score"=> "e.Score LIKE @keyword ",
+                "comment"=> "e.Comment LIKE'%' + @keyword + '%'",
+
+                _ => "1=1"
+            };
+
+            //@keyword IS NULL OR
+            //                    e.OrderId LIKE '%' + @keyword + '%' OR
+            //                    e.MerchandiseName LIKE '%' + @keyword + '%' OR
+            //                    e.Comment LIKE'%' + @keyword + '%'
+            //if (formatedSearchtype == "orderid") model = model.Where(e => e.OrderId.ToString().Contains(keyword));
+            //if (formatedSearchtype == "merchandisename") model = model.Where(e => e.MerchandiseName.Contains(keyword));
+            //if (formatedSearchtype == "score") model = model.Where(e => e.Score.ToString().Contains(keyword));
+            //if (formatedSearchtype == "comment") model = model.Where(e => e.Comment.Contains(keyword));
             var sql = $@"
                         DECLARE @pageSize INT, @pageNo INT, @keyword NVARCHAR(255);
                         SET @pageSize = @p0;
@@ -136,12 +175,7 @@ namespace MSIT147thGraduationTopic.Controllers
                         AS (                            
                                 SELECT *
                                 FROM EvaluationInput e
-                                WHERE
-                                @keyword IS NULL OR
-                                e.OrderId LIKE '%' + @keyword + '%' OR
-                                e.MerchandiseName LIKE '%' + @keyword + '%' OR
-                                e.Comment LIKE'%' + @keyword + '%'       
-                                                             
+                                WHERE     {conditionSql}              
                         )
                         SELECT TotalCount = COUNT(1) OVER (), T.*
                         FROM T
