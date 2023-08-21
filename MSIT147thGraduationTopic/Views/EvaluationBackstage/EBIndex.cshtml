@@ -13,16 +13,16 @@
             <div class="d-flex justify-content-end">
                 <form method="post" id="SearchForm">
                     <div class="input-group">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">訂單編號</button>
+                        <button class="btn btn-outline-secondary dropdown-toggle mt-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="height: 38px;">訂單編號</button>
 
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu " >
                             <li><a class="dropdown-item choose-type" data-search-type="OrderId">訂單編號</a></li>
                             <li><a class="dropdown-item choose-type" data-search-type="merchandiseName">商品名稱</a></li>
                             <li><a class="dropdown-item choose-type" data-search-type="Score">星星評分</a></li>
                             <li><a class="dropdown-item choose-type" data-search-type="Comment">評論</a></li>
                         </ul>
                         <input name="searchtype" id="searchtype" type="hidden" value="@(ViewBag.Searchtype?? "OrderId")">
-                        <input name="Keyword" id="txtkeyword" type="text" class="form-control-sm d-flex me-1 " placeholder="請輸入關鍵字">
+                        <input name="Keyword" id="txtkeyword" type="text" class="form-control-sm d-flex me-2 mt-1" style="height: 38px;" placeholder="請輸入關鍵字">
                         <img src="~/images/search.jpg" class="rounded-3 d-flex" id="btnKeywordImage" style="cursor: pointer;" />
 
                     </div>

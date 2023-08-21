@@ -39,7 +39,7 @@ function loadMoreComments(page) {
                             </div>
                             <div class="form-floating mx-2 mt-2 mb-4">
                                 <textarea id="commentText_@(i)" name="comments[@(i)].Comment" class="form-control" readonly="readonly"></textarea>                    
-                                <label for="floatingTextarea2" style="color:black; font-size: 20px;">${data[i].comment}</label>
+                                <label for="floatingTextarea2" style="color:black; font-size: 20px;">${data[i].comment == null ? "" : data[i].comment}</label>
                             </div>
                         </div>`)
                     newCommentsContainer.append(newComment);
