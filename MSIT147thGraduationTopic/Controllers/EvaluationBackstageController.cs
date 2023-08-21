@@ -56,7 +56,7 @@ namespace MSIT147thGraduationTopic.Controllers
         [HttpPost]
         public IActionResult EBIndex(string keyword)
         {
-            var pageSize = 5; 
+            var pageSize = 10; 
             var pageNo = 1;
             keyword = !string.IsNullOrEmpty(keyword) ? keyword : "NULL";
             var model = from e in _context.EvaluationInputs
