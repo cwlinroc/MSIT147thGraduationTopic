@@ -23,11 +23,15 @@ namespace MSIT147thGraduationTopic.Controllers
             _context = context;
         }
 
-        public IActionResult EBIndex(string keyword, int pageSize, int pageNo,int totalCount)
+        public IActionResult EBIndex(string keyword, int pageSize = 10, int pageNo = 1)
         {
-            pageSize = 5;
             if (keyword == null)
                 return View();
+
+            // 獲取帶出資料總記錄數
+            int totalCount = _context.EvaluationInputs
+                .Where(x => x.OrderId.ToString().Contains(keyword) || x.MerchandiseName.Contains(keyword) || x.Comment.Contains(keyword))
+                .Count();
 
             var query = PerformSqlQuery(pageSize, pageNo, keyword);
 
