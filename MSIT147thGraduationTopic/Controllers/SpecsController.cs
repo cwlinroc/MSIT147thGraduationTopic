@@ -127,9 +127,7 @@ namespace MSIT147thGraduationTopic.Controllers
                     if (specvm.selectTag.Contains("Rabbit")) addSpecTag(SpecId, 4);
                 }
 
-                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId,
-                    displaymode = int.TryParse(HttpContext.Request.Cookies["Spec_displaymode"], out int temp1) ? temp1 : 1,
-                    displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0 });
+                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
             return View(specvm);

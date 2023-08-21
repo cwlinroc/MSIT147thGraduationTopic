@@ -110,11 +110,7 @@ namespace MSIT147thGraduationTopic.Controllers.Merchandise
 
                 return RedirectToAction("Index", new
                 {
-                    txtKeyword = HttpContext.Request.Cookies["txtKeyword"] ?? "",
                     searchCondition = int.TryParse(HttpContext.Request.Cookies["searchCondition"], out int temp1) ? temp1 : 1,
-                    PageIndex = int.TryParse(HttpContext.Request.Cookies["PageIndex"], out int temp2) ? temp2 : 1,
-                    displayorder = int.TryParse(HttpContext.Request.Cookies["displayorder"], out int temp3) ? temp3 : 0,
-                    displaymode = int.TryParse(HttpContext.Request.Cookies["displaymode"], out int temp4) ? temp4 : 1,
                     pageSize = int.TryParse(HttpContext.Request.Cookies["pageSize"], out int temp5) ? temp5 : 10
                 });
             }
