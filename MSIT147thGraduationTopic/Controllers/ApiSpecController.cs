@@ -87,9 +87,3 @@ namespace MSIT147thGraduationTopic.Controllers
         }
     }
 }
-// todo 待辦事項：
-/*
-風格統一
-
-額外功能：商品檢視增加規格數
-*/

@@ -143,8 +143,8 @@
                                 @Html.DisplayFor(modelItem => item.OnShelf)
                             </td>
                             <td>
-                                @Html.ActionLink("修改", "Edit", "Specs", new { id=item.SpecId }, new { @class = "btn btn-warning" }) |
-                                <button class="btn btn-success fortag" data-specid="@item.SpecId">管理標籤</button> |
+                                @Html.ActionLink("修改", "Edit", "Specs", new { id=item.SpecId }, new { @class = "btn btn-warning" }) 
+                                <button class="btn btn-success fortag" data-specid="@item.SpecId">管理標籤</button> 
                                 <button class="btn btn-danger fordelete" data-specid="@item.SpecId">刪除</button>
                             </td>
                         </tr>

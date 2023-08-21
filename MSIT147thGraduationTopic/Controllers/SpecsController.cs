@@ -83,7 +83,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs/Create
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Create(int merchandiseId)//todo 新增一個DEMO OR 第二新的商品須有複數規格
+        public IActionResult Create(int merchandiseId)
         {
             ViewBag.displaymode = int.TryParse(HttpContext.Request.Cookies["Spec_displaymode"], out int temp1) ? temp1 : 1;
             ViewBag.displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp2) ? temp2 : 0;

@@ -161,7 +161,7 @@
         $(() => {
             $(`.conditionname > option[value=${searchCondition}]`).attr("Selected", true);
             $(`#displayorder > option[value=${displayorder}]`).attr("Selected", true);
-            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-size: 1.1em; font-weight: bold; margin: -5px")
         })
         // #endregion
 
@@ -190,7 +190,7 @@
             pageSize = $(e.currentTarget).val();
             pageindex = 1;
             $(`.pageSize`).attr("style", "margin: -5px")
-            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-weight: bold; margin: -5px")
+            $(`.pageSize[value="${pageSize}"]`).attr("style", "color: #4B0091; font-size: 1.1em; font-weight: bold; margin: -5px")
             SearchProducts();
         });
         //價格區間

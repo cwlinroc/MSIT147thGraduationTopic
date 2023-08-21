@@ -64,7 +64,7 @@
                                 @Html.DisplayFor(modelItem => item.CategoryName)
                             </td>
                             <td>
-                                @Html.ActionLink("修改", "Edit", "Categories", new { id=item.CategoryId }, new { @class = "btn btn-warning" }) |                                
+                                @Html.ActionLink("修改", "Edit", "Categories", new { id=item.CategoryId }, new { @class = "btn btn-warning" })                             
                                 <button class="btn btn-danger fordelete" data-categoryid="@item.CategoryId">刪除</button>
                             </td>
                         </tr>

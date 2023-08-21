@@ -82,7 +82,7 @@
                                 @Html.DisplayFor(modelItem => item.BrandName)
                             </td>
                             <td>
-                                @Html.ActionLink("修改", "Edit", "Brands", new { id=item.BrandId }, new { @class = "btn btn-warning" }) |
+                                @Html.ActionLink("修改", "Edit", "Brands", new { id=item.BrandId }, new { @class = "btn btn-warning" }) 
                                 <button class="btn btn-danger fordelete" data-brandid="@item.BrandId">刪除</button>
                             </td>
                         </tr>
