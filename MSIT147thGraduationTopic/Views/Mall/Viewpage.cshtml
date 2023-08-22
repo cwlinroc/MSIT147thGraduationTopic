@@ -81,16 +81,16 @@
                         <div class="item">
                             <!-- 主圖 -->
                             <figure class="ViewWindow-image-container">
-                                <img id="mainPicture" src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage pb-3">
+                                <img id="mainPicture" class="pb-3">
                             </figure>
                             <div class="image-container">
-                                <!-- ****************************************待設定規格(固定邊長、裁切方式**************************************** -->
+                                <!-- 縮圖 -->
                                 <img src="@Url.Content("~/uploads/merchandisePicture/")default.png" class="mainImage specImage mb-2" style="border:solid #930000 3px;" )>
                                 @{
                                     foreach (var item in Model)
                                     {
                                         string img = (item.ImageUrl == null) ? "default.png" : item.ImageUrl;
-                                        <img src="@Url.Content("~/uploads/specPicture/")@img" class="specImage mb-2" val-specId="@item.SpecId" >
+                                        <img src="@Url.Content("~/uploads/specPicture/")@img" class="specImage mb-2" val-specId="@item.SpecId">
                                         
                                     }
                                 }
@@ -119,7 +119,8 @@
                             @{
                                 foreach (var item in Model)
                                 {
-                                    <button type="button" class="btn btn-outline-secondary mx-1 my-1 showSpec" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@item.ImageUrl" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Score">@item.SpecName</button>
+                                    string img = (item.ImageUrl == null) ? "default.png" : item.ImageUrl;
+                                    <button type="button" class="btn btn-outline-secondary mx-1 my-1 showSpec" data-price="@item.Price" data-amount="@item.Amount" data-imageurl="@img" data-specId="@item.SpecId" data-discountPercentage="@item.DiscountPercentage" data-score="@item.Score">@item.SpecName</button>
                                 }
                             }
                         </div>
@@ -292,23 +293,16 @@
             //紀錄規格ID
             currentSpecid = $(e.currentTarget).attr("data-specId");
             //變更主圖片
-            $(".MerchandiseImage").attr("style", "");
             $(".specImage").attr("style", "");
             $(`.specImage[val-specId=${currentSpecid}]`).attr("style", "border:solid #930000 3px");
             const thisImg = $(e.currentTarget).attr("data-imageurl");
+            console.log(thisImg);
             $("#mainPicture").attr("src", `@Url.Content("~/uploads/specPicture/")${thisImg}`)
         });
 
         // #region 縮圖功能
-        //點選規格縮圖變更主圖片
-        $(".specImage").on("click", (e) => {
-            //變更縮圖外框
-            const thisImgPath = $(e.currentTarget).attr("src");
-            $(".MerchandiseImage").attr("style", "");
-            $(".specImage").attr("style", "");
-            $(e.currentTarget).attr("style", "border:solid #930000 3px");
-            $("#mainPicture").attr("src", thisImgPath);
-            //變更按鈕
+        //點選規格縮圖視同點選規格按鈕
+        $(".specImage").on("click", (e) => {            
             const imageSpecId = $(e.currentTarget).attr("val-specId");
             $(`.showSpec[data-specId=${imageSpecId}]`).click();
         });
@@ -431,15 +425,7 @@
             height: 100%;
             max-height: 100px;
             object-fit: cover;
-        }
-
-        .MerchandiseImage {
-            width: 100%;
-            max-width: 100px;
-            height: 100%;
-            max-height: 100px;
-            object-fit: cover;
-        }
+        }        
 
         a {
             text-decoration: none;
