@@ -83,7 +83,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
         // GET: Specs/Create
         [Authorize(Roles = "管理員,經理,員工")]
-        public IActionResult Create(int merchandiseId)
+        public IActionResult Create(int merchandiseId)//todo 新增一個DEMO OR 第二新的商品須有複數規格
         {
             ViewBag.displaymode = int.TryParse(HttpContext.Request.Cookies["Spec_displaymode"], out int temp1) ? temp1 : 1;
             ViewBag.displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp2) ? temp2 : 0;
@@ -127,9 +127,7 @@ namespace MSIT147thGraduationTopic.Controllers
                     if (specvm.selectTag.Contains("Rabbit")) addSpecTag(SpecId, 4);
                 }
 
-                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId,
-                    displaymode = int.TryParse(HttpContext.Request.Cookies["Spec_displaymode"], out int temp1) ? temp1 : 1,
-                    displayorder = int.TryParse(HttpContext.Request.Cookies["Spec_displayorder"], out int temp) ? temp : 0 });
+                return RedirectToAction("Index", new { merchandiseid = specvm.MerchandiseId });
             }
             ViewData["MerchandiseId"] = new SelectList(_context.Merchandises, "MerchandiseId", "MerchandiseName", specvm.MerchandiseId);
             return View(specvm);

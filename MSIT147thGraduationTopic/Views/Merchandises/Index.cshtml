@@ -145,7 +145,7 @@
                                 @Html.ActionLink("修改資料", "Edit", "Merchandises", new { id=item.MerchandiseId }, new { @class = "btn btn-warning" }) |
                                 @Html.ActionLink("檢視規格", "Index", "Specs", new { merchandiseid=item.MerchandiseId, displayorder=specdisplayorder }, new { @class = "btn btn-success" }) |
                                 <button class="btn btn-danger fordelete" data-merchandiseid="@item.MerchandiseId">刪除</button> |
-                                @Html.ActionLink("檢視評價", "Index", "Evaluations", new { merchandiseid=item.MerchandiseId }, new { @class = "btn btn-info" })
+                                @Html.ActionLink("檢視評價", "EBIndex", "EvaluationBackstage", new { keyword=item.MerchandiseName }, new { @class = "btn btn-info" })
                             </td>
                         </tr>
                     }

@@ -58,7 +58,7 @@
     </div>
     <!--引入這個，並更改data-merchandiseid-->
     <div style="width:300px;height:200px; position:sticky; top: 50px; right: 20px;" class="col-12 col-md-4 mt-3 mx-4 ">
-        <canvas id="evaluationChart" width="300" height="200" data-merchandiseid="@(Model.First().MerchandiseId)"></canvas>
+        <canvas id="evaluationChart" width="300" height="200" data-merchandiseid="@(merchandiseId)"></canvas>
     </div>
 </div>
 <script type="module" src="~/js/statistic/evaluationScores.js"></script>

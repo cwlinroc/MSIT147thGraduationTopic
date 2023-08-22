@@ -78,12 +78,7 @@ namespace MSIT147thGraduationTopic.Controllers
             {
                 _context.Add(brandvm.brand);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", new
-                {
-                    txtKeyword = HttpContext.Request.Cookies["brand_txtKeyword"] ?? "",
-                    PageIndex = int.TryParse(HttpContext.Request.Cookies["brand_PageIndex"], out int temp2) ? temp2 : 1,
-                    displayorder = int.TryParse(HttpContext.Request.Cookies["brand_displayorder"], out int temp3) ? temp3 : 0
-                });
+                return RedirectToAction("Index");
             }
             return View(brandvm);
         }

@@ -416,7 +416,7 @@
             const Names = JSON.parse(NameList);
             var names = Names.map(names => {
                 const { specId, tagId, tagName } = names;
-                return (`<span class="my-2">${tagName}<a class="deletetag" data-specid="${specId}" data-tagid="${tagId}" href="#">&#9746;</a></span>`)
+                return (`<span class="my-2">${tagName}<a class="deletetag" data-specid="${specId}" data-tagid="${tagId}" href="#"> &#9746;</a></span>`)
             });
             currentTag.innerHTML = `<tr>` + names.join("") + `</tr>`;
 
@@ -467,6 +467,10 @@
         .imgtumbnail {
             max-width: 70px;
             min-width: 70px;
+        }
+
+        a {
+            text-decoration: none;
         }
     </style>
 }

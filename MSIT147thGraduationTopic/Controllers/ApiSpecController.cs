@@ -91,7 +91,5 @@ namespace MSIT147thGraduationTopic.Controllers
 /*
 風格統一
 
-額外功能：
-商品檢視:規格數、僅顯示上/下架
-規格檢視:僅顯示上/下架
+額外功能：商品檢視增加規格數
 */
