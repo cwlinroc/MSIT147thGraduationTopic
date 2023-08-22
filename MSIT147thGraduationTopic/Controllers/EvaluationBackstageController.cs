@@ -106,7 +106,7 @@ namespace MSIT147thGraduationTopic.Controllers
             //var totalCount = model.Count();
             var model = _context.EvaluationInputs.Select(o=>o);
             string formatedSearchtype = searchtype.Trim().ToLower();
-            if (formatedSearchtype == "orderid") model = model.Where(e => e.OrderId.ToString().Contains(keyword));
+            if (formatedSearchtype == "orderid") model = model.Where(e => e.OrderId.ToString() == keyword);
             if (formatedSearchtype == "merchandisename") model = model.Where(e => e.MerchandiseName.Contains(keyword));
             if (formatedSearchtype == "score") model = model.Where(e => e.Score.ToString().Contains(keyword));
             if (formatedSearchtype == "comment") model = model.Where(e => e.Comment.Contains(keyword));
