@@ -88,7 +88,7 @@
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
                         <li class="page-item">
-                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo - 1) > 0 ? ViewBag.PageNo - 1 : ViewBag.PageNo, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount  })" aria-label="Previous">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo - 1) > 0 ? ViewBag.PageNo - 1 : ViewBag.PageNo, keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount ,searchtype = ViewBag.Searchtype  })" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -120,7 +120,7 @@
                             </li>
                         }
                         <li class="page-item">
-                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) <= ViewBag.TotalPage ?ViewBag.PageNo + 1:ViewBag.PageNo , keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount })" aria-label="Next">
+                            <a class="page-link" href="@Url.Action("EBIndex", new { pageNo = (ViewBag.PageNo + 1) <= ViewBag.TotalPage ?ViewBag.PageNo + 1:ViewBag.PageNo , keyword = ViewBag.Keyword ,totalCount = ViewBag.TotalCount ,searchtype = ViewBag.Searchtype })" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
