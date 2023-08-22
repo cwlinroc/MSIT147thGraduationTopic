@@ -17,18 +17,18 @@ namespace MSIT147thGraduationTopic.Controllers
     public class EvaluationBackstageController : Controller
     {
         private readonly GraduationTopicContext _context;
-        
+
         public EvaluationBackstageController(GraduationTopicContext context)
         {
             _context = context;
         }
 
         public IActionResult EBIndex(
-            string keyword, 
-            int pageSize, 
-            int pageNo,
-            int totalCount ,
-            string searchtype)
+            string keyword,
+            int totalCount,
+            string searchtype,
+            int pageSize = 10,
+            int pageNo = 1)
         {
             if (keyword == null)
                 return View();
@@ -37,7 +37,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             // 獲取帶出資料總記錄數
             ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
-            ViewBag.TotalCount = totalCount;            
+            ViewBag.TotalCount = totalCount;
             // 傳遞查詢結果和總記錄數到View中
             ViewBag.keyword = keyword;
             ViewBag.PageNo = pageNo;
@@ -53,11 +53,11 @@ namespace MSIT147thGraduationTopic.Controllers
                 Comment = e.Comment,
             }));
         }
-        
+
         [HttpPost]
         public IActionResult EBIndex(string keyword, string searchtype)
         {
-            var pageSize = 10; 
+            var pageSize = 10;
             var pageNo = 1;
             keyword = !string.IsNullOrEmpty(keyword) ? keyword : "NULL";
             /*
@@ -105,7 +105,7 @@ namespace MSIT147thGraduationTopic.Controllers
 
             // 獲取帶出資料總記錄數
             //var totalCount = model.Count();
-            var model = _context.EvaluationInputs.Select(o=>o);
+            var model = _context.EvaluationInputs.Select(o => o);
             string formatedSearchtype = searchtype.Trim().ToLower();
             if (formatedSearchtype == "orderid") model = model.Where(e => e.OrderId.ToString().Contains(keyword));
             if (formatedSearchtype == "merchandisename") model = model.Where(e => e.MerchandiseName.Contains(keyword));
@@ -120,11 +120,11 @@ namespace MSIT147thGraduationTopic.Controllers
             ViewBag.PageNo = pageNo;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalCount = totalCount;
-            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize); 
-            
+            ViewBag.TotalPage = (totalCount % pageSize) > 0 ? (totalCount / pageSize) + 1 : (totalCount / pageSize);
+
 
             // 當頁數據
-            var currentPageData = query.Skip((pageNo-1) * pageSize).Take(pageSize).ToList();
+            var currentPageData = query.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
 
             return View(currentPageData.Select(e => new EvaluationVM
             {
@@ -150,12 +150,13 @@ namespace MSIT147thGraduationTopic.Controllers
         }
         private List<EvaluationInput> PerformSqlQuery(int pageSize, int pageNo, string keyword, string searchtype)
         {
+            searchtype ??= "merchandisename";
             string conditionSql = searchtype.Trim().ToLower() switch
             {
                 "orderid" => "e.OrderId LIKE  @keyword ",
                 "merchandisename" => "e.MerchandiseName LIKE '%' + @keyword + '%' ",
-                "score"=> "e.Score LIKE @keyword ",
-                "comment"=> "e.Comment LIKE'%' + @keyword + '%'",
+                "score" => "e.Score LIKE @keyword ",
+                "comment" => "e.Comment LIKE'%' + @keyword + '%'",
 
                 _ => "1=1"
             };
