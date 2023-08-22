@@ -60,44 +60,46 @@ namespace MSIT147thGraduationTopic.Controllers
             var pageSize = 10; 
             var pageNo = 1;
             keyword = !string.IsNullOrEmpty(keyword) ? keyword : "NULL";
-            //var model = from e in _context.EvaluationInputs
-            //            where e.OrderId.ToString().Contains(keyword) ||
-            //                  e.MerchandiseName.Contains(keyword) ||
-            //                  e.Comment.Contains(keyword)
+            /*
+                         var model = from e in _context.EvaluationInputs
+                        where e.OrderId.ToString().Contains(keyword) ||
+                              e.MerchandiseName.Contains(keyword) ||
+                              e.Comment.Contains(keyword)
 
-            //            select new EvaluationVM
+                        select new EvaluationVM
+                        {
+                            EvaluationId = e.EvaluationId,
+                            OrderId = e.OrderId,
+                            MerchandiseName = e.MerchandiseName,
+                            Score = e.Score,
+                            Comment = e.Comment,
+                        };
+            var model = from e in _context.EvaluationInputs
+                        select new EvaluationVM
+                        {
+                            EvaluationId = e.EvaluationId,
+                            OrderId = e.OrderId,
+                            MerchandiseName = e.MerchandiseName,
+                            Score = e.Score,
+                            Comment = e.Comment,
+                        };
+            string formatedSearchtype = searchtype.Trim().ToLower();
+             */
+
+            /*
+             model = model.OrderByDescending(e => e.EvaluationId);
+
+            //var model = _context.Evaluations
+            //            .Where(x => string.IsNullOrEmpty(keyword) || x.Merchandise.MerchandiseName.Contains(keyword))
+            //            .Select(x => new EvaluationVM
             //            {
-            //                EvaluationId = e.EvaluationId,
-            //                OrderId = e.OrderId,
-            //                MerchandiseName = e.MerchandiseName,
-            //                Score = e.Score,
-            //                Comment = e.Comment,
-            //            };
-            //var model = from e in _context.EvaluationInputs
-            //            select new EvaluationVM
-            //            {
-            //                EvaluationId = e.EvaluationId,
-            //                OrderId = e.OrderId,
-            //                MerchandiseName = e.MerchandiseName,
-            //                Score = e.Score,
-            //                Comment = e.Comment,
-            //            };
-            //string formatedSearchtype = searchtype.Trim().ToLower();
+            //                OrderId = x.OrderId,
+            //                MerchandiseId = x.MerchandiseId,
+            //                Score = x.Score,
+            //                Comment = x.Comment,
+            //            }).ToList();
+             */
 
-            
-
-
-            //model = model.OrderByDescending(e => e.EvaluationId);
-
-            ////var model = _context.Evaluations
-            ////            .Where(x => string.IsNullOrEmpty(keyword) || x.Merchandise.MerchandiseName.Contains(keyword))
-            ////            .Select(x => new EvaluationVM
-            ////            {
-            ////                OrderId = x.OrderId,
-            ////                MerchandiseId = x.MerchandiseId,
-            ////                Score = x.Score,
-            ////                Comment = x.Comment,
-            ////            }).ToList();
 
             var query = PerformSqlQuery(pageSize, pageNo, keyword, searchtype);
 
@@ -158,14 +160,16 @@ namespace MSIT147thGraduationTopic.Controllers
                 _ => "1=1"
             };
 
-            //@keyword IS NULL OR
-            //                    e.OrderId LIKE '%' + @keyword + '%' OR
-            //                    e.MerchandiseName LIKE '%' + @keyword + '%' OR
-            //                    e.Comment LIKE'%' + @keyword + '%'
-            //if (formatedSearchtype == "orderid") model = model.Where(e => e.OrderId.ToString().Contains(keyword));
-            //if (formatedSearchtype == "merchandisename") model = model.Where(e => e.MerchandiseName.Contains(keyword));
-            //if (formatedSearchtype == "score") model = model.Where(e => e.Score.ToString().Contains(keyword));
-            //if (formatedSearchtype == "comment") model = model.Where(e => e.Comment.Contains(keyword));
+            /*
+            @keyword IS NULL OR
+                                e.OrderId LIKE '%' + @keyword + '%' OR
+                                e.MerchandiseName LIKE '%' + @keyword + '%' OR
+                                e.Comment LIKE'%' + @keyword + '%'
+            if (formatedSearchtype == "orderid") model = model.Where(e => e.OrderId.ToString().Contains(keyword));
+            if (formatedSearchtype == "merchandisename") model = model.Where(e => e.MerchandiseName.Contains(keyword));
+            if (formatedSearchtype == "score") model = model.Where(e => e.Score.ToString().Contains(keyword));
+            if (formatedSearchtype == "comment") model = model.Where(e => e.Comment.Contains(keyword));
+             */
             var sql = $@"
                         DECLARE @pageSize INT, @pageNo INT, @keyword NVARCHAR(255);
                         SET @pageSize = @p0;
