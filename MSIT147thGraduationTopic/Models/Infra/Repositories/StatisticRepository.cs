@@ -118,13 +118,13 @@ LEFT JOIN r1 ON r1.a = r2.a
             if (string.IsNullOrEmpty(sum) || timeBefore > DateTime.Now) return new();
 
             string sql = $@"
-SELECT TOP 5   m.MerchandiseName  , SUM({sum}) as Data
+SELECT TOP 5   m.MerchandiseName + s.specName  , SUM({sum}) as Data
 FROM Merchandises m 
 JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
 JOIN OrderLists ol ON s.SpecId = ol.SpecId
 JOIN Orders o ON ol.OrderId = o.OrderId
 WHERE o.PurchaseTime > @TimeBefore
-GROUP BY MerchandiseName
+GROUP BY MerchandiseName , specName , s.specId
 ORDER BY SUM({sum}) DESC";
 
             var conn = _context.Database.GetDbConnection();
