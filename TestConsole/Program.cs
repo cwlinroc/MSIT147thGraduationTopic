@@ -12,28 +12,28 @@ using System.Text;
 
 var service = new SimulationDataInsertService(null);
 
-//service.AddRandomMembers(500);
-//Console.WriteLine("AddRandomMembers Done!");
-///**
-//service.AddRandomMerchandiseAndSpecs(90);
-//Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
-//**/
-//service.AddRandomCart();
-//Console.WriteLine("AddRandomCart Done!");
+service.AddRandomMembers(500);
+Console.WriteLine("AddRandomMembers Done!");
+/**
+service.AddRandomMerchandiseAndSpecs(90);
+Console.WriteLine("AddRandomMerchandiseAndSpecs Done!");
+**/
+service.AddRandomCart();
+Console.WriteLine("AddRandomCart Done!");
 
-//await service.AddRandomOrders();
-//Console.WriteLine("AddRandomOrders Done!");
-///**
-//service.AddSpecTags();
-//Console.WriteLine("AddSpecTags Done!");
+await service.AddRandomOrders();
+Console.WriteLine("AddRandomOrders Done!");
+/**
+service.AddSpecTags();
+Console.WriteLine("AddSpecTags Done!");
 
-//service.AddSpecPopularity();
-//Console.WriteLine("AddSpecPopularity Done!");
-//**/
-//service.AddRandomEvaluations();
-//Console.WriteLine("AddRandomEvaluations Done!");
+service.AddSpecPopularity();
+Console.WriteLine("AddSpecPopularity Done!");
+**/
+service.AddRandomEvaluations();
+Console.WriteLine("AddRandomEvaluations Done!");
 
-//await service.AddSpecifySpecOrders(false, 15, 20);
+await service.AddSpecifySpecOrders(false, 15, 20);
 await service.AddSpecifySpecOrders(true, 30, 30);
 
 //var generator = new RandomGenerator();
