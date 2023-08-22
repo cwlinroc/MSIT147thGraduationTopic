@@ -422,7 +422,7 @@ FROM Merchandises m
 JOIN Specs s on m.MerchandiseID = s.MerchandiseId
 JOIN OrderLists ol on s.SpecId = ol.SpecId
 JOIN Orders o on ol.OrderId = o.OrderId
-JOIN EvaluationInput e on e.SpecId = s.SpecId
+LEFT JOIN Evaluations e on e.SpecId = s.SpecId
 JOIN CartItems c on c.SpecId = s.SpecId
 Group by {condition}
 ),
@@ -436,7 +436,7 @@ FROM Merchandises m
 JOIN Specs s on m.MerchandiseID = s.MerchandiseId
 JOIN OrderLists ol on s.SpecId = ol.SpecId
 JOIN Orders o on ol.OrderId = o.OrderId
-JOIN EvaluationInput e on e.SpecId = s.SpecId
+LEFT JOIN Evaluations e on e.SpecId = s.SpecId
 WHERE o.PurchaseTime > DATEADD ( DAY , -30 , GETDATE() )
 GROUP BY {condition}
 )

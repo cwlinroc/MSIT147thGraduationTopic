@@ -53,7 +53,7 @@ namespace MSIT147thGraduationTopic.EFModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;User ID=sa6;Password=sa6;Integrated Security=True;TrustServerCertificate=true;MultipleActiveResultSets=true");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=GraduationTopic;Persist Security Info=True;User ID=sa6;Password=sa6");
             }
         }
 
@@ -68,6 +68,8 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<CartItem>(entity =>
             {
+                entity.HasIndex(e => e.MemberId, "NonClusteredIndex-20230822-142741");
+
                 entity.HasOne(d => d.Spec)
                     .WithMany(p => p.CartItems)
                     .HasForeignKey(d => d.SpecId)
@@ -188,6 +190,10 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Evaluation>(entity =>
             {
+                entity.HasIndex(e => e.SpecId, "NonClusteredIndex-20230822-142915");
+
+                entity.HasIndex(e => e.Score, "NonClusteredIndex-20230822-143025");
+
                 entity.HasOne(d => d.Merchandise)
                     .WithMany(p => p.Evaluations)
                     .HasForeignKey(d => d.MerchandiseId)
@@ -212,8 +218,6 @@ namespace MSIT147thGraduationTopic.EFModels
                 entity.HasNoKey();
 
                 entity.ToView("EvaluationInput");
-
-                entity.Property(e => e.MerchandiseId).HasColumnName("MerchandiseID");
 
                 entity.Property(e => e.MerchandiseName)
                     .IsRequired()
@@ -285,6 +289,8 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Member>(entity =>
             {
+                entity.HasIndex(e => e.Account, "NonClusteredIndex-20230822-143133");
+
                 entity.Property(e => e.Account)
                     .IsRequired()
                     .HasMaxLength(20)
@@ -333,6 +339,12 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Merchandise>(entity =>
             {
+                entity.HasIndex(e => e.BrandId, "NonClusteredIndex-20230822-143237");
+
+                entity.HasIndex(e => e.CategoryId, "NonClusteredIndex-20230822-143327");
+
+                entity.HasIndex(e => e.MerchandiseName, "NonClusteredIndex-20230822-143957");
+
                 entity.Property(e => e.Description).HasMaxLength(500);
 
                 entity.Property(e => e.ImageUrl)
@@ -385,6 +397,8 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Order>(entity =>
             {
+                entity.HasIndex(e => e.MemberId, "NonClusteredIndex-20230822-143546");
+
                 entity.Property(e => e.ContactPhoneNumber)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -421,6 +435,10 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<OrderList>(entity =>
             {
+                entity.HasIndex(e => e.SpecId, "NonClusteredIndex-20230822-143408");
+
+                entity.HasIndex(e => e.OrderId, "NonClusteredIndex-20230822-143434");
+
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderLists)
                     .HasForeignKey(d => d.OrderId)
@@ -463,6 +481,10 @@ namespace MSIT147thGraduationTopic.EFModels
 
             modelBuilder.Entity<Spec>(entity =>
             {
+                entity.HasIndex(e => e.SpecId, "NonClusteredIndex-20230822-143816");
+
+                entity.HasIndex(e => e.Popularity, "NonClusteredIndex-20230822-143859");
+
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(150)
                     .HasColumnName("ImageURL");
@@ -500,6 +522,11 @@ namespace MSIT147thGraduationTopic.EFModels
             modelBuilder.Entity<SpecTag>(entity =>
             {
                 entity.HasNoKey();
+
+                entity.HasIndex(e => e.SpecId, "ClusteredIndex-20230822-144112")
+                    .IsClustered();
+
+                entity.HasIndex(e => e.TagId, "NonClusteredIndex-20230822-144129");
 
                 entity.HasOne(d => d.Spec)
                     .WithMany()
