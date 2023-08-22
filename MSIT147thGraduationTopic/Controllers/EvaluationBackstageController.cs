@@ -151,7 +151,7 @@ namespace MSIT147thGraduationTopic.Controllers
         {
             string conditionSql = searchtype.Trim().ToLower() switch
             {
-                "orderid" => "e.OrderId LIKE  @keyword ",
+                "orderid" => "e.OrderId LIKE @keyword ",
                 "merchandisename" => "e.MerchandiseName LIKE '%' + @keyword + '%' ",
                 "score"=> "e.Score LIKE @keyword ",
                 "comment"=> "e.Comment LIKE'%' + @keyword + '%'",
