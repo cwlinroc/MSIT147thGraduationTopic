@@ -33,8 +33,8 @@
                                 <tr>
                                     <td id="CouponId" scope="col">@item.CouponId</td>
                                     <td id="CouponName" scope="col">@item.CouponName</td>
-                                    <td id="StartDate" scope="col">@item.CouponStartDate</td>
-                                    <td id="EndDate" scope="col">@item.CouponEndDate</td>
+                                    <td id="StartDate" scope="col">@item.CouponStartDate.ToString("yyyy-MM-dd")</td>
+                                    <td id="EndDate" scope="col">@item.CouponEndDate.ToString("yyyy-MM-dd")</td>
                                     <td id="btnReceive" scope="col">
                                         @if (item.UsedStatus == 1)
                                         {
