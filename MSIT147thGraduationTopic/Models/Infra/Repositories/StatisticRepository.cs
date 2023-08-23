@@ -118,13 +118,13 @@ LEFT JOIN r1 ON r1.a = r2.a
             if (string.IsNullOrEmpty(sum) || timeBefore > DateTime.Now) return new();
 
             string sql = $@"
-SELECT TOP 5   m.MerchandiseName  , SUM({sum}) as Data
+SELECT TOP 5   m.MerchandiseName + s.specName  , SUM({sum}) as Data
 FROM Merchandises m 
 JOIN Specs s ON m.MerchandiseID = s.MerchandiseID
 JOIN OrderLists ol ON s.SpecId = ol.SpecId
 JOIN Orders o ON ol.OrderId = o.OrderId
 WHERE o.PurchaseTime > @TimeBefore
-GROUP BY MerchandiseName
+GROUP BY MerchandiseName , specName , s.specId
 ORDER BY SUM({sum}) DESC";
 
             var conn = _context.Database.GetDbConnection();
@@ -411,43 +411,73 @@ WHERE CAST( {conditionCol} AS NVARCHAR) =  @Keyword  ";
             if (string.IsNullOrEmpty(condition)) return null;
 
             string sql = $@"
-WITH cte1(a,b,c,d) AS
+WITH 
+cte1(a,b) AS
 (
 SELECT 
 {condition} 
 ,PERCENT_RANK() OVER (ORDER BY SUM(ol.quantity)) 
+FROM Merchandises m 
+JOIN Specs s on m.MerchandiseID = s.MerchandiseId
+LEFT JOIN OrderLists ol on s.SpecId = ol.SpecId
+Group by {condition} 
+),
+cte2(a,b) AS
+(
+SELECT 
+{condition} 
 ,PERCENT_RANK() OVER (ORDER BY AVG(CAST(e.Score AS float))) 
+FROM Merchandises m 
+JOIN Specs s on m.MerchandiseID = s.MerchandiseId
+LEFT JOIN Evaluations e on e.SpecId = s.SpecId
+Group by {condition} 
+),
+cte3(a,b) AS
+(
+SELECT 
+{condition} 
 ,PERCENT_RANK() OVER (ORDER BY sum(c.Quantity)) 
 FROM Merchandises m 
 JOIN Specs s on m.MerchandiseID = s.MerchandiseId
-JOIN OrderLists ol on s.SpecId = ol.SpecId
-JOIN Orders o on ol.OrderId = o.OrderId
-JOIN EvaluationInput e on e.SpecId = s.SpecId
 JOIN CartItems c on c.SpecId = s.SpecId
-Group by {condition}
+Group by {condition} 
 ),
-cte2(a,b,c) AS
+cte４(a,b) AS
 (
 SELECT 
-{condition}
-,PERCENT_RANK() OVER (ORDER BY SUM(ol.quantity)) 
-,PERCENT_RANK() OVER (ORDER BY AVG(CAST(e.Score AS float))) 
+{condition} 
+,PERCENT_RANK() OVER (ORDER BY  SUM(ol.quantity) )
+FROM Merchandises m 
+JOIN Specs s on m.MerchandiseID = s.MerchandiseId
+LEFT JOIN OrderLists ol on s.SpecId = ol.SpecId
+LEFT JOIN Orders o on ol.OrderId = o.OrderId
+WHERE o.PurchaseTime > DATEADD ( DAY , -30 , GETDATE() )
+GROUP BY {condition} 
+),
+cte5(a,b) AS
+(
+SELECT 
+{condition} 
+,PERCENT_RANK() OVER (ORDER BY AVG(CAST(e.Score AS float)))
 FROM Merchandises m 
 JOIN Specs s on m.MerchandiseID = s.MerchandiseId
 JOIN OrderLists ol on s.SpecId = ol.SpecId
 JOIN Orders o on ol.OrderId = o.OrderId
-JOIN EvaluationInput e on e.SpecId = s.SpecId
+LEFT JOIN Evaluations e on e.SpecId = s.SpecId
 WHERE o.PurchaseTime > DATEADD ( DAY , -30 , GETDATE() )
-GROUP BY {condition}
+GROUP BY {condition} 
 )
 SELECT 
 cte1.b AS BoughtRank
-, cte2.b AS RecentBoughtRank
-, cte1.c AS EvaluationRank
-, cte2.c AS RecentEvaluationRank
-, cte1.d AS InCartRank
+, cte4.b  AS RecentBoughtRank
+, cte2.b AS EvaluationRank
+, cte5.b  AS RecentEvaluationRank
+, cte3.b AS InCartRank
 FROM cte1
-JOIN cte2 ON cte1.a = cte2.a
+LEFT JOIN cte2 ON cte1.a = cte2.a
+LEFT JOIN cte3 ON cte1.a = cte3.a
+LEFT JOIN cte4 ON cte1.a = cte4.a
+LEFT JOIN cte5 ON cte1.a = cte5.a
 WHERE cte1.a = @Id
 ";
             using var conn = _context.Database.GetDbConnection();

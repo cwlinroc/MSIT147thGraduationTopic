@@ -141,7 +141,8 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             for (int i = 0; i < monthsBefore; i++)
             {
-                int minDaysBefore = (monthsBefore - i - 1) * 30;
+                //未來兩天
+                int minDaysBefore = (monthsBefore - i - 1) * 30 - 2;
                 int maxDaysBefore = minDaysBefore + 30;
                 int memberPeriod = (allMembersCount / (monthsBefore + 8)) * (i + 8);
                 int specPeriod = (allSpecsCount / (monthsBefore + 8)) * (i + 8);
@@ -171,6 +172,7 @@ namespace MSIT147thGraduationTopic.Models.Services
 
                 for (int i = 0; i < orderAmount; i++)
                 {
+
                     var order = new Order
                     {
                         MemberId = member.MemberId,
@@ -185,6 +187,7 @@ namespace MSIT147thGraduationTopic.Models.Services
 
                     _context.Orders.Add(order);
                     await _context.SaveChangesAsync();
+                    await Console.Out.WriteLineAsync(order.OrderId.ToString() + " " + order.PurchaseTime.ToString());
 
                     int maxItemAmount = (int)(_generator.RandomDouble().InvCSND(0.2, 0.2) * 30);
                     maxItemAmount = Math.Max(maxItemAmount, 1);
@@ -223,7 +226,7 @@ namespace MSIT147thGraduationTopic.Models.Services
 
             foreach (var spec in boughtSpecs.ToList())
             {
-                var buyChance = ((spec.FullName! + salt).GetHashedInt() % 100 / 100.0).InvCSND(0.5, 0.15);
+                var buyChance = (((spec.FullName! + salt).GetHashedInt() % 99 + 1) / 100.0).InvCSND(0.5, 0.15);
                 if (buyChance < _generator.RandomDouble()) boughtSpecs.Remove(spec);
             }
 
@@ -296,16 +299,18 @@ namespace MSIT147thGraduationTopic.Models.Services
 
         public async Task AddSpecifySpecOrders(bool incremment, int specId, int times)
         {
+            //未來兩天
+            DateTime nowDate = DateTime.Now.AddDays(2);
             int[] boughtTrend = incremment ?
                 new int[] { 1, 1, 2, 2, 1, 2, 3, 3, 4, 5, 20, 45 }
-                : new int[] { 7, 13, 18, 20, 17, 16, 8 , 7, 3, 2, 1, 0 };
+                : new int[] { 7, 13, 18, 20, 17, 16, 8, 7, 3, 2, 1, 0 };
             var spec = await _context.Specs.FindAsync(specId);
             for (int i = 0; i < 10; i++)
             {
                 int minDaysBefore = (10 - i - 1) * 30;
-                DateTime maxDate = DateTime.Now.AddDays(-minDaysBefore);
+                DateTime maxDate = nowDate.AddDays(-minDaysBefore);
                 int maxDaysBefore = minDaysBefore + 30;
-                DateTime minDate = DateTime.Now.AddDays(-maxDaysBefore);
+                DateTime minDate = nowDate.AddDays(-maxDaysBefore);
                 int amount = boughtTrend[i] * times;
                 var orderIds = await _context.Orders.Where(o => o.PurchaseTime > minDate && o.PurchaseTime < maxDate)
                     .OrderBy(o => Guid.NewGuid()).Take(amount).Select(o => o.OrderId).ToListAsync();

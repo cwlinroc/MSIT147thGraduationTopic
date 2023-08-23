@@ -129,7 +129,7 @@ namespace MSIT147thGraduationTopic.Models
                 {
                     if (spec.RecentPurchasedAmount <= 0) { spec.PurchasedRating /= (1 + ratingData.RecentPurchasedTimes); continue; }
 
-                    var recentRate = spec.RecentPurchasedAmount ?? 0 / recentMaxPurchasedRate;
+                    var recentRate = (spec.RecentPurchasedAmount ?? 0) / recentMaxPurchasedRate;
                     spec.PurchasedRating = (recentRate + spec.PurchasedRating)
                         / (1 + ratingData.RecentPurchasedTimes);
                 }

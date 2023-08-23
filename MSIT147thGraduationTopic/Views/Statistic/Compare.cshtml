@@ -10,7 +10,7 @@
             <h2 class="mt-3 ms-4" style="width:600px">商品比較圖</h2>
             <label for="inputTimeInterval" class="fs-4 mb-2 text-nowrap mx-4 my-auto">時間:</label>
             <div class="input-group my-auto">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">時間間隔：<span id="spanTimeUnit">星期</span></button>
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">時間間隔：<span id="spanTimeUnit">月</span></button>
                 <ul class="dropdown-menu">
                     <li><button type="button" class="dropdown-item" id="btnWeek">星期</button></li>
                     <li><button type="button" class="dropdown-item" id="btnMonth">月</button></li>
@@ -43,7 +43,7 @@
                 <div class="m-1 border rounded p-4">
 
                     <div class="input-group">
-                        
+
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">商品名稱</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item choose-type" onclick="leftMeasurement='merchandise'" data-search-type="merchandiseName">商品名稱</a></li>
@@ -99,7 +99,7 @@
         const inputTimeInterval = document.getElementById('inputTimeInterval')
 
         let classification = 'quantity' // quantity profit
-        let timeUnit = 'day' // month day
+        let timeUnit = 'month' // month day
         let timeIntervals = 12
 
         let leftId = 0
@@ -116,9 +116,9 @@
         //demoBtn1,2
         $('#demoBtn1').click(async e => {
             leftMeasurement = "merchandise"
-            leftId = 64
+            leftId = 31
             rightMeasurement = "merchandise"
-            rightId = 59
+            rightId = 24
             refreshTrendChart()
             refreshRadarData()
             const left = await getIdAndName("merchandiseId", leftId)
@@ -178,9 +178,16 @@
                         display: false
                     },
                 },
-                scale: {
-                    min: 0,
-                    max: 100,
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                        pointLabels: {
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
                 },
                 elements: {
                     line: {
@@ -206,11 +213,17 @@
                         display: false
                     },
                 },
-                scale: {
+                scales: {
                     r: {
                         min: 0,
                         max: 100,
+                        pointLabels: {
+                            font: {
+                                size: 16,
+                            },
+                        },
                     },
+
                 },
                 elements: {
                     line: {
